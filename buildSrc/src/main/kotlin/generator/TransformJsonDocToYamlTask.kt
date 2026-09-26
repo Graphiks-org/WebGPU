@@ -35,7 +35,7 @@ open class TransformJsonDocToYamlTask : DefaultTask() {
         jsonObject.forEach { (key, value) ->
             yamlFile.appendText("\"$key\": |\n")
             value.split("\n").forEach { line ->
-                yamlFile.appendText("  $line\n")
+                yamlFile.appendText(if (line.isEmpty()) "\n" else "  $line\n")
             }
         }
 

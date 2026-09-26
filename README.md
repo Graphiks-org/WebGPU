@@ -13,15 +13,23 @@ Run these commands from the repository root. Fetching the upstream files and gen
 
 This task downloads the WebGPU HTML specification from [W3C](https://www.w3.org/TR/webgpu/) and the WebGPU IDL from [GPUWeb](https://gpuweb.github.io/gpuweb/webgpu.idl). It stores them in `webgpu-ktypes-specifications/src/jvmMain/resources/` as `webgpu.html` and `webgpu.idl`, and updates `cache.json` with their hashes and refresh times. It runs only when invoked; it is not automatically part of `build` or `check`.
 
-### 2. Update documentation data (optional)
+### 2. Rebuild the API documentation JSON
+
+```shell
+./gradlew refresh-documentation-from-spec
+```
+
+This replaces `documentation.json` from the checked-in WebGPU HTML and IDL. It rebuilds the full set of documentation keys instead of using the existing JSON descriptions as input. Review the generated prose before regenerating bindings.
+
+### 3. Generate additional missing documentation (optional)
 
 ```shell
 ./gradlew generate-doc-from-llm
 ```
 
-This task uses the cached HTML and IDL to infer missing API documentation and writes the results to `documentation.json` in the same resources directory. It expects an OpenAI-compatible chat-completions server at `http://127.0.0.1:1234/v1`, serving the `mistral-small-3.1-24b-instruct-2503` model. Start that server before running the task. This step is only needed when documentation entries need to be generated or refreshed.
+This task uses the cached HTML and IDL to infer documentation for API keys still missing from `documentation.json`. It expects an OpenAI-compatible chat-completions server at `http://127.0.0.1:1234/v1`, serving the `mistral-small-3.1-24b-instruct-2503` model. Start that server before running the task.
 
-### 3. Check documentation coverage
+### 4. Check documentation coverage
 
 ```shell
 ./gradlew check-missing-doc
@@ -29,7 +37,7 @@ This task uses the cached HTML and IDL to infer missing API documentation and wr
 
 This task prints the API documentation keys that are still missing from `documentation.json`. Review the output and add or generate the missing entries before converting the JSON to YAML and regenerating the bindings.
 
-### 4. Convert the documentation to YAML
+### 5. Convert the documentation to YAML
 
 ```shell
 ./gradlew tranform-json-doc-to-yaml
@@ -37,7 +45,7 @@ This task prints the API documentation keys that are still missing from `documen
 
 This converts `documentation.json` into `documentation.yaml`, which is consumed by the binding generator. The task is currently registered as `tranform-json-doc-to-yaml` (without the second “s” in “transform”).
 
-### 5. Generate the Kotlin bindings
+### 6. Generate the Kotlin bindings
 
 ```shell
 ./gradlew generate-binding
