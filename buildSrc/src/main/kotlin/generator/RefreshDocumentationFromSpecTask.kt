@@ -41,7 +41,7 @@ open class RefreshDocumentationFromSpecTask : DefaultTask() {
                 "GPUVertexState", "GPUShaderModule"
             )
             val description = if (preferCurated) curated else findDescription(document, key) ?: curated
-            if (description.isNullOrBlank()) unresolved += key else resolved[key] = description
+            if (description.isNullOrBlank()) unresolved += key else resolved[key] = addSpecificationReference(document, key, description)
         }
 
         logger.lifecycle("Resolved ${resolved.size} of ${keys.size} documentation entries from webgpu.html")
@@ -61,6 +61,20 @@ open class RefreshDocumentationFromSpecTask : DefaultTask() {
             descriptionFromDefinition(definition, allowSectionContext = '#' !in key)?.let { return it }
         }
         return null
+    }
+
+    /** Adds a precise source link to brief entries so readers can follow the normative definition. */
+    private fun addSpecificationReference(document: org.jsoup.nodes.Document, key: String, description: String): String {
+        if (description.length > 50) return description
+
+        val directAnchor = documentationIds(key).firstOrNull { document.getElementById(it) != null }
+        val (owner, rawMember) = key.split('#', limit = 2).let { it[0] to it.getOrNull(1)?.trim() }
+        val parentAnchor = if (rawMember != null) {
+            documentationIds(owner).firstOrNull { document.getElementById(it) != null }
+        } else null
+        val anchor = directAnchor ?: parentAnchor ?: return description
+        val targetName = if (directAnchor != null && rawMember != null) "$owner.$rawMember" else owner
+        return "$description\n\nSee [$targetName in the WebGPU specification](https://www.w3.org/TR/webgpu/#$anchor)."
     }
 
     private fun documentationIds(key: String): List<String> {

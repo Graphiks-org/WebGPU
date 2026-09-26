@@ -5,25 +5,35 @@ package io.ygdrasil.webgpu
 /**
  * An RGBA color represented by four components.
  *
+ * See [GPUColor in the WebGPU specification](https://www.w3.org/TR/webgpu/#typedefdef-gpucolor).
+ *
  */
 data class Color(
 	/**
 	 * The red channel value.
+	 *
+	 * See [GPUColor.r in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucolordict-r).
 	 *
 	 */
 	override val r: Double,
 	/**
 	 * The green channel value.
 	 *
+	 * See [GPUColor.g in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucolordict-g).
+	 *
 	 */
 	override val g: Double,
 	/**
 	 * The blue channel value.
 	 *
+	 * See [GPUColor.b in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucolordict-b).
+	 *
 	 */
 	override val b: Double,
 	/**
 	 * The alpha channel value.
+	 *
+	 * See [GPUColor.a in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucolordict-a).
 	 *
 	 */
 	override val a: Double
@@ -76,10 +86,14 @@ data class Extent3D(
 	/**
 	 * The width of the extent.
 	 *
+	 * See [GPUExtent3D.width in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuextent3ddict-width).
+	 *
 	 */
 	override val width: GPUIntegerCoordinate,
 	/**
 	 * The height of the extent.
+	 *
+	 * See [GPUExtent3D.height in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuextent3ddict-height).
 	 *
 	 */
 	override val height: GPUIntegerCoordinate = 1u,
@@ -97,6 +111,8 @@ data class Extent3D(
 data class ObjectDescriptorBase(
 	/**
 	 * The initial value of GPUObjectBase.label.
+	 *
+	 * See [GPUObjectDescriptorBase.label in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuobjectdescriptorbase-label).
 	 *
 	 */
 	override val label: String = ""
@@ -132,6 +148,8 @@ data class RequestAdapterOptions(
 /**
  * GPUDeviceDescriptor describes a device request.
  *
+ * See [GPUDeviceDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpudevicedescriptor).
+ *
  */
 data class DeviceDescriptor(
 	/**
@@ -146,6 +164,8 @@ data class DeviceDescriptor(
 	override val requiredLimits: GPUSupportedLimits? = null,
 	/**
 	 * The descriptor for the default GPUQueue.
+	 *
+	 * See [GPUDeviceDescriptor.defaultQueue in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-defaultqueue).
 	 *
 	 */
 	override val defaultQueue: GPUQueueDescriptor = QueueDescriptor(),
@@ -165,10 +185,14 @@ data class BufferDescriptor(
 	/**
 	 * The size of the buffer in bytes.
 	 *
+	 * See [GPUBufferDescriptor.size in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubufferdescriptor-size).
+	 *
 	 */
 	override val size: GPUSize64,
 	/**
 	 * The allowed usages for the buffer.
+	 *
+	 * See [GPUBufferDescriptor.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubufferdescriptor-usage).
 	 *
 	 */
 	override val usage: GPUBufferUsage,
@@ -193,15 +217,21 @@ data class TextureDescriptor(
 	/**
 	 * The format of the texture.
 	 *
+	 * See [GPUTextureDescriptor.format in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexturedescriptor-format).
+	 *
 	 */
 	override val format: GPUTextureFormat,
 	/**
 	 * The allowed usages for the texture.
 	 *
+	 * See [GPUTextureDescriptor.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexturedescriptor-usage).
+	 *
 	 */
 	override val usage: GPUTextureUsage,
 	/**
 	 * The number of mip levels the texture will contain.
+	 *
+	 * See [GPUTextureDescriptor.mipLevelCount in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexturedescriptor-miplevelcount).
 	 *
 	 */
 	override val mipLevelCount: GPUIntegerCoordinate = 1u,
@@ -240,6 +270,8 @@ data class TextureViewDescriptor(
 	override val format: GPUTextureFormat? = null,
 	/**
 	 * The dimension to view the texture as.
+	 *
+	 * See [GPUTextureViewDescriptor.dimension in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputextureviewdescriptor-dimension).
 	 *
 	 */
 	override val dimension: GPUTextureViewDimension? = null,
@@ -510,6 +542,8 @@ data class BufferBinding(
 	/**
 	 * The GPUBuffer to bind.
 	 *
+	 * See [GPUBufferBinding.buffer in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubufferbinding-buffer).
+	 *
 	 */
 	override val buffer: GPUBuffer,
 	/**
@@ -526,6 +560,8 @@ data class BufferBinding(
 
 /**
  * Lists the GPUBindGroupLayouts used by a pipeline.
+ *
+ * See [GPUPipelineLayoutDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpupipelinelayoutdescriptor).
  *
  */
 data class PipelineLayoutDescriptor(
@@ -549,6 +585,8 @@ data class PipelineLayoutDescriptor(
 data class ShaderModuleDescriptor(
 	/**
 	 * The WGSL source code for the shader module.
+	 *
+	 * See [GPUShaderModuleDescriptor.code in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpushadermoduledescriptor-code).
 	 *
 	 */
 	override val code: String,
@@ -704,6 +742,8 @@ data class MultisampleState(
 	override val count: GPUSize32 = 1u,
 	/**
 	 * Mask determining which samples are written to.
+	 *
+	 * See [GPUMultisampleState.mask in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpumultisamplestate-mask).
 	 *
 	 */
 	override val mask: GPUSampleMask = 0xFFFFFFFFu,
@@ -919,6 +959,8 @@ data class VertexAttribute(
 	/**
 	 * The GPUVertexFormat of the attribute.
 	 *
+	 * See [GPUVertexAttribute.format in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuvertexattribute-format).
+	 *
 	 */
 	override val format: GPUVertexFormat,
 	/**
@@ -978,10 +1020,14 @@ data class TexelCopyTextureInfo(
 	/**
 	 * Texture to copy to/from.
 	 *
+	 * See [GPUTexelCopyTextureInfo.texture in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexelcopytextureinfo-texture).
+	 *
 	 */
 	override val texture: GPUTexture,
 	/**
 	 * Mip-map level of the texture to copy to/from.
+	 *
+	 * See [GPUTexelCopyTextureInfo.mipLevel in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexelcopytextureinfo-miplevel).
 	 *
 	 */
 	override val mipLevel: GPUIntegerCoordinate = 0u,
@@ -1007,6 +1053,8 @@ data class CommandBufferDescriptor(
 
 /**
  * Options used to create a GPUCommandEncoder.
+ *
+ * See [GPUCommandEncoderDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpucommandencoderdescriptor).
  *
  */
 data class CommandEncoderDescriptor(
@@ -1226,6 +1274,8 @@ data class RenderBundleDescriptor(
 /**
  * Options used to create a GPURenderBundleEncoder.
  *
+ * See [GPURenderBundleEncoderDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderbundleencoderdescriptor).
+ *
  */
 data class RenderBundleEncoderDescriptor(
 	override val colorFormats: List<GPUTextureFormat>,
@@ -1247,6 +1297,8 @@ data class RenderBundleEncoderDescriptor(
 /**
  * GPUQueueDescriptor describes a queue request.
  *
+ * See [GPUQueueDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuqueuedescriptor).
+ *
  */
 data class QueueDescriptor(
 	override val label: String = ""
@@ -1260,10 +1312,14 @@ data class QuerySetDescriptor(
 	/**
 	 * The type of queries managed by GPUQuerySet.
 	 *
+	 * See [GPUQuerySetDescriptor.type in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuquerysetdescriptor-type).
+	 *
 	 */
 	override val type: GPUQueryType,
 	/**
 	 * The number of queries managed by GPUQuerySet.
+	 *
+	 * See [GPUQuerySetDescriptor.count in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuquerysetdescriptor-count).
 	 *
 	 */
 	override val count: GPUSize32,

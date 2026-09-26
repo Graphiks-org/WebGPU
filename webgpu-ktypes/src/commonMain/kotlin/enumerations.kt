@@ -107,6 +107,8 @@ expect enum class GPUCullMode {
 /**
  * Indicates why a GPUDevice was lost.
  *
+ * See [GPUDeviceLostReason in the WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpudevicelostreason).
+ *
  */
 expect enum class GPUDeviceLostReason {
 	Unknown,

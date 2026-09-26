@@ -219,6 +219,8 @@ actual enum class GPUCullMode(val value: UInt) {
 /**
  * Indicates why a GPUDevice was lost.
  *
+ * See [GPUDeviceLostReason in the WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpudevicelostreason).
+ *
  */
 actual enum class GPUDeviceLostReason(val value: UInt) {
 	Unknown(1u),

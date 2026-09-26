@@ -15,10 +15,14 @@ interface GPUBuffer : GPUBindingResource, GPUObjectBase, AutoCloseable {
 	/**
 	 * The length of the GPUBuffer allocation in bytes.
 	 *
+	 * See [GPUBuffer.size in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubuffer-size).
+	 *
 	 */
 	val size: GPUSize64Out
 	/**
 	 * The allowed usages for this GPUBuffer.
+	 *
+	 * See [GPUBuffer.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubuffer-usage).
 	 *
 	 */
 	val usage: Set<GPUBufferUsage>
@@ -59,6 +63,8 @@ interface GPUBufferBinding : GPUBindingResource {
 	/**
 	 * The GPUBuffer to bind.
 	 *
+	 * See [GPUBufferBinding.buffer in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubufferbinding-buffer).
+	 *
 	 */
 	val buffer: GPUBuffer
 	/**
@@ -86,25 +92,35 @@ interface GPUTexture : GPUBindingResource, GPUObjectBase, GPUTextureOrGPUTexture
 	/**
 	 * The width of this GPUTexture.
 	 *
+	 * See [GPUTexture.width in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexture-width).
+	 *
 	 */
 	val width: GPUIntegerCoordinateOut
 	/**
 	 * The height of this GPUTexture.
+	 *
+	 * See [GPUTexture.height in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexture-height).
 	 *
 	 */
 	val height: GPUIntegerCoordinateOut
 	/**
 	 * The depth or layer count of this GPUTexture.
 	 *
+	 * See [GPUTexture.depthOrArrayLayers in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexture-depthorarraylayers).
+	 *
 	 */
 	val depthOrArrayLayers: GPUIntegerCoordinateOut
 	/**
 	 * The number of mip levels of this GPUTexture.
 	 *
+	 * See [GPUTexture.mipLevelCount in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexture-miplevelcount).
+	 *
 	 */
 	val mipLevelCount: GPUIntegerCoordinateOut
 	/**
 	 * The number of sample count of this GPUTexture.
+	 *
+	 * See [GPUTexture.sampleCount in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexture-samplecount).
 	 *
 	 */
 	val sampleCount: GPUSize32Out
@@ -116,10 +132,14 @@ interface GPUTexture : GPUBindingResource, GPUObjectBase, GPUTextureOrGPUTexture
 	/**
 	 * The format of this GPUTexture.
 	 *
+	 * See [GPUTexture.format in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexture-format).
+	 *
 	 */
 	val format: GPUTextureFormat
 	/**
 	 * The allowed usages for this GPUTexture.
+	 *
+	 * See [GPUTexture.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexture-usage).
 	 *
 	 */
 	val usage: Set<GPUTextureUsage>
@@ -140,25 +160,35 @@ interface GPUTextureView : GPUBindingResource, GPUObjectBase, GPUTextureOrGPUTex
 /**
  * An RGBA color represented by four components.
  *
+ * See [GPUColor in the WebGPU specification](https://www.w3.org/TR/webgpu/#typedefdef-gpucolor).
+ *
  */
 interface GPUColor {
 	/**
 	 * The red channel value.
+	 *
+	 * See [GPUColor.r in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucolordict-r).
 	 *
 	 */
 	val r: Double
 	/**
 	 * The green channel value.
 	 *
+	 * See [GPUColor.g in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucolordict-g).
+	 *
 	 */
 	val g: Double
 	/**
 	 * The blue channel value.
 	 *
+	 * See [GPUColor.b in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucolordict-b).
+	 *
 	 */
 	val b: Double
 	/**
 	 * The alpha channel value.
+	 *
+	 * See [GPUColor.a in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucolordict-a).
 	 *
 	 */
 	val a: Double
@@ -211,10 +241,14 @@ interface GPUExtent3D {
 	/**
 	 * The width of the extent.
 	 *
+	 * See [GPUExtent3D.width in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuextent3ddict-width).
+	 *
 	 */
 	val width: GPUIntegerCoordinate
 	/**
 	 * The height of the extent.
+	 *
+	 * See [GPUExtent3D.height in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuextent3ddict-height).
 	 *
 	 */
 	val height: GPUIntegerCoordinate
@@ -462,6 +496,8 @@ interface GPUAdapterInfo {
 	/**
 	 * Whether the adapter is a fallback adapter.
 	 *
+	 * See [GPUAdapterInfo.isFallbackAdapter in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuadapterinfo-isfallbackadapter).
+	 *
 	 */
 	val isFallbackAdapter: Boolean
 }
@@ -478,6 +514,8 @@ interface GPUAdapter : AutoCloseable {
 	val features: GPUSupportedFeatures
 	/**
 	 * The limits in this.[[adapter]].[[limits]].
+	 *
+	 * See [GPUAdapter.limits in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuadapter-limits).
 	 *
 	 */
 	val limits: GPUSupportedLimits
@@ -517,6 +555,8 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 	val adapterInfo: GPUAdapterInfo
 	/**
 	 * The primary GPUQueue for this device.
+	 *
+	 * See [GPUDevice.queue in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpudevice-queue).
 	 *
 	 */
 	val queue: GPUQueue
@@ -823,6 +863,8 @@ interface GPUBindingCommandsMixin {
 	/**
 	 * Sets the current GPUBindGroup for the given index.
 	 *
+	 * See [GPUBindingCommandsMixin.setBindGroup(index, bindGroup, dynamicOffsetsData) in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubindingcommandsmixin-setbindgroup).
+	 *
 	 */
 	fun setBindGroup(index: GPUIndex32, bindGroup: GPUBindGroup?, dynamicOffsetsData: List<UInt> = emptyList())
 	/**
@@ -1043,6 +1085,8 @@ interface GPURenderBundle : GPUObjectBase
 /**
  * Encodes render commands into a GPURenderBundle.
  *
+ * See [GPURenderBundleEncoder in the WebGPU specification](https://www.w3.org/TR/webgpu/#gpurenderbundleencoder).
+ *
  */
 interface GPURenderBundleEncoder : GPUObjectBase, GPUCommandsMixin, GPUDebugCommandsMixin, GPUBindingCommandsMixin, GPURenderCommandsMixin, AutoCloseable {
 	/**
@@ -1103,6 +1147,8 @@ interface GPUQuerySet : GPUObjectBase, AutoCloseable {
 	/**
 	 * The number of queries managed by this GPUQuerySet.
 	 *
+	 * See [GPUQuerySet.count in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuqueryset-count).
+	 *
 	 */
 	val count: GPUSize32Out
 }
@@ -1114,6 +1160,8 @@ interface GPUQuerySet : GPUObjectBase, AutoCloseable {
 interface GPUDeviceLostInfo {
 	/**
 	 * Reason reported for the device loss.
+	 *
+	 * See [GPUDeviceLostInfo.reason in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpudevicelostinfo-reason).
 	 *
 	 */
 	val reason: GPUDeviceLostReason
@@ -1159,6 +1207,8 @@ interface GPUObjectDescriptorBase {
 	/**
 	 * The initial value of GPUObjectBase.label.
 	 *
+	 * See [GPUObjectDescriptorBase.label in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuobjectdescriptorbase-label).
+	 *
 	 */
 	val label: String
 }
@@ -1193,6 +1243,8 @@ interface GPURequestAdapterOptions {
 /**
  * GPUDeviceDescriptor describes a device request.
  *
+ * See [GPUDeviceDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpudevicedescriptor).
+ *
  */
 interface GPUDeviceDescriptor : GPUObjectDescriptorBase {
 	/**
@@ -1207,6 +1259,8 @@ interface GPUDeviceDescriptor : GPUObjectDescriptorBase {
 	val requiredLimits: GPUSupportedLimits?
 	/**
 	 * The descriptor for the default GPUQueue.
+	 *
+	 * See [GPUDeviceDescriptor.defaultQueue in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-defaultqueue).
 	 *
 	 */
 	val defaultQueue: GPUQueueDescriptor
@@ -1225,10 +1279,14 @@ interface GPUBufferDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * The size of the buffer in bytes.
 	 *
+	 * See [GPUBufferDescriptor.size in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubufferdescriptor-size).
+	 *
 	 */
 	val size: GPUSize64
 	/**
 	 * The allowed usages for the buffer.
+	 *
+	 * See [GPUBufferDescriptor.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubufferdescriptor-usage).
 	 *
 	 */
 	val usage: GPUBufferUsage
@@ -1252,6 +1310,8 @@ interface GPUTextureDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * The number of mip levels the texture will contain.
 	 *
+	 * See [GPUTextureDescriptor.mipLevelCount in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexturedescriptor-miplevelcount).
+	 *
 	 */
 	val mipLevelCount: GPUIntegerCoordinate
 	/**
@@ -1267,10 +1327,14 @@ interface GPUTextureDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * The format of the texture.
 	 *
+	 * See [GPUTextureDescriptor.format in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexturedescriptor-format).
+	 *
 	 */
 	val format: GPUTextureFormat
 	/**
 	 * The allowed usages for the texture.
+	 *
+	 * See [GPUTextureDescriptor.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexturedescriptor-usage).
 	 *
 	 */
 	val usage: GPUTextureUsage
@@ -1298,6 +1362,8 @@ interface GPUTextureViewDescriptor : GPUObjectDescriptorBase {
 	val format: GPUTextureFormat?
 	/**
 	 * The dimension to view the texture as.
+	 *
+	 * See [GPUTextureViewDescriptor.dimension in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputextureviewdescriptor-dimension).
 	 *
 	 */
 	val dimension: GPUTextureViewDimension?
@@ -1559,6 +1625,8 @@ interface GPUBindGroupEntry {
 /**
  * Lists the GPUBindGroupLayouts used by a pipeline.
  *
+ * See [GPUPipelineLayoutDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpupipelinelayoutdescriptor).
+ *
  */
 interface GPUPipelineLayoutDescriptor : GPUObjectDescriptorBase {
 	/**
@@ -1580,6 +1648,8 @@ interface GPUPipelineLayoutDescriptor : GPUObjectDescriptorBase {
 interface GPUShaderModuleDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * The WGSL source code for the shader module.
+	 *
+	 * See [GPUShaderModuleDescriptor.code in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpushadermoduledescriptor-code).
 	 *
 	 */
 	val code: String
@@ -1729,6 +1799,8 @@ interface GPUMultisampleState {
 	val count: GPUSize32
 	/**
 	 * Mask determining which samples are written to.
+	 *
+	 * See [GPUMultisampleState.mask in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpumultisamplestate-mask).
 	 *
 	 */
 	val mask: GPUSampleMask
@@ -1938,6 +2010,8 @@ interface GPUVertexAttribute {
 	/**
 	 * The GPUVertexFormat of the attribute.
 	 *
+	 * See [GPUVertexAttribute.format in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuvertexattribute-format).
+	 *
 	 */
 	val format: GPUVertexFormat
 	/**
@@ -1994,10 +2068,14 @@ interface GPUTexelCopyTextureInfo {
 	/**
 	 * Texture to copy to/from.
 	 *
+	 * See [GPUTexelCopyTextureInfo.texture in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexelcopytextureinfo-texture).
+	 *
 	 */
 	val texture: GPUTexture
 	/**
 	 * Mip-map level of the texture to copy to/from.
+	 *
+	 * See [GPUTexelCopyTextureInfo.mipLevel in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexelcopytextureinfo-miplevel).
 	 *
 	 */
 	val mipLevel: GPUIntegerCoordinate
@@ -2020,6 +2098,8 @@ interface GPUTexelCopyTextureInfo {
 interface GPUCommandBufferDescriptor : GPUObjectDescriptorBase
 /**
  * Options used to create a GPUCommandEncoder.
+ *
+ * See [GPUCommandEncoderDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpucommandencoderdescriptor).
  *
  */
 interface GPUCommandEncoderDescriptor : GPUObjectDescriptorBase
@@ -2235,6 +2315,8 @@ interface GPURenderBundleDescriptor : GPUObjectDescriptorBase
 /**
  * Options used to create a GPURenderBundleEncoder.
  *
+ * See [GPURenderBundleEncoderDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderbundleencoderdescriptor).
+ *
  */
 interface GPURenderBundleEncoderDescriptor : GPURenderPassLayout {
 	/**
@@ -2252,6 +2334,8 @@ interface GPURenderBundleEncoderDescriptor : GPURenderPassLayout {
 /**
  * GPUQueueDescriptor describes a queue request.
  *
+ * See [GPUQueueDescriptor in the WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuqueuedescriptor).
+ *
  */
 interface GPUQueueDescriptor : GPUObjectDescriptorBase
 /**
@@ -2262,10 +2346,14 @@ interface GPUQuerySetDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * The type of queries managed by GPUQuerySet.
 	 *
+	 * See [GPUQuerySetDescriptor.type in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuquerysetdescriptor-type).
+	 *
 	 */
 	val type: GPUQueryType
 	/**
 	 * The number of queries managed by GPUQuerySet.
+	 *
+	 * See [GPUQuerySetDescriptor.count in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuquerysetdescriptor-count).
 	 *
 	 */
 	val count: GPUSize32
