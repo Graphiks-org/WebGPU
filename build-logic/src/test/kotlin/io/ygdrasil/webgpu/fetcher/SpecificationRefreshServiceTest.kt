@@ -188,8 +188,8 @@ class SpecificationRefreshServiceTest {
     @Test
     fun responseBodyStreamsToFileWithBoundedReads() {
         val byteCount = 2 * 1024 * 1024 + 37
-        val input = PatternInputStream(byteCount)
         val stagedFile = directory.resolve("streamed.response")
+        val input = PatternInputStream(byteCount, stagedFile)
 
         val copied = SpecificationFileIO.copyToFile(input, stagedFile)
 
@@ -197,6 +197,7 @@ class SpecificationRefreshServiceTest {
         assertEquals(byteCount.toLong(), Files.size(stagedFile))
         assertTrue(input.bulkReadCalls > 1)
         assertTrue(input.maxRequestedReadSize <= 8 * 1024)
+        assertTrue(input.destinationHadBytesBeforeEof)
         assertEquals(patternSha256(byteCount), SpecificationFileIO.sha256File(stagedFile))
     }
 
@@ -355,10 +356,15 @@ class SpecificationRefreshServiceTest {
     private data class Response(val status: Int, val body: ByteArray)
     private data class CacheEntry(val name: String, val hash: String, val timestamp: String)
 
-    private inner class PatternInputStream(private val byteCount: Int) : InputStream() {
+    private inner class PatternInputStream(
+        private val byteCount: Int,
+        private val destination: Path,
+    ) : InputStream() {
         var bulkReadCalls = 0
             private set
         var maxRequestedReadSize = 0
+            private set
+        var destinationHadBytesBeforeEof = false
             private set
         private var position = 0
 
@@ -368,7 +374,10 @@ class SpecificationRefreshServiceTest {
         }
 
         override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
-            if (position >= byteCount) return -1
+            if (position >= byteCount) {
+                destinationHadBytesBeforeEof = Files.exists(destination) && Files.size(destination) > 0
+                return -1
+            }
             bulkReadCalls++
             maxRequestedReadSize = maxOf(maxRequestedReadSize, length)
             val count = minOf(length, 4093, byteCount - position)

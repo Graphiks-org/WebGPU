@@ -157,3 +157,21 @@ BUILD SUCCESSFUL in 8s
 ```
 
 Le check racine affiche les avertissements Gradle existants sur Kotlin DSL (`2.3.20` embarqué contre `2.3.21` demandé), des cibles Kotlin Native dépréciées et des fonctionnalités Gradle dépréciées pour Gradle 10; il termine avec succès. `rtk git diff --cached --check` ne signale aucune erreur avant commit.
+
+## Suivi de test — écriture vérifiée avant EOF
+
+Le test `responseBodyStreamsToFileWithBoundedReads` passe désormais le chemin cible à `PatternInputStream`. Lorsque l’input atteint la fin, le flux mesure la taille de ce fichier avant de retourner `-1`; l’assertion `destinationHadBytesBeforeEof` exige que le fichier contienne déjà des octets. Une implémentation qui mettrait d’abord le corps entier en mémoire et écrirait seulement après EOF échouerait donc à ce test. Aucune modification de production n’était nécessaire.
+
+Vérifications exécutées :
+
+```text
+rtk ./gradlew -p build-logic test --tests 'io.ygdrasil.webgpu.fetcher.SpecificationRefreshServiceTest'
+BUILD SUCCESSFUL in 2s
+7 actionable tasks: 3 executed, 4 up-to-date
+```
+
+```text
+rtk ./gradlew -p build-logic check
+BUILD SUCCESSFUL in 3s
+8 actionable tasks: 1 executed, 7 up-to-date
+```
