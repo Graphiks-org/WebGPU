@@ -238,6 +238,22 @@ class SpecificationRefreshServiceTest {
         assertTrue(temporaryFiles().isEmpty())
     }
 
+    @Test
+    fun refreshWrapsResourceDirectoryPreparationFailureWithSources() {
+        val occupiedPath = temporaryFolder.newFile("occupied-resource-directory").toPath()
+
+        val error = assertFailsWith<SpecificationRefreshException> {
+            service().refresh(occupiedPath, sources)
+        }
+
+        assertTrue(error.message.orEmpty().contains("create resource directory"))
+        assertTrue(error.message.orEmpty().contains(htmlUrl.toString()))
+        assertTrue(error.message.orEmpty().contains(idlUrl.toString()))
+        assertTrue(Files.list(occupiedPath.parent).use { stream ->
+            stream.noneMatch { it.fileName.toString().startsWith(".") || it.fileName.toString().contains("tmp") }
+        })
+    }
+
     private fun service(move: FileMoveOperation = FileMoveOperation { source, destination, atomic ->
         Files.move(source, destination, *moveOptions(atomic))
     }) = SpecificationRefreshService(fixedClock, move)

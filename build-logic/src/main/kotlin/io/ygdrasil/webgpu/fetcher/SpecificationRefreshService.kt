@@ -47,9 +47,16 @@ class SpecificationRefreshService(
     private val json = Json
 
     fun refresh(resourceDirectory: Path, sources: List<SpecificationSource>): RefreshResult {
-        Files.createDirectories(resourceDirectory)
-        val cacheFile = resourceDirectory.resolve(CACHE_FILE_NAME)
         val allUrls = sources.joinToString(", ") { it.url.toString() }
+        try {
+            Files.createDirectories(resourceDirectory)
+        } catch (failure: Exception) {
+            throw SpecificationRefreshException(
+                "create resource directory $resourceDirectory for $allUrls failed",
+                failure,
+            )
+        }
+        val cacheFile = resourceDirectory.resolve(CACHE_FILE_NAME)
         try {
             if (Files.exists(cacheFile)) {
                 json.decodeFromString<SpecificationFileCache>(Files.readString(cacheFile))
