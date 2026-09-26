@@ -35,3 +35,4 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - name: Build & Test
         run: ./gradlew check
+
