@@ -853,6 +853,21 @@ final enum class io.ygdrasil.webgpu/GPUTextureSampleType : kotlin/Enum<io.ygdras
     }
 }
 
+final enum class io.ygdrasil.webgpu/GPUTextureSwizzleSource : kotlin/Enum<io.ygdrasil.webgpu/GPUTextureSwizzleSource> { // io.ygdrasil.webgpu/GPUTextureSwizzleSource|null[0]
+    enum entry Alpha // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Alpha|null[0]
+    enum entry Blue // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Blue|null[0]
+    enum entry Green // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Green|null[0]
+    enum entry One // io.ygdrasil.webgpu/GPUTextureSwizzleSource.One|null[0]
+    enum entry Red // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Red|null[0]
+    enum entry Zero // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Zero|null[0]
+
+    final val entries // io.ygdrasil.webgpu/GPUTextureSwizzleSource.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<io.ygdrasil.webgpu/GPUTextureSwizzleSource> // io.ygdrasil.webgpu/GPUTextureSwizzleSource.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzleSource.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<io.ygdrasil.webgpu/GPUTextureSwizzleSource> // io.ygdrasil.webgpu/GPUTextureSwizzleSource.values|values#static(){}[0]
+}
+
 final enum class io.ygdrasil.webgpu/GPUTextureViewDimension : kotlin/Enum<io.ygdrasil.webgpu/GPUTextureViewDimension> { // io.ygdrasil.webgpu/GPUTextureViewDimension|null[0]
     enum entry Cube // io.ygdrasil.webgpu/GPUTextureViewDimension.Cube|null[0]
     enum entry CubeArray // io.ygdrasil.webgpu/GPUTextureViewDimension.CubeArray|null[0]
@@ -1751,7 +1766,7 @@ abstract interface io.ygdrasil.webgpu/GPUTextureViewDescriptor : io.ygdrasil.web
     abstract val mipLevelCount // io.ygdrasil.webgpu/GPUTextureViewDescriptor.mipLevelCount|{}mipLevelCount[0]
         abstract fun <get-mipLevelCount>(): kotlin/UInt? // io.ygdrasil.webgpu/GPUTextureViewDescriptor.mipLevelCount.<get-mipLevelCount>|<get-mipLevelCount>(){}[0]
     abstract val swizzle // io.ygdrasil.webgpu/GPUTextureViewDescriptor.swizzle|{}swizzle[0]
-        abstract fun <get-swizzle>(): kotlin/String // io.ygdrasil.webgpu/GPUTextureViewDescriptor.swizzle.<get-swizzle>|<get-swizzle>(){}[0]
+        abstract fun <get-swizzle>(): io.ygdrasil.webgpu/GPUTextureSwizzle // io.ygdrasil.webgpu/GPUTextureViewDescriptor.swizzle.<get-swizzle>|<get-swizzle>(){}[0]
     abstract val usage // io.ygdrasil.webgpu/GPUTextureViewDescriptor.usage|{}usage[0]
         abstract fun <get-usage>(): io.ygdrasil.webgpu/GPUTextureUsage // io.ygdrasil.webgpu/GPUTextureViewDescriptor.usage.<get-usage>|<get-usage>(){}[0]
 }
@@ -1845,6 +1860,29 @@ sealed interface io.ygdrasil.webgpu/GPUError { // io.ygdrasil.webgpu/GPUError|nu
 }
 
 sealed interface io.ygdrasil.webgpu/GPUTextureOrGPUTextureView // io.ygdrasil.webgpu/GPUTextureOrGPUTextureView|null[0]
+
+final class io.ygdrasil.webgpu/GPUTextureSwizzle { // io.ygdrasil.webgpu/GPUTextureSwizzle|null[0]
+    constructor <init>(io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ...) // io.ygdrasil.webgpu/GPUTextureSwizzle.<init>|<init>(io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource){}[0]
+
+    final val alpha // io.ygdrasil.webgpu/GPUTextureSwizzle.alpha|{}alpha[0]
+        final fun <get-alpha>(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.alpha.<get-alpha>|<get-alpha>(){}[0]
+    final val blue // io.ygdrasil.webgpu/GPUTextureSwizzle.blue|{}blue[0]
+        final fun <get-blue>(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.blue.<get-blue>|<get-blue>(){}[0]
+    final val green // io.ygdrasil.webgpu/GPUTextureSwizzle.green|{}green[0]
+        final fun <get-green>(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.green.<get-green>|<get-green>(){}[0]
+    final val red // io.ygdrasil.webgpu/GPUTextureSwizzle.red|{}red[0]
+        final fun <get-red>(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.red.<get-red>|<get-red>(){}[0]
+
+    final fun component1(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.component1|component1(){}[0]
+    final fun component2(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.component2|component2(){}[0]
+    final fun component3(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.component3|component3(){}[0]
+    final fun component4(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.component4|component4(){}[0]
+    final fun copy(io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ...): io.ygdrasil.webgpu/GPUTextureSwizzle // io.ygdrasil.webgpu/GPUTextureSwizzle.copy|copy(io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // io.ygdrasil.webgpu/GPUTextureSwizzle.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // io.ygdrasil.webgpu/GPUTextureSwizzle.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // io.ygdrasil.webgpu/GPUTextureSwizzle.toString|toString(){}[0]
+    final fun toWebGpuString(): kotlin/String // io.ygdrasil.webgpu/GPUTextureSwizzle.toWebGpuString|toWebGpuString(){}[0]
+}
 
 final value class io.ygdrasil.webgpu/GPUBufferUsage { // io.ygdrasil.webgpu/GPUBufferUsage|null[0]
     final val value // io.ygdrasil.webgpu/GPUBufferUsage.value|{}value[0]

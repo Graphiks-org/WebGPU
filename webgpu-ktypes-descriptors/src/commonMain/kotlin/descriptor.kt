@@ -374,7 +374,7 @@ data class TextureViewDescriptor(
 	 * 
 	 */
 	override val arrayLayerCount: GPUIntegerCoordinate? = null,
-	override val swizzle: String = "rgba",
+	override val swizzle: GPUTextureSwizzle = GPUTextureSwizzle(),
 	override val label: String = ""
 ): GPUTextureViewDescriptor
 

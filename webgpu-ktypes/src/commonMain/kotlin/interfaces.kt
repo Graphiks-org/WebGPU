@@ -1895,7 +1895,7 @@ interface GPUTextureViewDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 */
 	val arrayLayerCount: GPUIntegerCoordinate?
-	val swizzle: String
+	val swizzle: GPUTextureSwizzle
 }
 
 /**

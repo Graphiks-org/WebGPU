@@ -1403,6 +1403,38 @@ public final class io/ygdrasil/webgpu/GPUTextureSampleType$Companion {
 	public final fun of-WZ4Q5Ns (I)Lio/ygdrasil/webgpu/GPUTextureSampleType;
 }
 
+public final class io/ygdrasil/webgpu/GPUTextureSwizzle {
+	public fun <init> ()V
+	public fun <init> (Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;)V
+	public synthetic fun <init> (Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public final fun component2 ()Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public final fun component3 ()Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public final fun component4 ()Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public final fun copy (Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;)Lio/ygdrasil/webgpu/GPUTextureSwizzle;
+	public static synthetic fun copy$default (Lio/ygdrasil/webgpu/GPUTextureSwizzle;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;ILjava/lang/Object;)Lio/ygdrasil/webgpu/GPUTextureSwizzle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlpha ()Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public final fun getBlue ()Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public final fun getGreen ()Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public final fun getRed ()Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun toWebGpuString ()Ljava/lang/String;
+}
+
+public final class io/ygdrasil/webgpu/GPUTextureSwizzleSource : java/lang/Enum {
+	public static final field Alpha Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public static final field Blue Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public static final field Green Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public static final field One Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public static final field Red Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public static final field Zero Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+	public static fun values ()[Lio/ygdrasil/webgpu/GPUTextureSwizzleSource;
+}
+
 public final class io/ygdrasil/webgpu/GPUTextureUsage {
 	public static final field Companion Lio/ygdrasil/webgpu/GPUTextureUsage$Companion;
 	public static final synthetic fun box-impl (J)Lio/ygdrasil/webgpu/GPUTextureUsage;
@@ -1441,7 +1473,7 @@ public abstract interface class io/ygdrasil/webgpu/GPUTextureViewDescriptor : io
 	public abstract fun getDimension ()Lio/ygdrasil/webgpu/GPUTextureViewDimension;
 	public abstract fun getFormat ()Lio/ygdrasil/webgpu/GPUTextureFormat;
 	public abstract fun getMipLevelCount-0hXNFcg ()Lkotlin/UInt;
-	public abstract fun getSwizzle ()Ljava/lang/String;
+	public abstract fun getSwizzle ()Lio/ygdrasil/webgpu/GPUTextureSwizzle;
 	public abstract fun getUsage-vq9ozLU ()J
 }
 

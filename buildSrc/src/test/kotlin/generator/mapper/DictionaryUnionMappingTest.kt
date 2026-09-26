@@ -170,6 +170,30 @@ class DictionaryUnionMappingTest {
         )
     }
 
+    @Test
+    fun `texture view swizzle maps the WebIDL string to the typed public value`() {
+        val context = contextFor(
+            """
+                dictionary GPUTextureViewDescriptor {
+                    DOMString swizzle = "rgba";
+                };
+            """.trimIndent(),
+        )
+
+        context.loadDictionaries()
+        context.loadDescriptors()
+
+        assertEquals(
+            "GPUTextureSwizzle",
+            context.interfaces.single { it.name == "GPUTextureViewDescriptor" }
+                .attributes.single { it.name == "swizzle" }.type,
+        )
+        val swizzle = context.descriptors.single { it.name == "GPUTextureViewDescriptor" }
+            .parameter.single { it.name == "swizzle" }
+        assertEquals("GPUTextureSwizzle", swizzle.type)
+        assertEquals("GPUTextureSwizzle()", swizzle.defaultValue)
+    }
+
     private fun contextFor(idl: String) = MapperContext(
         WebIdlParser.Companion.parseFromInputStream(idl.byteInputStream()),
         YamlModel(

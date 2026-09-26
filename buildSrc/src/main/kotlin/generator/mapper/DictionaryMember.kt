@@ -23,7 +23,11 @@ internal fun MapperContext.mapCommonDictionaryMember(
     var type = when (val idlType = member.type) {
         is IdlSimpleType -> {
             if (idlType.typeName in unwantedTypesOnCommon && member.name != "layout") return null
-            idlType.toKotlinType()
+            if (dictionaryName == "GPUTextureViewDescriptor" && member.name == "swizzle") {
+                "GPUTextureSwizzle"
+            } else {
+                idlType.toKotlinType()
+            }
         }
 
         is IdlUnionType -> {
@@ -49,6 +53,12 @@ internal fun MapperContext.mapCommonDictionaryMember(
 
     if (formatDescriptorDefault && member.defaultValue != null) {
         when {
+            dictionaryName == "GPUTextureViewDescriptor" && member.name == "swizzle" -> {
+                require(defaultValue == "\"rgba\"") {
+                    "Unsupported WebIDL default for GPUTextureViewDescriptor.swizzle: $defaultValue"
+                }
+                defaultValue = "GPUTextureSwizzle()"
+            }
             defaultValue == "{}" && type.startsWith("Map<") -> defaultValue = "emptyMap()"
             defaultValue == "{}" -> defaultValue = "${type.removePrefix("GPU")}()"
             isUnsignedNumericType(type) -> defaultValue = "${defaultValue}u"
