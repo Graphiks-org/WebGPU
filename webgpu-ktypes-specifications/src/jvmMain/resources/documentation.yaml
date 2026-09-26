@@ -5,49 +5,68 @@
   - [GPUBufferBinding]
   - [GPUExternalTexture]
   
-  This interface is used to specify the type of resource that can be bound in a bind group. 
-  
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#typedefdef-gpubindingresource).
+  This interface is used to specify the type of resource that can be bound in a bind group. For more details, refer to the
+  [WebGPU specification on GPUBindingResource](https://www.w3.org/TR/webgpu/#typedefdef-gpubindingresource).
 "GPUBufferBinding": |
   The `GPUBufferBinding` interface describes a buffer and an optional range to bind as a resource. This is used in the context of WebGPU to specify how buffers should be bound for shader access.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpubufferbinding).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpubufferbinding).
 "GPUBufferBinding#buffer": |
   The `buffer` property specifies the `GPUBuffer` to bind. This buffer will be exposed to shaders as a resource.
+  
+  **Type**: [GPUBuffer](https://www.w3.org/TR/webgpu/#gpubuffer)
 "GPUBufferBinding#offset": |
   The `offset` property specifies the offset, in bytes, from the beginning of the `buffer` to the start of the range exposed to the shader by the buffer binding. This value defaults to 0 if not specified.
+  
+  **Type**: [GPUSize64](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64)
 "GPUBufferBinding#size": |
   The `size` property specifies the size, in bytes, of the buffer binding. If not provided, it specifies the range starting at `offset` and ending at the end of the `buffer`.
+  
+  **Type**: [GPUSize64](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64)
 "GPUColor": |
   Represents a color in the RGBA format, which can be either a sequence of four `Double` values or a [GPUColorDict]. This interface provides access to the red, green, blue, and alpha channel values.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpucolor).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpucolor).
 "GPUColor#r": |
   The red channel value of the color. This value is a `Double` representing the intensity of the red component in the RGBA color model.
+  
+  **Type**: Double
 "GPUColor#g": |
   The green channel value of the color. This value is a `Double` representing the intensity of the green component in the RGBA color model.
+  
+  **Type**: Double
 "GPUColor#b": |
   The blue channel value of the color. This value is a `Double` representing the intensity of the blue component in the RGBA color model.
+  
+  **Type**: Double
 "GPUColor#a": |
   The alpha channel value of the color. This value is a `Double` representing the opacity of the color, where 0.0 means fully transparent and 1.0 means fully opaque.
+  
+  **Type**: Double
 "GPUOrigin2D": |
   Represents a 2D origin point in GPU coordinates. This interface can be used to specify the starting point for various GPU operations, such as texture sampling or buffer updates.
   
   The `GPUOrigin2D` type is defined as either a sequence of two values or a dictionary with `x` and `y` properties. This allows for flexible initialization and usage in different contexts.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuorigin2d).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuorigin2d).
 "GPUOrigin2D#x": |
   The x-coordinate of the origin point. This value is of type `GPUIntegerCoordinate`.
   
+  - **Type**: `GPUIntegerCoordinate`
+  - **Default Value**: 0
+  
   When using a sequence to represent `GPUOrigin2D`, this property refers to the first item in the sequence. If the sequence does not contain an item, the default value of 0 is used.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuorigin2ddict-x).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuorigin2ddict-x).
 "GPUOrigin2D#y": |
   The y-coordinate of the origin point. This value is of type `GPUIntegerCoordinate`.
   
+  - **Type**: `GPUIntegerCoordinate`
+  - **Default Value**: 0
+  
   When using a sequence to represent `GPUOrigin2D`, this property refers to the second item in the sequence. If the sequence does not contain an item, the default value of 0 is used.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuorigin2ddict-y).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuorigin2ddict-y).
 "GPUOrigin3D": |
   Represents a 3D origin point in GPU coordinates. This interface can be used to specify the starting point for various GPU operations, such as texture sampling or buffer updates.
   
@@ -56,22 +75,36 @@
   For more details, see the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuorigin3d).
 "GPUOrigin3D#x": |
   The x-coordinate of the 3D origin point. This value is either the first item in a sequence of [GPUIntegerCoordinate] values or the `x` property of a [GPUOrigin3DDict].
+  
+  **Type:** [GPUIntegerCoordinate](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinate)
+  
+  **Default Value:** 0
 "GPUOrigin3D#y": |
   The y-coordinate of the 3D origin point. This value is either the second item in a sequence of [GPUIntegerCoordinate] values or the `y` property of a [GPUOrigin3DDict].
+  
+  **Type:** [GPUIntegerCoordinate](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinate)
+  
+  **Default Value:** 0
 "GPUOrigin3D#z": |
   The z-coordinate of the 3D origin point. This value is either the third item in a sequence of [GPUIntegerCoordinate] values or the `z` property of a [GPUOrigin3DDict].
+  
+  **Type:** [GPUIntegerCoordinate](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinate)
+  
+  **Default Value:** 0
 "GPUObjectBase": |
   The `GPUObjectBase` interface is a mixin that provides a common base for all WebGPU objects. It includes properties such as a label, which can be used to identify the object in debugging and error messages.
   
   This interface is fundamental to the WebGPU API as it ensures that all WebGPU objects share a consistent set of properties and behaviors. The `label` property allows developers to assign meaningful names to their WebGPU objects, making it easier to debug and manage them.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuobjectbase).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuobjectbase).
 "GPUObjectBase#label": |
   A developer-provided label which is used in an implementation-defined way. It can be utilized by the browser, OS, or other tools to help identify the underlying internal object to the developer.
   
   This property is particularly useful for debugging purposes as it allows developers to assign meaningful names to their WebGPU objects. These labels can then be displayed in error messages, console warnings, and various debugging utilities.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuobjectbase-label).
+  **Type**: `String`
+  
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuobjectbase-label).
 "GPUCompilationMessage": |
   The `GPUCompilationMessage` interface represents an informational, warning, or error message generated by the [GPUShaderModule] compiler. These messages are designed to be human-readable and assist developers in diagnosing issues with their shader code. Each message can correspond to a specific point in the shader code, a substring of the shader code, or may not correspond to any specific point at all.
   
@@ -103,11 +136,13 @@
 "GPUCompilationInfo": |
   Represents the compilation information for a GPU shader module. This interface provides access to messages generated during the compilation process, which can be useful for debugging and optimization.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/).
 "GPUCompilationInfo#messages": |
   A list of [GPUCompilationMessage] objects that contain detailed information about the compilation process. These messages can include warnings and errors that occurred during the compilation of a shader module.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpucompilationinfo).
+  **Type**: `List<[GPUCompilationMessage]>`
+  
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpucompilationinfo).
 "GPUPipelineBase": |
   The `GPUPipelineBase` interface represents the base class for GPU pipelines in WebGPU. It provides a method to retrieve bind group layouts, which are essential for configuring resources used by shaders.
   
@@ -130,7 +165,7 @@
   
   It includes device timeline properties for managing bind groups and dynamic offsets, which are essential for configuring the rendering pipeline in WebGPU.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubindingcommandsmixin).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubindingcommandsmixin).
 "GPUBindingCommandsMixin#setBindGroup(index, bindGroup, dynamicOffsetsData)": |
   Sets a bind group for a specific index in the rendering pipeline.
   
@@ -152,7 +187,7 @@
   - [GPURenderCommandsMixin]: Mixin for render-related commands.
   - [AutoCloseable]: Ensures that resources are closed properly.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/).
 "GPURenderBundleEncoder#finish(descriptor)": |
   Encodes the render commands into a `GPURenderBundle` and finalizes the encoder.
   
@@ -213,6 +248,10 @@
 "GPUObjectDescriptorBase#label": |
   A string that labels the GPU object. This label can be used for debugging purposes to identify the object.
   
+  **Type**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/)
+  
+  **Default Value**: An empty string (`""`)
+  
   For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuobjectdescriptorbase-label).
 "GPUTextureViewDescriptor": |
   The `GPUTextureViewDescriptor` interface defines a set of properties that describe how to create a view on a texture. This descriptor is used when creating a [GPUTextureView](https://www.w3.org/TR/webgpu/#gputextureview) object, which represents a specific way to access the data in a texture.
@@ -255,6 +294,8 @@
   
   Each entry in this list describes a single shader resource binding to be included in a `GPUBindGroupLayout`. The entries specify how resources are bound to shaders, including buffers, samplers, textures, and external textures.
   
+  **Type**: List<GPUBindGroupLayoutEntry>
+  
   **See also**:
   - GPUBindGroupLayoutEntry
 "GPUBindGroupLayoutEntry": |
@@ -266,24 +307,46 @@
   - [WebGPU Specification: GPUBindGroupLayoutEntry](https://www.w3.org/TR/webgpu/#dictdef-gpubindgrouplayoutentry)
 "GPUBindGroupLayoutEntry#binding": |
   A unique identifier for a resource binding within the [GPUBindGroupLayout](https://www.w3.org/TR/webgpu/#gpubindgrouplayout). This ID corresponds to a `GPUBindGroupEntry.binding` and a `@binding` attribute in the [GPUShaderModule](https://www.w3.org/TR/webgpu/#gpushadermodule).
+  
+  **Type:** [GPUIndex32](https://www.w3.org/TR/webgpu/#typedefdef-gpuindex32)
 "GPUBindGroupLayoutEntry#visibility": |
   A bitset of the members of [GPUShaderStage](https://www.w3.org/TR/webgpu/#namespacedef-gpushaderstage). Each set bit indicates that a `GPUBindGroupLayoutEntry`'s resource will be accessible from the associated shader stage.
+  
+  **Type:** [GPUShaderStageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpushaderstageflags)
 "GPUBindGroupLayoutEntry#buffer": |
   When provided, indicates that the binding resource type for this `GPUBindGroupLayoutEntry` is [GPUBufferBinding](https://www.w3.org/TR/webgpu/#dictdef-gpubufferbinding).
+  
+  **Type:** [GPUBufferBindingLayout?](https://www.w3.org/TR/webgpu/#dictdef-gpubufferbindinglayout)
 "GPUBindGroupLayoutEntry#sampler": |
   When provided, indicates that the binding resource type for this `GPUBindGroupLayoutEntry` is [GPUSampler](https://www.w3.org/TR/webgpu/#gpusampler).
+  
+  **Type:** [GPUSamplerBindingLayout?](https://www.w3.org/TR/webgpu/#dictdef-gpusamplerbindinglayout)
 "GPUBindGroupLayoutEntry#texture": |
   When provided, indicates that the binding resource type for this `GPUBindGroupLayoutEntry` is [GPUTextureView](https://www.w3.org/TR/webgpu/#gputextureview).
+  
+  **Type:** [GPUTextureBindingLayout?](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout)
 "GPUBufferBindingLayout": |
   Represents a layout for buffer bindings in WebGPU. This interface defines the properties required to specify how buffers should be bound to binding points in shaders.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubufferbindinglayout-dictionary).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubufferbindinglayout-dictionary).
 "GPUBufferBindingLayout#type": |
   Specifies the type required for buffers bound to this binding point. This property determines how the buffer will be used in the shader.
+  
+  **Type:** [GPUBufferBindingType](https://www.w3.org/TR/webgpu/#enumdef-gpubufferbindingtype)
+  
+  **Default Value:** "uniform"
 "GPUBufferBindingLayout#hasDynamicOffset": |
   Indicates whether this binding requires a dynamic offset. A dynamic offset allows for more flexible buffer binding, enabling the use of different buffer sizes at runtime.
+  
+  **Type:** Boolean
+  
+  **Default Value:** false
 "GPUBufferBindingLayout#minBindingSize": |
   Specifies the minimum size of a buffer binding used with this bind point. This value is used to validate that buffers bound to this layout meet the required size constraints.
+  
+  **Type:** GPUSize64
+  
+  **Default Value:** 0
   
   **Behavior:**
   - If `minBindingSize` is not `0`, pipeline creation validates that this value is greater than or equal to the minimum buffer binding size of the variable.
@@ -291,9 +354,11 @@
 "GPUTextureBindingLayout": |
   Represents the layout for a GPU texture binding. This interface defines the required properties for specifying how textures should be bound in a GPU pipeline.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout).
 "GPUTextureBindingLayout#sampleType": |
   Specifies the type required for texture views bound to this binding. This property determines how the texture data should be sampled.
+  
+  **Default Value**: "float"
   
   **Possible Values**:
   - `GPUTextureSampleType.FLOAT`
@@ -302,9 +367,11 @@
   - `GPUTextureSampleType.SINT`
   - `GPUTextureSampleType.UINT`
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturesampletype).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturesampletype).
 "GPUTextureBindingLayout#viewDimension": |
   Specifies the required dimension for texture views bound to this binding. This property defines the dimensionality of the texture view.
+  
+  **Default Value**: "2d"
   
   **Possible Values**:
   - `GPUTextureViewDimension._1D`
@@ -314,45 +381,63 @@
   - `GPUTextureViewDimension.CUBE`
   - `GPUTextureViewDimension.CUBE_ARRAY`
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension).
 "GPUTextureBindingLayout#multisampled": |
   Indicates whether texture views bound to this binding must be multisampled. This property is used to specify if the texture should support multisampling.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout).
+  **Default Value**: `false`
+  
+  **Type**: `Boolean`
+  
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout).
 "GPUStorageTextureBindingLayout": |
   Represents the layout configuration for a storage texture binding in WebGPU. This interface defines how textures are accessed and used within shaders, specifying the access mode, format, and view dimension.
   
   For more details, refer to the [WebGPU specification on GPUStorageTextureBindingLayout](https://www.w3.org/TR/webgpu/#dictdef-gpustoragetexturebindinglayout).
 "GPUStorageTextureBindingLayout#access": |
   Specifies the access mode for this binding, indicating whether the texture is readable, writable, or both. This property defaults to `GPUStorageTextureAccess.WriteOnly`.
+  
+  **Type:** [GPUStorageTextureAccess](https://www.w3.org/TR/webgpu/#enumdef-gpustoragetextureaccess)
+  
+  **Default Value:** `GPUStorageTextureAccess.WriteOnly`
 "GPUStorageTextureBindingLayout#format": |
   Specifies the required format of texture views bound to this binding. This property is mandatory and defines how the texture data is interpreted.
+  
+  **Type:** [GPUTextureFormat](https://www.w3.org/TR/webgpu/#enumdef-gputextureformat)
 "GPUStorageTextureBindingLayout#viewDimension": |
   Specifies the required dimension for texture views bound to this binding. This property defaults to `GPUTextureViewDimension.D2`.
+  
+  **Type:** [GPUTextureViewDimension](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension)
+  
+  **Default Value:** `GPUTextureViewDimension.D2`
 "GPUBindGroupDescriptor": |
   The `GPUBindGroupDescriptor` interface represents a descriptor for creating bind groups in WebGPU. It extends the `GPUObjectDescriptorBase` and is used to specify the layout and entries of a bind group.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpubindgroupdescriptor).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpubindgroupdescriptor).
 "GPUBindGroupDescriptor#layout": |
   The `layout` property specifies the `GPUBindGroupLayout` that the entries of this bind group will conform to. This layout defines how resources are bound and accessed in shaders.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubindgroupdescriptor-layout).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubindgroupdescriptor-layout).
 "GPUBindGroupDescriptor#entries": |
   The `entries` property is a list of `GPUBindGroupEntry` objects that describe the resources to expose to the shader for each binding described by the `layout`. Each entry specifies how a particular resource should be bound.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubindgroupdescriptor-entries).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubindgroupdescriptor-entries).
 "GPUBindGroupEntry": |
   Represents a single resource to be bound in a [GPUBindGroup]. This interface is used to describe the binding of resources such as samplers, texture views, external textures, or buffer bindings within a bind group.
   
   For more details, refer to the [WebGPU specification on GPUBindGroupEntry](https://www.w3.org/TR/webgpu/#dictdef-gpubindgroupentry).
 "GPUBindGroupEntry#binding": |
   A unique identifier for a resource binding within the [GPUBindGroup]. This identifier corresponds to a `GPUBindGroupLayoutEntry.binding` and a `@binding` attribute in the [GPUShaderModule].
+  
+  **Type:** [GPUIndex32](TYPE_MAPPING.md)
 "GPUBindGroupEntry#resource": |
   The resource to bind, which can be one of the following types:
   - [GPUSampler]
   - [GPUTextureView]
   - [GPUExternalTexture]
   - [GPUBufferBinding]
+  
+  **Type:** [GPUBindingResource](TYPE_MAPPING.md)
 "GPUPipelineLayoutDescriptor": |
   The `GPUPipelineLayoutDescriptor` interface defines all the [GPUBindGroupLayout](https://www.w3.org/TR/webgpu/#dictdef-gpubindgrouplayout)s used by a pipeline. This descriptor is essential for configuring the layout of bind groups in a GPU pipeline, ensuring that shader modules can access resources correctly.
   
@@ -361,6 +446,8 @@
   In this example, `bindGroupLayout1` and `bindGroupLayout2` are instances of [GPUBindGroupLayout]. The `bindGroupLayouts` list defines the layout of bind groups that the pipeline will use.
 "GPUPipelineLayoutDescriptor#bindGroupLayouts": |
   A list of optional [GPUBindGroupLayout](https://www.w3.org/TR/webgpu/#dictdef-gpubindgrouplayout)s that the pipeline will use. Each element in this list corresponds to a `@group` attribute in the [GPUShaderModule], with the `N`th element corresponding to `@group(N)`.
+  
+  **Type**: `List<GPUBindGroupLayout?>`
   
   **Details**:
   - This list defines the layout of bind groups that the pipeline will use.
@@ -385,7 +472,11 @@
   The `layout` property specifies either a [GPUPipelineLayout] or an automatic layout mode (`"auto"`). When `"auto"` is specified, the pipeline layout is generated automatically.
 "GPUPipelineDescriptorBase#layout": |
   Specifies the layout for this pipeline. This can be either a [GPUPipelineLayout] object or the string `"auto"` to generate the pipeline layout automatically.
-
+  
+  **Type**: [GPUPipelineLayout] or `String`
+  
+  **Default**: None
+  
   **Behavior**:
   - If a [GPUPipelineLayout] is provided, it defines the specific layout for the pipeline.
   - If `"auto"` is specified, the pipeline layout is generated automatically. However, this means that the pipeline cannot share [GPUBindGroup]s with any other pipelines.
@@ -396,11 +487,13 @@
   
   A compute pipeline is responsible for performing general-purpose computations on the GPU. It does not render graphics but can be used for tasks such as data processing, simulations, and other parallel computations.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpucomputepipelinedescriptor).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpucomputepipelinedescriptor).
 "GPUComputePipelineDescriptor#compute": |
   Specifies the compute shader stage for the pipeline. This member is required and must be set to a valid [GPUProgrammableStage] object that describes the compute shader entry point.
   
   The compute shader is responsible for executing the compute operations defined in the shader code. It does not produce visual output but can perform parallel computations on data.
+  
+  **Type:** [GPUProgrammableStage]
 "GPURenderPipelineDescriptor": |
   The `GPURenderPipelineDescriptor` interface extends `GPUPipelineDescriptorBase` and defines the configuration for a render pipeline in WebGPU. It specifies the vertex, primitive, depth-stencil, multisample, and fragment states required to create a render pipeline. For more details, refer to the [W3C specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderpipelinedescriptor).
 "GPURenderPipelineDescriptor#vertex": |
@@ -423,6 +516,10 @@
 "GPUMultisampleState#count": |
   Specifies the number of samples per pixel. This value determines the level of multisampling used during rendering.
   
+  **Type:** [GPUSize32](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32)
+  
+  **Default Value:** 1
+  
   **Constraints:**
   - Must be either 1 or 4.
   - If `alphaToCoverageEnabled` is `true`, `count` must be greater than 1.
@@ -431,11 +528,19 @@
   - [count member in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpumultisamplestate-count)
 "GPUMultisampleState#mask": |
   Determines which samples are written to during rendering. This mask allows for selective sampling, which can be useful for optimizing performance or achieving specific visual effects.
-
+  
+  **Type:** [GPUSampleMask](https://www.w3.org/TR/webgpu/#typedefdef-gpusamplemask)
+  
+  **Default Value:** 0xFFFFFFFF
+  
   **See also:**
   - [mask member in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpumultisamplestate-mask)
 "GPUMultisampleState#alphaToCoverageEnabled": |
   When set to `true`, enables alpha-to-coverage, which uses the fragment's alpha channel to generate a sample coverage mask. This can improve the quality of antialiased edges.
+  
+  **Type:** Boolean
+  
+  **Default Value:** false
   
   **Constraints:**
   - If `alphaToCoverageEnabled` is `true`, `count` must be greater than 1.
@@ -451,6 +556,8 @@
   - [WebGPU Specification: GPUProgrammableStage](https://www.w3.org/TR/webgpu/#gpuprogrammablestage)
 "GPUFragmentState#targets": |
   A list of [GPUColorTargetState] objects that define the formats and behaviors of the color targets this pipeline writes to. Each `GPUColorTargetState` in the list specifies how a particular color target should be handled during rendering.
+  
+  **Type:** List<[GPUColorTargetState]?>
   
   **See also:**
   - [WebGPU Specification: GPUFragmentState](https://www.w3.org/TR/webgpu/#dictdef-gpufragmentstate)
@@ -479,25 +586,37 @@
 "GPUBlendComponent": |
   Represents a blend component used in blending operations for color or alpha components of a fragment. This interface defines how the source and destination colors are combined during rendering.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpublendcomponent).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpublendcomponent).
 "GPUBlendComponent#operation": |
   Defines the [GPUBlendOperation] used to calculate the values written to the target attachment components.
   
   This property specifies the blending operation to be performed. The default value is `add`.
-
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-operation).
+  
+  **Type:** [GPUBlendOperation]
+  
+  **Default Value:** "add"
+  
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-operation).
 "GPUBlendComponent#srcFactor": |
   Defines the [GPUBlendFactor] operation to be performed on values from the fragment shader.
   
   This property specifies the blending factor for the source color. The default value is `one`.
-
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-srcfactor).
+  
+  **Type:** [GPUBlendFactor]
+  
+  **Default Value:** "one"
+  
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-srcfactor).
 "GPUBlendComponent#dstFactor": |
   Defines the [GPUBlendFactor] operation to be performed on values from the target attachment.
   
   This property specifies the blending factor for the destination color. The default value is `zero`.
-
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-dstfactor).
+  
+  **Type:** [GPUBlendFactor]
+  
+  **Default Value:** "zero"
+  
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-dstfactor).
 "GPUStencilFaceState": |
   Represents a set of stencil face state parameters that define how stencil tests and operations are performed. This interface is used to configure the behavior of the stencil buffer for front or back-facing triangles in a render pipeline.
   
@@ -505,20 +624,28 @@
 "GPUStencilFaceState#compare": |
   Specifies the comparison function used for stencil tests. This determines how the current stencil value is compared to the reference value.
   
+  **Default Value:** `GPUCompareFunction.Always`
+  
   **See Also:**
   - [W3C WebGPU specification: GPUStencilFaceState.compare](https://www.w3.org/TR/webgpu/#dom-gpustencilfacestate-compare)
 "GPUStencilFaceState#failOp": |
   Specifies the operation to perform when the stencil test fails. This defines what action to take if the comparison function does not pass.
+  
+  **Default Value:** `GPUStencilOperation.Keep`
   
   **See Also:**
   - [W3C WebGPU specification: GPUStencilFaceState.failOp](https://www.w3.org/TR/webgpu/#dom-gpustencilfacestate-failop)
 "GPUStencilFaceState#depthFailOp": |
   Specifies the operation to perform when the stencil test passes but the depth test fails. This defines what action to take if the comparison function passes but the depth test does not.
   
+  **Default Value:** `GPUStencilOperation.Keep`
+  
   **See Also:**
   - [W3C WebGPU specification: GPUStencilFaceState.depthFailOp](https://www.w3.org/TR/webgpu/#dom-gpustencilfacestate-depthfailop)
 "GPUStencilFaceState#passOp": |
   Specifies the operation to perform when both the stencil test and the depth test pass. This defines what action to take if both tests are successful.
+  
+  **Default Value:** `GPUStencilOperation.Keep`
   
   **See Also:**
   - [W3C WebGPU specification: GPUStencilFaceState.passOp](https://www.w3.org/TR/webgpu/#dom-gpustencilfacestate-passop)
@@ -532,18 +659,28 @@
   A list of `GPUVertexBufferLayout` objects that define the layout of vertex attribute data in each vertex buffer used by this pipeline.
   
   Each `GPUVertexBufferLayout` specifies how the vertex data is structured, including the stride between elements and the attributes that describe the members of the structure. This allows the GPU to correctly interpret the vertex data during rendering.
-
+  
+  **Type**: List<[GPUVertexBufferLayout]>
+  
+  **Default Value**: An empty list
+  
   For more information, see the [W3C WebGPU specification on GPUVertexBufferLayout](https://www.w3.org/TR/webgpu/#dictdef-gpuvertexbufferlayout).
 "GPUVertexBufferLayout": |
   Represents the layout of a vertex buffer in WebGPU. This interface defines how vertices are structured and accessed, including the stride between elements, the step mode (whether data is per-vertex or per-instance), and the attributes that describe the vertex data.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuvertexbufferlayout).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuvertexbufferlayout).
 "GPUVertexBufferLayout#arrayStride": |
   The stride, in bytes, between elements of this array. This value specifies how much memory is allocated for each vertex or instance in the buffer.
+  
+  **Type:** [GPUSize64](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64)
 "GPUVertexBufferLayout#stepMode": |
   Specifies whether each element of this array represents per-vertex data or per-instance data. The default value is `GPUVertexStepMode.VERTEX`.
+  
+  **Type:** [GPUVertexStepMode](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexstepmode)
 "GPUVertexBufferLayout#attributes": |
   An array defining the layout of the vertex attributes within each element. This sequence describes how the vertex data is structured and accessed.
+  
+  **Type:** List<[GPUVertexAttribute](https://www.w3.org/TR/webgpu/#dictdef-gpuvertexattribute)>
 "GPUVertexAttribute": |
   Represents a vertex attribute in the WebGPU API. This interface defines the format, offset, and shader location of a vertex attribute.
   
@@ -552,17 +689,23 @@
   For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuvertexattribute).
 "GPUVertexAttribute#format": |
   The format of the vertex attribute. This specifies how the data should be interpreted by the GPU.
-
+  
+  **Type:** [GPUVertexFormat]
+  
   For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuvertexattribute-format).
 "GPUVertexAttribute#offset": |
   The offset, in bytes, from the beginning of the vertex buffer element to the data for this attribute.
-
+  
+  **Type:** [GPUSize64]
+  
   This value must be a multiple of the minimum of 4 and the byte size of the format specified by `format`. It defines where within the vertex buffer the data for this attribute begins.
   
   For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuvertexattribute-offset).
 "GPUVertexAttribute#shaderLocation": |
   The numeric location associated with this attribute. This corresponds to a `@location` attribute declared in the vertex module of the shader.
-
+  
+  **Type:** [GPUIndex32]
+  
   This value must be less than the maximum number of vertex attributes supported by the device, as specified by `device.limits.maxVertexAttributes`.
   
   For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuvertexattribute-shaderlocation).
@@ -588,10 +731,16 @@
   For more details, refer to the [WebGPU specification on GPUComputePassTimestampWrites](https://www.w3.org/TR/webgpu/#dictdef-gpucomputepasstimestampwrites).
 "GPUComputePassTimestampWrites#querySet": |
   The `GPUQuerySet` of type "timestamp" that the query results will be written to. This set contains the queries where the timestamps will be recorded.
+  
+  **Type**: [GPUQuerySet](https://www.w3.org/TR/webgpu/#gpuqueryset)
 "GPUComputePassTimestampWrites#beginningOfPassWriteIndex": |
   If defined, indicates the query index in `querySet` into which the timestamp at the beginning of the compute pass will be written. This value is of type [GPUSize32](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32).
+  
+  **Type**: GPUSize32?
 "GPUComputePassTimestampWrites#endOfPassWriteIndex": |
   If defined, indicates the query index in `querySet` into which the timestamp at the end of the compute pass will be written. This value is of type [GPUSize32](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32).
+  
+  **Type**: GPUSize32?
 "GPUComputePassDescriptor": |
   Represents a descriptor for configuring a compute pass in WebGPU. This interface extends [GPUObjectDescriptorBase] and is used to specify the details of a compute pass, including timestamp writes.
   
@@ -601,7 +750,7 @@
   
   This property is of type [GPUComputePassTimestampWrites].
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucomputepassdescriptor-timestampwrites).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucomputepassdescriptor-timestampwrites).
 "GPURenderPassTimestampWrites": |
   Represents a dictionary that specifies the query set and indices where timestamps will be written during a render pass. This interface is used to capture timing information at the beginning and end of a render pass.
   
@@ -623,19 +772,19 @@
   
   This descriptor is used to configure the rendering process by specifying how different types of data will be handled during the render pass. The `colorAttachments` property defines which color buffers will receive the output from the render pass. The `depthStencilAttachment` specifies the depth/stencil buffer that will be used for depth testing and stencil operations. The `occlusionQuerySet` allows for occlusion queries to be performed, and the `timestampWrites` can be used to write timestamps during the render pass.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderpassdescriptor).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderpassdescriptor).
 "GPURenderPassDescriptor#colorAttachments": |
   The `colorAttachments` property is a list of `GPURenderPassColorAttachment` objects that define the color attachments for the render pass. Each attachment specifies how the output from the render pass will be written to a particular color buffer.
   
   Due to usage compatibility, no color attachment may alias another attachment or any resource used inside the render pass.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdescriptor-colorattachments).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdescriptor-colorattachments).
 "GPURenderPassDescriptor#depthStencilAttachment": |
   The `depthStencilAttachment` property specifies a `GPURenderPassDepthStencilAttachment` object that defines the depth/stencil attachment for the render pass. This attachment is used for depth testing and stencil operations during the rendering process.
   
   Due to usage compatibility, no writable depth/stencil attachment may alias another attachment or any resource used inside the render pass.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdescriptor-depthstencilattachment).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdescriptor-depthstencilattachment).
 "GPURenderPassDescriptor#occlusionQuerySet": |
   The `occlusionQuerySet` property specifies a `GPUQuerySet` object that defines where the occlusion query results will be stored for this render pass. Occlusion queries are used to determine whether certain pixels were rendered during the pass.
 "GPURenderPassDescriptor#timestampWrites": |
@@ -688,23 +837,23 @@
 "GPUSamplerBindingLayout": |
   Represents a binding layout for samplers in WebGPU. This interface defines the type of sampler that can be bound to a specific binding.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpusamplerbindinglayout).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpusamplerbindinglayout).
 "GPUSamplerBindingLayout#type": |
   Specifies the type of sampler that can be bound to this binding layout. This is an enumeration value that indicates whether the sampler is used for filtering, non-filtering, or comparison operations.
+  
+  **Type**: [GPUSamplerBindingType]
+  
+  **Default Value**: "filtering"
   
   This property determines how the sampler will be utilized in the shader. For example, a filtering sampler might be used for texture sampling with mipmapping, while a non-filtering sampler might be used for shadow mapping.
 "GPUBlendState#color": |
   Defines the blending behavior of the corresponding render target for color channels.
   
-  This property is of type `GPUBlendComponent` and specifies how the color channels are blended during rendering. 
-  
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendstate-color).
+  This property is of type `GPUBlendComponent` and specifies how the color channels are blended during rendering. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendstate-color).
 "GPUBlendState#alpha": |
   Defines the blending behavior of the corresponding render target for the alpha channel.
   
-  This property is of type `GPUBlendComponent` and specifies how the alpha channel is blended during rendering. 
-  
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendstate-alpha).
+  This property is of type `GPUBlendComponent` and specifies how the alpha channel is blended during rendering. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendstate-alpha).
 "GPURenderPassLayout": |
   Represents the layout of a render pass, specifying the formats and sample counts for color and depth/stencil attachments.
   
@@ -726,7 +875,7 @@
 "GPUExtent3D": |
   Represents a 3-dimensional extent, which defines the size of a texture or other GPU resources. This interface can be used to specify dimensions in three axes: width, height, and depth or array layers.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuextent3d).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuextent3d).
   
   @see [GPUExtent3DDict](https://www.w3.org/TR/webgpu/#dictdef-gpuextent3ddict)
 "GPUExtent3D#width": |
@@ -748,11 +897,14 @@
   
   @return The depth or number of array layers as a [GPUIntegerCoordinate](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinate).
 "GPUSampler": |
-  The `GPUSampler` interface encodes transformations and filtering information that can be used in a shader to interpret texture resource data.
-    
-  This interface is created via the [GPUDevice.createSampler()] method.
-   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpusampler).
+  /**
+   * The `GPUSampler` interface encodes transformations and filtering information that can be used in a shader to interpret texture resource data.
+   * 
+   * This interface is created via the [GPUDevice.createSampler()] method.
+   * 
+   * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpusampler).
+   */
+  interface GPUSampler : GPUBindingResource, GPUObjectBase, AutoCloseable
 "GPUTextureView": |
   A `GPUTextureView` represents a view onto some subset of the texture subresources defined by a particular [GPUTexture]. This interface allows for efficient access and manipulation of specific portions of a texture, enabling optimized rendering and data processing.
   
@@ -772,25 +924,41 @@
 "GPUSupportedLimits#maxTextureDimension1D": |
   The maximum size for a 1D texture dimension. This value represents the largest allowable width
   for a 1D texture in texels.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxTextureDimension2D": |
   The maximum size for a 2D texture dimension. This value represents the largest allowable width or height
   for a 2D texture in texels.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxTextureDimension3D": |
   The maximum size for a 3D texture dimension. This value represents the largest allowable depth
   for a 3D texture in texels.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxTextureArrayLayers": |
   The maximum number of layers in a texture array. This value represents the largest allowable number
   of layers for a texture array.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxBindGroups": |
   The maximum number of bind groups that can be used in a single pipeline. This value represents the largest allowable
   number of bind groups for a pipeline.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxBindGroupsPlusVertexBuffers": |
   The maximum number of bind groups plus vertex buffers that can be used in a single pipeline. This value represents the largest allowable
   combined count of bind groups and vertex buffers for a pipeline.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxBindingsPerBindGroup": |
   The maximum number of bindings per bind group. This value represents the largest allowable number of bindings for a single bind group.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxDynamicUniformBuffersPerPipelineLayout": |
   The maximum number of dynamic uniform buffers per pipeline layout. This value represents the largest allowable number of dynamic uniform buffers for a single pipeline layout.
+  
+  **Type:** `UInt`
 "GPUAdapterInfo": |
   The `GPUAdapterInfo` interface exposes various identifying information about an adapter. None of the members in `GPUAdapterInfo` are guaranteed to be populated with any particular value; if no value is provided, the attribute will return the empty string " ". It is at the user agent’s discretion which values to reveal, and it is likely that on some devices none of the values will be populated. As such, applications **must** be able to handle any possible `GPUAdapterInfo` values, including the absence of those values.
   
@@ -816,7 +984,7 @@
   
   To obtain a `GPUAdapter`, use the `requestAdapter()` method provided by the `GPU` object. The `GPUAdapter` provides read-only access to its features, limits, and information about the adapter.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuadapter).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuadapter).
 "GPUAdapter#features": |
   Represents the set of features supported by the GPU adapter. This property is read-only and provides information about the capabilities of the underlying hardware.
   
@@ -843,20 +1011,28 @@
 "GPUDevice#features": |
   Represents the supported features of the GPU device.
   
+  **Type:** [GPUSupportedFeatures]
+  
   **See also:**
   - [WebGPU Specification: GPUSupportedFeatures](https://www.w3.org/TR/webgpu/#gpusupportedfeatures)
 "GPUDevice#limits": |
   Represents the supported limits of the GPU device.
+  
+  **Type:** [GPUSupportedLimits]
   
   **See also:**
   - [WebGPU Specification: GPUSupportedLimits](https://www.w3.org/TR/webgpu/#gpusupportedlimits)
 "GPUDevice#adapterInfo": |
   Provides information about the GPU adapter associated with this device.
   
+  **Type:** [GPUAdapterInfo]
+  
   **See also:**
   - [WebGPU Specification: GPUAdapterInfo](https://www.w3.org/TR/webgpu/#gpuadapterinfo)
 "GPUDevice#queue": |
   Represents the command queue associated with this device.
+  
+  **Type:** [GPUQueue]
   
   **See also:**
   - [WebGPU Specification: GPUQueue](https://www.w3.org/TR/webgpu/#gpuqueue)
@@ -898,10 +1074,16 @@
   Refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubuffer) for more details.
 "GPUBuffer#size": |
   The `size` property returns the size of the buffer in bytes. This value is read-only and represents the total allocated memory for this buffer.
+  
+  **Type:** [GPUSize64Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64out)
 "GPUBuffer#usage": |
   The `usage` property specifies how the buffer can be used. This value is read-only and represents a combination of flags indicating the allowed operations on this buffer.
+  
+  **Type:** [GPUBufferUsageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpuflagsconstant)
 "GPUBuffer#mapState": |
   The `mapState` property indicates the current mapping state of the buffer. This value is read-only and can be one of the following: `unmapped`, `pending`, or `mapped`.
+  
+  **Type:** [GPUBufferMapState](https://www.w3.org/TR/webgpu/#enumdef-gpubuffermapstate)
 "GPUBuffer#mapAsync(mode, offset, size)": |
   The `mapAsync` function asynchronously maps the buffer into an `ArrayBuffer`. This operation is non-blocking and returns a [Result](https://kotlinlang.org/api/latest/kotlinx-coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-result/) indicating success or failure.
   
@@ -1000,7 +1182,7 @@
   
   This interface includes methods for beginning render and compute passes, copying data between buffers and textures, clearing buffers, resolving query sets, and finishing command encoding.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#command-encoder).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#command-encoder).
   
   **Included Interfaces:**
   - `GPUObjectBase`: Provides base functionality for GPU objects.
@@ -1127,7 +1309,7 @@
   
   This interface inherits from [GPUObjectBase](https://www.w3.org/TR/webgpu/#gpuobjectbase), which provides basic object management functionality.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuqueue).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuqueue).
 "GPUQueue#submit(commandBuffers)": |
   Submits a list of command buffers to the GPU queue for execution. This method allows you to enqueue commands that will be processed by the GPU in the order they are submitted.
   
@@ -1159,8 +1341,12 @@
   For more details, refer to the [WebGPU specification on GPUQuerySet](https://www.w3.org/TR/webgpu/#gpuqueryset).
 "GPUQuerySet#type": |
   The type of the queries managed by this `GPUQuerySet`. This property is read-only and specifies the kind of queries that can be performed using this query set.
+  
+  **Type:** [GPUQueryType](https://www.w3.org/TR/webgpu/#enumdef-gpuquerytype)
 "GPUQuerySet#count": |
   The number of queries managed by this `GPUQuerySet`. This property is read-only and indicates the total count of queries that can be performed using this query set.
+  
+  **Type:** [GPUSize32Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32out)
 "GPUError": |
   The `GPUError` interface represents the base class for all errors that can be surfaced from WebGPU operations. This includes errors returned by [popErrorScope()] and those triggered by the `uncapturederror` event.
   
@@ -1169,6 +1355,8 @@
   **Note:** Future versions of this specification may introduce new subtypes of `GPUError`. Applications should handle this possibility by using the error's `message` property when possible and specializing using `instanceof`. Use `error.constructor.name` for serialization purposes, such as generating debug reports.
 "GPUError#message": |
   A read-only string that provides a human-readable message describing the error.
+  
+  **Type:** [String]
   
   **Behavior:** This property contains a descriptive message that can be used to understand the nature of the error. It is particularly useful for debugging and logging purposes.
 "GPUDeviceDescriptor": |
@@ -1182,6 +1370,10 @@
   
   Exactly the specified set of features, and no more or less, will be allowed in validation of API calls on the resulting device.
   
+  **Type:** `List<GPUFeatureName>`
+  
+  **Default Value:** An empty list
+  
   For more details, refer to the [WebGPU specification on `requiredFeatures`](https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-requiredfeatures).
 "GPUDeviceDescriptor#requiredLimits": |
   Specifies the limits that are required by the device request. The request will fail if the adapter cannot provide these limits.
@@ -1190,53 +1382,69 @@
   
   API calls on the resulting device perform validation according to the exact limits of the device (not the adapter; see [§ 3.6.2 Limits](https://www.w3.org/TR/webgpu/#limits)).
   
+  **Type:** `GPUSupportedLimits?`
+  
+  **Default Value:** An empty map
+  
   For more details, refer to the [WebGPU specification on `requiredLimits`](https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-requiredlimits).
 "GPUDeviceDescriptor#defaultQueue": |
   The descriptor for the default [GPUQueue].
   
+  **Type:** `GPUQueueDescriptor`
+  
+  **Default Value:** An empty `GPUQueueDescriptor`
+  
   For more details, refer to the [WebGPU specification on `defaultQueue`](https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-defaultqueue).
-"GPUDeviceDescriptor#onUncapturedError": |
-  An optional callback function used to handle uncaptured GPU errors associated with a GPU device.
-  
-  This property can be set to a user-defined [GPUUncapturedErrorCallback] to intercept and process
-  uncaptured errors triggered by WebGPU operations. These errors might otherwise not be explicitly
-  handled by the application, such as those originating from the `uncapturederror` event.
-  
-  Assigning a value to this property provides a mechanism for developers to log, debug, or respond
-  to uncaptured errors in a centralized manner, improving error-handling workflows for GPU-related
-  operations.
-  
-  If set to `null`, no callback will be executed for uncaptured errors.
 "GPUBufferDescriptor": |
   Represents a descriptor for creating GPU buffers. This interface extends [GPUObjectDescriptorBase](https://www.w3.org/TR/webgpu/#gpuobjectdescriptorbase) and is used to specify the properties of a buffer, such as its size, usage flags, and whether it should be mapped at creation.
   
   For more details, refer to the [WebGPU specification on GPUBufferDescriptor](https://www.w3.org/TR/webgpu/#gpubufferdescriptor).
 "GPUBufferDescriptor#size": |
   The size of the buffer in bytes. This value must be a multiple of 4 and greater than or equal to 4.
+  
+  **Type:** [GPUSize64](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64)
 "GPUBufferDescriptor#usage": |
   Specifies the allowed usages for the buffer. This is a bitmask of [GPUBufferUsageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpubufferusageflags) that indicates how the buffer will be used.
+  
+  **Type:** [GPUBufferUsageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpubufferusageflags)
 "GPUBufferDescriptor#mappedAtCreation": |
   Indicates whether the buffer should be created in an already mapped state. If `true`, the buffer can be immediately accessed using [getMappedRange()](https://www.w3.org/TR/webgpu/#dom-gpubuffer-getmappedrange). This is useful for setting the buffer's initial data.
+  
+  **Type:** Boolean
+  
+  **Default Value:** `false`
 "GPUTextureDescriptor": |
   Represents a descriptor for creating GPU textures. This interface extends [GPUObjectDescriptorBase](https://www.w3.org/TR/webgpu/#gpuobjectdescriptorbase) and defines the properties required to specify the characteristics of a texture.
   
   For more details, refer to the [WebGPU specification on GPUTextureDescriptor](https://www.w3.org/TR/webgpu/#gputexturedescriptor).
 "GPUTextureDescriptor#size": |
   Specifies the size of the texture in 3D space. This is a required property.
+  
+  **Type:** [GPUExtent3D]
 "GPUTextureDescriptor#mipLevelCount": |
   Specifies the number of mipmap levels in the texture. The default value is 1.
+  
+  **Type:** [GPUIntegerCoordinate]
 "GPUTextureDescriptor#sampleCount": |
   Specifies the number of samples for multisampling. The default value is 1.
+  
+  **Type:** [GPUSize32]
 "GPUTextureDescriptor#dimension": |
   Specifies the dimension of the texture. The default value is "2d".
+  
+  **Type:** [GPUTextureDimension]
 "GPUTextureDescriptor#format": |
   Specifies the format of the texture data. This is a required property.
+  
+  **Type:** [GPUTextureFormat]
 "GPUTexelCopyBufferLayout": |
   The `GPUTexelCopyBufferLayout` interface describes the layout of texels in a buffer of bytes during a texel copy operation. This interface is used to define how data is organized in a [GPUBuffer](https://www.w3.org/TR/webgpu/#gpubuffer) or an [AllowSharedBufferSource](https://webidl.spec.whatwg.org/#AllowSharedBufferSource) when performing texel copy operations.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gputexelcopybufferlayout).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gputexelcopybufferlayout).
 "GPUTexelCopyBufferLayout#offset": |
   The `offset` property specifies the starting offset in bytes from the beginning of the buffer where the texel data begins. This value is of type [GPUSize64], which represents a 64-bit unsigned integer.
+  
+  **Default Value:** `0`
 "GPUTexelCopyBufferLayout#bytesPerRow": |
   The `bytesPerRow` property specifies the number of bytes per row in the texel data. This value is of type [GPUSize32], which represents a 32-bit unsigned integer.
 "GPUTexelCopyBufferLayout#rowsPerImage": |
@@ -1260,50 +1468,96 @@
   - [GPUObjectDescriptorBase](https://www.w3.org/TR/webgpu/#dictdef-gpuobjectdescriptorbase) for inherited properties and methods.
 "GPUSupportedLimits#maxDynamicStorageBuffersPerPipelineLayout": |
   The maximum number of dynamic storage buffers per pipeline layout. This value represents the largest allowable number of dynamic storage buffers for a single pipeline layout.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxSampledTexturesPerShaderStage": |
   The maximum number of sampled textures per shader stage. This value represents the largest allowable number of sampled textures for a single shader stage.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxSamplersPerShaderStage": |
   The maximum number of samplers per shader stage. This value represents the largest allowable number of samplers for a single shader stage.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxStorageBuffersPerShaderStage": |
   The maximum number of storage buffers per shader stage. This value represents the largest allowable number of storage buffers for a single shader stage.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxStorageTexturesPerShaderStage": |
   The maximum number of storage textures per shader stage. This value represents the largest allowable number of storage textures for a single shader stage.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxUniformBuffersPerShaderStage": |
   The maximum number of uniform buffers per shader stage. This value represents the largest allowable number of uniform buffers for a single shader stage.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxUniformBufferBindingSize": |
   The maximum size of a uniform buffer binding. This value represents the largest allowable size for a single uniform buffer binding in bytes.
+  
+  **Type:** `ULong`
 "GPUSupportedLimits#maxStorageBufferBindingSize": |
   The maximum size of a storage buffer binding. This value represents the largest allowable size for a single storage buffer binding in bytes.
+  
+  **Type:** `ULong`
 "GPUSupportedLimits#minUniformBufferOffsetAlignment": |
   The minimum alignment for uniform buffer offsets. This value represents the smallest allowable offset alignment for a uniform buffer in bytes.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#minStorageBufferOffsetAlignment": |
   The minimum alignment for storage buffer offsets. This value represents the smallest allowable offset alignment for a storage buffer in bytes.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxVertexBuffers": |
   The maximum number of vertex buffers that can be used in a single pipeline. This value represents the largest allowable number of vertex buffers for a pipeline.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxBufferSize": |
   The maximum size of a buffer. This value represents the largest allowable size for a single buffer in bytes.
+  
+  **Type:** `ULong`
 "GPUSupportedLimits#maxVertexAttributes": |
   The maximum number of vertex attributes that can be used in a single pipeline. This value represents the largest allowable number of vertex attributes for a pipeline.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxVertexBufferArrayStride": |
   The maximum stride for a vertex buffer array. This value represents the largest allowable stride for a single vertex buffer array in bytes.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxInterStageShaderVariables": |
   The maximum number of inter-stage shader variables that can be used in a single pipeline. This value represents the largest allowable number of inter-stage shader variables for a pipeline.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxColorAttachments": |
   The maximum number of color attachments that can be used in a single render pass. This value represents the largest allowable number of color attachments for a render pass.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxColorAttachmentBytesPerSample": |
   The maximum number of bytes per sample for a color attachment. This value represents the largest allowable number of bytes per sample for a single color attachment.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxComputeWorkgroupStorageSize": |
   The maximum size of storage for a compute workgroup. This value represents the largest allowable size for a single compute workgroup's storage in bytes.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxComputeInvocationsPerWorkgroup": |
   The maximum number of compute invocations per workgroup. This value represents the largest allowable number of compute invocations for a single workgroup.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxComputeWorkgroupSizeX": |
   The maximum size for the X dimension of a compute workgroup. This value represents the largest allowable size for the X dimension of a single compute workgroup.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxComputeWorkgroupSizeY": |
   The maximum size for the Y dimension of a compute workgroup. This value represents the largest allowable size for the Y dimension of a single compute workgroup.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxComputeWorkgroupSizeZ": |
   The maximum size for the Z dimension of a compute workgroup. This value represents the largest allowable size for the Z dimension of a single compute workgroup.
+  
+  **Type:** `UInt`
 "GPUSupportedLimits#maxComputeWorkgroupsPerDimension": |
   The maximum number of compute workgroups per dimension. This value represents the largest allowable number of compute workgroups for a single dimension.
+  
+  **Type:** `UInt`
 "GPUDevice#createBindGroupLayout(descriptor)": |
   Creates a new bind group layout object based on the provided descriptor.
   
@@ -1433,23 +1687,39 @@
   Represents a texture in the WebGPU API. A texture is composed of 1D, 2D, or 3D arrays of data that can contain multiple values per element to represent things like colors.
   Textures can be read and written in various ways depending on their usage flags. They are often stored in GPU memory with a layout optimized for multidimensional access.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#texture-interface).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#texture-interface).
 "GPUTexture#width": |
   Represents the width of the texture in texels.
+  
+  **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
 "GPUTexture#height": |
   Represents the height of the texture in texels.
+  
+  **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
 "GPUTexture#depthOrArrayLayers": |
   Represents the depth of the texture in texels for 3D textures or the number of array layers for 2D array textures.
+  
+  **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
 "GPUTexture#mipLevelCount": |
   Represents the number of mipmap levels in the texture.
+  
+  **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
 "GPUTexture#sampleCount": |
   Represents the number of samples per pixel in the texture.
+  
+  **Type:** [GPUSize32Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32out)
 "GPUTexture#dimension": |
   Specifies the dimension of the texture (1D, 2D, or 3D).
+  
+  **Type:** [GPUTextureDimension](https://www.w3.org/TR/webgpu/#enumdef-gputexturedimension)
 "GPUTexture#format": |
   Specifies the format of the texture data.
+  
+  **Type:** [GPUTextureFormat](https://www.w3.org/TR/webgpu/#enumdef-gputextureformat)
 "GPUTexture#usage": |
   Specifies the usage flags for the texture, indicating how it can be used (e.g., as a render target, sampler, etc.).
+  
+  **Type:** [GPUTextureUsageFlags](https://www.w3.org/TR/webgpu/#namespacedef-gputextureusage)
 "GPUTexture#createView(descriptor)": |
   Creates a view of the texture.
   
@@ -1527,7 +1797,7 @@
   
   A render pass encoder is created by a [GPUCommandEncoder] and is used to record commands that will be executed on the GPU. The `GPURenderPassEncoder` interface includes methods for setting viewport, scissor rectangle, blend constant, stencil reference, beginning and ending occlusion queries, executing render bundles, and ending the render pass.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpurenderpassencoder).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpurenderpassencoder).
 "GPURenderPassEncoder#setViewport(x, y, width, height, minDepth, maxDepth)": |
   Sets the viewport for the render pass. The viewport defines a clipping rectangle in normalized device coordinates (NDC) that specifies the region of the render target to which rendering commands are directed.
   
@@ -1593,10 +1863,16 @@
   - `indirectOffset`: The offset within the buffer where the indirect indexed draw parameters start.
 "GPUTextureDescriptor#usage": |
   Specifies the usage flags for the texture. This is a required property.
+  
+  **Type:** [GPUTextureUsageFlags]
 "GPUTextureDescriptor#viewFormats": |
   Specifies a list of formats that can be used to create views of the texture. The default value is an empty list.
+  
+  **Type:** List<[GPUTextureFormat]>
 "GPUBindGroupLayoutEntry#storageTexture": |
   When provided, indicates that the binding resource type for this `GPUBindGroupLayoutEntry` is [GPUTextureView](https://www.w3.org/TR/webgpu/#gputextureview).
+  
+  **Type:** [GPUStorageTextureBindingLayout?](https://www.w3.org/TR/webgpu/#dictdef-gpustoragetexturebindinglayout)
 "GPUShaderModuleDescriptor": |
   Represents a descriptor for creating a [GPUShaderModule] in WebGPU. This interface extends `GPUObjectDescriptorBase` and is used to specify the WGSL source code and compilation hints required to create a shader module. The shader module is a compiled version of the shader code that can be used in rendering or compute pipelines.
   
@@ -1605,11 +1881,17 @@
 "GPUShaderModuleDescriptor#code": |
   The WGSL source code for the shader module. This string contains the shader program written in the WebGPU Shading Language (WGSL). The shader code defines the vertex and fragment shaders or compute shaders that will be used in the rendering or compute pipeline.
   
+  **Type:** `String`
+  
   **See also:**
   - [W3C WebGPU Specification: GPUShaderModuleDescriptor.code](https://www.w3.org/TR/webgpu/#dom-gpushadermoduledescriptor-code)
 "GPUShaderModuleDescriptor#compilationHints": |
   A list of `GPUShaderModuleCompilationHint` objects that provide additional information to the compiler about the shader module. These hints can include details about entry points, resource bindings, and other compilation-specific information. Providing these hints can improve performance by allowing the compiler to perform more optimizations during the creation of the shader module.
-
+  
+  **Type:** `List<GPUShaderModuleCompilationHint>`
+  
+  **Default Value:** An empty list (`[]`)
+  
   **See also:**
   - [W3C WebGPU Specification: GPUShaderModuleDescriptor.compilationHints](https://www.w3.org/TR/webgpu/#dom-gpushadermoduledescriptor-compilationhints)
 "GPUProgrammableStage": |
@@ -1626,56 +1908,96 @@
 "GPUPrimitiveState": |
   Represents the state of a primitive in WebGPU, defining how primitives are rendered. This interface is used to configure various aspects of primitive rendering such as topology, strip index format, front face orientation, cull mode, and depth clipping behavior.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuprimitivestate).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuprimitivestate).
 "GPUPrimitiveState#topology": |
   Specifies the type of primitive topology used for rendering. This determines how vertices are interpreted when drawing primitives.
+  
+  **Default Value:** `GPUPrimitiveTopology.TriangleList`
   
   **See Also:**
   - [GPUPrimitiveTopology](https://www.w3.org/TR/webgpu/#enumdef-gpuprimitivetopology)
 "GPUPrimitiveState#stripIndexFormat": |
   Specifies the format of the strip index buffer, if used. This is relevant when rendering primitives that use strip indexing.
   
+  **Default Value:** `null`
+  
   **See Also:**
   - [GPUIndexFormat](https://www.w3.org/TR/webgpu/#enumdef-gpuindexformat)
 "GPUPrimitiveState#frontFace": |
   Specifies the orientation of the front face of primitives. This determines which side of a triangle is considered the front face for culling and other operations.
+  
+  **Default Value:** `GPUFrontFace.CCW`
   
   **See Also:**
   - [GPUFrontFace](https://www.w3.org/TR/webgpu/#enumdef-gpufrontface)
 "GPUPrimitiveState#cullMode": |
   Specifies the culling mode for primitives. This determines which faces of a primitive are discarded during rendering.
   
+  **Default Value:** `GPUCullMode.None`
+  
   **See Also:**
   - [GPUCullMode](https://www.w3.org/TR/webgpu/#enumdef-gpucullmode)
 "GPUPrimitiveState#unclippedDepth": |
   Specifies whether depth values are clipped or unclipped. This feature requires the `"depth-clip-control"` feature to be enabled.
+  
+  **Default Value:** `false`
   
   **See Also:**
   - [WebGPU Features](https://www.w3.org/TR/webgpu/#features)
 "GPUDepthStencilState": |
   Represents the depth and stencil state configuration for a GPU render pipeline. This interface defines various properties that control how depth and stencil tests are performed during rendering.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#depth-stencil-state).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#depth-stencil-state).
 "GPUDepthStencilState#format": |
   Specifies the format of the depth/stencil texture. This property determines how depth and stencil values are stored in the texture.
+  
+  **Type:** [GPUTextureFormat](https://www.w3.org/TR/webgpu/#enumdef-gputextureformat)
 "GPUDepthStencilState#depthWriteEnabled": |
   Indicates whether depth values are written to the depth buffer. When set to `true`, depth values are written; when set to `false` or `null`, depth values are not written.
+  
+  **Type:** Boolean?
 "GPUDepthStencilState#depthCompare": |
   Specifies the comparison function used for depth tests. This property determines how the current depth value is compared to the stored depth value.
+  
+  **Type:** [GPUCompareFunction](https://www.w3.org/TR/webgpu/#enumdef-gpucomparefunction)
 "GPUDepthStencilState#stencilFront": |
   Defines the stencil state for front-facing primitives. This property configures how stencil tests are performed for front-facing geometry.
+  
+  **Type:** [GPUStencilFaceState](https://www.w3.org/TR/webgpu/#dictdef-gpustencilfacestate)
 "GPUDepthStencilState#stencilBack": |
   Defines the stencil state for back-facing primitives. This property configures how stencil tests are performed for back-facing geometry.
+  
+  **Type:** [GPUStencilFaceState](https://www.w3.org/TR/webgpu/#dictdef-gpustencilfacestate)
 "GPUDepthStencilState#stencilReadMask": |
   Specifies the mask used for reading stencil values. This property determines which bits of the stencil value are considered during read operations.
+  
+  **Type:** [GPUStencilValue](https://www.w3.org/TR/webgpu/#typedefdef-gpustencilvalue)
+  
+  **Default Value:** `0xFFFFFFFF`
 "GPUDepthStencilState#stencilWriteMask": |
   Specifies the mask used for writing stencil values. This property determines which bits of the stencil value are modified during write operations.
+  
+  **Type:** [GPUStencilValue](https://www.w3.org/TR/webgpu/#typedefdef-gpustencilvalue)
+  
+  **Default Value:** `0xFFFFFFFF`
 "GPUDepthStencilState#depthBias": |
   Specifies the depth bias value. This property is used to adjust the depth values for polygon offset.
+  
+  **Type:** [GPUDepthBias](https://www.w3.org/TR/webgpu/#typedefdef-gpudepthbias)
+  
+  **Default Value:** `0`
 "GPUDepthStencilState#depthBiasSlopeScale": |
   Specifies the slope scale factor for depth bias. This property is used to adjust the depth bias based on the slope of the polygon.
+  
+  **Type:** Float
+  
+  **Default Value:** `0.0`
 "GPUDepthStencilState#depthBiasClamp": |
   Specifies the clamp value for depth bias. This property limits the maximum depth bias that can be applied.
+  
+  **Type:** Float
+  
+  **Default Value:** `0.0`
 "GPURenderPassDepthStencilAttachment": |
   The `GPURenderPassDepthStencilAttachment` interface represents a depth/stencil attachment for a render pass. It specifies the texture view and various operations to be performed on the depth and stencil components of that view during the render pass.
   
@@ -1725,11 +2047,14 @@
   **References:**
   - [WebGPU Specification: GPUCommandsMixin](https://www.w3.org/TR/webgpu/#gpucommandsmixin)
 "GPURenderBundle": |
-  Represents a render bundle in the WebGPU API. A `GPURenderBundle` encapsulates a list of GPU commands that can be executed by a [GPURenderPassEncoder](https://www.w3.org/TR/webgpu/#dom-gpurenderpassencoder).
-    
-  This interface is part of the WebGPU API, which provides a low-level, cross-platform graphics API for the web. For more details, refer to the [official W3C specification](https://www.w3.org/TR/webgpu/#gpurenderbundle).
-    
-  @see [GPUObjectBase](https://www.w3.org/TR/webgpu/#dom-gpuobjectbase)
+  /**
+   * Represents a render bundle in the WebGPU API. A `GPURenderBundle` encapsulates a list of GPU commands that can be executed by a [GPURenderPassEncoder](https://www.w3.org/TR/webgpu/#dom-gpurenderpassencoder).
+   * 
+   * This interface is part of the WebGPU API, which provides a low-level, cross-platform graphics API for the web. For more details, refer to the [official W3C specification](https://www.w3.org/TR/webgpu/#gpurenderbundle).
+   * 
+   * @see [GPUObjectBase](https://www.w3.org/TR/webgpu/#dom-gpuobjectbase)
+   */
+  interface GPURenderBundle : GPUObjectBase
 "GPURequestAdapterOptions": |
   The `GPURequestAdapterOptions` interface provides hints to the user agent indicating what configuration is suitable for the application. This interface allows developers to specify preferences and constraints for the GPU adapter selection process.
   
@@ -1741,6 +2066,8 @@
   - "core": No effect.
   - "compatibility": Reserved for future use to opt into additional validation restrictions. Applications should not use this value at this time.
   
+  **Default Value:** "core"
+  
   For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurequestadapteroptions-featurelevel).
 "GPURequestAdapterOptions#powerPreference": |
   The `powerPreference` property provides a hint indicating what class of adapter should be selected from the system’s available adapters. This value can influence which GPU is used in a multi-GPU system, affecting power consumption and performance.
@@ -1750,13 +2077,19 @@
   - "low-power": Indicates a request to prioritize power savings over performance.
   - "high-performance": Indicates a request to prioritize performance over power consumption.
   
+  **Default Value:** null
+  
   For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurequestadapteroptions-powerpreference).
 "GPURequestAdapterOptions#forceFallbackAdapter": |
   The `forceFallbackAdapter` property indicates whether only a fallback adapter may be returned. If set to `true`, the user agent will return a fallback adapter if available, or `null` if not supported.
   
+  **Default Value:** false
+  
   For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurequestadapteroptions-forcefallbackadapter).
 "GPURequestAdapterOptions#xrCompatible": |
   The `xrCompatible` property indicates whether the best adapter for rendering to a WebXR session must be returned. If set to `true`, the user agent will prioritize adapters suitable for WebXR rendering.
+  
+  **Default Value:** false
   
   For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurequestadapteroptions-xrcompatible).
 "GPUSamplerDescriptor": |
@@ -1806,19 +2139,33 @@
 "GPUTexelCopyTextureInfo": |
   Represents the information about a texture source or destination for a texel copy operation. This interface describes the sub-region of a texture that spans one or more contiguous texture subresources at the same mip-map level.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gputexelcopytextureinfo).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gputexelcopytextureinfo).
 "GPUTexelCopyTextureInfo#texture": |
   The texture to copy to or from. This is a required field and must be specified.
+  
+  **Type:** GPUTexture
 "GPUTexelCopyTextureInfo#mipLevel": |
   The mip-map level of the texture to copy to or from. This field defaults to `0` if not specified.
+  
+  **Type:** GPUIntegerCoordinate
+  
+  **Default Value:** 0
 "GPUTexelCopyTextureInfo#origin": |
   Defines the origin of the copy, which is the minimum corner of the texture sub-region to copy to or from. Together with `copySize`, this defines the full copy sub-region. This field defaults to `{}` if not specified.
+  
+  **Type:** GPUOrigin3D
+  
+  **Default Value:** `{}` (an empty GPUOrigin3D object)
 "GPUTexelCopyTextureInfo#aspect": |
   Defines which aspects of the texture to copy to or from. This field defaults to `all` if not specified.
+  
+  **Type:** GPUTextureAspect
+  
+  **Default Value:** GPUTextureAspect.ALL
 "GPURenderPassColorAttachment": |
   Represents a color attachment for a render pass in the WebGPU API. This interface defines the properties required to configure how colors are rendered and stored during a rendering operation.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderpasscolorattachment).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderpasscolorattachment).
 "GPURenderPassColorAttachment#view": |
   A GPUTextureView describing the texture subresource that will be output to for this color attachment.
   
@@ -1885,9 +2232,7 @@
 "GPUAddressMode#MirrorRepeat": |
   Texture coordinates wrap to the other side of the texture, but the texture is flipped when the integer part of the coordinate is odd. This creates a mirroring effect as the coordinates wrap around.
 "GPUBlendFactor": |
-  The `GPUBlendFactor` enum defines how either a source or destination blend factor is calculated. This enum is used to specify the blending factors for color components in the rendering pipeline. 
-  
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpublendfactor).
+  The `GPUBlendFactor` enum defines how either a source or destination blend factor is calculated. This enum is used to specify the blending factors for color components in the rendering pipeline. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpublendfactor).
 "GPUBlendOperation": |
   The `GPUBlendOperation` enum defines the algorithm used to combine source and destination blend factors in WebGPU. This is crucial for controlling how colors are blended during rendering operations.
   
@@ -1895,11 +2240,11 @@
 "GPUBufferBindingType": |
   Represents the type of binding for a buffer in WebGPU. This enum defines the possible types of buffer bindings that can be used when creating bind groups.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpubufferbindingtype).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpubufferbindingtype).
 "GPUBufferMapState": |
   Represents the mapping state of a GPU buffer. This enum is used to indicate whether a buffer is unmapped, pending a map operation, or currently mapped.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpubuffermapstate).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpubuffermapstate).
 "GPUCompareFunction": |
   The `GPUCompareFunction` enum defines the possible comparison functions used in depth and stencil operations within WebGPU. These functions determine how values are compared during rendering processes, such as depth testing or stencil testing.
   
@@ -1953,11 +2298,11 @@
 "GPUFeatureName": |
   "The `GPUFeatureName` enum defines a set of feature names that identify specific functionalities available in WebGPU. Each feature name corresponds to an additional usage of WebGPU that would otherwise be invalid if the feature is not supported.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpufeaturename)."
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpufeaturename)."
 "GPUFilterMode": |
   Represents the filtering mode used for sampling textures. This enum defines how texture coordinates map to texel values.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpufiltermode).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpufiltermode).
 "GPUFrontFace": |
   The `GPUFrontFace` enum defines which polygons are considered front-facing by a [GPURenderPipeline](https://www.w3.org/TR/webgpu/#gpurenderpipeline). This is crucial for determining the visibility of polygons during rendering. For more details, refer to the [Polygon Rasterization section](https://www.w3.org/TR/webgpu/#polygon-rasterization) of the WebGPU specification.
   
@@ -1975,23 +2320,21 @@
 "GPULoadOp": |
   Represents the operations that can be performed to load values into an attachment during a render pass.
   
-  This enum defines two possible operations: `Load` and `Clear`. These operations determine how the initial value for an attachment is handled at the beginning of a render pass. 
+  This enum defines two possible operations: `Load` and `Clear`. These operations determine how the initial value for an attachment is handled at the beginning of a render pass. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuloadop).
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuloadop).
+  **See also:**
+  - [GPULoadOp.Load]
+  - [GPULoadOp.Clear]
 "GPULoadOp#Load": |
   Loads the existing value for this attachment into the render pass.
   
-  This operation is used when you want to preserve the current contents of the attachment and use it as the starting point for the render pass. 
-  
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuloadop-load).
+  This operation is used when you want to preserve the current contents of the attachment and use it as the starting point for the render pass. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuloadop-load).
 "GPULoadOp#Clear": |
   Loads a clear value for this attachment into the render pass.
   
-  This operation is used when you want to start with a cleared (typically zeroed or black) value for the attachment. On some GPU hardware, particularly mobile devices, using `Clear` can be more efficient because it avoids loading data from main memory into tile-local memory. 
+  This operation is used when you want to start with a cleared (typically zeroed or black) value for the attachment. On some GPU hardware, particularly mobile devices, using `Clear` can be more efficient because it avoids loading data from main memory into tile-local memory. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuloadop-clear).
   
   **Note:** It is recommended to use `Clear` in cases where the initial value doesn't matter, such as when the render target will be cleared using a skybox.
-  
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuloadop-clear).
 "GPUMipmapFilterMode": |
   Represents the filtering mode used for mipmapping in WebGPU. This enum defines two possible values: `Nearest` and `Linear`.
   
@@ -1999,7 +2342,7 @@
 "GPUPowerPreference": |
   Represents the power preference for GPU operations. This enum is used to specify whether the application prefers low power consumption or high performance.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpupowerpreference).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpupowerpreference).
 "GPUPrimitiveTopology": |
   The `GPUPrimitiveTopology` enum defines the types of primitives that can be used in draw calls made with a [GPURenderPipeline](https://www.w3.org/TR/webgpu/#gpurenderpipeline). This enumeration specifies how vertices are interpreted to form geometric primitives during rendering. For more details, see the [Rasterization section](https://www.w3.org/TR/webgpu/#rasterization) of the WebGPU specification.
 "GPUPrimitiveTopology#PointList": |
@@ -2015,11 +2358,11 @@
 "GPUQueryType": |
   Represents the type of query that can be performed using the WebGPU API. This enum defines two types of queries: occlusion and timestamp.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuquerytype).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuquerytype).
 "GPUSamplerBindingType": |
   Represents the type of sampler binding used in WebGPU. This enum defines how textures are sampled when bound to a pipeline.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpusamplerbindingtype).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpusamplerbindingtype).
 "GPUSamplerBindingType#BindingNotUsed": |
   Indicates that no sampler binding is used. This can be useful for bindings that do not require sampling operations.
 "GPUSamplerBindingType#Filtering": |
@@ -2054,7 +2397,7 @@
 "GPUStorageTextureAccess": |
   Represents the access mode for a storage texture binding, indicating whether the texture can be read from, written to, or both. This enum is used to specify the intended usage of a texture in a GPU pipeline.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpustoragetextureaccess).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpustoragetextureaccess).
 "GPUStorageTextureAccess#BindingNotUsed": |
   Indicates that the binding is not used. This value can be used when a texture binding is intentionally left unused in a pipeline.
 "GPUStorageTextureAccess#WriteOnly": |
@@ -2077,7 +2420,7 @@
 "GPUTextureDimension": |
   Represents the dimensionality of a texture in WebGPU. This enum defines three possible dimensions for textures: one-dimensional, two-dimensional, and three-dimensional.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturedimension).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturedimension).
 "GPUTextureDimension#OneD": |
   Specifies a texture that has one dimension, width. "OneD" textures cannot have mipmaps, be multisampled, use compressed or depth/stencil formats, or be used as a render target.
 "GPUTextureDimension#TwoD": |
@@ -2281,7 +2624,7 @@
 "GPUTextureSampleType": |
   Represents the sample type for textures in WebGPU. This enum defines the possible formats that a texture can have, which determines how the texture data is sampled and interpreted.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturesampletype).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturesampletype).
 "GPUTextureSampleType#BindingNotUsed": |
   Indicates that the binding is not used. This value is typically used when a texture binding is not required for a particular operation.
 "GPUTextureSampleType#Float": |
@@ -2297,11 +2640,11 @@
 "GPUTextureViewDimension": |
   Represents the dimensionality of a texture view in WebGPU. This enum defines how a texture is viewed, which affects the corresponding WGSL types and sampling behavior.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension).
 "GPUVertexFormat": |
   The `GPUVertexFormat` enum defines the possible formats for vertex attributes in WebGPU. Each format specifies the data type, number of components, and byte size of the vertex attribute. This enumeration is crucial for configuring vertex buffers and ensuring compatibility with shader programs.
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexStepMode": |
   The `GPUVertexStepMode` enum defines the step mode that configures how an address for vertex buffer data is computed, based on the current vertex or instance index.
   
@@ -2589,7 +2932,7 @@
   **Components:** 1
   **Byte Size:** 1 byte
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Uint8x2": |
   Represents two unsigned 8-bit integer components. This format is useful for vertex attributes that require compact storage and minimal precision, such as texture coordinates.
   
@@ -2597,7 +2940,7 @@
   **Components:** 2
   **Byte Size:** 2 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Uint8x4": |
   Represents four unsigned 8-bit integer components. This format is useful for vertex attributes that require compact storage and minimal precision, such as color values.
   
@@ -2605,7 +2948,7 @@
   **Components:** 4
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint8": |
   Represents a single signed 8-bit integer component. This format is useful for vertex attributes that require compact storage and minimal precision.
   
@@ -2613,7 +2956,7 @@
   **Components:** 1
   **Byte Size:** 1 byte
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint8x2": |
   Represents two signed 8-bit integer components. This format is useful for vertex attributes that require compact storage and minimal precision, such as texture coordinates.
   
@@ -2621,7 +2964,7 @@
   **Components:** 2
   **Byte Size:** 2 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint8x4": |
   Represents four signed 8-bit integer components. This format is useful for vertex attributes that require compact storage and minimal precision, such as color values.
   
@@ -2629,7 +2972,7 @@
   **Components:** 4
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Unorm8": |
   Represents a single unsigned normalized 8-bit integer component. This format is useful for vertex attributes that require compact storage and minimal precision, such as texture coordinates.
   
@@ -2637,7 +2980,7 @@
   **Components:** 1
   **Byte Size:** 1 byte
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Unorm8x2": |
   Represents two unsigned normalized 8-bit integer components. This format is useful for vertex attributes that require compact storage and minimal precision, such as texture coordinates.
   
@@ -2645,7 +2988,7 @@
   **Components:** 2
   **Byte Size:** 2 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Unorm8x4": |
   Represents four unsigned normalized 8-bit integer components. This format is useful for vertex attributes that require compact storage and minimal precision, such as color values.
   
@@ -2653,7 +2996,7 @@
   **Components:** 4
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Snorm8": |
   Represents a single signed normalized 8-bit integer component. This format is useful for vertex attributes that require compact storage and minimal precision, such as texture coordinates.
   
@@ -2661,7 +3004,7 @@
   **Components:** 1
   **Byte Size:** 1 byte
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Snorm8x2": |
   Represents two signed normalized 8-bit integer components. This format is useful for vertex attributes that require compact storage and minimal precision, such as texture coordinates.
   
@@ -2669,7 +3012,7 @@
   **Components:** 2
   **Byte Size:** 2 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Snorm8x4": |
   Represents four signed normalized 8-bit integer components. This format is useful for vertex attributes that require compact storage and minimal precision, such as color values.
   
@@ -2677,7 +3020,7 @@
   **Components:** 4
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Uint16": |
   Represents a single unsigned 16-bit integer component. This format is useful for vertex attributes that require moderate precision and storage.
   
@@ -2685,7 +3028,7 @@
   **Components:** 1
   **Byte Size:** 2 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Uint16x2": |
   Represents two unsigned 16-bit integer components. This format is useful for vertex attributes that require moderate precision and storage, such as texture coordinates.
   
@@ -2693,7 +3036,7 @@
   **Components:** 2
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Uint16x4": |
   Represents four unsigned 16-bit integer components. This format is useful for vertex attributes that require moderate precision and storage, such as color values.
   
@@ -2701,7 +3044,7 @@
   **Components:** 4
   **Byte Size:** 8 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint16": |
   Represents a single signed 16-bit integer component. This format is useful for vertex attributes that require moderate precision and storage.
   
@@ -2709,7 +3052,7 @@
   **Components:** 1
   **Byte Size:** 2 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint16x2": |
   Represents two signed 16-bit integer components. This format is useful for vertex attributes that require moderate precision and storage, such as texture coordinates.
   
@@ -2717,7 +3060,7 @@
   **Components:** 2
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint16x4": |
   Represents four signed 16-bit integer components. This format is useful for vertex attributes that require moderate precision and storage, such as color values.
   
@@ -2725,7 +3068,7 @@
   **Components:** 4
   **Byte Size:** 8 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Unorm16": |
   Represents a single unsigned normalized 16-bit integer component. This format is useful for vertex attributes that require moderate precision and storage, such as texture coordinates.
   
@@ -2733,7 +3076,7 @@
   **Components:** 1
   **Byte Size:** 2 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Unorm16x2": |
   Represents two unsigned normalized 16-bit integer components. This format is useful for vertex attributes that require moderate precision and storage, such as texture coordinates.
   
@@ -2741,7 +3084,7 @@
   **Components:** 2
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Unorm16x4": |
   Represents four unsigned normalized 16-bit integer components. This format is useful for vertex attributes that require moderate precision and storage, such as color values.
   
@@ -2749,7 +3092,7 @@
   **Components:** 4
   **Byte Size:** 8 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Snorm16": |
   Represents a single signed normalized 16-bit integer component. This format is useful for vertex attributes that require moderate precision and storage, such as texture coordinates.
   
@@ -2757,7 +3100,7 @@
   **Components:** 1
   **Byte Size:** 2 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Snorm16x2": |
   Represents two signed normalized 16-bit integer components. This format is useful for vertex attributes that require moderate precision and storage, such as texture coordinates.
   
@@ -2765,7 +3108,7 @@
   **Components:** 2
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Snorm16x4": |
   Represents four signed normalized 16-bit integer components. This format is useful for vertex attributes that require moderate precision and storage, such as color values.
   
@@ -2773,7 +3116,7 @@
   **Components:** 4
   **Byte Size:** 8 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Float16": |
   Represents a single 16-bit floating-point component. This format is useful for vertex attributes that require moderate precision and storage, such as texture coordinates.
   
@@ -2781,7 +3124,7 @@
   **Components:** 1
   **Byte Size:** 2 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Float16x2": |
   Represents two 16-bit floating-point components. This format is useful for vertex attributes that require moderate precision and storage, such as texture coordinates.
   
@@ -2789,7 +3132,7 @@
   **Components:** 2
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Float16x4": |
   Represents four 16-bit floating-point components. This format is useful for vertex attributes that require moderate precision and storage, such as color values.
   
@@ -2797,7 +3140,7 @@
   **Components:** 4
   **Byte Size:** 8 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Float32": |
   Represents a single 32-bit floating-point component. This format is useful for vertex attributes that require high precision and storage, such as texture coordinates.
   
@@ -2805,7 +3148,7 @@
   **Components:** 1
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Float32x2": |
   Represents two 32-bit floating-point components. This format is useful for vertex attributes that require high precision and storage, such as texture coordinates.
   
@@ -2813,7 +3156,7 @@
   **Components:** 2
   **Byte Size:** 8 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Float32x3": |
   Represents three 32-bit floating-point components. This format is useful for vertex attributes that require high precision and storage, such as texture coordinates.
   
@@ -2821,7 +3164,7 @@
   **Components:** 3
   **Byte Size:** 12 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Float32x4": |
   Represents four 32-bit floating-point components. This format is useful for vertex attributes that require high precision and storage, such as color values.
   
@@ -2829,7 +3172,7 @@
   **Components:** 4
   **Byte Size:** 16 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Uint32": |
   Represents a single 32-bit unsigned integer component. This format is useful for vertex attributes that require high precision and storage, such as indices.
   
@@ -2837,7 +3180,7 @@
   **Components:** 1
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Uint32x2": |
   Represents two 32-bit unsigned integer components. This format is useful for vertex attributes that require high precision and storage, such as texture coordinates.
   
@@ -2845,7 +3188,7 @@
   **Components:** 2
   **Byte Size:** 8 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Uint32x3": |
   Represents three 32-bit unsigned integer components. This format is useful for vertex attributes that require high precision and storage, such as texture coordinates.
   
@@ -2853,7 +3196,7 @@
   **Components:** 3
   **Byte Size:** 12 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Uint32x4": |
   Represents four 32-bit unsigned integer components. This format is useful for vertex attributes that require high precision and storage, such as color values.
   
@@ -2861,7 +3204,7 @@
   **Components:** 4
   **Byte Size:** 16 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint32": |
   Represents a single 32-bit signed integer component. This format is useful for vertex attributes that require high precision and storage, such as indices.
   
@@ -2869,7 +3212,7 @@
   **Components:** 1
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint32x2": |
   Represents two 32-bit signed integer components. This format is useful for vertex attributes that require high precision and storage, such as texture coordinates.
   
@@ -2877,7 +3220,7 @@
   **Components:** 2
   **Byte Size:** 8 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint32x3": |
   Represents three 32-bit signed integer components. This format is useful for vertex attributes that require high precision and storage, such as texture coordinates.
   
@@ -2885,7 +3228,7 @@
   **Components:** 3
   **Byte Size:** 12 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Sint32x4": |
   Represents four 32-bit signed integer components. This format is useful for vertex attributes that require high precision and storage, such as color values.
   
@@ -2893,7 +3236,7 @@
   **Components:** 4
   **Byte Size:** 16 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Unorm1010102": |
   Represents a 10-10-10-2 unsigned normalized component. This format is useful for vertex attributes that require specific precision and storage, such as color values.
   
@@ -2901,7 +3244,7 @@
   **Components:** 4
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 "GPUVertexFormat#Unorm8x4BGRA": |
   Represents a 8-bit unsigned normalized component in BGRA order. This format is useful for vertex attributes that require specific precision and storage, such as color values.
   
@@ -2909,25 +3252,558 @@
   **Components:** 4
   **Byte Size:** 4 bytes
   
-  @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+  [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+"GPUDeviceDescriptor#onUncapturedError": |
+  Describes the `onUncapturedError` member of `GPUDeviceDescriptor`.
 "GPUUncapturedErrorCallback": |
-   A functional interface representing a callback that handles uncaptured GPU errors.
-   
-   This callback is designed to process errors surfaced from WebGPU operations that are not explicitly handled by user code, such as errors triggered by the `uncapturederror` event.
-   
-   The purpose of this callback is to enable developers to log, debug, or otherwise respond to errors in a structured manner, improving the development experience and debugging process.
-   
-   Error details are provided via the [GPUError] parameter, which contains information about the specific error, including a human-readable message.
-   
-   **Usage Context:**
-   - Typically set as part of error handling mechanisms in WebGPU-based applications.
-   - Provides an opportunity to capture and respond to errors globally with [GPUDeviceDescriptor], outside of scoped error-handling like `popErrorScope`.
+  Represents `GPUUncapturedErrorCallback` in the WebGPU API, as defined by the WebGPU specification.
 "GPUUncapturedErrorCallback#onUncapturedError(error)": |
-   Handles uncaptured GPU errors by providing a callback mechanism to process errors surfaced
-   from WebGPU operations that are not explicitly handled in user code.
-   
-   The callback is triggered for errors such as those raised by the `uncapturederror` event.
-   Developers can use this method to log, debug, or respond to errors in a structured way.
-   
-   @param error The GPU error instance containing details about the encountered error,
-                including a human-readable message for debugging and logging purposes.
+  Describes the `onUncapturedError` member of `GPUUncapturedErrorCallback`.
+"GPUAddressMode#	ClampToEdge": |
+  Texture coordinates are clamped between 0.0 and 1.0, inclusive.
+"GPUAddressMode#	Repeat": |
+  Texture coordinates wrap to the other side of the texture.
+"GPUAddressMode#	MirrorRepeat": |
+  Texture coordinates wrap to the other side of the texture, but the texture is flipped when the integer part of the coordinate is odd.
+"GPUBlendFactor#	Zero": |
+  (0, 0, 0, 0)
+"GPUBlendFactor#	One": |
+  (1, 1, 1, 1)
+"GPUBlendFactor#	Src": |
+  (Rsrc, Gsrc, Bsrc, Asrc)
+"GPUBlendFactor#	OneMinusSrc": |
+  (1 - Rsrc, 1 - Gsrc, 1 - Bsrc, 1 - Asrc)
+"GPUBlendFactor#	SrcAlpha": |
+  (Asrc, Asrc, Asrc, Asrc)
+"GPUBlendFactor#	OneMinusSrcAlpha": |
+  (1 - Asrc, 1 - Asrc, 1 - Asrc, 1 - Asrc)
+"GPUBlendFactor#	Dst": |
+  (Rdst, Gdst, Bdst, Adst)
+"GPUBlendFactor#	OneMinusDst": |
+  (1 - Rdst, 1 - Gdst, 1 - Bdst, 1 - Adst)
+"GPUBlendFactor#	DstAlpha": |
+  (Adst, Adst, Adst, Adst)
+"GPUBlendFactor#	OneMinusDstAlpha": |
+  (1 - Adst, 1 - Adst, 1 - Adst, 1 - Adst)
+"GPUBlendFactor#	SrcAlphaSaturated": |
+  (min(Asrc, 1 - Adst), min(Asrc, 1 - Adst), min(Asrc, 1 - Adst), 1)
+"GPUBlendFactor#	Constant": |
+  (Rconst, Gconst, Bconst, Aconst)
+"GPUBlendFactor#	OneMinusConstant": |
+  (1 - Rconst, 1 - Gconst, 1 - Bconst, 1 - Aconst)
+"GPUBlendFactor#	Src1": |
+  (Rsrc1, Gsrc1, Bsrc1, Asrc1); dual-source-blending
+"GPUBlendFactor#	OneMinusSrc1": |
+  (1 - Rsrc1, 1 - Gsrc1, 1 - Bsrc1, 1 - Asrc1)
+"GPUBlendFactor#	Src1Alpha": |
+  (Asrc1, Asrc1, Asrc1, Asrc1)
+"GPUBlendFactor#	OneMinusSrc1Alpha": |
+  (1 - Asrc1, 1 - Asrc1, 1 - Asrc1, 1 - Asrc1)
+"GPUBlendOperation#	Add": |
+  RGBAsrc × RGBAsrcFactor + RGBAdst × RGBAdstFactor
+"GPUBlendOperation#	Subtract": |
+  RGBAsrc × RGBAsrcFactor - RGBAdst × RGBAdstFactor
+"GPUBlendOperation#	ReverseSubtract": |
+  RGBAdst × RGBAdstFactor - RGBAsrc × RGBAsrcFactor
+"GPUBlendOperation#	Min": |
+  min(RGBAsrc, RGBAdst)
+"GPUBlendOperation#	Max": |
+  max(RGBAsrc, RGBAdst)
+"GPUBufferBindingType#	BindingNotUsed": |
+  The `BindingNotUsed` value of `GPUBufferBindingType`.
+"GPUBufferBindingType#	Uniform": |
+  The binding member of a GPUBindGroupLayoutEntry is determined by which member of the GPUBindGroupLayoutEntry is defined: buffer, sampler, texture, storageTexture, or externalTexture. Only one may be defined for any given GPUBindGroupLayoutEntry. Each member has an associated GPUBindingResource type and each binding type has an associated internal usage, given by this table:
+"GPUBufferBindingType#	Storage": |
+  The binding member of a GPUBindGroupLayoutEntry is determined by which member of the GPUBindGroupLayoutEntry is defined: buffer, sampler, texture, storageTexture, or externalTexture. Only one may be defined for any given GPUBindGroupLayoutEntry. Each member has an associated GPUBindingResource type and each binding type has an associated internal usage, given by this table:
+"GPUBufferBindingType#	ReadOnlyStorage": |
+  The binding member of a GPUBindGroupLayoutEntry is determined by which member of the GPUBindGroupLayoutEntry is defined: buffer, sampler, texture, storageTexture, or externalTexture. Only one may be defined for any given GPUBindGroupLayoutEntry. Each member has an associated GPUBindingResource type and each binding type has an associated internal usage, given by this table:
+"GPUBufferMapState#	Unmapped": |
+  The buffer is not mapped for use by this.getMappedRange().
+"GPUBufferMapState#	Pending": |
+  A mapping of the buffer has been requested, but is pending. It may succeed, or fail validation in mapAsync().
+"GPUBufferMapState#	Mapped": |
+  The buffer is mapped and this.getMappedRange() may be used.
+"GPUCompareFunction#	Never": |
+  Comparison tests never pass.
+"GPUCompareFunction#	Less": |
+  A provided value passes the comparison test if it is less than the sampled value.
+"GPUCompareFunction#	Equal": |
+  A provided value passes the comparison test if it is equal to the sampled value.
+"GPUCompareFunction#	LessEqual": |
+  A provided value passes the comparison test if it is less than or equal to the sampled value.
+"GPUCompareFunction#	Greater": |
+  A provided value passes the comparison test if it is greater than the sampled value.
+"GPUCompareFunction#	NotEqual": |
+  A provided value passes the comparison test if it is not equal to the sampled value.
+"GPUCompareFunction#	GreaterEqual": |
+  A provided value passes the comparison test if it is greater than or equal to the sampled value.
+"GPUCompareFunction#	Always": |
+  Comparison tests always pass.
+"GPUCompilationMessageType#	Error": |
+  Shader module compilation hints are optional, additional information indicating how a given GPUShaderModule entry point is intended to be used in the future. For some implementations this information may aid in compiling the shader module earlier, potentially increasing performance.
+"GPUCompilationMessageType#	Warning": |
+  Shader module compilation hints are optional, additional information indicating how a given GPUShaderModule entry point is intended to be used in the future. For some implementations this information may aid in compiling the shader module earlier, potentially increasing performance.
+"GPUCompilationMessageType#	Info": |
+  Shader module compilation hints are optional, additional information indicating how a given GPUShaderModule entry point is intended to be used in the future. For some implementations this information may aid in compiling the shader module earlier, potentially increasing performance.
+"GPUCullMode#	None": |
+  No polygons are discarded.
+"GPUCullMode#	Front": |
+  Front-facing polygons are discarded.
+"GPUCullMode#	Back": |
+  Back-facing polygons are discarded.
+"GPUDeviceLostReason#	Unknown": |
+  After a device is lost, errors are no longer surfaced, where possible. After this point, implementations do not need to run validation or error tracking:
+"GPUDeviceLostReason#	Destroyed": |
+  After a device is lost, errors are no longer surfaced, where possible. After this point, implementations do not need to run validation or error tracking:
+"GPUDeviceLostReason#	CallbackCancelled": |
+  The `CallbackCancelled` value of `GPUDeviceLostReason`.
+"GPUDeviceLostReason#	FailedCreation": |
+  The `FailedCreation` value of `GPUDeviceLostReason`.
+"GPUErrorFilter#	Validation": |
+  Indicates that the error scope will catch a GPUValidationError.
+"GPUErrorFilter#	OutOfMemory": |
+  Indicates that the error scope will catch a GPUOutOfMemoryError.
+"GPUErrorFilter#	Internal": |
+  Indicates that the error scope will catch a GPUInternalError.
+"GPUFeatureName#	CoreFeaturesAndLimits": |
+  The `CoreFeaturesAndLimits` value of `GPUFeatureName`.
+"GPUFeatureName#	DepthClipControl": |
+  The `DepthClipControl` value of `GPUFeatureName`.
+"GPUFeatureName#	Depth32FloatStencil8": |
+  The `Depth32FloatStencil8` value of `GPUFeatureName`.
+"GPUFeatureName#	TextureCompressionBC": |
+  The `TextureCompressionBC` value of `GPUFeatureName`.
+"GPUFeatureName#	TextureCompressionBCSliced3D": |
+  The `TextureCompressionBCSliced3D` value of `GPUFeatureName`.
+"GPUFeatureName#	TextureCompressionETC2": |
+  The `TextureCompressionETC2` value of `GPUFeatureName`.
+"GPUFeatureName#	TextureCompressionASTC": |
+  The `TextureCompressionASTC` value of `GPUFeatureName`.
+"GPUFeatureName#	TextureCompressionASTCSliced3D": |
+  The `TextureCompressionASTCSliced3D` value of `GPUFeatureName`.
+"GPUFeatureName#	TimestampQuery": |
+  The `TimestampQuery` value of `GPUFeatureName`.
+"GPUFeatureName#	IndirectFirstInstance": |
+  The `IndirectFirstInstance` value of `GPUFeatureName`.
+"GPUFeatureName#	ShaderF16": |
+  The `ShaderF16` value of `GPUFeatureName`.
+"GPUFeatureName#	RG11B10UfloatRenderable": |
+  The `RG11B10UfloatRenderable` value of `GPUFeatureName`.
+"GPUFeatureName#	BGRA8UnormStorage": |
+  The `BGRA8UnormStorage` value of `GPUFeatureName`.
+"GPUFeatureName#	Float32Filterable": |
+  The `Float32Filterable` value of `GPUFeatureName`.
+"GPUFeatureName#	Float32Blendable": |
+  The `Float32Blendable` value of `GPUFeatureName`.
+"GPUFeatureName#	ClipDistances": |
+  The `ClipDistances` value of `GPUFeatureName`.
+"GPUFeatureName#	DualSourceBlending": |
+  The `DualSourceBlending` value of `GPUFeatureName`.
+"GPUFeatureName#	Subgroups": |
+  The `Subgroups` value of `GPUFeatureName`.
+"GPUFeatureName#	TextureFormatsTier1": |
+  The `TextureFormatsTier1` value of `GPUFeatureName`.
+"GPUFeatureName#	TextureFormatsTier2": |
+  The `TextureFormatsTier2` value of `GPUFeatureName`.
+"GPUFeatureName#	PrimitiveIndex": |
+  The `PrimitiveIndex` value of `GPUFeatureName`.
+"GPUFeatureName#	TextureComponentSwizzle": |
+  The `TextureComponentSwizzle` value of `GPUFeatureName`.
+"GPUFilterMode#	Nearest": |
+  Return the value of the texel nearest to the texture coordinates.
+"GPUFilterMode#	Linear": |
+  Select two texels in each dimension and return a linear interpolation between their values.
+"GPUFrontFace#	CCW": |
+  Polygons with vertices whose framebuffer coordinates are given in counter-clockwise order are considered front-facing.
+"GPUFrontFace#	CW": |
+  Polygons with vertices whose framebuffer coordinates are given in clockwise order are considered front-facing.
+"GPUIndexFormat#	Uint16": |
+  2; 0xFFFF
+"GPUIndexFormat#	Uint32": |
+  4; 0xFFFFFFFF
+"GPULoadOp#	Load": |
+  Loads the existing value for this attachment into the render pass.
+"GPULoadOp#	Clear": |
+  Loads a clear value for this attachment into the render pass. Note: On some GPU hardware (primarily mobile), "clear" is significantly cheaper because it avoids loading data from main memory into tile-local memory. On other GPU hardware, there isn’t a significant difference. As a result, it is recommended to use "clear" rather than "load" in cases where the initial value doesn’t matter (e.g. the render target will be cleared using a skybox).
+"GPUMipmapFilterMode#	Nearest": |
+  Note: See Texel Filtering in the Vulkan 1.3 spec for an example of how samplers may determine which texels are sampled from for the various filtering modes.
+"GPUMipmapFilterMode#	Linear": |
+  Note: See Texel Filtering in the Vulkan 1.3 spec for an example of how samplers may determine which texels are sampled from for the various filtering modes.
+"GPUPowerPreference#	LowPower": |
+  Indicates a request to prioritize power savings over performance. Note: Generally, content should use this if it is unlikely to be constrained by drawing performance; for example, if it renders only one frame per second, draws only relatively simple geometry with simple shaders, or uses a small HTML canvas element. Developers are encouraged to use this value if their content allows, since it may significantly improve battery life on portable devices.
+"GPUPowerPreference#	HighPerformance": |
+  Indicates a request to prioritize performance over power consumption. Note: By choosing this value, developers should be aware that, for devices created on the resulting adapter, user agents are more likely to force device loss, in order to save power by switching to a lower-power adapter. Developers are encouraged to only specify this value if they believe it is absolutely necessary, since it may significantly decrease battery life on portable devices.
+"GPUPrimitiveTopology#	PointList": |
+  Each vertex defines a point primitive.
+"GPUPrimitiveTopology#	LineList": |
+  Each consecutive pair of two vertices defines a line primitive.
+"GPUPrimitiveTopology#	LineStrip": |
+  Each vertex after the first defines a line primitive between it and the previous vertex.
+"GPUPrimitiveTopology#	TriangleList": |
+  Each consecutive triplet of three vertices defines a triangle primitive.
+"GPUPrimitiveTopology#	TriangleStrip": |
+  Each vertex after the first two defines a triangle primitive between it and the previous two vertices.
+"GPUQueryType#	Occlusion": |
+  GPUQuerySet has the following methods:
+"GPUQueryType#	Timestamp": |
+  GPUQuerySet has the following methods:
+"GPUSamplerBindingType#	BindingNotUsed": |
+  The `BindingNotUsed` value of `GPUSamplerBindingType`.
+"GPUSamplerBindingType#	Filtering": |
+  GPUBufferBindingLayout dictionaries have the following members:
+"GPUSamplerBindingType#	NonFiltering": |
+  GPUBufferBindingLayout dictionaries have the following members:
+"GPUSamplerBindingType#	Comparison": |
+  GPUBufferBindingLayout dictionaries have the following members:
+"GPUStencilOperation#	Keep": |
+  Keep the current stencil value.
+"GPUStencilOperation#	Zero": |
+  Set the stencil value to 0.
+"GPUStencilOperation#	Replace": |
+  Set the stencil value to [[stencilReference]].
+"GPUStencilOperation#	Invert": |
+  Bitwise-invert the current stencil value.
+"GPUStencilOperation#	IncrementClamp": |
+  Increments the current stencil value, clamping to the maximum representable value of the depthStencilAttachment’s stencil aspect.
+"GPUStencilOperation#	DecrementClamp": |
+  Decrement the current stencil value, clamping to 0.
+"GPUStencilOperation#	IncrementWrap": |
+  Increments the current stencil value, wrapping to zero if the value exceeds the maximum representable value of the depthStencilAttachment’s stencil aspect.
+"GPUStencilOperation#	DecrementWrap": |
+  Decrement the current stencil value, wrapping to the maximum representable value of the depthStencilAttachment’s stencil aspect if the value goes below 0.
+"GPUStorageTextureAccess#	BindingNotUsed": |
+  The `BindingNotUsed` value of `GPUStorageTextureAccess`.
+"GPUStorageTextureAccess#	WriteOnly": |
+  GPUTextureBindingLayout dictionaries have the following members:
+"GPUStorageTextureAccess#	ReadOnly": |
+  GPUTextureBindingLayout dictionaries have the following members:
+"GPUStorageTextureAccess#	ReadWrite": |
+  GPUTextureBindingLayout dictionaries have the following members:
+"GPUStoreOp#	Store": |
+  Stores the resulting value of the render pass for this attachment.
+"GPUStoreOp#	Discard": |
+  Discards the resulting value of the render pass for this attachment. Note: Discarded attachments behave as if they are cleared to zero, but implementations are not required to perform a clear at the end of the render pass. Implementations which do not explicitly clear discarded attachments at the end of a pass must lazily clear them prior to the reading the attachment contents, which occurs via sampling, copies, attaching to a later render pass with "load", displaying or reading back the canvas (get a copy of the image contents of a context), etc.
+"GPUTextureAspect#	All": |
+  All available aspects of the texture format will be accessible to the texture view. For color formats the color aspect will be accessible. For combined depth-stencil formats both the depth and stencil aspects will be accessible. Depth-or-stencil formats with a single aspect will only make that aspect accessible. The set of aspects is [color, depth, stencil].
+"GPUTextureAspect#	StencilOnly": |
+  Only the stencil aspect of a depth-or-stencil format format will be accessible to the texture view. The set of aspects is [stencil].
+"GPUTextureAspect#	DepthOnly": |
+  Only the depth aspect of a depth-or-stencil format format will be accessible to the texture view. The set of aspects is [depth].
+"GPUTextureDimension#	OneD": |
+  Specifies a texture that has one dimension, width. "1d" textures cannot have mipmaps, be multisampled, use compressed or depth/stencil formats, or be used as a render target.
+"GPUTextureDimension#	TwoD": |
+  Specifies a texture that has a width and height, and may have layers.
+"GPUTextureDimension#	ThreeD": |
+  Specifies a texture that has a width, height, and depth. "3d" textures cannot be multisampled, and their format must support 3d textures (all plain color formats and some packed/compressed formats).
+"GPUTextureFormat#	R8Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	R8Snorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	R8Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	R8Sint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	R16Unorm": |
+  The `R16Unorm` value of `GPUTextureFormat`.
+"GPUTextureFormat#	R16Snorm": |
+  The `R16Snorm` value of `GPUTextureFormat`.
+"GPUTextureFormat#	R16Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	R16Sint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	R16Float": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG8Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG8Snorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG8Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG8Sint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	R32Float": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	R32Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	R32Sint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG16Unorm": |
+  The `RG16Unorm` value of `GPUTextureFormat`.
+"GPUTextureFormat#	RG16Snorm": |
+  The `RG16Snorm` value of `GPUTextureFormat`.
+"GPUTextureFormat#	RG16Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG16Sint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG16Float": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA8Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA8UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA8Snorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA8Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA8Sint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BGRA8Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BGRA8UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGB10A2Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGB10A2Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG11B10Ufloat": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGB9E5Ufloat": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG32Float": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG32Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RG32Sint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA16Unorm": |
+  The `RGBA16Unorm` value of `GPUTextureFormat`.
+"GPUTextureFormat#	RGBA16Snorm": |
+  The `RGBA16Snorm` value of `GPUTextureFormat`.
+"GPUTextureFormat#	RGBA16Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA16Sint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA16Float": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA32Float": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA32Uint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	RGBA32Sint": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	Stencil8": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	Depth16Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	Depth24Plus": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	Depth24PlusStencil8": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	Depth32Float": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	Depth32FloatStencil8": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC1RGBAUnorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC1RGBAUnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC2RGBAUnorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC2RGBAUnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC3RGBAUnorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC3RGBAUnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC4RUnorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC4RSnorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC5RGUnorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC5RGSnorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC6HRGBUfloat": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC6HRGBFloat": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC7RGBAUnorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	BC7RGBAUnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ETC2RGB8Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ETC2RGB8UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ETC2RGB8A1Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ETC2RGB8A1UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ETC2RGBA8Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ETC2RGBA8UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	EACR11Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	EACR11Snorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	EACRG11Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	EACRG11Snorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC4x4Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC4x4UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC5x4Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC5x4UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC5x5Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC5x5UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC6x5Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC6x5UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC6x6Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC6x6UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC8x5Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC8x5UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC8x6Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC8x6UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC8x8Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC8x8UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC10x5Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC10x5UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC10x6Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC10x6UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC10x8Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC10x8UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC10x10Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC10x10UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC12x10Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC12x10UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC12x12Unorm": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureFormat#	ASTC12x12UnormSrgb": |
+  Note: The texel block memory cost of a GPUTextureFormat is the number of bytes needed to store one texel block. It is not fully defined for all formats. This value is informative and non-normative.
+"GPUTextureSampleType#	BindingNotUsed": |
+  The `BindingNotUsed` value of `GPUTextureSampleType`.
+"GPUTextureSampleType#	Float": |
+  GPUSamplerBindingLayout dictionaries have the following members:
+"GPUTextureSampleType#	UnfilterableFloat": |
+  GPUSamplerBindingLayout dictionaries have the following members:
+"GPUTextureSampleType#	Depth": |
+  GPUSamplerBindingLayout dictionaries have the following members:
+"GPUTextureSampleType#	Sint": |
+  GPUSamplerBindingLayout dictionaries have the following members:
+"GPUTextureSampleType#	Uint": |
+  GPUSamplerBindingLayout dictionaries have the following members:
+"GPUTextureViewDimension#	OneD": |
+  The texture is viewed as a 1-dimensional image. Corresponding WGSL types: texture_1d texture_storage_1d
+"GPUTextureViewDimension#	TwoD": |
+  The texture is viewed as a single 2-dimensional image. Corresponding WGSL types: texture_2d texture_storage_2d texture_multisampled_2d texture_depth_2d texture_depth_multisampled_2d
+"GPUTextureViewDimension#	TwoDArray": |
+  The texture view is viewed as an array of 2-dimensional images. Corresponding WGSL types: texture_2d_array texture_storage_2d_array texture_depth_2d_array
+"GPUTextureViewDimension#	Cube": |
+  The texture is viewed as a cubemap. The view has 6 array layers, each corresponding to a face of the cube in the order [+X, -X, +Y, -Y, +Z, -Z] and the following orientations: Cubemap faces. The +U/+V axes indicate the individual faces' texture coordinates, and thus the texel copy memory layout of each face. Note: When viewed from the inside, this results in a left-handed coordinate system where +X is right, +Y is up, and +Z is forward. Sampling is done seamlessly across the faces of the cubemap. Corresponding WGSL types: texture_cube texture_depth_cube
+"GPUTextureViewDimension#	CubeArray": |
+  The texture is viewed as a packed array of n cubemaps, each with 6 array layers behaving like one "cube" view, for 6n array layers in total. Corresponding WGSL types: texture_cube_array texture_depth_cube_array
+"GPUTextureViewDimension#	ThreeD": |
+  The texture is viewed as a 3-dimensional image. Corresponding WGSL types: texture_3d texture_storage_3d
+"GPUVertexFormat#	Uint8": |
+  unsigned int; 1; 1; u32
+"GPUVertexFormat#	Uint8x2": |
+  unsigned int; 2; 2; vec2<u32>
+"GPUVertexFormat#	Uint8x4": |
+  unsigned int; 4; 4; vec4<u32>
+"GPUVertexFormat#	Sint8": |
+  signed int; 1; 1; i32
+"GPUVertexFormat#	Sint8x2": |
+  signed int; 2; 2; vec2<i32>
+"GPUVertexFormat#	Sint8x4": |
+  signed int; 4; 4; vec4<i32>
+"GPUVertexFormat#	Unorm8": |
+  unsigned normalized; 1; 1; f32
+"GPUVertexFormat#	Unorm8x2": |
+  unsigned normalized; 2; 2; vec2<f32>
+"GPUVertexFormat#	Unorm8x4": |
+  unsigned normalized; 4; 4; vec4<f32>
+"GPUVertexFormat#	Snorm8": |
+  signed normalized; 1; 1; f32
+"GPUVertexFormat#	Snorm8x2": |
+  signed normalized; 2; 2; vec2<f32>
+"GPUVertexFormat#	Snorm8x4": |
+  signed normalized; 4; 4; vec4<f32>
+"GPUVertexFormat#	Uint16": |
+  unsigned int; 1; 2; u32
+"GPUVertexFormat#	Uint16x2": |
+  unsigned int; 2; 4; vec2<u32>
+"GPUVertexFormat#	Uint16x4": |
+  unsigned int; 4; 8; vec4<u32>
+"GPUVertexFormat#	Sint16": |
+  signed int; 1; 2; i32
+"GPUVertexFormat#	Sint16x2": |
+  signed int; 2; 4; vec2<i32>
+"GPUVertexFormat#	Sint16x4": |
+  signed int; 4; 8; vec4<i32>
+"GPUVertexFormat#	Unorm16": |
+  unsigned normalized; 1; 2; f32
+"GPUVertexFormat#	Unorm16x2": |
+  unsigned normalized; 2; 4; vec2<f32>
+"GPUVertexFormat#	Unorm16x4": |
+  unsigned normalized; 4; 8; vec4<f32>
+"GPUVertexFormat#	Snorm16": |
+  signed normalized; 1; 2; f32
+"GPUVertexFormat#	Snorm16x2": |
+  signed normalized; 2; 4; vec2<f32>
+"GPUVertexFormat#	Snorm16x4": |
+  signed normalized; 4; 8; vec4<f32>
+"GPUVertexFormat#	Float16": |
+  float; 1; 2; f32
+"GPUVertexFormat#	Float16x2": |
+  float; 2; 4; vec2<f16>
+"GPUVertexFormat#	Float16x4": |
+  float; 4; 8; vec4<f16>
+"GPUVertexFormat#	Float32": |
+  float; 1; 4; f32
+"GPUVertexFormat#	Float32x2": |
+  float; 2; 8; vec2<f32>
+"GPUVertexFormat#	Float32x3": |
+  float; 3; 12; vec3<f32>
+"GPUVertexFormat#	Float32x4": |
+  float; 4; 16; vec4<f32>
+"GPUVertexFormat#	Uint32": |
+  unsigned int; 1; 4; u32
+"GPUVertexFormat#	Uint32x2": |
+  unsigned int; 2; 8; vec2<u32>
+"GPUVertexFormat#	Uint32x3": |
+  unsigned int; 3; 12; vec3<u32>
+"GPUVertexFormat#	Uint32x4": |
+  unsigned int; 4; 16; vec4<u32>
+"GPUVertexFormat#	Sint32": |
+  signed int; 1; 4; i32
+"GPUVertexFormat#	Sint32x2": |
+  signed int; 2; 8; vec2<i32>
+"GPUVertexFormat#	Sint32x3": |
+  signed int; 3; 12; vec3<i32>
+"GPUVertexFormat#	Sint32x4": |
+  signed int; 4; 16; vec4<i32>
+"GPUVertexFormat#	Unorm1010102": |
+  unsigned normalized; 4; 4; vec4<f32>
+"GPUVertexFormat#	Unorm8x4BGRA": |
+  unsigned normalized; 4; 4; vec4<f32>
+"GPUVertexStepMode#	Vertex": |
+  The address is advanced by arrayStride for each vertex, and reset between instances.
+"GPUVertexStepMode#	Instance": |
+  The address is advanced by arrayStride for each instance.

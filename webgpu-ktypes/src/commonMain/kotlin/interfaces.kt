@@ -9,18 +9,20 @@ package io.ygdrasil.webgpu
  * - [GPUBufferBinding]
  * - [GPUExternalTexture]
  * 
- * This interface is used to specify the type of resource that can be bound in a bind group. 
- * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#typedefdef-gpubindingresource).
+ * This interface is used to specify the type of resource that can be bound in a bind group. For more details, refer to the
+ * [WebGPU specification on GPUBindingResource](https://www.w3.org/TR/webgpu/#typedefdef-gpubindingresource).
  * 
  */
 sealed interface GPUBindingResource
 /**
- * The `GPUSampler` interface encodes transformations and filtering information that can be used in a shader to interpret texture resource data.
- *   
- * This interface is created via the [GPUDevice.createSampler()] method.
- *  
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpusampler).
+ * /**
+ *  * The `GPUSampler` interface encodes transformations and filtering information that can be used in a shader to interpret texture resource data.
+ *  * 
+ *  * This interface is created via the [GPUDevice.createSampler()] method.
+ *  * 
+ *  * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpusampler).
+ *  */
+ * interface GPUSampler : GPUBindingResource, GPUObjectBase, AutoCloseable
  * 
  */
 interface GPUSampler : GPUBindingResource, GPUObjectBase, AutoCloseable
@@ -39,22 +41,28 @@ interface GPUTextureView : GPUBindingResource, GPUObjectBase, AutoCloseable
 /**
  * The `GPUBufferBinding` interface describes a buffer and an optional range to bind as a resource. This is used in the context of WebGPU to specify how buffers should be bound for shader access.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpubufferbinding).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpubufferbinding).
  * 
  */
 interface GPUBufferBinding : GPUBindingResource {
 	/**
 	 * The `buffer` property specifies the `GPUBuffer` to bind. This buffer will be exposed to shaders as a resource.
 	 * 
+	 * **Type**: [GPUBuffer](https://www.w3.org/TR/webgpu/#gpubuffer)
+	 * 
 	 */
 	val buffer: GPUBuffer
 	/**
 	 * The `offset` property specifies the offset, in bytes, from the beginning of the `buffer` to the start of the range exposed to the shader by the buffer binding. This value defaults to 0 if not specified.
 	 * 
+	 * **Type**: [GPUSize64](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64)
+	 * 
 	 */
 	val offset: GPUSize64
 	/**
 	 * The `size` property specifies the size, in bytes, of the buffer binding. If not provided, it specifies the range starting at `offset` and ending at the end of the `buffer`.
+	 * 
+	 * **Type**: [GPUSize64](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64)
 	 * 
 	 */
 	val size: GPUSize64?
@@ -63,27 +71,35 @@ interface GPUBufferBinding : GPUBindingResource {
 /**
  * Represents a color in the RGBA format, which can be either a sequence of four `Double` values or a [GPUColorDict]. This interface provides access to the red, green, blue, and alpha channel values.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpucolor).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpucolor).
  * 
  */
 interface GPUColor {
 	/**
 	 * The red channel value of the color. This value is a `Double` representing the intensity of the red component in the RGBA color model.
 	 * 
+	 * **Type**: Double
+	 * 
 	 */
 	val r: Double
 	/**
 	 * The green channel value of the color. This value is a `Double` representing the intensity of the green component in the RGBA color model.
+	 * 
+	 * **Type**: Double
 	 * 
 	 */
 	val g: Double
 	/**
 	 * The blue channel value of the color. This value is a `Double` representing the intensity of the blue component in the RGBA color model.
 	 * 
+	 * **Type**: Double
+	 * 
 	 */
 	val b: Double
 	/**
 	 * The alpha channel value of the color. This value is a `Double` representing the opacity of the color, where 0.0 means fully transparent and 1.0 means fully opaque.
+	 * 
+	 * **Type**: Double
 	 * 
 	 */
 	val a: Double
@@ -94,25 +110,31 @@ interface GPUColor {
  * 
  * The `GPUOrigin2D` type is defined as either a sequence of two values or a dictionary with `x` and `y` properties. This allows for flexible initialization and usage in different contexts.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuorigin2d).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuorigin2d).
  * 
  */
 interface GPUOrigin2D {
 	/**
 	 * The x-coordinate of the origin point. This value is of type `GPUIntegerCoordinate`.
 	 * 
+	 * - **Type**: `GPUIntegerCoordinate`
+	 * - **Default Value**: 0
+	 * 
 	 * When using a sequence to represent `GPUOrigin2D`, this property refers to the first item in the sequence. If the sequence does not contain an item, the default value of 0 is used.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuorigin2ddict-x).
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuorigin2ddict-x).
 	 * 
 	 */
 	val x: GPUIntegerCoordinate
 	/**
 	 * The y-coordinate of the origin point. This value is of type `GPUIntegerCoordinate`.
 	 * 
+	 * - **Type**: `GPUIntegerCoordinate`
+	 * - **Default Value**: 0
+	 * 
 	 * When using a sequence to represent `GPUOrigin2D`, this property refers to the second item in the sequence. If the sequence does not contain an item, the default value of 0 is used.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuorigin2ddict-y).
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuorigin2ddict-y).
 	 * 
 	 */
 	val y: GPUIntegerCoordinate
@@ -130,15 +152,27 @@ interface GPUOrigin3D {
 	/**
 	 * The x-coordinate of the 3D origin point. This value is either the first item in a sequence of [GPUIntegerCoordinate] values or the `x` property of a [GPUOrigin3DDict].
 	 * 
+	 * **Type:** [GPUIntegerCoordinate](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinate)
+	 * 
+	 * **Default Value:** 0
+	 * 
 	 */
 	val x: GPUIntegerCoordinate
 	/**
 	 * The y-coordinate of the 3D origin point. This value is either the second item in a sequence of [GPUIntegerCoordinate] values or the `y` property of a [GPUOrigin3DDict].
 	 * 
+	 * **Type:** [GPUIntegerCoordinate](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinate)
+	 * 
+	 * **Default Value:** 0
+	 * 
 	 */
 	val y: GPUIntegerCoordinate
 	/**
 	 * The z-coordinate of the 3D origin point. This value is either the third item in a sequence of [GPUIntegerCoordinate] values or the `z` property of a [GPUOrigin3DDict].
+	 * 
+	 * **Type:** [GPUIntegerCoordinate](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinate)
+	 * 
+	 * **Default Value:** 0
 	 * 
 	 */
 	val z: GPUIntegerCoordinate
@@ -147,7 +181,7 @@ interface GPUOrigin3D {
 /**
  * Represents a 3-dimensional extent, which defines the size of a texture or other GPU resources. This interface can be used to specify dimensions in three axes: width, height, and depth or array layers.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuextent3d).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuextent3d).
  * 
  * @see [GPUExtent3DDict](https://www.w3.org/TR/webgpu/#dictdef-gpuextent3ddict)
  * 
@@ -187,7 +221,7 @@ interface GPUExtent3D {
  * 
  * This interface is fundamental to the WebGPU API as it ensures that all WebGPU objects share a consistent set of properties and behaviors. The `label` property allows developers to assign meaningful names to their WebGPU objects, making it easier to debug and manage them.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuobjectbase).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuobjectbase).
  * 
  */
 interface GPUObjectBase {
@@ -196,7 +230,9 @@ interface GPUObjectBase {
 	 * 
 	 * This property is particularly useful for debugging purposes as it allows developers to assign meaningful names to their WebGPU objects. These labels can then be displayed in error messages, console warnings, and various debugging utilities.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuobjectbase-label).
+	 * **Type**: `String`
+	 * 
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuobjectbase-label).
 	 * 
 	 */
 	var label: String
@@ -216,11 +252,15 @@ interface GPUSupportedLimits {
 	 * The maximum size for a 1D texture dimension. This value represents the largest allowable width
 	 * for a 1D texture in texels.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxTextureDimension1D: UInt
 	/**
 	 * The maximum size for a 2D texture dimension. This value represents the largest allowable width or height
 	 * for a 2D texture in texels.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxTextureDimension2D: UInt
@@ -228,11 +268,15 @@ interface GPUSupportedLimits {
 	 * The maximum size for a 3D texture dimension. This value represents the largest allowable depth
 	 * for a 3D texture in texels.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxTextureDimension3D: UInt
 	/**
 	 * The maximum number of layers in a texture array. This value represents the largest allowable number
 	 * of layers for a texture array.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxTextureArrayLayers: UInt
@@ -240,136 +284,190 @@ interface GPUSupportedLimits {
 	 * The maximum number of bind groups that can be used in a single pipeline. This value represents the largest allowable
 	 * number of bind groups for a pipeline.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxBindGroups: UInt
 	/**
 	 * The maximum number of bind groups plus vertex buffers that can be used in a single pipeline. This value represents the largest allowable
 	 * combined count of bind groups and vertex buffers for a pipeline.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxBindGroupsPlusVertexBuffers: UInt
 	/**
 	 * The maximum number of bindings per bind group. This value represents the largest allowable number of bindings for a single bind group.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxBindingsPerBindGroup: UInt
 	/**
 	 * The maximum number of dynamic uniform buffers per pipeline layout. This value represents the largest allowable number of dynamic uniform buffers for a single pipeline layout.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxDynamicUniformBuffersPerPipelineLayout: UInt
 	/**
 	 * The maximum number of dynamic storage buffers per pipeline layout. This value represents the largest allowable number of dynamic storage buffers for a single pipeline layout.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxDynamicStorageBuffersPerPipelineLayout: UInt
 	/**
 	 * The maximum number of sampled textures per shader stage. This value represents the largest allowable number of sampled textures for a single shader stage.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxSampledTexturesPerShaderStage: UInt
 	/**
 	 * The maximum number of samplers per shader stage. This value represents the largest allowable number of samplers for a single shader stage.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxSamplersPerShaderStage: UInt
 	/**
 	 * The maximum number of storage buffers per shader stage. This value represents the largest allowable number of storage buffers for a single shader stage.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxStorageBuffersPerShaderStage: UInt
 	/**
 	 * The maximum number of storage textures per shader stage. This value represents the largest allowable number of storage textures for a single shader stage.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxStorageTexturesPerShaderStage: UInt
 	/**
 	 * The maximum number of uniform buffers per shader stage. This value represents the largest allowable number of uniform buffers for a single shader stage.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxUniformBuffersPerShaderStage: UInt
 	/**
 	 * The maximum size of a uniform buffer binding. This value represents the largest allowable size for a single uniform buffer binding in bytes.
+	 * 
+	 * **Type:** `ULong`
 	 * 
 	 */
 	val maxUniformBufferBindingSize: ULong
 	/**
 	 * The maximum size of a storage buffer binding. This value represents the largest allowable size for a single storage buffer binding in bytes.
 	 * 
+	 * **Type:** `ULong`
+	 * 
 	 */
 	val maxStorageBufferBindingSize: ULong
 	/**
 	 * The minimum alignment for uniform buffer offsets. This value represents the smallest allowable offset alignment for a uniform buffer in bytes.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val minUniformBufferOffsetAlignment: UInt
 	/**
 	 * The minimum alignment for storage buffer offsets. This value represents the smallest allowable offset alignment for a storage buffer in bytes.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val minStorageBufferOffsetAlignment: UInt
 	/**
 	 * The maximum number of vertex buffers that can be used in a single pipeline. This value represents the largest allowable number of vertex buffers for a pipeline.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxVertexBuffers: UInt
 	/**
 	 * The maximum size of a buffer. This value represents the largest allowable size for a single buffer in bytes.
 	 * 
+	 * **Type:** `ULong`
+	 * 
 	 */
 	val maxBufferSize: ULong
 	/**
 	 * The maximum number of vertex attributes that can be used in a single pipeline. This value represents the largest allowable number of vertex attributes for a pipeline.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxVertexAttributes: UInt
 	/**
 	 * The maximum stride for a vertex buffer array. This value represents the largest allowable stride for a single vertex buffer array in bytes.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxVertexBufferArrayStride: UInt
 	/**
 	 * The maximum number of inter-stage shader variables that can be used in a single pipeline. This value represents the largest allowable number of inter-stage shader variables for a pipeline.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxInterStageShaderVariables: UInt
 	/**
 	 * The maximum number of color attachments that can be used in a single render pass. This value represents the largest allowable number of color attachments for a render pass.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxColorAttachments: UInt
 	/**
 	 * The maximum number of bytes per sample for a color attachment. This value represents the largest allowable number of bytes per sample for a single color attachment.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxColorAttachmentBytesPerSample: UInt
 	/**
 	 * The maximum size of storage for a compute workgroup. This value represents the largest allowable size for a single compute workgroup's storage in bytes.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxComputeWorkgroupStorageSize: UInt
 	/**
 	 * The maximum number of compute invocations per workgroup. This value represents the largest allowable number of compute invocations for a single workgroup.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxComputeInvocationsPerWorkgroup: UInt
 	/**
 	 * The maximum size for the X dimension of a compute workgroup. This value represents the largest allowable size for the X dimension of a single compute workgroup.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxComputeWorkgroupSizeX: UInt
 	/**
 	 * The maximum size for the Y dimension of a compute workgroup. This value represents the largest allowable size for the Y dimension of a single compute workgroup.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxComputeWorkgroupSizeY: UInt
 	/**
 	 * The maximum size for the Z dimension of a compute workgroup. This value represents the largest allowable size for the Z dimension of a single compute workgroup.
 	 * 
+	 * **Type:** `UInt`
+	 * 
 	 */
 	val maxComputeWorkgroupSizeZ: UInt
 	/**
 	 * The maximum number of compute workgroups per dimension. This value represents the largest allowable number of compute workgroups for a single dimension.
+	 * 
+	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxComputeWorkgroupsPerDimension: UInt
@@ -426,7 +524,7 @@ interface GPUAdapterInfo {
  * 
  * To obtain a `GPUAdapter`, use the `requestAdapter()` method provided by the `GPU` object. The `GPUAdapter` provides read-only access to its features, limits, and information about the adapter.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuadapter).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuadapter).
  * 
  */
 interface GPUAdapter : AutoCloseable {
@@ -473,6 +571,8 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 	/**
 	 * Represents the supported features of the GPU device.
 	 * 
+	 * **Type:** [GPUSupportedFeatures]
+	 * 
 	 * **See also:**
 	 * - [WebGPU Specification: GPUSupportedFeatures](https://www.w3.org/TR/webgpu/#gpusupportedfeatures)
 	 * 
@@ -480,6 +580,8 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 	val features: GPUSupportedFeatures
 	/**
 	 * Represents the supported limits of the GPU device.
+	 * 
+	 * **Type:** [GPUSupportedLimits]
 	 * 
 	 * **See also:**
 	 * - [WebGPU Specification: GPUSupportedLimits](https://www.w3.org/TR/webgpu/#gpusupportedlimits)
@@ -489,6 +591,8 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 	/**
 	 * Provides information about the GPU adapter associated with this device.
 	 * 
+	 * **Type:** [GPUAdapterInfo]
+	 * 
 	 * **See also:**
 	 * - [WebGPU Specification: GPUAdapterInfo](https://www.w3.org/TR/webgpu/#gpuadapterinfo)
 	 * 
@@ -496,6 +600,8 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 	val adapterInfo: GPUAdapterInfo
 	/**
 	 * Represents the command queue associated with this device.
+	 * 
+	 * **Type:** [GPUQueue]
 	 * 
 	 * **See also:**
 	 * - [WebGPU Specification: GPUQueue](https://www.w3.org/TR/webgpu/#gpuqueue)
@@ -719,15 +825,21 @@ interface GPUBuffer : GPUObjectBase, AutoCloseable {
 	/**
 	 * The `size` property returns the size of the buffer in bytes. This value is read-only and represents the total allocated memory for this buffer.
 	 * 
+	 * **Type:** [GPUSize64Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64out)
+	 * 
 	 */
 	val size: GPUSize64Out
 	/**
 	 * The `usage` property specifies how the buffer can be used. This value is read-only and represents a combination of flags indicating the allowed operations on this buffer.
 	 * 
+	 * **Type:** [GPUBufferUsageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpuflagsconstant)
+	 * 
 	 */
 	val usage: Set<GPUBufferUsage>
 	/**
 	 * The `mapState` property indicates the current mapping state of the buffer. This value is read-only and can be one of the following: `unmapped`, `pending`, or `mapped`.
+	 * 
+	 * **Type:** [GPUBufferMapState](https://www.w3.org/TR/webgpu/#enumdef-gpubuffermapstate)
 	 * 
 	 */
 	val mapState: GPUBufferMapState
@@ -765,47 +877,63 @@ interface GPUBuffer : GPUObjectBase, AutoCloseable {
  * Represents a texture in the WebGPU API. A texture is composed of 1D, 2D, or 3D arrays of data that can contain multiple values per element to represent things like colors.
  * Textures can be read and written in various ways depending on their usage flags. They are often stored in GPU memory with a layout optimized for multidimensional access.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#texture-interface).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#texture-interface).
  * 
  */
 interface GPUTexture : GPUObjectBase, AutoCloseable {
 	/**
 	 * Represents the width of the texture in texels.
 	 * 
+	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
+	 * 
 	 */
 	val width: GPUIntegerCoordinateOut
 	/**
 	 * Represents the height of the texture in texels.
+	 * 
+	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
 	 * 
 	 */
 	val height: GPUIntegerCoordinateOut
 	/**
 	 * Represents the depth of the texture in texels for 3D textures or the number of array layers for 2D array textures.
 	 * 
+	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
+	 * 
 	 */
 	val depthOrArrayLayers: GPUIntegerCoordinateOut
 	/**
 	 * Represents the number of mipmap levels in the texture.
+	 * 
+	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
 	 * 
 	 */
 	val mipLevelCount: GPUIntegerCoordinateOut
 	/**
 	 * Represents the number of samples per pixel in the texture.
 	 * 
+	 * **Type:** [GPUSize32Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32out)
+	 * 
 	 */
 	val sampleCount: GPUSize32Out
 	/**
 	 * Specifies the dimension of the texture (1D, 2D, or 3D).
+	 * 
+	 * **Type:** [GPUTextureDimension](https://www.w3.org/TR/webgpu/#enumdef-gputexturedimension)
 	 * 
 	 */
 	val dimension: GPUTextureDimension
 	/**
 	 * Specifies the format of the texture data.
 	 * 
+	 * **Type:** [GPUTextureFormat](https://www.w3.org/TR/webgpu/#enumdef-gputextureformat)
+	 * 
 	 */
 	val format: GPUTextureFormat
 	/**
 	 * Specifies the usage flags for the texture, indicating how it can be used (e.g., as a render target, sampler, etc.).
+	 * 
+	 * **Type:** [GPUTextureUsageFlags](https://www.w3.org/TR/webgpu/#namespacedef-gputextureusage)
 	 * 
 	 */
 	val usage: Set<GPUTextureUsage>
@@ -937,14 +1065,16 @@ interface GPUCompilationMessage {
 /**
  * Represents the compilation information for a GPU shader module. This interface provides access to messages generated during the compilation process, which can be useful for debugging and optimization.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/).
  * 
  */
 interface GPUCompilationInfo {
 	/**
 	 * A list of [GPUCompilationMessage] objects that contain detailed information about the compilation process. These messages can include warnings and errors that occurred during the compilation of a shader module.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpucompilationinfo).
+	 * **Type**: `List<[GPUCompilationMessage]>`
+	 * 
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpucompilationinfo).
 	 * 
 	 */
 	val messages: List<GPUCompilationMessage>
@@ -1039,7 +1169,7 @@ interface GPUCommandsMixin
  * 
  * This interface includes methods for beginning render and compute passes, copying data between buffers and textures, clearing buffers, resolving query sets, and finishing command encoding.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#command-encoder).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#command-encoder).
  * 
  * **Included Interfaces:**
  * - `GPUObjectBase`: Provides base functionality for GPU objects.
@@ -1185,7 +1315,7 @@ interface GPUCommandEncoder : GPUObjectBase, GPUCommandsMixin, GPUDebugCommandsM
  * 
  * It includes device timeline properties for managing bind groups and dynamic offsets, which are essential for configuring the rendering pipeline in WebGPU.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubindingcommandsmixin).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubindingcommandsmixin).
  * 
  */
 interface GPUBindingCommandsMixin {
@@ -1303,7 +1433,7 @@ interface GPUComputePassEncoder : GPUObjectBase, GPUCommandsMixin, GPUDebugComma
  * 
  * A render pass encoder is created by a [GPUCommandEncoder] and is used to record commands that will be executed on the GPU. The `GPURenderPassEncoder` interface includes methods for setting viewport, scissor rectangle, blend constant, stencil reference, beginning and ending occlusion queries, executing render bundles, and ending the render pass.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpurenderpassencoder).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpurenderpassencoder).
  * 
  */
 interface GPURenderPassEncoder : GPUObjectBase, GPUCommandsMixin, GPUDebugCommandsMixin, GPUBindingCommandsMixin, GPURenderCommandsMixin {
@@ -1456,11 +1586,14 @@ interface GPURenderCommandsMixin {
 }
 
 /**
- * Represents a render bundle in the WebGPU API. A `GPURenderBundle` encapsulates a list of GPU commands that can be executed by a [GPURenderPassEncoder](https://www.w3.org/TR/webgpu/#dom-gpurenderpassencoder).
- *   
- * This interface is part of the WebGPU API, which provides a low-level, cross-platform graphics API for the web. For more details, refer to the [official W3C specification](https://www.w3.org/TR/webgpu/#gpurenderbundle).
- *   
- * @see [GPUObjectBase](https://www.w3.org/TR/webgpu/#dom-gpuobjectbase)
+ * /**
+ *  * Represents a render bundle in the WebGPU API. A `GPURenderBundle` encapsulates a list of GPU commands that can be executed by a [GPURenderPassEncoder](https://www.w3.org/TR/webgpu/#dom-gpurenderpassencoder).
+ *  * 
+ *  * This interface is part of the WebGPU API, which provides a low-level, cross-platform graphics API for the web. For more details, refer to the [official W3C specification](https://www.w3.org/TR/webgpu/#gpurenderbundle).
+ *  * 
+ *  * @see [GPUObjectBase](https://www.w3.org/TR/webgpu/#dom-gpuobjectbase)
+ *  */
+ * interface GPURenderBundle : GPUObjectBase
  * 
  */
 interface GPURenderBundle : GPUObjectBase
@@ -1475,7 +1608,7 @@ interface GPURenderBundle : GPUObjectBase
  * - [GPURenderCommandsMixin]: Mixin for render-related commands.
  * - [AutoCloseable]: Ensures that resources are closed properly.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/).
  * 
  */
 interface GPURenderBundleEncoder : GPUObjectBase, GPUCommandsMixin, GPUDebugCommandsMixin, GPUBindingCommandsMixin, GPURenderCommandsMixin, AutoCloseable {
@@ -1500,7 +1633,7 @@ interface GPURenderBundleEncoder : GPUObjectBase, GPUCommandsMixin, GPUDebugComm
  * 
  * This interface inherits from [GPUObjectBase](https://www.w3.org/TR/webgpu/#gpuobjectbase), which provides basic object management functionality.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuqueue).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpuqueue).
  * 
  */
 interface GPUQueue : GPUObjectBase {
@@ -1553,10 +1686,14 @@ interface GPUQuerySet : GPUObjectBase, AutoCloseable {
 	/**
 	 * The type of the queries managed by this `GPUQuerySet`. This property is read-only and specifies the kind of queries that can be performed using this query set.
 	 * 
+	 * **Type:** [GPUQueryType](https://www.w3.org/TR/webgpu/#enumdef-gpuquerytype)
+	 * 
 	 */
 	val type: GPUQueryType
 	/**
 	 * The number of queries managed by this `GPUQuerySet`. This property is read-only and indicates the total count of queries that can be performed using this query set.
+	 * 
+	 * **Type:** [GPUSize32Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32out)
 	 * 
 	 */
 	val count: GPUSize32Out
@@ -1602,6 +1739,8 @@ interface GPUDeviceLostInfo {
 sealed interface GPUError {
 	/**
 	 * A read-only string that provides a human-readable message describing the error.
+	 * 
+	 * **Type:** [String]
 	 * 
 	 * **Behavior:** This property contains a descriptive message that can be used to understand the nature of the error. It is particularly useful for debugging and logging purposes.
 	 * 
@@ -1652,6 +1791,10 @@ interface GPUObjectDescriptorBase {
 	/**
 	 * A string that labels the GPU object. This label can be used for debugging purposes to identify the object.
 	 * 
+	 * **Type**: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/)
+	 * 
+	 * **Default Value**: An empty string (`""`)
+	 * 
 	 * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuobjectdescriptorbase-label).
 	 * 
 	 */
@@ -1672,6 +1815,8 @@ interface GPURequestAdapterOptions {
 	 * - "core": No effect.
 	 * - "compatibility": Reserved for future use to opt into additional validation restrictions. Applications should not use this value at this time.
 	 * 
+	 * **Default Value:** "core"
+	 * 
 	 * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurequestadapteroptions-featurelevel).
 	 * 
 	 */
@@ -1684,6 +1829,8 @@ interface GPURequestAdapterOptions {
 	 * - "low-power": Indicates a request to prioritize power savings over performance.
 	 * - "high-performance": Indicates a request to prioritize performance over power consumption.
 	 * 
+	 * **Default Value:** null
+	 * 
 	 * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurequestadapteroptions-powerpreference).
 	 * 
 	 */
@@ -1691,12 +1838,16 @@ interface GPURequestAdapterOptions {
 	/**
 	 * The `forceFallbackAdapter` property indicates whether only a fallback adapter may be returned. If set to `true`, the user agent will return a fallback adapter if available, or `null` if not supported.
 	 * 
+	 * **Default Value:** false
+	 * 
 	 * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurequestadapteroptions-forcefallbackadapter).
 	 * 
 	 */
 	val forceFallbackAdapter: Boolean
 	/**
 	 * The `xrCompatible` property indicates whether the best adapter for rendering to a WebXR session must be returned. If set to `true`, the user agent will prioritize adapters suitable for WebXR rendering.
+	 * 
+	 * **Default Value:** false
 	 * 
 	 * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurequestadapteroptions-xrcompatible).
 	 * 
@@ -1718,6 +1869,10 @@ interface GPUDeviceDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 * Exactly the specified set of features, and no more or less, will be allowed in validation of API calls on the resulting device.
 	 * 
+	 * **Type:** `List<GPUFeatureName>`
+	 * 
+	 * **Default Value:** An empty list
+	 * 
 	 * For more details, refer to the [WebGPU specification on `requiredFeatures`](https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-requiredfeatures).
 	 * 
 	 */
@@ -1729,6 +1884,10 @@ interface GPUDeviceDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 * API calls on the resulting device perform validation according to the exact limits of the device (not the adapter; see [§ 3.6.2 Limits](https://www.w3.org/TR/webgpu/#limits)).
 	 * 
+	 * **Type:** `GPUSupportedLimits?`
+	 * 
+	 * **Default Value:** An empty map
+	 * 
 	 * For more details, refer to the [WebGPU specification on `requiredLimits`](https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-requiredlimits).
 	 * 
 	 */
@@ -1736,22 +1895,16 @@ interface GPUDeviceDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * The descriptor for the default [GPUQueue].
 	 * 
+	 * **Type:** `GPUQueueDescriptor`
+	 * 
+	 * **Default Value:** An empty `GPUQueueDescriptor`
+	 * 
 	 * For more details, refer to the [WebGPU specification on `defaultQueue`](https://www.w3.org/TR/webgpu/#dom-gpudevicedescriptor-defaultqueue).
 	 * 
 	 */
 	val defaultQueue: GPUQueueDescriptor
 	/**
-	 * An optional callback function used to handle uncaptured GPU errors associated with a GPU device.
-	 * 
-	 * This property can be set to a user-defined [GPUUncapturedErrorCallback] to intercept and process
-	 * uncaptured errors triggered by WebGPU operations. These errors might otherwise not be explicitly
-	 * handled by the application, such as those originating from the `uncapturederror` event.
-	 * 
-	 * Assigning a value to this property provides a mechanism for developers to log, debug, or respond
-	 * to uncaptured errors in a centralized manner, improving error-handling workflows for GPU-related
-	 * operations.
-	 * 
-	 * If set to `null`, no callback will be executed for uncaptured errors.
+	 * Describes the `onUncapturedError` member of `GPUDeviceDescriptor`.
 	 * 
 	 */
 	val onUncapturedError: GPUUncapturedErrorCallback?
@@ -1767,15 +1920,23 @@ interface GPUBufferDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * The size of the buffer in bytes. This value must be a multiple of 4 and greater than or equal to 4.
 	 * 
+	 * **Type:** [GPUSize64](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64)
+	 * 
 	 */
 	val size: GPUSize64
 	/**
 	 * Specifies the allowed usages for the buffer. This is a bitmask of [GPUBufferUsageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpubufferusageflags) that indicates how the buffer will be used.
 	 * 
+	 * **Type:** [GPUBufferUsageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpubufferusageflags)
+	 * 
 	 */
 	val usage: GPUBufferUsage
 	/**
 	 * Indicates whether the buffer should be created in an already mapped state. If `true`, the buffer can be immediately accessed using [getMappedRange()](https://www.w3.org/TR/webgpu/#dom-gpubuffer-getmappedrange). This is useful for setting the buffer's initial data.
+	 * 
+	 * **Type:** Boolean
+	 * 
+	 * **Default Value:** `false`
 	 * 
 	 */
 	val mappedAtCreation: Boolean
@@ -1791,35 +1952,49 @@ interface GPUTextureDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * Specifies the size of the texture in 3D space. This is a required property.
 	 * 
+	 * **Type:** [GPUExtent3D]
+	 * 
 	 */
 	val size: GPUExtent3D
 	/**
 	 * Specifies the number of mipmap levels in the texture. The default value is 1.
+	 * 
+	 * **Type:** [GPUIntegerCoordinate]
 	 * 
 	 */
 	val mipLevelCount: GPUIntegerCoordinate
 	/**
 	 * Specifies the number of samples for multisampling. The default value is 1.
 	 * 
+	 * **Type:** [GPUSize32]
+	 * 
 	 */
 	val sampleCount: GPUSize32
 	/**
 	 * Specifies the dimension of the texture. The default value is "2d".
+	 * 
+	 * **Type:** [GPUTextureDimension]
 	 * 
 	 */
 	val dimension: GPUTextureDimension
 	/**
 	 * Specifies the format of the texture data. This is a required property.
 	 * 
+	 * **Type:** [GPUTextureFormat]
+	 * 
 	 */
 	val format: GPUTextureFormat
 	/**
 	 * Specifies the usage flags for the texture. This is a required property.
 	 * 
+	 * **Type:** [GPUTextureUsageFlags]
+	 * 
 	 */
 	val usage: GPUTextureUsage
 	/**
 	 * Specifies a list of formats that can be used to create views of the texture. The default value is an empty list.
+	 * 
+	 * **Type:** List<[GPUTextureFormat]>
 	 * 
 	 */
 	val viewFormats: List<GPUTextureFormat>
@@ -1981,6 +2156,8 @@ interface GPUBindGroupLayoutDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 * Each entry in this list describes a single shader resource binding to be included in a `GPUBindGroupLayout`. The entries specify how resources are bound to shaders, including buffers, samplers, textures, and external textures.
 	 * 
+	 * **Type**: List<GPUBindGroupLayoutEntry>
+	 * 
 	 * **See also**:
 	 * - GPUBindGroupLayoutEntry
 	 * 
@@ -2001,30 +2178,42 @@ interface GPUBindGroupLayoutEntry {
 	/**
 	 * A unique identifier for a resource binding within the [GPUBindGroupLayout](https://www.w3.org/TR/webgpu/#gpubindgrouplayout). This ID corresponds to a `GPUBindGroupEntry.binding` and a `@binding` attribute in the [GPUShaderModule](https://www.w3.org/TR/webgpu/#gpushadermodule).
 	 * 
+	 * **Type:** [GPUIndex32](https://www.w3.org/TR/webgpu/#typedefdef-gpuindex32)
+	 * 
 	 */
 	val binding: GPUIndex32
 	/**
 	 * A bitset of the members of [GPUShaderStage](https://www.w3.org/TR/webgpu/#namespacedef-gpushaderstage). Each set bit indicates that a `GPUBindGroupLayoutEntry`'s resource will be accessible from the associated shader stage.
+	 * 
+	 * **Type:** [GPUShaderStageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpushaderstageflags)
 	 * 
 	 */
 	val visibility: GPUShaderStage
 	/**
 	 * When provided, indicates that the binding resource type for this `GPUBindGroupLayoutEntry` is [GPUBufferBinding](https://www.w3.org/TR/webgpu/#dictdef-gpubufferbinding).
 	 * 
+	 * **Type:** [GPUBufferBindingLayout?](https://www.w3.org/TR/webgpu/#dictdef-gpubufferbindinglayout)
+	 * 
 	 */
 	val buffer: GPUBufferBindingLayout?
 	/**
 	 * When provided, indicates that the binding resource type for this `GPUBindGroupLayoutEntry` is [GPUSampler](https://www.w3.org/TR/webgpu/#gpusampler).
+	 * 
+	 * **Type:** [GPUSamplerBindingLayout?](https://www.w3.org/TR/webgpu/#dictdef-gpusamplerbindinglayout)
 	 * 
 	 */
 	val sampler: GPUSamplerBindingLayout?
 	/**
 	 * When provided, indicates that the binding resource type for this `GPUBindGroupLayoutEntry` is [GPUTextureView](https://www.w3.org/TR/webgpu/#gputextureview).
 	 * 
+	 * **Type:** [GPUTextureBindingLayout?](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout)
+	 * 
 	 */
 	val texture: GPUTextureBindingLayout?
 	/**
 	 * When provided, indicates that the binding resource type for this `GPUBindGroupLayoutEntry` is [GPUTextureView](https://www.w3.org/TR/webgpu/#gputextureview).
+	 * 
+	 * **Type:** [GPUStorageTextureBindingLayout?](https://www.w3.org/TR/webgpu/#dictdef-gpustoragetexturebindinglayout)
 	 * 
 	 */
 	val storageTexture: GPUStorageTextureBindingLayout?
@@ -2033,22 +2222,34 @@ interface GPUBindGroupLayoutEntry {
 /**
  * Represents a layout for buffer bindings in WebGPU. This interface defines the properties required to specify how buffers should be bound to binding points in shaders.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubufferbindinglayout-dictionary).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubufferbindinglayout-dictionary).
  * 
  */
 interface GPUBufferBindingLayout {
 	/**
 	 * Specifies the type required for buffers bound to this binding point. This property determines how the buffer will be used in the shader.
 	 * 
+	 * **Type:** [GPUBufferBindingType](https://www.w3.org/TR/webgpu/#enumdef-gpubufferbindingtype)
+	 * 
+	 * **Default Value:** "uniform"
+	 * 
 	 */
 	val type: GPUBufferBindingType
 	/**
 	 * Indicates whether this binding requires a dynamic offset. A dynamic offset allows for more flexible buffer binding, enabling the use of different buffer sizes at runtime.
 	 * 
+	 * **Type:** Boolean
+	 * 
+	 * **Default Value:** false
+	 * 
 	 */
 	val hasDynamicOffset: Boolean
 	/**
 	 * Specifies the minimum size of a buffer binding used with this bind point. This value is used to validate that buffers bound to this layout meet the required size constraints.
+	 * 
+	 * **Type:** GPUSize64
+	 * 
+	 * **Default Value:** 0
 	 * 
 	 * **Behavior:**
 	 * - If `minBindingSize` is not `0`, pipeline creation validates that this value is greater than or equal to the minimum buffer binding size of the variable.
@@ -2061,12 +2262,16 @@ interface GPUBufferBindingLayout {
 /**
  * Represents a binding layout for samplers in WebGPU. This interface defines the type of sampler that can be bound to a specific binding.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpusamplerbindinglayout).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpusamplerbindinglayout).
  * 
  */
 interface GPUSamplerBindingLayout {
 	/**
 	 * Specifies the type of sampler that can be bound to this binding layout. This is an enumeration value that indicates whether the sampler is used for filtering, non-filtering, or comparison operations.
+	 * 
+	 * **Type**: [GPUSamplerBindingType]
+	 * 
+	 * **Default Value**: "filtering"
 	 * 
 	 * This property determines how the sampler will be utilized in the shader. For example, a filtering sampler might be used for texture sampling with mipmapping, while a non-filtering sampler might be used for shadow mapping.
 	 * 
@@ -2077,12 +2282,14 @@ interface GPUSamplerBindingLayout {
 /**
  * Represents the layout for a GPU texture binding. This interface defines the required properties for specifying how textures should be bound in a GPU pipeline.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout).
  * 
  */
 interface GPUTextureBindingLayout {
 	/**
 	 * Specifies the type required for texture views bound to this binding. This property determines how the texture data should be sampled.
+	 * 
+	 * **Default Value**: "float"
 	 * 
 	 * **Possible Values**:
 	 * - `GPUTextureSampleType.FLOAT`
@@ -2091,12 +2298,14 @@ interface GPUTextureBindingLayout {
 	 * - `GPUTextureSampleType.SINT`
 	 * - `GPUTextureSampleType.UINT`
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturesampletype).
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturesampletype).
 	 * 
 	 */
 	val sampleType: GPUTextureSampleType
 	/**
 	 * Specifies the required dimension for texture views bound to this binding. This property defines the dimensionality of the texture view.
+	 * 
+	 * **Default Value**: "2d"
 	 * 
 	 * **Possible Values**:
 	 * - `GPUTextureViewDimension._1D`
@@ -2106,14 +2315,18 @@ interface GPUTextureBindingLayout {
 	 * - `GPUTextureViewDimension.CUBE`
 	 * - `GPUTextureViewDimension.CUBE_ARRAY`
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension).
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension).
 	 * 
 	 */
 	val viewDimension: GPUTextureViewDimension
 	/**
 	 * Indicates whether texture views bound to this binding must be multisampled. This property is used to specify if the texture should support multisampling.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout).
+	 * **Default Value**: `false`
+	 * 
+	 * **Type**: `Boolean`
+	 * 
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputexturebindinglayout).
 	 * 
 	 */
 	val multisampled: Boolean
@@ -2129,15 +2342,25 @@ interface GPUStorageTextureBindingLayout {
 	/**
 	 * Specifies the access mode for this binding, indicating whether the texture is readable, writable, or both. This property defaults to `GPUStorageTextureAccess.WriteOnly`.
 	 * 
+	 * **Type:** [GPUStorageTextureAccess](https://www.w3.org/TR/webgpu/#enumdef-gpustoragetextureaccess)
+	 * 
+	 * **Default Value:** `GPUStorageTextureAccess.WriteOnly`
+	 * 
 	 */
 	val access: GPUStorageTextureAccess
 	/**
 	 * Specifies the required format of texture views bound to this binding. This property is mandatory and defines how the texture data is interpreted.
 	 * 
+	 * **Type:** [GPUTextureFormat](https://www.w3.org/TR/webgpu/#enumdef-gputextureformat)
+	 * 
 	 */
 	val format: GPUTextureFormat
 	/**
 	 * Specifies the required dimension for texture views bound to this binding. This property defaults to `GPUTextureViewDimension.D2`.
+	 * 
+	 * **Type:** [GPUTextureViewDimension](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension)
+	 * 
+	 * **Default Value:** `GPUTextureViewDimension.D2`
 	 * 
 	 */
 	val viewDimension: GPUTextureViewDimension
@@ -2146,21 +2369,21 @@ interface GPUStorageTextureBindingLayout {
 /**
  * The `GPUBindGroupDescriptor` interface represents a descriptor for creating bind groups in WebGPU. It extends the `GPUObjectDescriptorBase` and is used to specify the layout and entries of a bind group.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpubindgroupdescriptor).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpubindgroupdescriptor).
  * 
  */
 interface GPUBindGroupDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * The `layout` property specifies the `GPUBindGroupLayout` that the entries of this bind group will conform to. This layout defines how resources are bound and accessed in shaders.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubindgroupdescriptor-layout).
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubindgroupdescriptor-layout).
 	 * 
 	 */
 	val layout: GPUBindGroupLayout
 	/**
 	 * The `entries` property is a list of `GPUBindGroupEntry` objects that describe the resources to expose to the shader for each binding described by the `layout`. Each entry specifies how a particular resource should be bound.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubindgroupdescriptor-entries).
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubindgroupdescriptor-entries).
 	 * 
 	 */
 	val entries: List<GPUBindGroupEntry>
@@ -2176,6 +2399,8 @@ interface GPUBindGroupEntry {
 	/**
 	 * A unique identifier for a resource binding within the [GPUBindGroup]. This identifier corresponds to a `GPUBindGroupLayoutEntry.binding` and a `@binding` attribute in the [GPUShaderModule].
 	 * 
+	 * **Type:** [GPUIndex32](TYPE_MAPPING.md)
+	 * 
 	 */
 	val binding: GPUIndex32
 	/**
@@ -2184,6 +2409,8 @@ interface GPUBindGroupEntry {
 	 * - [GPUTextureView]
 	 * - [GPUExternalTexture]
 	 * - [GPUBufferBinding]
+	 * 
+	 * **Type:** [GPUBindingResource](TYPE_MAPPING.md)
 	 * 
 	 */
 	val resource: GPUBindingResource
@@ -2200,6 +2427,8 @@ interface GPUBindGroupEntry {
 interface GPUPipelineLayoutDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * A list of optional [GPUBindGroupLayout](https://www.w3.org/TR/webgpu/#dictdef-gpubindgrouplayout)s that the pipeline will use. Each element in this list corresponds to a `@group` attribute in the [GPUShaderModule], with the `N`th element corresponding to `@group(N)`.
+	 * 
+	 * **Type**: `List<GPUBindGroupLayout?>`
 	 * 
 	 * **Details**:
 	 * - This list defines the layout of bind groups that the pipeline will use.
@@ -2222,6 +2451,8 @@ interface GPUShaderModuleDescriptor : GPUObjectDescriptorBase {
 	/**
 	 * The WGSL source code for the shader module. This string contains the shader program written in the WebGPU Shading Language (WGSL). The shader code defines the vertex and fragment shaders or compute shaders that will be used in the rendering or compute pipeline.
 	 * 
+	 * **Type:** `String`
+	 * 
 	 * **See also:**
 	 * - [W3C WebGPU Specification: GPUShaderModuleDescriptor.code](https://www.w3.org/TR/webgpu/#dom-gpushadermoduledescriptor-code)
 	 * 
@@ -2229,6 +2460,10 @@ interface GPUShaderModuleDescriptor : GPUObjectDescriptorBase {
 	val code: String
 	/**
 	 * A list of `GPUShaderModuleCompilationHint` objects that provide additional information to the compiler about the shader module. These hints can include details about entry points, resource bindings, and other compilation-specific information. Providing these hints can improve performance by allowing the compiler to perform more optimizations during the creation of the shader module.
+	 * 
+	 * **Type:** `List<GPUShaderModuleCompilationHint>`
+	 * 
+	 * **Default Value:** An empty list (`[]`)
 	 * 
 	 * **See also:**
 	 * - [W3C WebGPU Specification: GPUShaderModuleDescriptor.compilationHints](https://www.w3.org/TR/webgpu/#dom-gpushadermoduledescriptor-compilationhints)
@@ -2270,6 +2505,10 @@ interface GPUPipelineDescriptorBase : GPUObjectDescriptorBase {
 	/**
 	 * Specifies the layout for this pipeline. This can be either a [GPUPipelineLayout] object or the string `"auto"` to generate the pipeline layout automatically.
 	 * 
+	 * **Type**: [GPUPipelineLayout] or `String`
+	 * 
+	 * **Default**: None
+	 * 
 	 * **Behavior**:
 	 * - If a [GPUPipelineLayout] is provided, it defines the specific layout for the pipeline.
 	 * - If `"auto"` is specified, the pipeline layout is generated automatically. However, this means that the pipeline cannot share [GPUBindGroup]s with any other pipelines.
@@ -2310,7 +2549,7 @@ interface GPUProgrammableStage {
  * 
  * A compute pipeline is responsible for performing general-purpose computations on the GPU. It does not render graphics but can be used for tasks such as data processing, simulations, and other parallel computations.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpucomputepipelinedescriptor).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpucomputepipelinedescriptor).
  * 
  */
 interface GPUComputePipelineDescriptor : GPUPipelineDescriptorBase {
@@ -2318,6 +2557,8 @@ interface GPUComputePipelineDescriptor : GPUPipelineDescriptorBase {
 	 * Specifies the compute shader stage for the pipeline. This member is required and must be set to a valid [GPUProgrammableStage] object that describes the compute shader entry point.
 	 * 
 	 * The compute shader is responsible for executing the compute operations defined in the shader code. It does not produce visual output but can perform parallel computations on data.
+	 * 
+	 * **Type:** [GPUProgrammableStage]
 	 * 
 	 */
 	val compute: GPUProgrammableStage
@@ -2358,12 +2599,14 @@ interface GPURenderPipelineDescriptor : GPUPipelineDescriptorBase {
 /**
  * Represents the state of a primitive in WebGPU, defining how primitives are rendered. This interface is used to configure various aspects of primitive rendering such as topology, strip index format, front face orientation, cull mode, and depth clipping behavior.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuprimitivestate).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuprimitivestate).
  * 
  */
 interface GPUPrimitiveState {
 	/**
 	 * Specifies the type of primitive topology used for rendering. This determines how vertices are interpreted when drawing primitives.
+	 * 
+	 * **Default Value:** `GPUPrimitiveTopology.TriangleList`
 	 * 
 	 * **See Also:**
 	 * - [GPUPrimitiveTopology](https://www.w3.org/TR/webgpu/#enumdef-gpuprimitivetopology)
@@ -2373,6 +2616,8 @@ interface GPUPrimitiveState {
 	/**
 	 * Specifies the format of the strip index buffer, if used. This is relevant when rendering primitives that use strip indexing.
 	 * 
+	 * **Default Value:** `null`
+	 * 
 	 * **See Also:**
 	 * - [GPUIndexFormat](https://www.w3.org/TR/webgpu/#enumdef-gpuindexformat)
 	 * 
@@ -2380,6 +2625,8 @@ interface GPUPrimitiveState {
 	val stripIndexFormat: GPUIndexFormat?
 	/**
 	 * Specifies the orientation of the front face of primitives. This determines which side of a triangle is considered the front face for culling and other operations.
+	 * 
+	 * **Default Value:** `GPUFrontFace.CCW`
 	 * 
 	 * **See Also:**
 	 * - [GPUFrontFace](https://www.w3.org/TR/webgpu/#enumdef-gpufrontface)
@@ -2389,6 +2636,8 @@ interface GPUPrimitiveState {
 	/**
 	 * Specifies the culling mode for primitives. This determines which faces of a primitive are discarded during rendering.
 	 * 
+	 * **Default Value:** `GPUCullMode.None`
+	 * 
 	 * **See Also:**
 	 * - [GPUCullMode](https://www.w3.org/TR/webgpu/#enumdef-gpucullmode)
 	 * 
@@ -2396,6 +2645,8 @@ interface GPUPrimitiveState {
 	val cullMode: GPUCullMode
 	/**
 	 * Specifies whether depth values are clipped or unclipped. This feature requires the `"depth-clip-control"` feature to be enabled.
+	 * 
+	 * **Default Value:** `false`
 	 * 
 	 * **See Also:**
 	 * - [WebGPU Features](https://www.w3.org/TR/webgpu/#features)
@@ -2417,6 +2668,10 @@ interface GPUMultisampleState {
 	/**
 	 * Specifies the number of samples per pixel. This value determines the level of multisampling used during rendering.
 	 * 
+	 * **Type:** [GPUSize32](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32)
+	 * 
+	 * **Default Value:** 1
+	 * 
 	 * **Constraints:**
 	 * - Must be either 1 or 4.
 	 * - If `alphaToCoverageEnabled` is `true`, `count` must be greater than 1.
@@ -2429,6 +2684,10 @@ interface GPUMultisampleState {
 	/**
 	 * Determines which samples are written to during rendering. This mask allows for selective sampling, which can be useful for optimizing performance or achieving specific visual effects.
 	 * 
+	 * **Type:** [GPUSampleMask](https://www.w3.org/TR/webgpu/#typedefdef-gpusamplemask)
+	 * 
+	 * **Default Value:** 0xFFFFFFFF
+	 * 
 	 * **See also:**
 	 * - [mask member in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpumultisamplestate-mask)
 	 * 
@@ -2436,6 +2695,10 @@ interface GPUMultisampleState {
 	val mask: GPUSampleMask
 	/**
 	 * When set to `true`, enables alpha-to-coverage, which uses the fragment's alpha channel to generate a sample coverage mask. This can improve the quality of antialiased edges.
+	 * 
+	 * **Type:** Boolean
+	 * 
+	 * **Default Value:** false
 	 * 
 	 * **Constraints:**
 	 * - If `alphaToCoverageEnabled` is `true`, `count` must be greater than 1.
@@ -2459,6 +2722,8 @@ interface GPUMultisampleState {
 interface GPUFragmentState : GPUProgrammableStage {
 	/**
 	 * A list of [GPUColorTargetState] objects that define the formats and behaviors of the color targets this pipeline writes to. Each `GPUColorTargetState` in the list specifies how a particular color target should be handled during rendering.
+	 * 
+	 * **Type:** List<[GPUColorTargetState]?>
 	 * 
 	 * **See also:**
 	 * - [WebGPU Specification: GPUFragmentState](https://www.w3.org/TR/webgpu/#dictdef-gpufragmentstate)
@@ -2509,18 +2774,14 @@ interface GPUBlendState {
 	/**
 	 * Defines the blending behavior of the corresponding render target for color channels.
 	 * 
-	 * This property is of type `GPUBlendComponent` and specifies how the color channels are blended during rendering. 
-	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendstate-color).
+	 * This property is of type `GPUBlendComponent` and specifies how the color channels are blended during rendering. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendstate-color).
 	 * 
 	 */
 	val color: GPUBlendComponent
 	/**
 	 * Defines the blending behavior of the corresponding render target for the alpha channel.
 	 * 
-	 * This property is of type `GPUBlendComponent` and specifies how the alpha channel is blended during rendering. 
-	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendstate-alpha).
+	 * This property is of type `GPUBlendComponent` and specifies how the alpha channel is blended during rendering. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendstate-alpha).
 	 * 
 	 */
 	val alpha: GPUBlendComponent
@@ -2529,7 +2790,7 @@ interface GPUBlendState {
 /**
  * Represents a blend component used in blending operations for color or alpha components of a fragment. This interface defines how the source and destination colors are combined during rendering.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpublendcomponent).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpublendcomponent).
  * 
  */
 interface GPUBlendComponent {
@@ -2538,7 +2799,11 @@ interface GPUBlendComponent {
 	 * 
 	 * This property specifies the blending operation to be performed. The default value is `add`.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-operation).
+	 * **Type:** [GPUBlendOperation]
+	 * 
+	 * **Default Value:** "add"
+	 * 
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-operation).
 	 * 
 	 */
 	val operation: GPUBlendOperation
@@ -2547,7 +2812,11 @@ interface GPUBlendComponent {
 	 * 
 	 * This property specifies the blending factor for the source color. The default value is `one`.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-srcfactor).
+	 * **Type:** [GPUBlendFactor]
+	 * 
+	 * **Default Value:** "one"
+	 * 
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-srcfactor).
 	 * 
 	 */
 	val srcFactor: GPUBlendFactor
@@ -2556,7 +2825,11 @@ interface GPUBlendComponent {
 	 * 
 	 * This property specifies the blending factor for the destination color. The default value is `zero`.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-dstfactor).
+	 * **Type:** [GPUBlendFactor]
+	 * 
+	 * **Default Value:** "zero"
+	 * 
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpublendcomponent-dstfactor).
 	 * 
 	 */
 	val dstFactor: GPUBlendFactor
@@ -2565,57 +2838,87 @@ interface GPUBlendComponent {
 /**
  * Represents the depth and stencil state configuration for a GPU render pipeline. This interface defines various properties that control how depth and stencil tests are performed during rendering.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#depth-stencil-state).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#depth-stencil-state).
  * 
  */
 interface GPUDepthStencilState {
 	/**
 	 * Specifies the format of the depth/stencil texture. This property determines how depth and stencil values are stored in the texture.
 	 * 
+	 * **Type:** [GPUTextureFormat](https://www.w3.org/TR/webgpu/#enumdef-gputextureformat)
+	 * 
 	 */
 	val format: GPUTextureFormat
 	/**
 	 * Indicates whether depth values are written to the depth buffer. When set to `true`, depth values are written; when set to `false` or `null`, depth values are not written.
+	 * 
+	 * **Type:** Boolean?
 	 * 
 	 */
 	val depthWriteEnabled: Boolean?
 	/**
 	 * Specifies the comparison function used for depth tests. This property determines how the current depth value is compared to the stored depth value.
 	 * 
+	 * **Type:** [GPUCompareFunction](https://www.w3.org/TR/webgpu/#enumdef-gpucomparefunction)
+	 * 
 	 */
 	val depthCompare: GPUCompareFunction?
 	/**
 	 * Defines the stencil state for front-facing primitives. This property configures how stencil tests are performed for front-facing geometry.
+	 * 
+	 * **Type:** [GPUStencilFaceState](https://www.w3.org/TR/webgpu/#dictdef-gpustencilfacestate)
 	 * 
 	 */
 	val stencilFront: GPUStencilFaceState
 	/**
 	 * Defines the stencil state for back-facing primitives. This property configures how stencil tests are performed for back-facing geometry.
 	 * 
+	 * **Type:** [GPUStencilFaceState](https://www.w3.org/TR/webgpu/#dictdef-gpustencilfacestate)
+	 * 
 	 */
 	val stencilBack: GPUStencilFaceState
 	/**
 	 * Specifies the mask used for reading stencil values. This property determines which bits of the stencil value are considered during read operations.
+	 * 
+	 * **Type:** [GPUStencilValue](https://www.w3.org/TR/webgpu/#typedefdef-gpustencilvalue)
+	 * 
+	 * **Default Value:** `0xFFFFFFFF`
 	 * 
 	 */
 	val stencilReadMask: GPUStencilValue
 	/**
 	 * Specifies the mask used for writing stencil values. This property determines which bits of the stencil value are modified during write operations.
 	 * 
+	 * **Type:** [GPUStencilValue](https://www.w3.org/TR/webgpu/#typedefdef-gpustencilvalue)
+	 * 
+	 * **Default Value:** `0xFFFFFFFF`
+	 * 
 	 */
 	val stencilWriteMask: GPUStencilValue
 	/**
 	 * Specifies the depth bias value. This property is used to adjust the depth values for polygon offset.
+	 * 
+	 * **Type:** [GPUDepthBias](https://www.w3.org/TR/webgpu/#typedefdef-gpudepthbias)
+	 * 
+	 * **Default Value:** `0`
 	 * 
 	 */
 	val depthBias: GPUDepthBias
 	/**
 	 * Specifies the slope scale factor for depth bias. This property is used to adjust the depth bias based on the slope of the polygon.
 	 * 
+	 * **Type:** Float
+	 * 
+	 * **Default Value:** `0.0`
+	 * 
 	 */
 	val depthBiasSlopeScale: Float
 	/**
 	 * Specifies the clamp value for depth bias. This property limits the maximum depth bias that can be applied.
+	 * 
+	 * **Type:** Float
+	 * 
+	 * **Default Value:** `0.0`
 	 * 
 	 */
 	val depthBiasClamp: Float
@@ -2631,6 +2934,8 @@ interface GPUStencilFaceState {
 	/**
 	 * Specifies the comparison function used for stencil tests. This determines how the current stencil value is compared to the reference value.
 	 * 
+	 * **Default Value:** `GPUCompareFunction.Always`
+	 * 
 	 * **See Also:**
 	 * - [W3C WebGPU specification: GPUStencilFaceState.compare](https://www.w3.org/TR/webgpu/#dom-gpustencilfacestate-compare)
 	 * 
@@ -2638,6 +2943,8 @@ interface GPUStencilFaceState {
 	val compare: GPUCompareFunction
 	/**
 	 * Specifies the operation to perform when the stencil test fails. This defines what action to take if the comparison function does not pass.
+	 * 
+	 * **Default Value:** `GPUStencilOperation.Keep`
 	 * 
 	 * **See Also:**
 	 * - [W3C WebGPU specification: GPUStencilFaceState.failOp](https://www.w3.org/TR/webgpu/#dom-gpustencilfacestate-failop)
@@ -2647,6 +2954,8 @@ interface GPUStencilFaceState {
 	/**
 	 * Specifies the operation to perform when the stencil test passes but the depth test fails. This defines what action to take if the comparison function passes but the depth test does not.
 	 * 
+	 * **Default Value:** `GPUStencilOperation.Keep`
+	 * 
 	 * **See Also:**
 	 * - [W3C WebGPU specification: GPUStencilFaceState.depthFailOp](https://www.w3.org/TR/webgpu/#dom-gpustencilfacestate-depthfailop)
 	 * 
@@ -2654,6 +2963,8 @@ interface GPUStencilFaceState {
 	val depthFailOp: GPUStencilOperation
 	/**
 	 * Specifies the operation to perform when both the stencil test and the depth test pass. This defines what action to take if both tests are successful.
+	 * 
+	 * **Default Value:** `GPUStencilOperation.Keep`
 	 * 
 	 * **See Also:**
 	 * - [W3C WebGPU specification: GPUStencilFaceState.passOp](https://www.w3.org/TR/webgpu/#dom-gpustencilfacestate-passop)
@@ -2676,6 +2987,10 @@ interface GPUVertexState : GPUProgrammableStage {
 	 * 
 	 * Each `GPUVertexBufferLayout` specifies how the vertex data is structured, including the stride between elements and the attributes that describe the members of the structure. This allows the GPU to correctly interpret the vertex data during rendering.
 	 * 
+	 * **Type**: List<[GPUVertexBufferLayout]>
+	 * 
+	 * **Default Value**: An empty list
+	 * 
 	 * For more information, see the [W3C WebGPU specification on GPUVertexBufferLayout](https://www.w3.org/TR/webgpu/#dictdef-gpuvertexbufferlayout).
 	 * 
 	 */
@@ -2685,22 +3000,28 @@ interface GPUVertexState : GPUProgrammableStage {
 /**
  * Represents the layout of a vertex buffer in WebGPU. This interface defines how vertices are structured and accessed, including the stride between elements, the step mode (whether data is per-vertex or per-instance), and the attributes that describe the vertex data.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuvertexbufferlayout).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpuvertexbufferlayout).
  * 
  */
 interface GPUVertexBufferLayout {
 	/**
 	 * The stride, in bytes, between elements of this array. This value specifies how much memory is allocated for each vertex or instance in the buffer.
 	 * 
+	 * **Type:** [GPUSize64](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64)
+	 * 
 	 */
 	val arrayStride: GPUSize64
 	/**
 	 * Specifies whether each element of this array represents per-vertex data or per-instance data. The default value is `GPUVertexStepMode.VERTEX`.
 	 * 
+	 * **Type:** [GPUVertexStepMode](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexstepmode)
+	 * 
 	 */
 	val stepMode: GPUVertexStepMode
 	/**
 	 * An array defining the layout of the vertex attributes within each element. This sequence describes how the vertex data is structured and accessed.
+	 * 
+	 * **Type:** List<[GPUVertexAttribute](https://www.w3.org/TR/webgpu/#dictdef-gpuvertexattribute)>
 	 * 
 	 */
 	val attributes: List<GPUVertexAttribute>
@@ -2718,12 +3039,16 @@ interface GPUVertexAttribute {
 	/**
 	 * The format of the vertex attribute. This specifies how the data should be interpreted by the GPU.
 	 * 
+	 * **Type:** [GPUVertexFormat]
+	 * 
 	 * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuvertexattribute-format).
 	 * 
 	 */
 	val format: GPUVertexFormat
 	/**
 	 * The offset, in bytes, from the beginning of the vertex buffer element to the data for this attribute.
+	 * 
+	 * **Type:** [GPUSize64]
 	 * 
 	 * This value must be a multiple of the minimum of 4 and the byte size of the format specified by `format`. It defines where within the vertex buffer the data for this attribute begins.
 	 * 
@@ -2733,6 +3058,8 @@ interface GPUVertexAttribute {
 	val offset: GPUSize64
 	/**
 	 * The numeric location associated with this attribute. This corresponds to a `@location` attribute declared in the vertex module of the shader.
+	 * 
+	 * **Type:** [GPUIndex32]
 	 * 
 	 * This value must be less than the maximum number of vertex attributes supported by the device, as specified by `device.limits.maxVertexAttributes`.
 	 * 
@@ -2745,12 +3072,14 @@ interface GPUVertexAttribute {
 /**
  * The `GPUTexelCopyBufferLayout` interface describes the layout of texels in a buffer of bytes during a texel copy operation. This interface is used to define how data is organized in a [GPUBuffer](https://www.w3.org/TR/webgpu/#gpubuffer) or an [AllowSharedBufferSource](https://webidl.spec.whatwg.org/#AllowSharedBufferSource) when performing texel copy operations.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gputexelcopybufferlayout).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gputexelcopybufferlayout).
  * 
  */
 interface GPUTexelCopyBufferLayout {
 	/**
 	 * The `offset` property specifies the starting offset in bytes from the beginning of the buffer where the texel data begins. This value is of type [GPUSize64], which represents a 64-bit unsigned integer.
+	 * 
+	 * **Default Value:** `0`
 	 * 
 	 */
 	val offset: GPUSize64
@@ -2787,27 +3116,41 @@ interface GPUTexelCopyBufferInfo : GPUTexelCopyBufferLayout {
 /**
  * Represents the information about a texture source or destination for a texel copy operation. This interface describes the sub-region of a texture that spans one or more contiguous texture subresources at the same mip-map level.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gputexelcopytextureinfo).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gputexelcopytextureinfo).
  * 
  */
 interface GPUTexelCopyTextureInfo {
 	/**
 	 * The texture to copy to or from. This is a required field and must be specified.
 	 * 
+	 * **Type:** GPUTexture
+	 * 
 	 */
 	val texture: GPUTexture
 	/**
 	 * The mip-map level of the texture to copy to or from. This field defaults to `0` if not specified.
+	 * 
+	 * **Type:** GPUIntegerCoordinate
+	 * 
+	 * **Default Value:** 0
 	 * 
 	 */
 	val mipLevel: GPUIntegerCoordinate
 	/**
 	 * Defines the origin of the copy, which is the minimum corner of the texture sub-region to copy to or from. Together with `copySize`, this defines the full copy sub-region. This field defaults to `{}` if not specified.
 	 * 
+	 * **Type:** GPUOrigin3D
+	 * 
+	 * **Default Value:** `{}` (an empty GPUOrigin3D object)
+	 * 
 	 */
 	val origin: GPUOrigin3D
 	/**
 	 * Defines which aspects of the texture to copy to or from. This field defaults to `all` if not specified.
+	 * 
+	 * **Type:** GPUTextureAspect
+	 * 
+	 * **Default Value:** GPUTextureAspect.ALL
 	 * 
 	 */
 	val aspect: GPUTextureAspect
@@ -2845,15 +3188,21 @@ interface GPUComputePassTimestampWrites {
 	/**
 	 * The `GPUQuerySet` of type "timestamp" that the query results will be written to. This set contains the queries where the timestamps will be recorded.
 	 * 
+	 * **Type**: [GPUQuerySet](https://www.w3.org/TR/webgpu/#gpuqueryset)
+	 * 
 	 */
 	val querySet: GPUQuerySet
 	/**
 	 * If defined, indicates the query index in `querySet` into which the timestamp at the beginning of the compute pass will be written. This value is of type [GPUSize32](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32).
 	 * 
+	 * **Type**: GPUSize32?
+	 * 
 	 */
 	val beginningOfPassWriteIndex: GPUSize32?
 	/**
 	 * If defined, indicates the query index in `querySet` into which the timestamp at the end of the compute pass will be written. This value is of type [GPUSize32](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32).
+	 * 
+	 * **Type**: GPUSize32?
 	 * 
 	 */
 	val endOfPassWriteIndex: GPUSize32?
@@ -2871,7 +3220,7 @@ interface GPUComputePassDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 * This property is of type [GPUComputePassTimestampWrites].
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucomputepassdescriptor-timestampwrites).
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpucomputepassdescriptor-timestampwrites).
 	 * 
 	 */
 	val timestampWrites: GPUComputePassTimestampWrites?
@@ -2912,7 +3261,7 @@ interface GPURenderPassTimestampWrites {
  * 
  * This descriptor is used to configure the rendering process by specifying how different types of data will be handled during the render pass. The `colorAttachments` property defines which color buffers will receive the output from the render pass. The `depthStencilAttachment` specifies the depth/stencil buffer that will be used for depth testing and stencil operations. The `occlusionQuerySet` allows for occlusion queries to be performed, and the `timestampWrites` can be used to write timestamps during the render pass.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderpassdescriptor).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderpassdescriptor).
  * 
  */
 interface GPURenderPassDescriptor : GPUObjectDescriptorBase {
@@ -2921,7 +3270,7 @@ interface GPURenderPassDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 * Due to usage compatibility, no color attachment may alias another attachment or any resource used inside the render pass.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdescriptor-colorattachments).
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdescriptor-colorattachments).
 	 * 
 	 */
 	val colorAttachments: List<GPURenderPassColorAttachment>
@@ -2930,7 +3279,7 @@ interface GPURenderPassDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 * Due to usage compatibility, no writable depth/stencil attachment may alias another attachment or any resource used inside the render pass.
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdescriptor-depthstencilattachment).
+	 * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdescriptor-depthstencilattachment).
 	 * 
 	 */
 	val depthStencilAttachment: GPURenderPassDepthStencilAttachment?
@@ -2956,7 +3305,7 @@ interface GPURenderPassDescriptor : GPUObjectDescriptorBase {
 /**
  * Represents a color attachment for a render pass in the WebGPU API. This interface defines the properties required to configure how colors are rendered and stored during a rendering operation.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderpasscolorattachment).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gpurenderpasscolorattachment).
  * 
  */
 interface GPURenderPassColorAttachment {
@@ -3181,29 +3530,13 @@ interface GPUQuerySetDescriptor : GPUObjectDescriptorBase {
 }
 
 /**
- * A functional interface representing a callback that handles uncaptured GPU errors.
- * 
- * This callback is designed to process errors surfaced from WebGPU operations that are not explicitly handled by user code, such as errors triggered by the `uncapturederror` event.
- * 
- * The purpose of this callback is to enable developers to log, debug, or otherwise respond to errors in a structured manner, improving the development experience and debugging process.
- * 
- * Error details are provided via the [GPUError] parameter, which contains information about the specific error, including a human-readable message.
- * 
- * **Usage Context:**
- * - Typically set as part of error handling mechanisms in WebGPU-based applications.
- * - Provides an opportunity to capture and respond to errors globally with [GPUDeviceDescriptor], outside of scoped error-handling like `popErrorScope`.
+ * Represents `GPUUncapturedErrorCallback` in the WebGPU API, as defined by the WebGPU specification.
  * 
  */
 fun interface GPUUncapturedErrorCallback {
 	/**
-	 * Handles uncaptured GPU errors by providing a callback mechanism to process errors surfaced
-	 * from WebGPU operations that are not explicitly handled in user code.
+	 * Describes the `onUncapturedError` member of `GPUUncapturedErrorCallback`.
 	 * 
-	 * The callback is triggered for errors such as those raised by the `uncapturederror` event.
-	 * Developers can use this method to log, debug, or respond to errors in a structured way.
-	 * 
-	 * @param error The GPU error instance containing details about the encountered error,
-	 *              including a human-readable message for debugging and logging purposes.
 	 */
 	fun onUncapturedError(error: GPUError)
 }

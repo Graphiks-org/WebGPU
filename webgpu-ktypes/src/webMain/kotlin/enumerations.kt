@@ -44,9 +44,7 @@ actual enum class GPUAddressMode(val value: String) {
 }
 
 /**
- * The `GPUBlendFactor` enum defines how either a source or destination blend factor is calculated. This enum is used to specify the blending factors for color components in the rendering pipeline. 
- * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpublendfactor).
+ * The `GPUBlendFactor` enum defines how either a source or destination blend factor is calculated. This enum is used to specify the blending factors for color components in the rendering pipeline. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpublendfactor).
  * 
  */
 actual enum class GPUBlendFactor(val value: String) {
@@ -202,7 +200,7 @@ actual enum class GPUBlendOperation(val value: String) {
 /**
  * Represents the type of binding for a buffer in WebGPU. This enum defines the possible types of buffer bindings that can be used when creating bind groups.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpubufferbindingtype).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpubufferbindingtype).
  * 
  */
 actual enum class GPUBufferBindingType(val value: String) {
@@ -245,7 +243,7 @@ actual enum class GPUBufferBindingType(val value: String) {
 /**
  * Represents the mapping state of a GPU buffer. This enum is used to indicate whether a buffer is unmapped, pending a map operation, or currently mapped.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpubuffermapstate).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpubuffermapstate).
  * 
  */
 actual enum class GPUBufferMapState(val value: String) {
@@ -509,7 +507,7 @@ actual enum class GPUErrorFilter(val value: String) {
 /**
  * "The `GPUFeatureName` enum defines a set of feature names that identify specific functionalities available in WebGPU. Each feature name corresponds to an additional usage of WebGPU that would otherwise be invalid if the feature is not supported.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#gpufeaturename)."
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpufeaturename)."
  * 
  */
 actual enum class GPUFeatureName(val value: String) {
@@ -650,7 +648,7 @@ actual enum class GPUFeatureName(val value: String) {
 /**
  * Represents the filtering mode used for sampling textures. This enum defines how texture coordinates map to texel values.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpufiltermode).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpufiltermode).
  * 
  */
 actual enum class GPUFilterMode(val value: String) {
@@ -761,29 +759,27 @@ actual enum class GPUIndexFormat(val value: String) {
 /**
  * Represents the operations that can be performed to load values into an attachment during a render pass.
  * 
- * This enum defines two possible operations: `Load` and `Clear`. These operations determine how the initial value for an attachment is handled at the beginning of a render pass. 
+ * This enum defines two possible operations: `Load` and `Clear`. These operations determine how the initial value for an attachment is handled at the beginning of a render pass. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuloadop).
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuloadop).
+ * **See also:**
+ * - [GPULoadOp.Load]
+ * - [GPULoadOp.Clear]
  * 
  */
 actual enum class GPULoadOp(val value: String) {
 	/**
 	 * Loads the existing value for this attachment into the render pass.
 	 * 
-	 * This operation is used when you want to preserve the current contents of the attachment and use it as the starting point for the render pass. 
-	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuloadop-load).
+	 * This operation is used when you want to preserve the current contents of the attachment and use it as the starting point for the render pass. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuloadop-load).
 	 * 
 	 */
 	Load("load"),
 	/**
 	 * Loads a clear value for this attachment into the render pass.
 	 * 
-	 * This operation is used when you want to start with a cleared (typically zeroed or black) value for the attachment. On some GPU hardware, particularly mobile devices, using `Clear` can be more efficient because it avoids loading data from main memory into tile-local memory. 
+	 * This operation is used when you want to start with a cleared (typically zeroed or black) value for the attachment. On some GPU hardware, particularly mobile devices, using `Clear` can be more efficient because it avoids loading data from main memory into tile-local memory. For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuloadop-clear).
 	 * 
 	 * **Note:** It is recommended to use `Clear` in cases where the initial value doesn't matter, such as when the render target will be cleared using a skybox.
-	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuloadop-clear).
 	 * 
 	 */
 	Clear("clear");
@@ -843,7 +839,7 @@ actual enum class GPUMipmapFilterMode(val value: String) {
 /**
  * Represents the power preference for GPU operations. This enum is used to specify whether the application prefers low power consumption or high performance.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpupowerpreference).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpupowerpreference).
  * 
  */
 actual enum class GPUPowerPreference(val value: String) {
@@ -928,7 +924,7 @@ actual enum class GPUPrimitiveTopology(val value: String) {
 /**
  * Represents the type of query that can be performed using the WebGPU API. This enum defines two types of queries: occlusion and timestamp.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuquerytype).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuquerytype).
  * 
  */
 actual enum class GPUQueryType(val value: String) {
@@ -967,7 +963,7 @@ actual enum class GPUQueryType(val value: String) {
 /**
  * Represents the type of sampler binding used in WebGPU. This enum defines how textures are sampled when bound to a pipeline.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpusamplerbindingtype).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpusamplerbindingtype).
  * 
  */
 actual enum class GPUSamplerBindingType(val value: String) {
@@ -1076,7 +1072,7 @@ actual enum class GPUStencilOperation(val value: String) {
 /**
  * Represents the access mode for a storage texture binding, indicating whether the texture can be read from, written to, or both. This enum is used to specify the intended usage of a texture in a GPU pipeline.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpustoragetextureaccess).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpustoragetextureaccess).
  * 
  */
 actual enum class GPUStorageTextureAccess(val value: String) {
@@ -1203,7 +1199,7 @@ actual enum class GPUTextureAspect(val value: String) {
 /**
  * Represents the dimensionality of a texture in WebGPU. This enum defines three possible dimensions for textures: one-dimensional, two-dimensional, and three-dimensional.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturedimension).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturedimension).
  * 
  */
 actual enum class GPUTextureDimension(val value: String) {
@@ -1745,7 +1741,7 @@ actual enum class GPUTextureFormat(val value: String) {
 /**
  * Represents the sample type for textures in WebGPU. This enum defines the possible formats that a texture can have, which determines how the texture data is sampled and interpreted.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturesampletype).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputexturesampletype).
  * 
  */
 actual enum class GPUTextureSampleType(val value: String) {
@@ -1798,7 +1794,7 @@ actual enum class GPUTextureSampleType(val value: String) {
 /**
  * Represents the dimensionality of a texture view in WebGPU. This enum defines how a texture is viewed, which affects the corresponding WGSL types and sampling behavior.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gputextureviewdimension).
  * 
  */
 actual enum class GPUTextureViewDimension(val value: String) {
@@ -1893,7 +1889,7 @@ actual enum class GPUTextureViewDimension(val value: String) {
 /**
  * The `GPUVertexFormat` enum defines the possible formats for vertex attributes in WebGPU. Each format specifies the data type, number of components, and byte size of the vertex attribute. This enumeration is crucial for configuring vertex buffers and ensuring compatibility with shader programs.
  * 
- * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
  * 
  */
 actual enum class GPUVertexFormat(val value: String) {
@@ -1904,7 +1900,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 1 byte
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint8("uint8"),
@@ -1915,7 +1911,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 2 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint8x2("uint8x2"),
@@ -1926,7 +1922,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint8x4("uint8x4"),
@@ -1937,7 +1933,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 1 byte
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint8("sint8"),
@@ -1948,7 +1944,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 2 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint8x2("sint8x2"),
@@ -1959,7 +1955,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint8x4("sint8x4"),
@@ -1970,7 +1966,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 1 byte
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Unorm8("unorm8"),
@@ -1981,7 +1977,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 2 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Unorm8x2("unorm8x2"),
@@ -1992,7 +1988,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Unorm8x4("unorm8x4"),
@@ -2003,7 +1999,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 1 byte
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Snorm8("snorm8"),
@@ -2014,7 +2010,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 2 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Snorm8x2("snorm8x2"),
@@ -2025,7 +2021,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Snorm8x4("snorm8x4"),
@@ -2036,7 +2032,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 2 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint16("uint16"),
@@ -2047,7 +2043,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint16x2("uint16x2"),
@@ -2058,7 +2054,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 8 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint16x4("uint16x4"),
@@ -2069,7 +2065,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 2 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint16("sint16"),
@@ -2080,7 +2076,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint16x2("sint16x2"),
@@ -2091,7 +2087,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 8 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint16x4("sint16x4"),
@@ -2102,7 +2098,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 2 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Unorm16("unorm16"),
@@ -2113,7 +2109,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Unorm16x2("unorm16x2"),
@@ -2124,7 +2120,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 8 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Unorm16x4("unorm16x4"),
@@ -2135,7 +2131,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 2 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Snorm16("snorm16"),
@@ -2146,7 +2142,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Snorm16x2("snorm16x2"),
@@ -2157,7 +2153,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 8 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Snorm16x4("snorm16x4"),
@@ -2168,7 +2164,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 2 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Float16("float16"),
@@ -2179,7 +2175,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Float16x2("float16x2"),
@@ -2190,7 +2186,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 8 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Float16x4("float16x4"),
@@ -2201,7 +2197,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Float32("float32"),
@@ -2212,7 +2208,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 8 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Float32x2("float32x2"),
@@ -2223,7 +2219,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 3
 	 * **Byte Size:** 12 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Float32x3("float32x3"),
@@ -2234,7 +2230,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 16 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Float32x4("float32x4"),
@@ -2245,7 +2241,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint32("uint32"),
@@ -2256,7 +2252,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 8 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint32x2("uint32x2"),
@@ -2267,7 +2263,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 3
 	 * **Byte Size:** 12 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint32x3("uint32x3"),
@@ -2278,7 +2274,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 16 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Uint32x4("uint32x4"),
@@ -2289,7 +2285,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 1
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint32("sint32"),
@@ -2300,7 +2296,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 2
 	 * **Byte Size:** 8 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint32x2("sint32x2"),
@@ -2311,7 +2307,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 3
 	 * **Byte Size:** 12 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint32x3("sint32x3"),
@@ -2322,7 +2318,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 16 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Sint32x4("sint32x4"),
@@ -2333,7 +2329,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Unorm1010102("unorm10-10-10-2"),
@@ -2344,7 +2340,7 @@ actual enum class GPUVertexFormat(val value: String) {
 	 * **Components:** 4
 	 * **Byte Size:** 4 bytes
 	 * 
-	 * @see [WebGPU specification](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
+	 * [See the WebGPU specification for more details](https://www.w3.org/TR/webgpu/#enumdef-gpuvertexformat).
 	 * 
 	 */
 	Unorm8x4BGRA("unorm8x4-bgra");
