@@ -1895,6 +1895,16 @@ interface GPUTextureViewDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 */
 	val arrayLayerCount: GPUIntegerCoordinate?
+	/**
+	 * `swizzle` maps the red, green, blue, and alpha output channels, in that order. Each position accepts one of `r`, `g`, `b`, `a`, `0`, or `1`; selections may be repeated. Its default, `rgba`, preserves the original channels. A non-identity swizzle requires the `texture-component-swizzle` feature to be enabled on the device before the view is created.
+	 * 
+	 * Non-identity swizzles affect shader reads. WebGPU requires the identity `rgba` swizzle when a view is used as a storage texture or as a render attachment.
+	 * 
+	 * In Kotlin, configure the channels with `GPUTextureSwizzle`. For example, the WebGPU value `b01r` is `GPUTextureSwizzle(red = GPUTextureSwizzleSource.Blue, green = GPUTextureSwizzleSource.Zero, blue = GPUTextureSwizzleSource.One, alpha = GPUTextureSwizzleSource.Red)`. Use `toWebGpuString()` when converting to the Web binding's `DOMString`.
+	 * 
+	 * See also: [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputextureviewdescriptor).
+	 * 
+	 */
 	val swizzle: GPUTextureSwizzle
 }
 

@@ -11,10 +11,18 @@ enum class GPUTextureSwizzleSource(internal val token: Char) {
 }
 
 /**
- * Maps the red, green, blue, and alpha output channels to source components.
+ * Maps each output channel to a component of the texture view.
  *
- * The default value preserves the texture's original `rgba` channels. Non-default values require the
- * WebGPU `texture-component-swizzle` feature on the device used to create the view.
+ * The properties correspond to the red, green, blue, and alpha output channels, in that order. Each
+ * channel can select red, green, blue, alpha, constant zero, or constant one; selections may repeat.
+ * The default value is the identity mapping `rgba`.
+ *
+ * A non-identity mapping requires the WebGPU `texture-component-swizzle` feature on the device used
+ * to create the view. WebGPU requires the identity mapping when a view is used as a storage texture
+ * or as a render attachment.
+ *
+ * Use [toWebGpuString] to convert this value to the four-character `DOMString` expected by the Web
+ * binding. For example, the mapping `b01r` selects blue, zero, one, and red for the output channels.
  */
 data class GPUTextureSwizzle(
     val red: GPUTextureSwizzleSource = GPUTextureSwizzleSource.Red,
