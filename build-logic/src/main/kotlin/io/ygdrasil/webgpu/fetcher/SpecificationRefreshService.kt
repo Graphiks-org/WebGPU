@@ -6,7 +6,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption.ATOMIC_MOVE
 import java.nio.file.StandardCopyOption.REPLACE_EXISTING
-import java.security.MessageDigest
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -77,7 +76,7 @@ class SpecificationRefreshService(
                 staged += StagedResource(source, stage, "")
                 try {
                     download(source, stage)
-                    staged[staged.lastIndex] = staged.last().copy(hash = sha256(Files.readAllBytes(stage)))
+                    staged[staged.lastIndex] = staged.last().copy(hash = SpecificationFileIO.sha256File(stage))
                 } catch (failure: SpecificationRefreshException) {
                     throw failure
                 } catch (failure: Exception) {
@@ -90,7 +89,7 @@ class SpecificationRefreshService(
             for (resource in staged) {
                 val target = resourceDirectory.resolve(resource.source.fileName)
                 val targetHash = try {
-                    if (Files.isRegularFile(target)) sha256(Files.readAllBytes(target)) else null
+                    if (Files.isRegularFile(target)) SpecificationFileIO.sha256File(target) else null
                 } catch (failure: Exception) {
                     throw refreshFailure("hash existing target", resource.source.url, failure)
                 }
@@ -138,17 +137,12 @@ class SpecificationRefreshService(
             connection.readTimeout = 30_000
             val status = connection.responseCode
             if (status !in 200..299) error("HTTP status $status")
-            val body = connection.inputStream.use { it.readBytes() }
-            if (body.isEmpty()) error("empty response body")
-            Files.write(destination, body)
+            val bytesCopied = connection.inputStream.use { SpecificationFileIO.copyToFile(it, destination) }
+            if (bytesCopied == 0L) error("empty response body")
         } finally {
             connection.disconnect()
         }
     }
-
-    private fun sha256(bytes: ByteArray): String = MessageDigest.getInstance("SHA-256")
-        .digest(bytes)
-        .joinToString("") { "%02x".format(it) }
 
     private fun refreshFailure(operation: String, url: URI, cause: Throwable) =
         SpecificationRefreshException("$operation for $url failed", cause)

@@ -1,6 +1,7 @@
 package io.ygdrasil.webgpu.fetcher
 
 import com.sun.net.httpserver.HttpServer
+import java.io.InputStream
 import java.net.InetSocketAddress
 import java.net.URI
 import java.nio.file.AtomicMoveNotSupportedException
@@ -13,6 +14,10 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.atomic.AtomicInteger
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -171,9 +176,44 @@ class SpecificationRefreshServiceTest {
 
         service().refresh(directory, listOf(sources[1]))
 
+        val rawRecords = Json.parseToJsonElement(Files.readString(directory.resolve("cache.json")))
+            .jsonObject.getValue("cachedFiles").jsonArray
+        assertEquals(1, rawRecords.size)
+        assertEquals(listOf("webgpu.idl"), rawRecords.map { it.jsonObject.getValue("name").jsonPrimitive.content })
         assertEquals(setOf("webgpu.idl"), cacheEntries().keys)
         assertEquals(sha256(idlBytes), cacheEntries().getValue("webgpu.idl").first)
         assertEquals(checkedAt(), cacheEntries().getValue("webgpu.idl").second)
+    }
+
+    @Test
+    fun responseBodyStreamsToFileWithBoundedReads() {
+        val byteCount = 2 * 1024 * 1024 + 37
+        val input = PatternInputStream(byteCount)
+        val stagedFile = directory.resolve("streamed.response")
+
+        val copied = SpecificationFileIO.copyToFile(input, stagedFile)
+
+        assertEquals(byteCount.toLong(), copied)
+        assertEquals(byteCount.toLong(), Files.size(stagedFile))
+        assertTrue(input.bulkReadCalls > 1)
+        assertTrue(input.maxRequestedReadSize <= 8 * 1024)
+        assertEquals(patternSha256(byteCount), SpecificationFileIO.sha256File(stagedFile))
+    }
+
+    @Test
+    fun fileSha256MatchesAcrossMultipleBufferBoundaries() {
+        val stagedFile = directory.resolve("many-buffers.bin")
+        val block = ByteArray(4093) { index -> patternByte(index.toLong()) }
+        val expectedDigest = MessageDigest.getInstance("SHA-256")
+        Files.newOutputStream(stagedFile).use { output ->
+            repeat(700) {
+                output.write(block)
+                expectedDigest.update(block)
+            }
+        }
+
+        val expected = expectedDigest.digest().joinToString("") { "%02x".format(it) }
+        assertEquals(expected, SpecificationFileIO.sha256File(stagedFile))
     }
 
     @Test
@@ -291,6 +331,21 @@ class SpecificationRefreshServiceTest {
 
     private fun sha256(bytes: ByteArray) = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
 
+    private fun patternSha256(size: Int): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        val block = ByteArray(4093)
+        var offset = 0
+        while (offset < size) {
+            val count = minOf(block.size, size - offset)
+            for (index in 0 until count) block[index] = patternByte((offset + index).toLong())
+            digest.update(block, 0, count)
+            offset += count
+        }
+        return digest.digest().joinToString("") { "%02x".format(it) }
+    }
+
+    private fun patternByte(index: Long) = ((index * 31 + 17) and 0xff).toByte()
+
     private fun moveOptions(atomic: Boolean): Array<java.nio.file.CopyOption> = if (atomic) {
         arrayOf(java.nio.file.StandardCopyOption.ATOMIC_MOVE, java.nio.file.StandardCopyOption.REPLACE_EXISTING)
     } else {
@@ -299,4 +354,27 @@ class SpecificationRefreshServiceTest {
 
     private data class Response(val status: Int, val body: ByteArray)
     private data class CacheEntry(val name: String, val hash: String, val timestamp: String)
+
+    private inner class PatternInputStream(private val byteCount: Int) : InputStream() {
+        var bulkReadCalls = 0
+            private set
+        var maxRequestedReadSize = 0
+            private set
+        private var position = 0
+
+        override fun read(): Int {
+            if (position >= byteCount) return -1
+            return patternByte(position++.toLong()).toInt() and 0xff
+        }
+
+        override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+            if (position >= byteCount) return -1
+            bulkReadCalls++
+            maxRequestedReadSize = maxOf(maxRequestedReadSize, length)
+            val count = minOf(length, 4093, byteCount - position)
+            for (index in 0 until count) buffer[offset + index] = patternByte((position + index).toLong())
+            position += count
+            return count
+        }
+    }
 }
