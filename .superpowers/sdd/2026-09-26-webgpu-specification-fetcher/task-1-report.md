@@ -106,3 +106,54 @@ BUILD SUCCESSFUL in 1s
 ```
 
 Les 12 tests de cette classe passent. L’avertissement Kotlin DSL décrit dans la réserve précédente reste présent.
+
+## Correctifs round 2 — flux bornés et vérification des doublons JSON
+
+### Constats adressés
+
+- Le chemin HTTP lisait tout le corps dans un `ByteArray`, puis calculait le hash avec `Files.readAllBytes`, ce qui utilisait une mémoire proportionnelle à la taille des spécifications.
+- Le test de normalisation transformait `cachedFiles` en map avant de vérifier son contenu, ce qui pouvait masquer plusieurs enregistrements de même nom.
+
+### Changements
+
+- `build-logic/src/main/kotlin/io/ygdrasil/webgpu/fetcher/SpecificationFileIO.kt` — nouveau composant interne qui copie un `InputStream` vers le fichier temporaire par buffers de 8 KiB et calcule SHA-256 en lisant les fichiers par buffers de 8 KiB.
+- `build-logic/src/main/kotlin/io/ygdrasil/webgpu/fetcher/SpecificationRefreshService.kt` — réponse HTTP copiée directement dans le fichier temporaire; les hashes du fichier temporaire et de la cible existante sont calculés par le lecteur incrémental. Le code vérifie toujours le statut HTTP et le nombre d’octets copiés avant la phase de remplacement; le contexte d’erreur, le staging de toutes les sources, le remplacement atomique et le nettoyage restent inchangés.
+- `build-logic/src/test/kotlin/io/ygdrasil/webgpu/fetcher/SpecificationRefreshServiceTest.kt` — ajout des tests `responseBodyStreamsToFileWithBoundedReads` et `fileSha256MatchesAcrossMultipleBufferBoundaries`; le test de normalisation lit maintenant le tableau JSON brut et vérifie le compte et le nom de chaque ligne.
+- Commit de code et tests : `6c2d0d8 fix: stream specification refresh responses`.
+
+### Preuve RED/GREEN
+
+Après l’ajout des tests et avant l’implémentation, la commande ciblée a échoué à la compilation car `SpecificationFileIO` n’existait pas encore :
+
+```text
+rtk ./gradlew -p build-logic test --tests 'io.ygdrasil.webgpu.fetcher.SpecificationRefreshServiceTest'
+> Task :compileTestKotlin FAILED
+Unresolved reference 'SpecificationFileIO' (3 usages)
+BUILD FAILED
+```
+
+Après l’implémentation, la même commande a réussi :
+
+```text
+rtk ./gradlew -p build-logic test --tests 'io.ygdrasil.webgpu.fetcher.SpecificationRefreshServiceTest'
+BUILD SUCCESSFUL in 4s
+7 actionable tasks: 5 executed, 2 up-to-date
+```
+
+Le résultat XML indique 14 tests de service, 0 échec et 0 erreur.
+
+### Vérification élargie
+
+```text
+rtk ./gradlew -p build-logic check
+BUILD SUCCESSFUL in 4s
+8 actionable tasks: 2 executed, 6 up-to-date
+```
+
+```text
+rtk ./gradlew check
+BUILD SUCCESSFUL in 8s
+159 actionable tasks: 10 executed, 149 up-to-date
+```
+
+Le check racine affiche les avertissements Gradle existants sur Kotlin DSL (`2.3.20` embarqué contre `2.3.21` demandé), des cibles Kotlin Native dépréciées et des fonctionnalités Gradle dépréciées pour Gradle 10; il termine avec succès. `rtk git diff --cached --check` ne signale aucune erreur avant commit.
