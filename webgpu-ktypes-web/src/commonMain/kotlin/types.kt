@@ -22,13 +22,18 @@ external interface WGPUSupportedLimits : JsAny {
 	var maxTextureArrayLayers: JsNumber /* unsigned long */
 	var maxBindGroups: JsNumber /* unsigned long */
 	var maxBindGroupsPlusVertexBuffers: JsNumber /* unsigned long */
+	var maxImmediateSize: JsNumber /* unsigned long */
 	var maxBindingsPerBindGroup: JsNumber /* unsigned long */
 	var maxDynamicUniformBuffersPerPipelineLayout: JsNumber /* unsigned long */
 	var maxDynamicStorageBuffersPerPipelineLayout: JsNumber /* unsigned long */
 	var maxSampledTexturesPerShaderStage: JsNumber /* unsigned long */
 	var maxSamplersPerShaderStage: JsNumber /* unsigned long */
 	var maxStorageBuffersPerShaderStage: JsNumber /* unsigned long */
+	var maxStorageBuffersInVertexStage: JsNumber /* unsigned long */
+	var maxStorageBuffersInFragmentStage: JsNumber /* unsigned long */
 	var maxStorageTexturesPerShaderStage: JsNumber /* unsigned long */
+	var maxStorageTexturesInVertexStage: JsNumber /* unsigned long */
+	var maxStorageTexturesInFragmentStage: JsNumber /* unsigned long */
 	var maxUniformBuffersPerShaderStage: JsNumber /* unsigned long */
 	var maxUniformBufferBindingSize: JsNumber /* unsigned long long */
 	var maxStorageBufferBindingSize: JsNumber /* unsigned long long */
@@ -126,6 +131,7 @@ external interface WGPUTexture : JsAny, WGPUObjectBase {
 	var dimension: String  /* GPUTextureDimension */
 	var format: String  /* GPUTextureFormat */
 	var usage: JsNumber  /* GPUFlagsConstant */
+	var textureBindingViewDimension: JsAny /* (GPUTextureViewDimension or undefined) */
 	fun createView(): WGPUTextureView  /* GPUTextureView */
 	fun createView(descriptor: WGPUTextureViewDescriptor  /* GPUTextureViewDescriptor */): WGPUTextureView  /* GPUTextureView */
 	fun destroy()
@@ -189,6 +195,9 @@ external interface WGPUBindingCommandsMixin : JsAny {
 	fun setBindGroup(index: JsNumber  /* GPUIndex32 */, bindGroup: JsAny /* GPUBindGroup? */)
 	fun setBindGroup(index: JsNumber  /* GPUIndex32 */, bindGroup: JsAny /* GPUBindGroup? */, dynamicOffsets: JsArray<JsAny> /* sequence<GPUBufferDynamicOffset> */)
 	fun setBindGroup(index: JsNumber  /* GPUIndex32 */, bindGroup: JsAny /* GPUBindGroup? */, dynamicOffsetsData: JsAny /* Uint32Array */, dynamicOffsetsDataStart: JsNumber  /* GPUSize64 */, dynamicOffsetsDataLength: JsNumber  /* GPUSize32 */)
+	fun setImmediates(rangeOffset: JsNumber  /* GPUSize32 */, data: js.buffer.ArrayBuffer /* AllowSharedBufferSource */)
+	fun setImmediates(rangeOffset: JsNumber  /* GPUSize32 */, data: js.buffer.ArrayBuffer /* AllowSharedBufferSource */, dataOffset: JsNumber  /* GPUSize64 */)
+	fun setImmediates(rangeOffset: JsNumber  /* GPUSize32 */, data: js.buffer.ArrayBuffer /* AllowSharedBufferSource */, dataOffset: JsNumber  /* GPUSize64 */, dataSize: JsNumber  /* GPUSize64 */)
 }
 
 external interface WGPUDebugCommandsMixin : JsAny {
@@ -315,6 +324,7 @@ external interface WGPUTextureDescriptor : JsAny, WGPUObjectDescriptorBase {
 	var format: String  /* GPUTextureFormat */
 	var usage: JsNumber  /* GPUTextureUsageFlags */
 	var viewFormats: JsArray<JsAny> /* sequence<GPUTextureFormat> */
+	var textureBindingViewDimension: String  /* GPUTextureViewDimension */
 }
 
 external interface WGPUTextureViewDescriptor : JsAny, WGPUObjectDescriptorBase {
@@ -326,6 +336,7 @@ external interface WGPUTextureViewDescriptor : JsAny, WGPUObjectDescriptorBase {
 	var mipLevelCount: JsNumber  /* GPUIntegerCoordinate */
 	var baseArrayLayer: JsNumber  /* GPUIntegerCoordinate */
 	var arrayLayerCount: JsNumber  /* GPUIntegerCoordinate */
+	var swizzle: String /* DOMString */
 }
 
 external interface WGPUExternalTextureDescriptor : JsAny, WGPUObjectDescriptorBase {
@@ -401,6 +412,7 @@ external interface WGPUBufferBinding : JsAny {
 
 external interface WGPUPipelineLayoutDescriptor : JsAny, WGPUObjectDescriptorBase {
 	var bindGroupLayouts: JsArray<JsAny> /* sequence<GPUBindGroupLayout?> */
+	var immediateSize: JsNumber  /* GPUSize32 */
 }
 
 external interface WGPUShaderModuleDescriptor : JsAny, WGPUObjectDescriptorBase {
@@ -565,16 +577,16 @@ external interface WGPURenderPassDescriptor : JsAny, WGPUObjectDescriptorBase {
 }
 
 external interface WGPURenderPassColorAttachment : JsAny {
-	var view: WGPUTextureView  /* GPUTextureView */
+	var view: JsAny /* (GPUTexture or GPUTextureView) */
 	var depthSlice: JsNumber  /* GPUIntegerCoordinate */
-	var resolveTarget: WGPUTextureView  /* GPUTextureView */
+	var resolveTarget: JsAny /* (GPUTexture or GPUTextureView) */
 	var clearValue: WGPUColor  /* GPUColor */
 	var loadOp: String  /* GPULoadOp */
 	var storeOp: String  /* GPUStoreOp */
 }
 
 external interface WGPURenderPassDepthStencilAttachment : JsAny {
-	var view: WGPUTextureView  /* GPUTextureView */
+	var view: JsAny /* (GPUTexture or GPUTextureView) */
 	var depthClearValue: JsNumber /* float */
 	var depthLoadOp: String  /* GPULoadOp */
 	var depthStoreOp: String  /* GPUStoreOp */

@@ -2,7 +2,6 @@ package generator.mapper
 
 import de.fabmax.webidl.model.IdlSimpleType
 import de.fabmax.webidl.model.IdlUnionType
-import generator.domain.Interface
 import generator.domain.MapperContext
 import generator.domain.TypeAlias
 import kotlin.collections.plus
@@ -28,12 +27,8 @@ internal fun MapperContext.loadTypeDef() {
                     loadDescriptor(idlTypeDef.name, dictionary)
                 }
             } else if(type.types.all { it.typeName.startsWith("GPU") }){
-                val types = type.types.filter { it.toKotlinType() !in unwantedTypesOnCommon }
-                interfaces += Interface(idlTypeDef.name, sealed = true)
-                types.forEach { subType ->
-                    (interfaces.find { it.name == subType.typeName } ?: Interface(subType.typeName).also { interfaces.add(it) })
-                        .extends += idlTypeDef.name
-                }
+                val types = type.types.filter { (it as? IdlSimpleType)?.typeName !in unwantedTypesOnCommon }
+                registerCommonGpuUnion(types, "typedef ${idlTypeDef.name}", idlTypeDef.name)
             } else {
                 error("Unhandled union type: ${idlTypeDef.name}: ${type.types.joinToString { it.typeName }}")
             }

@@ -369,6 +369,11 @@ data class TextureDescriptor(
 	 * 
 	 */
 	override val viewFormats: List<GPUTextureFormat> = emptyList(),
+	/**
+	 * On devices without "core-features-and-limits", views created from this texture must have this as their dimension. If not specified, a default is chosen. On devices with "core-features-and-limits", this is ignored, and there is no such restriction.
+	 * 
+	 */
+	override val textureBindingViewDimension: GPUTextureViewDimension? = null,
 	override val label: String = ""
 ): GPUTextureDescriptor
 
@@ -435,6 +440,17 @@ data class TextureViewDescriptor(
 	 * 
 	 */
 	override val arrayLayerCount: GPUIntegerCoordinate? = null,
+	/**
+	 * `swizzle` maps the red, green, blue, and alpha output channels, in that order. Each position accepts one of `r`, `g`, `b`, `a`, `0`, or `1`; selections may be repeated. Its default, `rgba`, preserves the original channels. A non-identity swizzle requires the `texture-component-swizzle` feature to be enabled on the device before the view is created.
+	 * 
+	 * Non-identity swizzles affect shader reads. WebGPU requires the identity `rgba` swizzle when a view is used as a storage texture or as a render attachment.
+	 * 
+	 * In Kotlin, configure the channels with `GPUTextureSwizzle`. For example, the WebGPU value `b01r` is `GPUTextureSwizzle(red = GPUTextureSwizzleSource.Blue, green = GPUTextureSwizzleSource.Zero, blue = GPUTextureSwizzleSource.One, alpha = GPUTextureSwizzleSource.Red)`. Use `toWebGpuString()` when converting to the Web binding's `DOMString`.
+	 * 
+	 * See also: [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputextureviewdescriptor).
+	 * 
+	 */
+	override val swizzle: GPUTextureSwizzle = GPUTextureSwizzle(),
 	override val label: String = ""
 ): GPUTextureViewDescriptor
 
@@ -844,6 +860,11 @@ data class PipelineLayoutDescriptor(
 	 * 
 	 */
 	override val bindGroupLayouts: List<GPUBindGroupLayout>,
+	/**
+	 * The size, in bytes, of the immediate data range used by the pipeline.
+	 * 
+	 */
+	override val immediateSize: GPUSize32 = 0u,
 	override val label: String = ""
 ): GPUPipelineLayoutDescriptor
 
@@ -1745,7 +1766,7 @@ data class RenderPassColorAttachment(
 	 * This property is required and must be a valid renderable texture view. The format of the view must be a color renderable format.
 	 * 
 	 */
-	override val view: GPUTextureView,
+	override val view: GPUTextureOrGPUTextureView,
 	/**
 	 * Indicates the load operation to perform on the GPUTextureView prior to executing the render pass.
 	 * 
@@ -1773,7 +1794,7 @@ data class RenderPassColorAttachment(
 	 * This property is optional and must only be provided if the GPUTextureView's sample count is greater than 1. The resolve target must have a sample count of 1.
 	 * 
 	 */
-	override val resolveTarget: GPUTextureView? = null,
+	override val resolveTarget: GPUTextureOrGPUTextureView? = null,
 	/**
 	 * Indicates the value to clear the GPUTextureView to prior to executing the render pass.
 	 * 
@@ -1796,7 +1817,7 @@ data class RenderPassDepthStencilAttachment(
 	 * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdepthstencilattachment-view).
 	 * 
 	 */
-	override val view: GPUTextureView,
+	override val view: GPUTextureOrGPUTextureView,
 	/**
 	 * Indicates the value to clear the `view`'s depth component to prior to executing the render pass. This value is ignored if `depthLoadOp` is not set to `GPULoadOp.CLEAR`. The value must be between 0.0 and 1.0, inclusive.
 	 * 

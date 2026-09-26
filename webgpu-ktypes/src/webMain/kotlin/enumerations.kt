@@ -511,7 +511,7 @@ actual enum class GPUErrorFilter(val value: String) {
  * 
  */
 actual enum class GPUFeatureName(val value: String) {
-	CoreFeaturesAndLimits("unsupported"),
+	CoreFeaturesAndLimits("core-features-and-limits"),
 	/**
 	 * The `DepthClipControl` feature allows the use of depth clip control in WebGPU. This feature enables more precise control over depth clipping, which can be useful for advanced rendering techniques.
 	 * 
@@ -625,10 +625,10 @@ actual enum class GPUFeatureName(val value: String) {
 	 */
 	DualSourceBlending("dual-source-blending"),
 	Subgroups("subgroups"),
-	TextureFormatsTier1("unsupported"),
-	TextureFormatsTier2("unsupported"),
-	PrimitiveIndex("unsupported"),
-	TextureComponentSwizzle("unsupported");
+	TextureFormatsTier1("texture-formats-tier1"),
+	TextureFormatsTier2("texture-formats-tier2"),
+	PrimitiveIndex("primitive-index"),
+	TextureComponentSwizzle("texture-component-swizzle");
 
 
 	companion object {
@@ -1261,8 +1261,8 @@ actual enum class GPUTextureFormat(val value: String) {
 	 * 
 	 */
 	R8Sint("r8sint"),
-	R16Unorm("unsupported"),
-	R16Snorm("unsupported"),
+	R16Unorm("r16unorm"),
+	R16Snorm("r16snorm"),
 	/**
 	 * Represents a 16-bit unsigned integer format. Each pixel component is stored as a 16-bit unsigned integer.
 	 * 
@@ -1313,8 +1313,8 @@ actual enum class GPUTextureFormat(val value: String) {
 	 * 
 	 */
 	R32Sint("r32sint"),
-	RG16Unorm("unsupported"),
-	RG16Snorm("unsupported"),
+	RG16Unorm("rg16unorm"),
+	RG16Snorm("rg16snorm"),
 	/**
 	 * Represents a 16-bit unsigned integer format for two channels (red and green). Each channel is stored as a 16-bit unsigned integer.
 	 * 
@@ -1400,8 +1400,8 @@ actual enum class GPUTextureFormat(val value: String) {
 	 * 
 	 */
 	RG32Sint("rg32sint"),
-	RGBA16Unorm("unsupported"),
-	RGBA16Snorm("unsupported"),
+	RGBA16Unorm("rgba16unorm"),
+	RGBA16Snorm("rgba16snorm"),
 	/**
 	 * Represents a 64-bit unsigned integer format for four channels (red, green, blue, alpha). Each channel is stored as a 16-bit unsigned integer.
 	 * 

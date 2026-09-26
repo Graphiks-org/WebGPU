@@ -834,6 +834,14 @@
   `arrayLayerCount` specifies how many array layers, starting with `baseArrayLayer`, are accessible to the texture view. This property defines the range of array layers that can be accessed by the view.
   
   See also: [WebGPU Specification - GPUIntegerCoordinate](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinate).
+"GPUTextureViewDescriptor#swizzle": |
+  `swizzle` maps the red, green, blue, and alpha output channels, in that order. Each position accepts one of `r`, `g`, `b`, `a`, `0`, or `1`; selections may be repeated. Its default, `rgba`, preserves the original channels. A non-identity swizzle requires the `texture-component-swizzle` feature to be enabled on the device before the view is created.
+  
+  Non-identity swizzles affect shader reads. WebGPU requires the identity `rgba` swizzle when a view is used as a storage texture or as a render attachment.
+  
+  In Kotlin, configure the channels with `GPUTextureSwizzle`. For example, the WebGPU value `b01r` is `GPUTextureSwizzle(red = GPUTextureSwizzleSource.Blue, green = GPUTextureSwizzleSource.Zero, blue = GPUTextureSwizzleSource.One, alpha = GPUTextureSwizzleSource.Red)`. Use `toWebGpuString()` when converting to the Web binding's `DOMString`.
+  
+  See also: [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputextureviewdescriptor).
 "GPUSamplerBindingLayout": |
   Represents a binding layout for samplers in WebGPU. This interface defines the type of sampler that can be bound to a specific binding.
   
@@ -3807,3 +3815,21 @@
   The address is advanced by arrayStride for each vertex, and reset between instances.
 "GPUVertexStepMode#	Instance": |
   The address is advanced by arrayStride for each instance.
+"GPUSupportedLimits#maxImmediateSize": |
+  The maximum size, in bytes, of immediate data range used in a pipeline. Note: 64 bytes is the size of a 4×4 matrix of f32 values.
+"GPUSupportedLimits#maxStorageBuffersInVertexStage": |
+  For the vertex stage, the maximum number of GPUBindGroupLayoutEntry entries across a GPUPipelineLayout which are storage buffers. See Exceeds the binding slot limits.
+"GPUSupportedLimits#maxStorageBuffersInFragmentStage": |
+  For the fragment stage, the maximum number of GPUBindGroupLayoutEntry entries across a GPUPipelineLayout which are storage buffers. See Exceeds the binding slot limits.
+"GPUSupportedLimits#maxStorageTexturesInVertexStage": |
+  For the vertex stage, the maximum number of GPUBindGroupLayoutEntry entries across a GPUPipelineLayout which are storage textures. See Exceeds the binding slot limits.
+"GPUSupportedLimits#maxStorageTexturesInFragmentStage": |
+  For the fragment stage, the maximum number of GPUBindGroupLayoutEntry entries across a GPUPipelineLayout which are storage textures. See Exceeds the binding slot limits.
+"GPUTextureDescriptor#textureBindingViewDimension": |
+  On devices without "core-features-and-limits", views created from this texture must have this as their dimension. If not specified, a default is chosen. On devices with "core-features-and-limits", this is ignored, and there is no such restriction.
+"GPUPipelineLayoutDescriptor#immediateSize": |
+  The size, in bytes, of the immediate data range used by the pipeline.
+"GPUBindingCommandsMixin#setImmediates(rangeOffset, data, dataOffset, dataSize)": |
+  Sets immediate data for subsequent render or compute commands. Called on: GPUBindingCommandsMixin this. Arguments: Arguments for the GPUBindingCommandsMixin.setImmediates(rangeOffset, data, dataOffset, dataSize) method. Parameter Type Nullable Optional Description rangeOffset GPUSize32 ✘ ✘ Offset in bytes into the immediate data range to begin writing at. data AllowSharedBufferSource ✘ ✘ Data to write into the immediate data range. dataOffset GPUSize64 ✘ ✔ Offset into data to begin writing from. Given in elements if data is a TypedArray and bytes otherwise. dataSize GPUSize64 ✘ ✔ Size of content to write from data. Given in elements if data is a TypedArray and bytes otherwise. Returns: undefined Content timeline steps: If data is an ArrayBuffer or DataView, let the element type be "byte". Otherwise, data is a TypedArray; let the element type be the type of the TypedArray. Let dataElementCount be the size of data, in elements. If dataSize is missing, let contentsSize be dataElementCount − dataOffset. Otherwise, let contentsSize be dataSize. If any of the following conditions are unsatisfied, throw an OperationError and return. contentsSize ≥ 0. dataOffset + contentsSize ≤ dataElementCount. contentsSize, converted to bytes, is a multiple of 4. Let dataContents be a copy of the bytes held by the buffer source data. Let contents be the contentsSize elements of dataContents starting at an offset of dataOffset elements. Let contentsBytes be contentsSize converted to bytes. Issue the subsequent steps on the Device timeline of this.[[device]]. Device timeline steps: Validate the encoder state of this. If it returns false, return. If any of the following conditions are unsatisfied, invalidate this and return. rangeOffset is a multiple of 4. rangeOffset + contentsBytes ≤ this.[[device]].[[limits]].maxImmediateSize. For each byte b at index i in contents: Let byteIndex be rangeOffset + i. Let slotIndex be floor(byteIndex ÷ 4). Set this.[[immediate_data]][byteIndex] to b. Set this.[[immediate_slots_set]][slotIndex] to true.
+"GPUTextureOrGPUTextureView": |
+  A union type representing either a `GPUTexture` or a `GPUTextureView`.

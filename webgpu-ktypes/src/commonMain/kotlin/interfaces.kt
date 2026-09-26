@@ -15,29 +15,65 @@ package io.ygdrasil.webgpu
  */
 sealed interface GPUBindingResource
 /**
- * /**
- *  * The `GPUSampler` interface encodes transformations and filtering information that can be used in a shader to interpret texture resource data.
- *  * 
- *  * This interface is created via the [GPUDevice.createSampler()] method.
- *  * 
- *  * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpusampler).
- *  */
- * interface GPUSampler : GPUBindingResource, GPUObjectBase, AutoCloseable
+ * The `GPUBuffer` interface represents a block of memory that can be used in GPU operations. Data is stored in linear layout, meaning each byte of the allocation can be addressed by its offset from the start of the buffer, subject to alignment restrictions depending on the operation. Some buffers can be mapped, making the block of memory accessible via an `ArrayBuffer` called its mapping.
+ * 
+ * Buffers are created via [GPUDevice.createBuffer()](https://www.w3.org/TR/webgpu/#dom-gpudevice-createbuffer). Buffers may be [mappedAtCreation](https://www.w3.org/TR/webgpu/#dom-gpubufferdescriptor-mappedatcreation).
+ * 
+ * Refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubuffer) for more details.
  * 
  */
-interface GPUSampler : GPUBindingResource, GPUObjectBase, AutoCloseable
-/**
- * A `GPUTextureView` represents a view onto some subset of the texture subresources defined by a particular [GPUTexture]. This interface allows for efficient access and manipulation of specific portions of a texture, enabling optimized rendering and data processing.
- * 
- * The `GPUTextureView` is part of the WebGPU API and is designed to be used in conjunction with other GPU resources such as [GPUBindGroup] and [GPURenderPipeline]. It provides a way to bind specific texture views to shaders, enabling advanced rendering techniques.
- * 
- * This interface inherits from `GPUBindingResource` and `GPUObjectBase`, which means it can be used as a binding resource in various GPU operations. Additionally, it implements the `AutoCloseable` interface, allowing for proper resource management and cleanup.
- * 
- * **See also:**
- * - [WebGPU Specification: GPUTextureView](https://www.w3.org/TR/webgpu/#gputextureview)
- * 
- */
-interface GPUTextureView : GPUBindingResource, GPUObjectBase, AutoCloseable
+interface GPUBuffer : GPUBindingResource, GPUObjectBase, AutoCloseable {
+	/**
+	 * The `size` property returns the size of the buffer in bytes. This value is read-only and represents the total allocated memory for this buffer.
+	 * 
+	 * **Type:** [GPUSize64Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64out)
+	 * 
+	 */
+	val size: GPUSize64Out
+	/**
+	 * The `usage` property specifies how the buffer can be used. This value is read-only and represents a combination of flags indicating the allowed operations on this buffer.
+	 * 
+	 * **Type:** [GPUBufferUsageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpuflagsconstant)
+	 * 
+	 */
+	val usage: Set<GPUBufferUsage>
+	/**
+	 * The `mapState` property indicates the current mapping state of the buffer. This value is read-only and can be one of the following: `unmapped`, `pending`, or `mapped`.
+	 * 
+	 * **Type:** [GPUBufferMapState](https://www.w3.org/TR/webgpu/#enumdef-gpubuffermapstate)
+	 * 
+	 */
+	val mapState: GPUBufferMapState
+	/**
+	 * The `mapAsync` function asynchronously maps the buffer into an `ArrayBuffer`. This operation is non-blocking and returns a [Result](https://kotlinlang.org/api/latest/kotlinx-coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-result/) indicating success or failure.
+	 * 
+	 * **Parameters:**
+	 * - `mode`: The mapping mode, which can be either [GPUMapModeRead] or [GPUMapModeWrite].
+	 * - `offset`: (Optional) The offset within the buffer to start mapping. Defaults to 0.
+	 * - `size`: (Optional) The size of the range to map. If null, maps from the offset to the end of the buffer.
+	 * 
+	 * **Returns:** A [Result](https://kotlinlang.org/api/latest/kotlinx-coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-result/) indicating success or failure.
+	 * 
+	 */
+	suspend fun mapAsync(mode: GPUMapMode, offset: GPUSize64 = 0u, size: GPUSize64? = null): Result<Unit>
+	/**
+	 * The `getMappedRange` function returns an `ArrayBuffer` representing the mapped range of the buffer. This method can only be called when the buffer is in the `mapped` state.
+	 * 
+	 * **Parameters:**
+	 * - `offset`: (Optional) The offset within the buffer to start mapping. Defaults to 0.
+	 * - `size`: (Optional) The size of the range to map. If null, maps from the offset to the end of the buffer.
+	 * 
+	 * **Returns:** An [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) containing the mapped data.
+	 * 
+	 */
+	fun getMappedRange(offset: GPUSize64 = 0u, size: GPUSize64? = null): ArrayBuffer
+	/**
+	 * The `unmap` function unmaps the buffer, making it no longer accessible via an `ArrayBuffer`. This method can only be called when the buffer is in the `mapped` state.
+	 * 
+	 */
+	fun unmap()
+}
+
 /**
  * The `GPUBufferBinding` interface describes a buffer and an optional range to bind as a resource. This is used in the context of WebGPU to specify how buffers should be bound for shader access.
  * 
@@ -68,6 +104,106 @@ interface GPUBufferBinding : GPUBindingResource {
 	val size: GPUSize64?
 }
 
+/**
+ * /**
+ *  * The `GPUSampler` interface encodes transformations and filtering information that can be used in a shader to interpret texture resource data.
+ *  * 
+ *  * This interface is created via the [GPUDevice.createSampler()] method.
+ *  * 
+ *  * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpusampler).
+ *  */
+ * interface GPUSampler : GPUBindingResource, GPUObjectBase, AutoCloseable
+ * 
+ */
+interface GPUSampler : GPUBindingResource, GPUObjectBase, AutoCloseable
+/**
+ * Represents a texture in the WebGPU API. A texture is composed of 1D, 2D, or 3D arrays of data that can contain multiple values per element to represent things like colors.
+ * Textures can be read and written in various ways depending on their usage flags. They are often stored in GPU memory with a layout optimized for multidimensional access.
+ * 
+ * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#texture-interface).
+ * 
+ */
+interface GPUTexture : GPUBindingResource, GPUObjectBase, GPUTextureOrGPUTextureView, AutoCloseable {
+	/**
+	 * Represents the width of the texture in texels.
+	 * 
+	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
+	 * 
+	 */
+	val width: GPUIntegerCoordinateOut
+	/**
+	 * Represents the height of the texture in texels.
+	 * 
+	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
+	 * 
+	 */
+	val height: GPUIntegerCoordinateOut
+	/**
+	 * Represents the depth of the texture in texels for 3D textures or the number of array layers for 2D array textures.
+	 * 
+	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
+	 * 
+	 */
+	val depthOrArrayLayers: GPUIntegerCoordinateOut
+	/**
+	 * Represents the number of mipmap levels in the texture.
+	 * 
+	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
+	 * 
+	 */
+	val mipLevelCount: GPUIntegerCoordinateOut
+	/**
+	 * Represents the number of samples per pixel in the texture.
+	 * 
+	 * **Type:** [GPUSize32Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32out)
+	 * 
+	 */
+	val sampleCount: GPUSize32Out
+	/**
+	 * Specifies the dimension of the texture (1D, 2D, or 3D).
+	 * 
+	 * **Type:** [GPUTextureDimension](https://www.w3.org/TR/webgpu/#enumdef-gputexturedimension)
+	 * 
+	 */
+	val dimension: GPUTextureDimension
+	/**
+	 * Specifies the format of the texture data.
+	 * 
+	 * **Type:** [GPUTextureFormat](https://www.w3.org/TR/webgpu/#enumdef-gputextureformat)
+	 * 
+	 */
+	val format: GPUTextureFormat
+	/**
+	 * Specifies the usage flags for the texture, indicating how it can be used (e.g., as a render target, sampler, etc.).
+	 * 
+	 * **Type:** [GPUTextureUsageFlags](https://www.w3.org/TR/webgpu/#namespacedef-gputextureusage)
+	 * 
+	 */
+	val usage: Set<GPUTextureUsage>
+	/**
+	 * Creates a view of the texture.
+	 * 
+	 * **Parameters:**
+	 * - `descriptor`: An optional [GPUTextureViewDescriptor](https://www.w3.org/TR/webgpu/#dictdef-gputextureviewdescriptor) that specifies the parameters for creating the texture view. If not provided, default values are used.
+	 * 
+	 * **Return Type:** [GPUTextureView](https://www.w3.org/TR/webgpu/#gputextureview)
+	 * 
+	 */
+	fun createView(descriptor: GPUTextureViewDescriptor? = null): GPUTextureView
+}
+
+/**
+ * A `GPUTextureView` represents a view onto some subset of the texture subresources defined by a particular [GPUTexture]. This interface allows for efficient access and manipulation of specific portions of a texture, enabling optimized rendering and data processing.
+ * 
+ * The `GPUTextureView` is part of the WebGPU API and is designed to be used in conjunction with other GPU resources such as [GPUBindGroup] and [GPURenderPipeline]. It provides a way to bind specific texture views to shaders, enabling advanced rendering techniques.
+ * 
+ * This interface inherits from `GPUBindingResource` and `GPUObjectBase`, which means it can be used as a binding resource in various GPU operations. Additionally, it implements the `AutoCloseable` interface, allowing for proper resource management and cleanup.
+ * 
+ * **See also:**
+ * - [WebGPU Specification: GPUTextureView](https://www.w3.org/TR/webgpu/#gputextureview)
+ * 
+ */
+interface GPUTextureView : GPUBindingResource, GPUObjectBase, GPUTextureOrGPUTextureView, AutoCloseable
 /**
  * Represents a color in the RGBA format, which can be either a sequence of four `Double` values or a [GPUColorDict]. This interface provides access to the red, green, blue, and alpha channel values.
  * 
@@ -297,6 +433,11 @@ interface GPUSupportedLimits {
 	 */
 	val maxBindGroupsPlusVertexBuffers: UInt
 	/**
+	 * The maximum size, in bytes, of immediate data range used in a pipeline. Note: 64 bytes is the size of a 4×4 matrix of f32 values.
+	 * 
+	 */
+	val maxImmediateSize: UInt
+	/**
 	 * The maximum number of bindings per bind group. This value represents the largest allowable number of bindings for a single bind group.
 	 * 
 	 * **Type:** `UInt`
@@ -339,12 +480,32 @@ interface GPUSupportedLimits {
 	 */
 	val maxStorageBuffersPerShaderStage: UInt
 	/**
+	 * For the vertex stage, the maximum number of GPUBindGroupLayoutEntry entries across a GPUPipelineLayout which are storage buffers. See Exceeds the binding slot limits.
+	 * 
+	 */
+	val maxStorageBuffersInVertexStage: UInt
+	/**
+	 * For the fragment stage, the maximum number of GPUBindGroupLayoutEntry entries across a GPUPipelineLayout which are storage buffers. See Exceeds the binding slot limits.
+	 * 
+	 */
+	val maxStorageBuffersInFragmentStage: UInt
+	/**
 	 * The maximum number of storage textures per shader stage. This value represents the largest allowable number of storage textures for a single shader stage.
 	 * 
 	 * **Type:** `UInt`
 	 * 
 	 */
 	val maxStorageTexturesPerShaderStage: UInt
+	/**
+	 * For the vertex stage, the maximum number of GPUBindGroupLayoutEntry entries across a GPUPipelineLayout which are storage textures. See Exceeds the binding slot limits.
+	 * 
+	 */
+	val maxStorageTexturesInVertexStage: UInt
+	/**
+	 * For the fragment stage, the maximum number of GPUBindGroupLayoutEntry entries across a GPUPipelineLayout which are storage textures. See Exceeds the binding slot limits.
+	 * 
+	 */
+	val maxStorageTexturesInFragmentStage: UInt
 	/**
 	 * The maximum number of uniform buffers per shader stage. This value represents the largest allowable number of uniform buffers for a single shader stage.
 	 * 
@@ -814,142 +975,6 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 }
 
 /**
- * The `GPUBuffer` interface represents a block of memory that can be used in GPU operations. Data is stored in linear layout, meaning each byte of the allocation can be addressed by its offset from the start of the buffer, subject to alignment restrictions depending on the operation. Some buffers can be mapped, making the block of memory accessible via an `ArrayBuffer` called its mapping.
- * 
- * Buffers are created via [GPUDevice.createBuffer()](https://www.w3.org/TR/webgpu/#dom-gpudevice-createbuffer). Buffers may be [mappedAtCreation](https://www.w3.org/TR/webgpu/#dom-gpubufferdescriptor-mappedatcreation).
- * 
- * Refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#gpubuffer) for more details.
- * 
- */
-interface GPUBuffer : GPUObjectBase, AutoCloseable {
-	/**
-	 * The `size` property returns the size of the buffer in bytes. This value is read-only and represents the total allocated memory for this buffer.
-	 * 
-	 * **Type:** [GPUSize64Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize64out)
-	 * 
-	 */
-	val size: GPUSize64Out
-	/**
-	 * The `usage` property specifies how the buffer can be used. This value is read-only and represents a combination of flags indicating the allowed operations on this buffer.
-	 * 
-	 * **Type:** [GPUBufferUsageFlags](https://www.w3.org/TR/webgpu/#typedefdef-gpuflagsconstant)
-	 * 
-	 */
-	val usage: Set<GPUBufferUsage>
-	/**
-	 * The `mapState` property indicates the current mapping state of the buffer. This value is read-only and can be one of the following: `unmapped`, `pending`, or `mapped`.
-	 * 
-	 * **Type:** [GPUBufferMapState](https://www.w3.org/TR/webgpu/#enumdef-gpubuffermapstate)
-	 * 
-	 */
-	val mapState: GPUBufferMapState
-	/**
-	 * The `mapAsync` function asynchronously maps the buffer into an `ArrayBuffer`. This operation is non-blocking and returns a [Result](https://kotlinlang.org/api/latest/kotlinx-coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-result/) indicating success or failure.
-	 * 
-	 * **Parameters:**
-	 * - `mode`: The mapping mode, which can be either [GPUMapModeRead] or [GPUMapModeWrite].
-	 * - `offset`: (Optional) The offset within the buffer to start mapping. Defaults to 0.
-	 * - `size`: (Optional) The size of the range to map. If null, maps from the offset to the end of the buffer.
-	 * 
-	 * **Returns:** A [Result](https://kotlinlang.org/api/latest/kotlinx-coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-result/) indicating success or failure.
-	 * 
-	 */
-	suspend fun mapAsync(mode: GPUMapMode, offset: GPUSize64 = 0u, size: GPUSize64? = null): Result<Unit>
-	/**
-	 * The `getMappedRange` function returns an `ArrayBuffer` representing the mapped range of the buffer. This method can only be called when the buffer is in the `mapped` state.
-	 * 
-	 * **Parameters:**
-	 * - `offset`: (Optional) The offset within the buffer to start mapping. Defaults to 0.
-	 * - `size`: (Optional) The size of the range to map. If null, maps from the offset to the end of the buffer.
-	 * 
-	 * **Returns:** An [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) containing the mapped data.
-	 * 
-	 */
-	fun getMappedRange(offset: GPUSize64 = 0u, size: GPUSize64? = null): ArrayBuffer
-	/**
-	 * The `unmap` function unmaps the buffer, making it no longer accessible via an `ArrayBuffer`. This method can only be called when the buffer is in the `mapped` state.
-	 * 
-	 */
-	fun unmap()
-}
-
-/**
- * Represents a texture in the WebGPU API. A texture is composed of 1D, 2D, or 3D arrays of data that can contain multiple values per element to represent things like colors.
- * Textures can be read and written in various ways depending on their usage flags. They are often stored in GPU memory with a layout optimized for multidimensional access.
- * 
- * For more details, refer to the [WebGPU specification](https://www.w3.org/TR/webgpu/#texture-interface).
- * 
- */
-interface GPUTexture : GPUObjectBase, AutoCloseable {
-	/**
-	 * Represents the width of the texture in texels.
-	 * 
-	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
-	 * 
-	 */
-	val width: GPUIntegerCoordinateOut
-	/**
-	 * Represents the height of the texture in texels.
-	 * 
-	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
-	 * 
-	 */
-	val height: GPUIntegerCoordinateOut
-	/**
-	 * Represents the depth of the texture in texels for 3D textures or the number of array layers for 2D array textures.
-	 * 
-	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
-	 * 
-	 */
-	val depthOrArrayLayers: GPUIntegerCoordinateOut
-	/**
-	 * Represents the number of mipmap levels in the texture.
-	 * 
-	 * **Type:** [GPUIntegerCoordinateOut](https://www.w3.org/TR/webgpu/#typedefdef-gpuintegercoordinateout)
-	 * 
-	 */
-	val mipLevelCount: GPUIntegerCoordinateOut
-	/**
-	 * Represents the number of samples per pixel in the texture.
-	 * 
-	 * **Type:** [GPUSize32Out](https://www.w3.org/TR/webgpu/#typedefdef-gpusize32out)
-	 * 
-	 */
-	val sampleCount: GPUSize32Out
-	/**
-	 * Specifies the dimension of the texture (1D, 2D, or 3D).
-	 * 
-	 * **Type:** [GPUTextureDimension](https://www.w3.org/TR/webgpu/#enumdef-gputexturedimension)
-	 * 
-	 */
-	val dimension: GPUTextureDimension
-	/**
-	 * Specifies the format of the texture data.
-	 * 
-	 * **Type:** [GPUTextureFormat](https://www.w3.org/TR/webgpu/#enumdef-gputextureformat)
-	 * 
-	 */
-	val format: GPUTextureFormat
-	/**
-	 * Specifies the usage flags for the texture, indicating how it can be used (e.g., as a render target, sampler, etc.).
-	 * 
-	 * **Type:** [GPUTextureUsageFlags](https://www.w3.org/TR/webgpu/#namespacedef-gputextureusage)
-	 * 
-	 */
-	val usage: Set<GPUTextureUsage>
-	/**
-	 * Creates a view of the texture.
-	 * 
-	 * **Parameters:**
-	 * - `descriptor`: An optional [GPUTextureViewDescriptor](https://www.w3.org/TR/webgpu/#dictdef-gputextureviewdescriptor) that specifies the parameters for creating the texture view. If not provided, default values are used.
-	 * 
-	 * **Return Type:** [GPUTextureView](https://www.w3.org/TR/webgpu/#gputextureview)
-	 * 
-	 */
-	fun createView(descriptor: GPUTextureViewDescriptor? = null): GPUTextureView
-}
-
-/**
  * The `GPUBindGroupLayout` interface defines the structure that specifies how resources are bound in a [GPUBindGroup] and made accessible to shader stages. This layout is crucial for organizing and managing bindings efficiently within the WebGPU pipeline.
  * 
  * **Inheritance:**
@@ -1332,6 +1357,11 @@ interface GPUBindingCommandsMixin {
 	 * 
 	 */
 	fun setBindGroup(index: GPUIndex32, bindGroup: GPUBindGroup?, dynamicOffsetsData: List<UInt> = emptyList())
+	/**
+	 * Sets immediate data for subsequent render or compute commands. Called on: GPUBindingCommandsMixin this. Arguments: Arguments for the GPUBindingCommandsMixin.setImmediates(rangeOffset, data, dataOffset, dataSize) method. Parameter Type Nullable Optional Description rangeOffset GPUSize32 ✘ ✘ Offset in bytes into the immediate data range to begin writing at. data AllowSharedBufferSource ✘ ✘ Data to write into the immediate data range. dataOffset GPUSize64 ✘ ✔ Offset into data to begin writing from. Given in elements if data is a TypedArray and bytes otherwise. dataSize GPUSize64 ✘ ✔ Size of content to write from data. Given in elements if data is a TypedArray and bytes otherwise. Returns: undefined Content timeline steps: If data is an ArrayBuffer or DataView, let the element type be "byte". Otherwise, data is a TypedArray; let the element type be the type of the TypedArray. Let dataElementCount be the size of data, in elements. If dataSize is missing, let contentsSize be dataElementCount − dataOffset. Otherwise, let contentsSize be dataSize. If any of the following conditions are unsatisfied, throw an OperationError and return. contentsSize ≥ 0. dataOffset + contentsSize ≤ dataElementCount. contentsSize, converted to bytes, is a multiple of 4. Let dataContents be a copy of the bytes held by the buffer source data. Let contents be the contentsSize elements of dataContents starting at an offset of dataOffset elements. Let contentsBytes be contentsSize converted to bytes. Issue the subsequent steps on the Device timeline of this.[[device]]. Device timeline steps: Validate the encoder state of this. If it returns false, return. If any of the following conditions are unsatisfied, invalidate this and return. rangeOffset is a multiple of 4. rangeOffset + contentsBytes ≤ this.[[device]].[[limits]].maxImmediateSize. For each byte b at index i in contents: Let byteIndex be rangeOffset + i. Let slotIndex be floor(byteIndex ÷ 4). Set this.[[immediate_data]][byteIndex] to b. Set this.[[immediate_slots_set]][slotIndex] to true.
+	 * 
+	 */
+	fun setImmediates(rangeOffset: GPUSize32, data: ArrayBuffer, dataOffset: GPUSize64 = 0u, dataSize: GPUSize64? = null)
 }
 
 /**
@@ -1998,6 +2028,11 @@ interface GPUTextureDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 */
 	val viewFormats: List<GPUTextureFormat>
+	/**
+	 * On devices without "core-features-and-limits", views created from this texture must have this as their dimension. If not specified, a default is chosen. On devices with "core-features-and-limits", this is ignored, and there is no such restriction.
+	 * 
+	 */
+	val textureBindingViewDimension: GPUTextureViewDimension?
 }
 
 /**
@@ -2063,6 +2098,17 @@ interface GPUTextureViewDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 */
 	val arrayLayerCount: GPUIntegerCoordinate?
+	/**
+	 * `swizzle` maps the red, green, blue, and alpha output channels, in that order. Each position accepts one of `r`, `g`, `b`, `a`, `0`, or `1`; selections may be repeated. Its default, `rgba`, preserves the original channels. A non-identity swizzle requires the `texture-component-swizzle` feature to be enabled on the device before the view is created.
+	 * 
+	 * Non-identity swizzles affect shader reads. WebGPU requires the identity `rgba` swizzle when a view is used as a storage texture or as a render attachment.
+	 * 
+	 * In Kotlin, configure the channels with `GPUTextureSwizzle`. For example, the WebGPU value `b01r` is `GPUTextureSwizzle(red = GPUTextureSwizzleSource.Blue, green = GPUTextureSwizzleSource.Zero, blue = GPUTextureSwizzleSource.One, alpha = GPUTextureSwizzleSource.Red)`. Use `toWebGpuString()` when converting to the Web binding's `DOMString`.
+	 * 
+	 * See also: [WebGPU specification](https://www.w3.org/TR/webgpu/#dictdef-gputextureviewdescriptor).
+	 * 
+	 */
+	val swizzle: GPUTextureSwizzle
 }
 
 /**
@@ -2438,6 +2484,11 @@ interface GPUPipelineLayoutDescriptor : GPUObjectDescriptorBase {
 	 * 
 	 */
 	val bindGroupLayouts: List<GPUBindGroupLayout>
+	/**
+	 * The size, in bytes, of the immediate data range used by the pipeline.
+	 * 
+	 */
+	val immediateSize: GPUSize32
 }
 
 /**
@@ -3315,7 +3366,7 @@ interface GPURenderPassColorAttachment {
 	 * This property is required and must be a valid renderable texture view. The format of the view must be a color renderable format.
 	 * 
 	 */
-	val view: GPUTextureView
+	val view: GPUTextureOrGPUTextureView
 	/**
 	 * Indicates the depth slice index of the GPUTextureView that will be output to for this color attachment when the view's dimension is "3d".
 	 * 
@@ -3329,7 +3380,7 @@ interface GPURenderPassColorAttachment {
 	 * This property is optional and must only be provided if the GPUTextureView's sample count is greater than 1. The resolve target must have a sample count of 1.
 	 * 
 	 */
-	val resolveTarget: GPUTextureView?
+	val resolveTarget: GPUTextureOrGPUTextureView?
 	/**
 	 * Indicates the value to clear the GPUTextureView to prior to executing the render pass.
 	 * 
@@ -3354,6 +3405,11 @@ interface GPURenderPassColorAttachment {
 }
 
 /**
+ * A union type representing either a `GPUTexture` or a `GPUTextureView`.
+ * 
+ */
+sealed interface GPUTextureOrGPUTextureView
+/**
  * The `GPURenderPassDepthStencilAttachment` interface represents a depth/stencil attachment for a render pass. It specifies the texture view and various operations to be performed on the depth and stencil components of that view during the render pass.
  * 
  * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#gpurenderpassdepthstencilattachment).
@@ -3366,7 +3422,7 @@ interface GPURenderPassDepthStencilAttachment {
 	 * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdepthstencilattachment-view).
 	 * 
 	 */
-	val view: GPUTextureView
+	val view: GPUTextureOrGPUTextureView
 	/**
 	 * Indicates the value to clear the `view`'s depth component to prior to executing the render pass. This value is ignored if `depthLoadOp` is not set to `GPULoadOp.CLEAR`. The value must be between 0.0 and 1.0, inclusive.
 	 * 

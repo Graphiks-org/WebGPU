@@ -1,6 +1,6 @@
 package generator
 
-import generator.files.RemoteFileManager
+import generator.files.SpecificationResources
 import generator.lm.DocumentGeneratorManager
 import generator.tasks.ModelGenerator
 import kotlinx.coroutines.runBlocking
@@ -15,11 +15,11 @@ open class LLMDocGeneratorTask : DefaultTask() {
 
     @TaskAction
     fun launch() = runBlocking {
-        val remoteFileManager = RemoteFileManager(project.projectDir.toPath())
-        val context = ModelGenerator(remoteFileManager).context
-        val htmlDocumentation = remoteFileManager.findFilePath(RemoteFileManager.Files.webgpuHtml)
+        val specificationResources = SpecificationResources(project.projectDir.toPath())
+        val context = ModelGenerator(specificationResources).context
+        val htmlDocumentation = specificationResources.findFilePath(SpecificationResources.Files.webgpuHtml)
             ?: error("Cannot find the html documentation")
-         DocumentGeneratorManager(context, remoteFileManager, htmlDocumentation, logger)
+         DocumentGeneratorManager(context, specificationResources, htmlDocumentation, logger)
             .also { it.inferHtmlDocumentation() }
     }
 }

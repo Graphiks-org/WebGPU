@@ -853,6 +853,21 @@ final enum class io.ygdrasil.webgpu/GPUTextureSampleType : kotlin/Enum<io.ygdras
     }
 }
 
+final enum class io.ygdrasil.webgpu/GPUTextureSwizzleSource : kotlin/Enum<io.ygdrasil.webgpu/GPUTextureSwizzleSource> { // io.ygdrasil.webgpu/GPUTextureSwizzleSource|null[0]
+    enum entry Alpha // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Alpha|null[0]
+    enum entry Blue // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Blue|null[0]
+    enum entry Green // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Green|null[0]
+    enum entry One // io.ygdrasil.webgpu/GPUTextureSwizzleSource.One|null[0]
+    enum entry Red // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Red|null[0]
+    enum entry Zero // io.ygdrasil.webgpu/GPUTextureSwizzleSource.Zero|null[0]
+
+    final val entries // io.ygdrasil.webgpu/GPUTextureSwizzleSource.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<io.ygdrasil.webgpu/GPUTextureSwizzleSource> // io.ygdrasil.webgpu/GPUTextureSwizzleSource.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzleSource.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<io.ygdrasil.webgpu/GPUTextureSwizzleSource> // io.ygdrasil.webgpu/GPUTextureSwizzleSource.values|values#static(){}[0]
+}
+
 final enum class io.ygdrasil.webgpu/GPUTextureViewDimension : kotlin/Enum<io.ygdrasil.webgpu/GPUTextureViewDimension> { // io.ygdrasil.webgpu/GPUTextureViewDimension|null[0]
     enum entry Cube // io.ygdrasil.webgpu/GPUTextureViewDimension.Cube|null[0]
     enum entry CubeArray // io.ygdrasil.webgpu/GPUTextureViewDimension.CubeArray|null[0]
@@ -1048,6 +1063,7 @@ abstract interface io.ygdrasil.webgpu/GPUBindGroupLayoutEntry { // io.ygdrasil.w
 
 abstract interface io.ygdrasil.webgpu/GPUBindingCommandsMixin { // io.ygdrasil.webgpu/GPUBindingCommandsMixin|null[0]
     abstract fun setBindGroup(kotlin/UInt, io.ygdrasil.webgpu/GPUBindGroup?, kotlin.collections/List<kotlin/UInt> = ...) // io.ygdrasil.webgpu/GPUBindingCommandsMixin.setBindGroup|setBindGroup(kotlin.UInt;io.ygdrasil.webgpu.GPUBindGroup?;kotlin.collections.List<kotlin.UInt>){}[0]
+    abstract fun setImmediates(kotlin/UInt, io.ygdrasil.webgpu/ArrayBuffer, kotlin/ULong = ..., kotlin/ULong? = ...) // io.ygdrasil.webgpu/GPUBindingCommandsMixin.setImmediates|setImmediates(kotlin.UInt;io.ygdrasil.webgpu.ArrayBuffer;kotlin.ULong;kotlin.ULong?){}[0]
 }
 
 abstract interface io.ygdrasil.webgpu/GPUBlendComponent { // io.ygdrasil.webgpu/GPUBlendComponent|null[0]
@@ -1066,7 +1082,7 @@ abstract interface io.ygdrasil.webgpu/GPUBlendState { // io.ygdrasil.webgpu/GPUB
         abstract fun <get-color>(): io.ygdrasil.webgpu/GPUBlendComponent // io.ygdrasil.webgpu/GPUBlendState.color.<get-color>|<get-color>(){}[0]
 }
 
-abstract interface io.ygdrasil.webgpu/GPUBuffer : io.ygdrasil.webgpu/GPUObjectBase, kotlin/AutoCloseable { // io.ygdrasil.webgpu/GPUBuffer|null[0]
+abstract interface io.ygdrasil.webgpu/GPUBuffer : io.ygdrasil.webgpu/GPUBindingResource, io.ygdrasil.webgpu/GPUObjectBase, kotlin/AutoCloseable { // io.ygdrasil.webgpu/GPUBuffer|null[0]
     abstract val mapState // io.ygdrasil.webgpu/GPUBuffer.mapState|{}mapState[0]
         abstract fun <get-mapState>(): io.ygdrasil.webgpu/GPUBufferMapState // io.ygdrasil.webgpu/GPUBuffer.mapState.<get-mapState>|<get-mapState>(){}[0]
     abstract val size // io.ygdrasil.webgpu/GPUBuffer.size|{}size[0]
@@ -1337,6 +1353,8 @@ abstract interface io.ygdrasil.webgpu/GPUPipelineLayout : io.ygdrasil.webgpu/GPU
 abstract interface io.ygdrasil.webgpu/GPUPipelineLayoutDescriptor : io.ygdrasil.webgpu/GPUObjectDescriptorBase { // io.ygdrasil.webgpu/GPUPipelineLayoutDescriptor|null[0]
     abstract val bindGroupLayouts // io.ygdrasil.webgpu/GPUPipelineLayoutDescriptor.bindGroupLayouts|{}bindGroupLayouts[0]
         abstract fun <get-bindGroupLayouts>(): kotlin.collections/List<io.ygdrasil.webgpu/GPUBindGroupLayout> // io.ygdrasil.webgpu/GPUPipelineLayoutDescriptor.bindGroupLayouts.<get-bindGroupLayouts>|<get-bindGroupLayouts>(){}[0]
+    abstract val immediateSize // io.ygdrasil.webgpu/GPUPipelineLayoutDescriptor.immediateSize|{}immediateSize[0]
+        abstract fun <get-immediateSize>(): kotlin/UInt // io.ygdrasil.webgpu/GPUPipelineLayoutDescriptor.immediateSize.<get-immediateSize>|<get-immediateSize>(){}[0]
 }
 
 abstract interface io.ygdrasil.webgpu/GPUPrimitiveState { // io.ygdrasil.webgpu/GPUPrimitiveState|null[0]
@@ -1417,11 +1435,11 @@ abstract interface io.ygdrasil.webgpu/GPURenderPassColorAttachment { // io.ygdra
     abstract val loadOp // io.ygdrasil.webgpu/GPURenderPassColorAttachment.loadOp|{}loadOp[0]
         abstract fun <get-loadOp>(): io.ygdrasil.webgpu/GPULoadOp // io.ygdrasil.webgpu/GPURenderPassColorAttachment.loadOp.<get-loadOp>|<get-loadOp>(){}[0]
     abstract val resolveTarget // io.ygdrasil.webgpu/GPURenderPassColorAttachment.resolveTarget|{}resolveTarget[0]
-        abstract fun <get-resolveTarget>(): io.ygdrasil.webgpu/GPUTextureView? // io.ygdrasil.webgpu/GPURenderPassColorAttachment.resolveTarget.<get-resolveTarget>|<get-resolveTarget>(){}[0]
+        abstract fun <get-resolveTarget>(): io.ygdrasil.webgpu/GPUTextureOrGPUTextureView? // io.ygdrasil.webgpu/GPURenderPassColorAttachment.resolveTarget.<get-resolveTarget>|<get-resolveTarget>(){}[0]
     abstract val storeOp // io.ygdrasil.webgpu/GPURenderPassColorAttachment.storeOp|{}storeOp[0]
         abstract fun <get-storeOp>(): io.ygdrasil.webgpu/GPUStoreOp // io.ygdrasil.webgpu/GPURenderPassColorAttachment.storeOp.<get-storeOp>|<get-storeOp>(){}[0]
     abstract val view // io.ygdrasil.webgpu/GPURenderPassColorAttachment.view|{}view[0]
-        abstract fun <get-view>(): io.ygdrasil.webgpu/GPUTextureView // io.ygdrasil.webgpu/GPURenderPassColorAttachment.view.<get-view>|<get-view>(){}[0]
+        abstract fun <get-view>(): io.ygdrasil.webgpu/GPUTextureOrGPUTextureView // io.ygdrasil.webgpu/GPURenderPassColorAttachment.view.<get-view>|<get-view>(){}[0]
 }
 
 abstract interface io.ygdrasil.webgpu/GPURenderPassDepthStencilAttachment { // io.ygdrasil.webgpu/GPURenderPassDepthStencilAttachment|null[0]
@@ -1442,7 +1460,7 @@ abstract interface io.ygdrasil.webgpu/GPURenderPassDepthStencilAttachment { // i
     abstract val stencilStoreOp // io.ygdrasil.webgpu/GPURenderPassDepthStencilAttachment.stencilStoreOp|{}stencilStoreOp[0]
         abstract fun <get-stencilStoreOp>(): io.ygdrasil.webgpu/GPUStoreOp? // io.ygdrasil.webgpu/GPURenderPassDepthStencilAttachment.stencilStoreOp.<get-stencilStoreOp>|<get-stencilStoreOp>(){}[0]
     abstract val view // io.ygdrasil.webgpu/GPURenderPassDepthStencilAttachment.view|{}view[0]
-        abstract fun <get-view>(): io.ygdrasil.webgpu/GPUTextureView // io.ygdrasil.webgpu/GPURenderPassDepthStencilAttachment.view.<get-view>|<get-view>(){}[0]
+        abstract fun <get-view>(): io.ygdrasil.webgpu/GPUTextureOrGPUTextureView // io.ygdrasil.webgpu/GPURenderPassDepthStencilAttachment.view.<get-view>|<get-view>(){}[0]
 }
 
 abstract interface io.ygdrasil.webgpu/GPURenderPassDescriptor : io.ygdrasil.webgpu/GPUObjectDescriptorBase { // io.ygdrasil.webgpu/GPURenderPassDescriptor|null[0]
@@ -1610,6 +1628,8 @@ abstract interface io.ygdrasil.webgpu/GPUSupportedLimits { // io.ygdrasil.webgpu
         abstract fun <get-maxDynamicStorageBuffersPerPipelineLayout>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxDynamicStorageBuffersPerPipelineLayout.<get-maxDynamicStorageBuffersPerPipelineLayout>|<get-maxDynamicStorageBuffersPerPipelineLayout>(){}[0]
     abstract val maxDynamicUniformBuffersPerPipelineLayout // io.ygdrasil.webgpu/GPUSupportedLimits.maxDynamicUniformBuffersPerPipelineLayout|{}maxDynamicUniformBuffersPerPipelineLayout[0]
         abstract fun <get-maxDynamicUniformBuffersPerPipelineLayout>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxDynamicUniformBuffersPerPipelineLayout.<get-maxDynamicUniformBuffersPerPipelineLayout>|<get-maxDynamicUniformBuffersPerPipelineLayout>(){}[0]
+    abstract val maxImmediateSize // io.ygdrasil.webgpu/GPUSupportedLimits.maxImmediateSize|{}maxImmediateSize[0]
+        abstract fun <get-maxImmediateSize>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxImmediateSize.<get-maxImmediateSize>|<get-maxImmediateSize>(){}[0]
     abstract val maxInterStageShaderVariables // io.ygdrasil.webgpu/GPUSupportedLimits.maxInterStageShaderVariables|{}maxInterStageShaderVariables[0]
         abstract fun <get-maxInterStageShaderVariables>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxInterStageShaderVariables.<get-maxInterStageShaderVariables>|<get-maxInterStageShaderVariables>(){}[0]
     abstract val maxSampledTexturesPerShaderStage // io.ygdrasil.webgpu/GPUSupportedLimits.maxSampledTexturesPerShaderStage|{}maxSampledTexturesPerShaderStage[0]
@@ -1618,8 +1638,16 @@ abstract interface io.ygdrasil.webgpu/GPUSupportedLimits { // io.ygdrasil.webgpu
         abstract fun <get-maxSamplersPerShaderStage>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxSamplersPerShaderStage.<get-maxSamplersPerShaderStage>|<get-maxSamplersPerShaderStage>(){}[0]
     abstract val maxStorageBufferBindingSize // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageBufferBindingSize|{}maxStorageBufferBindingSize[0]
         abstract fun <get-maxStorageBufferBindingSize>(): kotlin/ULong // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageBufferBindingSize.<get-maxStorageBufferBindingSize>|<get-maxStorageBufferBindingSize>(){}[0]
+    abstract val maxStorageBuffersInFragmentStage // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageBuffersInFragmentStage|{}maxStorageBuffersInFragmentStage[0]
+        abstract fun <get-maxStorageBuffersInFragmentStage>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageBuffersInFragmentStage.<get-maxStorageBuffersInFragmentStage>|<get-maxStorageBuffersInFragmentStage>(){}[0]
+    abstract val maxStorageBuffersInVertexStage // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageBuffersInVertexStage|{}maxStorageBuffersInVertexStage[0]
+        abstract fun <get-maxStorageBuffersInVertexStage>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageBuffersInVertexStage.<get-maxStorageBuffersInVertexStage>|<get-maxStorageBuffersInVertexStage>(){}[0]
     abstract val maxStorageBuffersPerShaderStage // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageBuffersPerShaderStage|{}maxStorageBuffersPerShaderStage[0]
         abstract fun <get-maxStorageBuffersPerShaderStage>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageBuffersPerShaderStage.<get-maxStorageBuffersPerShaderStage>|<get-maxStorageBuffersPerShaderStage>(){}[0]
+    abstract val maxStorageTexturesInFragmentStage // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageTexturesInFragmentStage|{}maxStorageTexturesInFragmentStage[0]
+        abstract fun <get-maxStorageTexturesInFragmentStage>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageTexturesInFragmentStage.<get-maxStorageTexturesInFragmentStage>|<get-maxStorageTexturesInFragmentStage>(){}[0]
+    abstract val maxStorageTexturesInVertexStage // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageTexturesInVertexStage|{}maxStorageTexturesInVertexStage[0]
+        abstract fun <get-maxStorageTexturesInVertexStage>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageTexturesInVertexStage.<get-maxStorageTexturesInVertexStage>|<get-maxStorageTexturesInVertexStage>(){}[0]
     abstract val maxStorageTexturesPerShaderStage // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageTexturesPerShaderStage|{}maxStorageTexturesPerShaderStage[0]
         abstract fun <get-maxStorageTexturesPerShaderStage>(): kotlin/UInt // io.ygdrasil.webgpu/GPUSupportedLimits.maxStorageTexturesPerShaderStage.<get-maxStorageTexturesPerShaderStage>|<get-maxStorageTexturesPerShaderStage>(){}[0]
     abstract val maxTextureArrayLayers // io.ygdrasil.webgpu/GPUSupportedLimits.maxTextureArrayLayers|{}maxTextureArrayLayers[0]
@@ -1671,7 +1699,7 @@ abstract interface io.ygdrasil.webgpu/GPUTexelCopyTextureInfo { // io.ygdrasil.w
         abstract fun <get-texture>(): io.ygdrasil.webgpu/GPUTexture // io.ygdrasil.webgpu/GPUTexelCopyTextureInfo.texture.<get-texture>|<get-texture>(){}[0]
 }
 
-abstract interface io.ygdrasil.webgpu/GPUTexture : io.ygdrasil.webgpu/GPUObjectBase, kotlin/AutoCloseable { // io.ygdrasil.webgpu/GPUTexture|null[0]
+abstract interface io.ygdrasil.webgpu/GPUTexture : io.ygdrasil.webgpu/GPUBindingResource, io.ygdrasil.webgpu/GPUObjectBase, io.ygdrasil.webgpu/GPUTextureOrGPUTextureView, kotlin/AutoCloseable { // io.ygdrasil.webgpu/GPUTexture|null[0]
     abstract val depthOrArrayLayers // io.ygdrasil.webgpu/GPUTexture.depthOrArrayLayers|{}depthOrArrayLayers[0]
         abstract fun <get-depthOrArrayLayers>(): kotlin/UInt // io.ygdrasil.webgpu/GPUTexture.depthOrArrayLayers.<get-depthOrArrayLayers>|<get-depthOrArrayLayers>(){}[0]
     abstract val dimension // io.ygdrasil.webgpu/GPUTexture.dimension|{}dimension[0]
@@ -1712,13 +1740,15 @@ abstract interface io.ygdrasil.webgpu/GPUTextureDescriptor : io.ygdrasil.webgpu/
         abstract fun <get-sampleCount>(): kotlin/UInt // io.ygdrasil.webgpu/GPUTextureDescriptor.sampleCount.<get-sampleCount>|<get-sampleCount>(){}[0]
     abstract val size // io.ygdrasil.webgpu/GPUTextureDescriptor.size|{}size[0]
         abstract fun <get-size>(): io.ygdrasil.webgpu/GPUExtent3D // io.ygdrasil.webgpu/GPUTextureDescriptor.size.<get-size>|<get-size>(){}[0]
+    abstract val textureBindingViewDimension // io.ygdrasil.webgpu/GPUTextureDescriptor.textureBindingViewDimension|{}textureBindingViewDimension[0]
+        abstract fun <get-textureBindingViewDimension>(): io.ygdrasil.webgpu/GPUTextureViewDimension? // io.ygdrasil.webgpu/GPUTextureDescriptor.textureBindingViewDimension.<get-textureBindingViewDimension>|<get-textureBindingViewDimension>(){}[0]
     abstract val usage // io.ygdrasil.webgpu/GPUTextureDescriptor.usage|{}usage[0]
         abstract fun <get-usage>(): io.ygdrasil.webgpu/GPUTextureUsage // io.ygdrasil.webgpu/GPUTextureDescriptor.usage.<get-usage>|<get-usage>(){}[0]
     abstract val viewFormats // io.ygdrasil.webgpu/GPUTextureDescriptor.viewFormats|{}viewFormats[0]
         abstract fun <get-viewFormats>(): kotlin.collections/List<io.ygdrasil.webgpu/GPUTextureFormat> // io.ygdrasil.webgpu/GPUTextureDescriptor.viewFormats.<get-viewFormats>|<get-viewFormats>(){}[0]
 }
 
-abstract interface io.ygdrasil.webgpu/GPUTextureView : io.ygdrasil.webgpu/GPUBindingResource, io.ygdrasil.webgpu/GPUObjectBase, kotlin/AutoCloseable // io.ygdrasil.webgpu/GPUTextureView|null[0]
+abstract interface io.ygdrasil.webgpu/GPUTextureView : io.ygdrasil.webgpu/GPUBindingResource, io.ygdrasil.webgpu/GPUObjectBase, io.ygdrasil.webgpu/GPUTextureOrGPUTextureView, kotlin/AutoCloseable // io.ygdrasil.webgpu/GPUTextureView|null[0]
 
 abstract interface io.ygdrasil.webgpu/GPUTextureViewDescriptor : io.ygdrasil.webgpu/GPUObjectDescriptorBase { // io.ygdrasil.webgpu/GPUTextureViewDescriptor|null[0]
     abstract val arrayLayerCount // io.ygdrasil.webgpu/GPUTextureViewDescriptor.arrayLayerCount|{}arrayLayerCount[0]
@@ -1735,6 +1765,8 @@ abstract interface io.ygdrasil.webgpu/GPUTextureViewDescriptor : io.ygdrasil.web
         abstract fun <get-format>(): io.ygdrasil.webgpu/GPUTextureFormat? // io.ygdrasil.webgpu/GPUTextureViewDescriptor.format.<get-format>|<get-format>(){}[0]
     abstract val mipLevelCount // io.ygdrasil.webgpu/GPUTextureViewDescriptor.mipLevelCount|{}mipLevelCount[0]
         abstract fun <get-mipLevelCount>(): kotlin/UInt? // io.ygdrasil.webgpu/GPUTextureViewDescriptor.mipLevelCount.<get-mipLevelCount>|<get-mipLevelCount>(){}[0]
+    abstract val swizzle // io.ygdrasil.webgpu/GPUTextureViewDescriptor.swizzle|{}swizzle[0]
+        abstract fun <get-swizzle>(): io.ygdrasil.webgpu/GPUTextureSwizzle // io.ygdrasil.webgpu/GPUTextureViewDescriptor.swizzle.<get-swizzle>|<get-swizzle>(){}[0]
     abstract val usage // io.ygdrasil.webgpu/GPUTextureViewDescriptor.usage|{}usage[0]
         abstract fun <get-usage>(): io.ygdrasil.webgpu/GPUTextureUsage // io.ygdrasil.webgpu/GPUTextureViewDescriptor.usage.<get-usage>|<get-usage>(){}[0]
 }
@@ -1825,6 +1857,31 @@ sealed interface io.ygdrasil.webgpu/GPUBindingResource // io.ygdrasil.webgpu/GPU
 sealed interface io.ygdrasil.webgpu/GPUError { // io.ygdrasil.webgpu/GPUError|null[0]
     abstract val message // io.ygdrasil.webgpu/GPUError.message|{}message[0]
         abstract fun <get-message>(): kotlin/String // io.ygdrasil.webgpu/GPUError.message.<get-message>|<get-message>(){}[0]
+}
+
+sealed interface io.ygdrasil.webgpu/GPUTextureOrGPUTextureView // io.ygdrasil.webgpu/GPUTextureOrGPUTextureView|null[0]
+
+final class io.ygdrasil.webgpu/GPUTextureSwizzle { // io.ygdrasil.webgpu/GPUTextureSwizzle|null[0]
+    constructor <init>(io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ...) // io.ygdrasil.webgpu/GPUTextureSwizzle.<init>|<init>(io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource){}[0]
+
+    final val alpha // io.ygdrasil.webgpu/GPUTextureSwizzle.alpha|{}alpha[0]
+        final fun <get-alpha>(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.alpha.<get-alpha>|<get-alpha>(){}[0]
+    final val blue // io.ygdrasil.webgpu/GPUTextureSwizzle.blue|{}blue[0]
+        final fun <get-blue>(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.blue.<get-blue>|<get-blue>(){}[0]
+    final val green // io.ygdrasil.webgpu/GPUTextureSwizzle.green|{}green[0]
+        final fun <get-green>(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.green.<get-green>|<get-green>(){}[0]
+    final val red // io.ygdrasil.webgpu/GPUTextureSwizzle.red|{}red[0]
+        final fun <get-red>(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.red.<get-red>|<get-red>(){}[0]
+
+    final fun component1(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.component1|component1(){}[0]
+    final fun component2(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.component2|component2(){}[0]
+    final fun component3(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.component3|component3(){}[0]
+    final fun component4(): io.ygdrasil.webgpu/GPUTextureSwizzleSource // io.ygdrasil.webgpu/GPUTextureSwizzle.component4|component4(){}[0]
+    final fun copy(io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ..., io.ygdrasil.webgpu/GPUTextureSwizzleSource = ...): io.ygdrasil.webgpu/GPUTextureSwizzle // io.ygdrasil.webgpu/GPUTextureSwizzle.copy|copy(io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource;io.ygdrasil.webgpu.GPUTextureSwizzleSource){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // io.ygdrasil.webgpu/GPUTextureSwizzle.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // io.ygdrasil.webgpu/GPUTextureSwizzle.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // io.ygdrasil.webgpu/GPUTextureSwizzle.toString|toString(){}[0]
+    final fun toWebGpuString(): kotlin/String // io.ygdrasil.webgpu/GPUTextureSwizzle.toWebGpuString|toWebGpuString(){}[0]
 }
 
 final value class io.ygdrasil.webgpu/GPUBufferUsage { // io.ygdrasil.webgpu/GPUBufferUsage|null[0]
