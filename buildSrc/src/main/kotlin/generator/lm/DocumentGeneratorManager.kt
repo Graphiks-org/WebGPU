@@ -3,7 +3,7 @@ package generator.lm
 import generator.domain.Enumeration
 import generator.domain.Interface
 import generator.domain.MapperContext
-import generator.files.RemoteFileManager
+import generator.files.SpecificationResources
 import generator.lm.agent.DocumentationExplorerAgent
 import generator.lm.agent.DocumentationRefinerAgent
 import generator.lm.agent.DocumentationWriterAgent
@@ -21,7 +21,7 @@ internal val prettyJson = Json {
 
 class DocumentGeneratorManager(
     private val context: MapperContext,
-    private val remoteFileManager: RemoteFileManager,
+    private val specificationResources: SpecificationResources,
     htmlDocumentation: Path,
     private val logger: Logger
 ) {
@@ -36,7 +36,7 @@ class DocumentGeneratorManager(
     private val jSonRefinerAgent = JSonRefinerAgent(llmClient)
     private val documentationRefinerAgent = DocumentationRefinerAgent(llmClient)
 
-    val documentationFile = remoteFileManager.specificationsSourcePath.resolve(RemoteFileManager.Files.documentationJson)
+    val documentationFile = specificationResources.specificationsSourcePath.resolve(SpecificationResources.Files.documentationJson)
 
     fun inferHtmlDocumentation() = runBlocking {
         logger.info("Start inferHtmlDocumentation")

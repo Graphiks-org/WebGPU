@@ -1,5 +1,6 @@
 plugins {
     generator
+    id("io.ygdrasil.webgpu-specification-fetcher")
 }
 
 allprojects {

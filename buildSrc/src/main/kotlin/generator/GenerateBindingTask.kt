@@ -1,6 +1,6 @@
 package generator
 
-import generator.files.RemoteFileManager
+import generator.files.SpecificationResources
 import generator.tasks.ModelGenerator
 import generator.tasks.ModelWriter
 import org.gradle.api.DefaultTask
@@ -14,8 +14,8 @@ open class GenerateBindingTask : DefaultTask() {
 
     @TaskAction
     fun launch() {
-        val remoteFileManager = RemoteFileManager(project.projectDir.toPath())
-        val context = ModelGenerator(remoteFileManager)
+        val specificationResources = SpecificationResources(project.projectDir.toPath())
+        val context = ModelGenerator(specificationResources)
             .also { it.injectDocumentation() }
             .context
         ModelWriter.write(context)

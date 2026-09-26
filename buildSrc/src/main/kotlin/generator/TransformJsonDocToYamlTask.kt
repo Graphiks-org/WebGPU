@@ -1,7 +1,7 @@
 package generator
 
 import com.charleskorn.kaml.Yaml
-import generator.files.RemoteFileManager
+import generator.files.SpecificationResources
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
@@ -19,10 +19,10 @@ open class TransformJsonDocToYamlTask : DefaultTask() {
 
     @TaskAction
     fun launch() {
-        val remoteFileManager = RemoteFileManager(project.projectDir.toPath())
+        val specificationResources = SpecificationResources(project.projectDir.toPath())
 
-        val jsonFile = remoteFileManager.specificationsSourcePath.resolve(RemoteFileManager.Files.documentationJson).toFile()
-        val yamlFile = remoteFileManager.specificationsSourcePath.resolve(RemoteFileManager.Files.documentationYaml).toFile()
+        val jsonFile = specificationResources.specificationsSourcePath.resolve(SpecificationResources.Files.documentationJson).toFile()
+        val yamlFile = specificationResources.specificationsSourcePath.resolve(SpecificationResources.Files.documentationYaml).toFile()
 
         // Read the JSON file
         val jsonContent = jsonFile.readText()

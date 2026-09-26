@@ -2,7 +2,7 @@ package generator.tasks
 
 import com.charleskorn.kaml.Yaml
 import generator.domain.MapperContext
-import generator.files.RemoteFileManager
+import generator.files.SpecificationResources
 import generator.mapper.injectDocumentation
 import generator.mapper.loadDescriptors
 import generator.mapper.loadDictionaries
@@ -17,7 +17,7 @@ import java.io.SequenceInputStream
 import java.nio.file.Files
 
 class ModelGenerator(
-    val remoteFileManager: RemoteFileManager,
+    val specificationResources: SpecificationResources,
 ) {
 
     private val idlExtraTyps = """
@@ -32,7 +32,7 @@ class ModelGenerator(
     """.byteInputStream()
 
     val context: MapperContext by lazy {
-        val ildPath = remoteFileManager.findFilePath(RemoteFileManager.Files.webgpuIdl) ?: error("fail to get cached file")
+        val ildPath = specificationResources.findFilePath(SpecificationResources.Files.webgpuIdl) ?: error("fail to get cached file")
 
         val idlModel = de.fabmax.webidl.parser.WebIdlParser.Companion.parseFromInputStream(
             SequenceInputStream(idlExtraTyps, Files.newInputStream(ildPath))
@@ -52,11 +52,10 @@ class ModelGenerator(
     }
 
     fun injectDocumentation() {
-        val yamlFile = remoteFileManager.specificationsSourcePath.resolve(RemoteFileManager.Files.documentationYaml).toFile()
+        val yamlFile = specificationResources.specificationsSourcePath.resolve(SpecificationResources.Files.documentationYaml).toFile()
         val yamlContent = yamlFile.readText()
         val yamlMap = Yaml.default.decodeFromString(MapSerializer(String.serializer(), String.serializer()), yamlContent)
         context.injectDocumentation(yamlMap)
     }
 
 }
-

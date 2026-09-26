@@ -1,6 +1,6 @@
 package generator
 
-import generator.files.RemoteFileManager
+import generator.files.SpecificationResources
 import generator.lm.getActualDocumentation
 import generator.lm.getDocumentationKeys
 import generator.tasks.ModelGenerator
@@ -16,10 +16,10 @@ open class CheckMissingDocumentationTask : DefaultTask() {
 
     @TaskAction
     fun launch() = runBlocking {
-        val remoteFileManager = RemoteFileManager(project.projectDir.toPath())
-        val context = ModelGenerator(remoteFileManager).context
+        val specificationResources = SpecificationResources(project.projectDir.toPath())
+        val context = ModelGenerator(specificationResources).context
         val documentationFile =
-            remoteFileManager.specificationsSourcePath.resolve(RemoteFileManager.Files.documentationJson)
+            specificationResources.specificationsSourcePath.resolve(SpecificationResources.Files.documentationJson)
         val currentDocumentation = getActualDocumentation(documentationFile)
         val missingKeys = context.interfaces
             .map { it to it.getDocumentationKeys() }
