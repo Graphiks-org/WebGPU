@@ -307,6 +307,7 @@ data class TextureDescriptor(
 	 * 
 	 */
 	override val viewFormats: List<GPUTextureFormat> = emptyList(),
+	override val textureBindingViewDimension: GPUTextureViewDimension? = null,
 	override val label: String = ""
 ): GPUTextureDescriptor
 
@@ -373,6 +374,7 @@ data class TextureViewDescriptor(
 	 * 
 	 */
 	override val arrayLayerCount: GPUIntegerCoordinate? = null,
+	override val swizzle: String = "rgba",
 	override val label: String = ""
 ): GPUTextureViewDescriptor
 
@@ -722,6 +724,7 @@ data class PipelineLayoutDescriptor(
 	 * 
 	 */
 	override val bindGroupLayouts: List<GPUBindGroupLayout>,
+	override val immediateSize: GPUSize32 = 0u,
 	override val label: String = ""
 ): GPUPipelineLayoutDescriptor
 
@@ -1503,7 +1506,7 @@ data class RenderPassColorAttachment(
 	 * This property is required and must be a valid renderable texture view. The format of the view must be a color renderable format.
 	 * 
 	 */
-	override val view: GPUTextureView,
+	override val view: GPUTextureOrGPUTextureView,
 	/**
 	 * Indicates the load operation to perform on the GPUTextureView prior to executing the render pass.
 	 * 
@@ -1531,7 +1534,7 @@ data class RenderPassColorAttachment(
 	 * This property is optional and must only be provided if the GPUTextureView's sample count is greater than 1. The resolve target must have a sample count of 1.
 	 * 
 	 */
-	override val resolveTarget: GPUTextureView? = null,
+	override val resolveTarget: GPUTextureOrGPUTextureView? = null,
 	/**
 	 * Indicates the value to clear the GPUTextureView to prior to executing the render pass.
 	 * 
@@ -1554,7 +1557,7 @@ data class RenderPassDepthStencilAttachment(
 	 * For more details, refer to the [W3C WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpurenderpassdepthstencilattachment-view).
 	 * 
 	 */
-	override val view: GPUTextureView,
+	override val view: GPUTextureOrGPUTextureView,
 	/**
 	 * Indicates the value to clear the `view`'s depth component to prior to executing the render pass. This value is ignored if `depthLoadOp` is not set to `GPULoadOp.CLEAR`. The value must be between 0.0 and 1.0, inclusive.
 	 * 

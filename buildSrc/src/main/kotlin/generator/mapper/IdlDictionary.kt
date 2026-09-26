@@ -1,8 +1,6 @@
 package generator.mapper
 
 import de.fabmax.webidl.model.IdlDictionary
-import de.fabmax.webidl.model.IdlSimpleType
-import de.fabmax.webidl.model.IdlUnionType
 import generator.domain.Interface
 import generator.domain.MapperContext
 
@@ -29,15 +27,9 @@ internal fun MapperContext.loadDictionary(name: String, idlDictionary: IdlDictio
             kinterface.extends += idlDictionary.superDictionaries
 
             idlDictionary.members
-                .filter { it.type is IdlSimpleType && (it.type as IdlSimpleType).typeName !in unwantedTypesOnCommon || it.name == "layout" }
-                .forEach {
-                    var type = if((it.type is IdlSimpleType)) it.type.toKotlinType() else {
-                        "${(it.type as IdlUnionType).types.first().toKotlinType()}?"
-                    }
-                    if (it.defaultValue == null && it.isRequired.not() && type.endsWith("?").not()) {
-                        type += "?"
-                    }
-                    kinterface.attributes += Interface.Attribute(it.name, type, true)
+                .mapNotNull { mapCommonDictionaryMember(name, it) }
+                .forEach { member ->
+                    kinterface.attributes += Interface.Attribute(member.name, member.type, true)
                 }
         }
 }

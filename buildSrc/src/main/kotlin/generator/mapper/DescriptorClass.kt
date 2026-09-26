@@ -2,8 +2,6 @@ package generator.mapper
 
 import de.fabmax.webidl.model.IdlDictionary
 import de.fabmax.webidl.model.IdlMember
-import de.fabmax.webidl.model.IdlSimpleType
-import de.fabmax.webidl.model.IdlUnionType
 import generator.domain.DescriptorClass
 import generator.domain.MapperContext
 import kotlin.collections.plusAssign
@@ -16,29 +14,8 @@ fun MapperContext.loadDescriptors() {
 
 internal fun MapperContext.loadDescriptor(name: String, idlDictionary: IdlDictionary) {
     val parameters = getMembers(idlDictionary)
-        // Layout is a special case
-        .filter { (it.type as? IdlSimpleType)?.toKotlinType() !in unwantedTypesOnCommon || it.name == "layout"}
-        .map {
-            var value = it.defaultValue
-            var type = if (it.type is IdlSimpleType) it.type.toKotlinType() else {
-                value = "null"
-                "${(it.type as IdlUnionType).types.first().toKotlinType()}?"
-            }
-
-            when {
-                value == null -> if (it.isRequired.not()) {
-                    value = "null"
-                    type += "?"
-                }
-                value == "{}" && type.startsWith("Map<") -> value = "emptyMap()"
-                value == "{}" -> value = "${type.removePrefix("GPU")}()"
-                isUnsignedNumericType(type) -> value = "${value}u"
-                isFloatType(type) -> value = "${value}f"
-                value == "[]" -> value = "emptyList()"
-                isEnumeration(type) -> value = "$type.${getEnumerationValueNameOnKotlin(type, value)}"
-            }
-            DescriptorClass.Parameter(it.name, type, value)
-        }
+        .mapNotNull { mapCommonDictionaryMember(name, it, formatDescriptorDefault = true) }
+        .map { DescriptorClass.Parameter(it.name, it.type, it.defaultValue) }
     descriptors += DescriptorClass(name, parameters)
 }
 

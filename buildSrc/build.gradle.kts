@@ -40,4 +40,10 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.kotlinpoet)
     implementation(libs.coroutines)
+
+    testImplementation(kotlin("test-junit"))
+}
+
+tasks.test {
+    useJUnit()
 }

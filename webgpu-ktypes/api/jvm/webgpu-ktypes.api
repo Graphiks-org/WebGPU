@@ -126,10 +126,13 @@ public abstract interface class io/ygdrasil/webgpu/GPUBindGroupLayoutEntry {
 public abstract interface class io/ygdrasil/webgpu/GPUBindingCommandsMixin {
 	public abstract fun setBindGroup-OzbTU-A (ILio/ygdrasil/webgpu/GPUBindGroup;Ljava/util/List;)V
 	public static synthetic fun setBindGroup-OzbTU-A$default (Lio/ygdrasil/webgpu/GPUBindingCommandsMixin;ILio/ygdrasil/webgpu/GPUBindGroup;Ljava/util/List;ILjava/lang/Object;)V
+	public abstract fun setImmediates-h5lECac (ILio/ygdrasil/webgpu/ArrayBuffer;JLkotlin/ULong;)V
+	public static synthetic fun setImmediates-h5lECac$default (Lio/ygdrasil/webgpu/GPUBindingCommandsMixin;ILio/ygdrasil/webgpu/ArrayBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
 }
 
 public final class io/ygdrasil/webgpu/GPUBindingCommandsMixin$DefaultImpls {
 	public static synthetic fun setBindGroup-OzbTU-A$default (Lio/ygdrasil/webgpu/GPUBindingCommandsMixin;ILio/ygdrasil/webgpu/GPUBindGroup;Ljava/util/List;ILjava/lang/Object;)V
+	public static synthetic fun setImmediates-h5lECac$default (Lio/ygdrasil/webgpu/GPUBindingCommandsMixin;ILio/ygdrasil/webgpu/ArrayBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
 }
 
 public abstract interface class io/ygdrasil/webgpu/GPUBindingResource {
@@ -192,7 +195,7 @@ public abstract interface class io/ygdrasil/webgpu/GPUBlendState {
 	public abstract fun getColor ()Lio/ygdrasil/webgpu/GPUBlendComponent;
 }
 
-public abstract interface class io/ygdrasil/webgpu/GPUBuffer : io/ygdrasil/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class io/ygdrasil/webgpu/GPUBuffer : io/ygdrasil/webgpu/GPUBindingResource, io/ygdrasil/webgpu/GPUObjectBase, java/lang/AutoCloseable {
 	public abstract fun getMapState ()Lio/ygdrasil/webgpu/GPUBufferMapState;
 	public abstract fun getMappedRange-y8-82ps (JLkotlin/ULong;)Lio/ygdrasil/webgpu/ArrayBuffer;
 	public static synthetic fun getMappedRange-y8-82ps$default (Lio/ygdrasil/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)Lio/ygdrasil/webgpu/ArrayBuffer;
@@ -732,6 +735,7 @@ public abstract interface class io/ygdrasil/webgpu/GPUPipelineLayout : io/ygdras
 
 public abstract interface class io/ygdrasil/webgpu/GPUPipelineLayoutDescriptor : io/ygdrasil/webgpu/GPUObjectDescriptorBase {
 	public abstract fun getBindGroupLayouts ()Ljava/util/List;
+	public abstract fun getImmediateSize-pVg5ArA ()I
 }
 
 public final class io/ygdrasil/webgpu/GPUPowerPreference : java/lang/Enum {
@@ -863,9 +867,9 @@ public abstract interface class io/ygdrasil/webgpu/GPURenderPassColorAttachment 
 	public abstract fun getClearValue ()Lio/ygdrasil/webgpu/GPUColor;
 	public abstract fun getDepthSlice-0hXNFcg ()Lkotlin/UInt;
 	public abstract fun getLoadOp ()Lio/ygdrasil/webgpu/GPULoadOp;
-	public abstract fun getResolveTarget ()Lio/ygdrasil/webgpu/GPUTextureView;
+	public abstract fun getResolveTarget ()Lio/ygdrasil/webgpu/GPUTextureOrGPUTextureView;
 	public abstract fun getStoreOp ()Lio/ygdrasil/webgpu/GPUStoreOp;
-	public abstract fun getView ()Lio/ygdrasil/webgpu/GPUTextureView;
+	public abstract fun getView ()Lio/ygdrasil/webgpu/GPUTextureOrGPUTextureView;
 }
 
 public abstract interface class io/ygdrasil/webgpu/GPURenderPassDepthStencilAttachment {
@@ -877,7 +881,7 @@ public abstract interface class io/ygdrasil/webgpu/GPURenderPassDepthStencilAtta
 	public abstract fun getStencilLoadOp ()Lio/ygdrasil/webgpu/GPULoadOp;
 	public abstract fun getStencilReadOnly ()Z
 	public abstract fun getStencilStoreOp ()Lio/ygdrasil/webgpu/GPUStoreOp;
-	public abstract fun getView ()Lio/ygdrasil/webgpu/GPUTextureView;
+	public abstract fun getView ()Lio/ygdrasil/webgpu/GPUTextureOrGPUTextureView;
 }
 
 public abstract interface class io/ygdrasil/webgpu/GPURenderPassDescriptor : io/ygdrasil/webgpu/GPUObjectDescriptorBase {
@@ -1081,11 +1085,16 @@ public abstract interface class io/ygdrasil/webgpu/GPUSupportedLimits {
 	public abstract fun getMaxComputeWorkgroupsPerDimension-pVg5ArA ()I
 	public abstract fun getMaxDynamicStorageBuffersPerPipelineLayout-pVg5ArA ()I
 	public abstract fun getMaxDynamicUniformBuffersPerPipelineLayout-pVg5ArA ()I
+	public abstract fun getMaxImmediateSize-pVg5ArA ()I
 	public abstract fun getMaxInterStageShaderVariables-pVg5ArA ()I
 	public abstract fun getMaxSampledTexturesPerShaderStage-pVg5ArA ()I
 	public abstract fun getMaxSamplersPerShaderStage-pVg5ArA ()I
 	public abstract fun getMaxStorageBufferBindingSize-s-VKNKU ()J
+	public abstract fun getMaxStorageBuffersInFragmentStage-pVg5ArA ()I
+	public abstract fun getMaxStorageBuffersInVertexStage-pVg5ArA ()I
 	public abstract fun getMaxStorageBuffersPerShaderStage-pVg5ArA ()I
+	public abstract fun getMaxStorageTexturesInFragmentStage-pVg5ArA ()I
+	public abstract fun getMaxStorageTexturesInVertexStage-pVg5ArA ()I
 	public abstract fun getMaxStorageTexturesPerShaderStage-pVg5ArA ()I
 	public abstract fun getMaxTextureArrayLayers-pVg5ArA ()I
 	public abstract fun getMaxTextureDimension1D-pVg5ArA ()I
@@ -1117,7 +1126,7 @@ public abstract interface class io/ygdrasil/webgpu/GPUTexelCopyTextureInfo {
 	public abstract fun getTexture ()Lio/ygdrasil/webgpu/GPUTexture;
 }
 
-public abstract interface class io/ygdrasil/webgpu/GPUTexture : io/ygdrasil/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class io/ygdrasil/webgpu/GPUTexture : io/ygdrasil/webgpu/GPUBindingResource, io/ygdrasil/webgpu/GPUObjectBase, io/ygdrasil/webgpu/GPUTextureOrGPUTextureView, java/lang/AutoCloseable {
 	public abstract fun createView (Lio/ygdrasil/webgpu/GPUTextureViewDescriptor;)Lio/ygdrasil/webgpu/GPUTextureView;
 	public static synthetic fun createView$default (Lio/ygdrasil/webgpu/GPUTexture;Lio/ygdrasil/webgpu/GPUTextureViewDescriptor;ILjava/lang/Object;)Lio/ygdrasil/webgpu/GPUTextureView;
 	public abstract fun getDepthOrArrayLayers-pVg5ArA ()I
@@ -1161,6 +1170,7 @@ public abstract interface class io/ygdrasil/webgpu/GPUTextureDescriptor : io/ygd
 	public abstract fun getMipLevelCount-pVg5ArA ()I
 	public abstract fun getSampleCount-pVg5ArA ()I
 	public abstract fun getSize ()Lio/ygdrasil/webgpu/GPUExtent3D;
+	public abstract fun getTextureBindingViewDimension ()Lio/ygdrasil/webgpu/GPUTextureViewDimension;
 	public abstract fun getUsage-vq9ozLU ()J
 	public abstract fun getViewFormats ()Ljava/util/List;
 }
@@ -1293,6 +1303,9 @@ public final class io/ygdrasil/webgpu/GPUTextureFormat$Companion {
 	public final fun of-WZ4Q5Ns (I)Lio/ygdrasil/webgpu/GPUTextureFormat;
 }
 
+public abstract interface class io/ygdrasil/webgpu/GPUTextureOrGPUTextureView {
+}
+
 public final class io/ygdrasil/webgpu/GPUTextureSampleType : java/lang/Enum {
 	public static final field BindingNotUsed Lio/ygdrasil/webgpu/GPUTextureSampleType;
 	public static final field Companion Lio/ygdrasil/webgpu/GPUTextureSampleType$Companion;
@@ -1338,7 +1351,7 @@ public final class io/ygdrasil/webgpu/GPUTextureUsage$Companion {
 	public final fun getTransientAttachment-vq9ozLU ()J
 }
 
-public abstract interface class io/ygdrasil/webgpu/GPUTextureView : io/ygdrasil/webgpu/GPUBindingResource, io/ygdrasil/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class io/ygdrasil/webgpu/GPUTextureView : io/ygdrasil/webgpu/GPUBindingResource, io/ygdrasil/webgpu/GPUObjectBase, io/ygdrasil/webgpu/GPUTextureOrGPUTextureView, java/lang/AutoCloseable {
 }
 
 public abstract interface class io/ygdrasil/webgpu/GPUTextureViewDescriptor : io/ygdrasil/webgpu/GPUObjectDescriptorBase {
@@ -1349,6 +1362,7 @@ public abstract interface class io/ygdrasil/webgpu/GPUTextureViewDescriptor : io
 	public abstract fun getDimension ()Lio/ygdrasil/webgpu/GPUTextureViewDimension;
 	public abstract fun getFormat ()Lio/ygdrasil/webgpu/GPUTextureFormat;
 	public abstract fun getMipLevelCount-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getSwizzle ()Ljava/lang/String;
 	public abstract fun getUsage-vq9ozLU ()J
 }
 
