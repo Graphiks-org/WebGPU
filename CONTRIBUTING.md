@@ -1,0 +1,17 @@
+# Contributing to WebGPU
+
+Thanks for helping improve WebGPU. Read the [Code of Conduct](CODE_OF_CONDUCT.md) before participating. For usage questions, see [Support](SUPPORT.md); report vulnerabilities through the [private security route](SECURITY.md).
+
+## Prepare a change
+
+Open an issue for substantial API or behavior changes so the approach can be discussed. Branch from `master`; use `feat/`, `fix/`, `chore/`, or `codex/` as appropriate. Keep each pull request focused and describe observable behavior. The [architecture](docs/docs/architecture.md), [testing](docs/docs/testing.md), and [specification maintenance](docs/docs/specification-maintenance.md) guides explain the project boundaries.
+
+Use Conventional Commits such as `feat: add texture option` or `fix: correct buffer offset`. Kotlin bindings come from checked-in WebGPU specifications; update generated source and its inputs together when changing those bindings. Specification downloads and LLM enrichment are manual activities.
+
+## Verify
+
+Use JDK 25 and run `./gradlew check`. Run the relevant platform tests for your change and mention any target you could not exercise. For documentation changes, build the site with `./gradlew :docs:embedDokkaIntoMkDocs` and `mkdocs build --strict -f docs/mkdocs.yml` after installing MkDocs Material and `mkdocs-static-i18n`. Remove generated navigation between the Dokka markers in `docs/mkdocs.yml` before committing.
+
+## Submit a pull request
+
+Use the [pull request template](.github/PULL_REQUEST_TEMPLATE.md). Select one change type, explain testing, and state whether the changelog and documentation were updated or why they are unnecessary. Add an entry under [Unreleased](CHANGELOG.md) for a user-visible change. A maintainer reviews the request and may ask for changes before merging into `master`.
