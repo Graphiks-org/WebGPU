@@ -9,7 +9,6 @@ import kotlin.js.JsNumber
 import kotlin.js.JsArray
 import js.promise.Promise
 import js.collections.JsSet
-import js.collections.JsMap
 
 typealias WGPUSupportedFeatures = JsSet<JsAny /* DOMString */>
 external interface WGPUObjectBase : JsAny {
@@ -67,8 +66,8 @@ external interface WGPUAdapterInfo : JsAny {
 
 external interface WGPU : JsAny {
 	var wgslLanguageFeatures: JsAny /* WGSLLanguageFeatures */
-	fun requestAdapter(): Promise<JsAny> /* Promise */
-	fun requestAdapter(options: WGPURequestAdapterOptions  /* GPURequestAdapterOptions */): Promise<JsAny> /* Promise */
+	fun requestAdapter(): Promise<JsAny?> /* Promise */
+	fun requestAdapter(options: WGPURequestAdapterOptions  /* GPURequestAdapterOptions */): Promise<JsAny?> /* Promise */
 	fun getPreferredCanvasFormat(): String  /* GPUTextureFormat */
 }
 
@@ -106,7 +105,7 @@ external interface WGPUDevice : JsAny, EventTarget, WGPUObjectBase {
 	fun createRenderBundleEncoder(descriptor: WGPURenderBundleEncoderDescriptor  /* GPURenderBundleEncoderDescriptor */): WGPURenderBundleEncoder  /* GPURenderBundleEncoder */
 	fun createQuerySet(descriptor: WGPUQuerySetDescriptor  /* GPUQuerySetDescriptor */): WGPUQuerySet  /* GPUQuerySet */
 	fun pushErrorScope(filter: String  /* GPUErrorFilter */)
-	fun popErrorScope(): Promise<JsAny> /* Promise */
+	fun popErrorScope(): Promise<JsAny?> /* Promise */
 }
 
 external interface WGPUBuffer : JsAny, WGPUObjectBase {
@@ -193,9 +192,9 @@ external interface WGPUCommandEncoder : JsAny, WGPUObjectBase, WGPUCommandsMixin
 }
 
 external interface WGPUBindingCommandsMixin : JsAny {
-	fun setBindGroup(index: JsNumber  /* GPUIndex32 */, bindGroup: JsAny /* GPUBindGroup? */)
-	fun setBindGroup(index: JsNumber  /* GPUIndex32 */, bindGroup: JsAny /* GPUBindGroup? */, dynamicOffsets: JsArray<JsAny> /* sequence<GPUBufferDynamicOffset> */)
-	fun setBindGroup(index: JsNumber  /* GPUIndex32 */, bindGroup: JsAny /* GPUBindGroup? */, dynamicOffsetsData: JsAny /* Uint32Array */, dynamicOffsetsDataStart: JsNumber  /* GPUSize64 */, dynamicOffsetsDataLength: JsNumber  /* GPUSize32 */)
+	fun setBindGroup(index: JsNumber  /* GPUIndex32 */, bindGroup: WGPUBindGroup?  /* GPUBindGroup? */)
+	fun setBindGroup(index: JsNumber  /* GPUIndex32 */, bindGroup: WGPUBindGroup?  /* GPUBindGroup? */, dynamicOffsets: JsArray<JsAny> /* sequence<GPUBufferDynamicOffset> */)
+	fun setBindGroup(index: JsNumber  /* GPUIndex32 */, bindGroup: WGPUBindGroup?  /* GPUBindGroup? */, dynamicOffsetsData: JsAny /* Uint32Array */, dynamicOffsetsDataStart: JsNumber  /* GPUSize64 */, dynamicOffsetsDataLength: JsNumber  /* GPUSize32 */)
 	fun setImmediates(rangeOffset: JsNumber  /* GPUSize32 */, data: js.buffer.ArrayBuffer /* AllowSharedBufferSource */)
 	fun setImmediates(rangeOffset: JsNumber  /* GPUSize32 */, data: js.buffer.ArrayBuffer /* AllowSharedBufferSource */, dataOffset: JsNumber  /* GPUSize64 */)
 	fun setImmediates(rangeOffset: JsNumber  /* GPUSize32 */, data: js.buffer.ArrayBuffer /* AllowSharedBufferSource */, dataOffset: JsNumber  /* GPUSize64 */, dataSize: JsNumber  /* GPUSize64 */)
@@ -232,9 +231,9 @@ external interface WGPURenderCommandsMixin : JsAny {
 	fun setIndexBuffer(buffer: WGPUBuffer  /* GPUBuffer */, indexFormat: String  /* GPUIndexFormat */)
 	fun setIndexBuffer(buffer: WGPUBuffer  /* GPUBuffer */, indexFormat: String  /* GPUIndexFormat */, offset: JsNumber  /* GPUSize64 */)
 	fun setIndexBuffer(buffer: WGPUBuffer  /* GPUBuffer */, indexFormat: String  /* GPUIndexFormat */, offset: JsNumber  /* GPUSize64 */, size: JsNumber  /* GPUSize64 */)
-	fun setVertexBuffer(slot: JsNumber  /* GPUIndex32 */, buffer: JsAny /* GPUBuffer? */)
-	fun setVertexBuffer(slot: JsNumber  /* GPUIndex32 */, buffer: JsAny /* GPUBuffer? */, offset: JsNumber  /* GPUSize64 */)
-	fun setVertexBuffer(slot: JsNumber  /* GPUIndex32 */, buffer: JsAny /* GPUBuffer? */, offset: JsNumber  /* GPUSize64 */, size: JsNumber  /* GPUSize64 */)
+	fun setVertexBuffer(slot: JsNumber  /* GPUIndex32 */, buffer: WGPUBuffer?  /* GPUBuffer? */)
+	fun setVertexBuffer(slot: JsNumber  /* GPUIndex32 */, buffer: WGPUBuffer?  /* GPUBuffer? */, offset: JsNumber  /* GPUSize64 */)
+	fun setVertexBuffer(slot: JsNumber  /* GPUIndex32 */, buffer: WGPUBuffer?  /* GPUBuffer? */, offset: JsNumber  /* GPUSize64 */, size: JsNumber  /* GPUSize64 */)
 	fun draw(vertexCount: JsNumber  /* GPUSize32 */)
 	fun draw(vertexCount: JsNumber  /* GPUSize32 */, instanceCount: JsNumber  /* GPUSize32 */)
 	fun draw(vertexCount: JsNumber  /* GPUSize32 */, instanceCount: JsNumber  /* GPUSize32 */, firstVertex: JsNumber  /* GPUSize32 */)
@@ -274,7 +273,7 @@ external interface WGPUCanvasContext : JsAny {
 	var canvas: JsAny /* (HTMLCanvasElement or OffscreenCanvas) */
 	fun configure(configuration: WGPUCanvasConfiguration  /* GPUCanvasConfiguration */)
 	fun unconfigure()
-	fun getConfiguration(): JsAny /* GPUCanvasConfiguration? */
+	fun getConfiguration(): WGPUCanvasConfiguration?  /* GPUCanvasConfiguration? */
 	fun getCurrentTexture(): WGPUTexture  /* GPUTexture */
 }
 
@@ -307,7 +306,7 @@ external interface WGPURequestAdapterOptions : JsAny {
 
 external interface WGPUDeviceDescriptor : JsAny, WGPUObjectDescriptorBase {
 	var requiredFeatures: JsArray<JsAny> /* sequence<GPUFeatureName> */
-	var requiredLimits: JsMap<JsAny, JsAny> /* record<DOMString, (GPUSize64orundefined)>  */
+	var requiredLimits: WebGpuRecord /* record<DOMString, (GPUSize64orundefined)>  */
 	var defaultQueue: WGPUQueueDescriptor  /* GPUQueueDescriptor */
 }
 
@@ -437,7 +436,7 @@ external interface WGPUPipelineDescriptorBase : JsAny, WGPUObjectDescriptorBase 
 external interface WGPUProgrammableStage : JsAny {
 	var module: WGPUShaderModule  /* GPUShaderModule */
 	var entryPoint: String /* USVString */
-	var constants: JsMap<JsAny, JsAny> /* record<USVString, GPUPipelineConstantValue>  */
+	var constants: WebGpuRecord /* record<USVString, GPUPipelineConstantValue>  */
 }
 
 external interface WGPUComputePipelineDescriptor : JsAny, WGPUPipelineDescriptorBase {
