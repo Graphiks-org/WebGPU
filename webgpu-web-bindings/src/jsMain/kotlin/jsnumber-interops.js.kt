@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalWasmJsInterop::class)
 
-package org.graphiks.webgpu
+package org.graphiks.webgpu.bindings
 
 @Suppress(names = ["NOTHING_TO_INLINE"])
 actual inline fun Float.asJsNumber(): JsNumber = unsafeCast<JsNumber>()

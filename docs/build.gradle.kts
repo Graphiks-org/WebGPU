@@ -7,7 +7,7 @@ plugins {
 val apiModules = listOf(
     ":webgpu-api",
     ":webgpu-descriptors",
-    ":webgpu-web",
+    ":webgpu-web-bindings",
 ).map { project(it) }
 
 val copyWebGpuDokkaIntoMkDocs = tasks.register<Sync>("copyWebGpuDokkaIntoMkDocs") {

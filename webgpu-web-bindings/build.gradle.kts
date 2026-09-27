@@ -34,7 +34,7 @@ kotlin {
     }
 
     sourceSets.commonMain.dependencies {
-        implementation(project(":webgpu-api"))
+        api(project(":webgpu-api"))
     }
     sourceSets {
         commonTest {

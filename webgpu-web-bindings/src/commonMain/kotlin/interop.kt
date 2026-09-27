@@ -1,7 +1,7 @@
 @file:Suppress("unused")
 @file:OptIn(ExperimentalWasmJsInterop::class)
 
-package org.graphiks.webgpu
+package org.graphiks.webgpu.bindings
 
 import js.promise.Promise
 import kotlin.js.ExperimentalWasmJsInterop

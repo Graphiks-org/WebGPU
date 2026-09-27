@@ -1,6 +1,8 @@
 @file:Suppress("unused")
 // This file has been generated DO NO EDIT
-package org.graphiks.webgpu
+package org.graphiks.webgpu.descriptors
+
+import org.graphiks.webgpu.*
 
 /**
  * An RGBA color represented by four components.

@@ -1,6 +1,6 @@
 @file:OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
 
-package org.graphiks.webgpu
+package org.graphiks.webgpu.bindings
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

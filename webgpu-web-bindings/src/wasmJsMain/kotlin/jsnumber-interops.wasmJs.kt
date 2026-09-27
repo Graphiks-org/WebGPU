@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalWasmJsInterop::class)
 
-package org.graphiks.webgpu
+package org.graphiks.webgpu.bindings
 
 import kotlin.js.toJsNumber
 

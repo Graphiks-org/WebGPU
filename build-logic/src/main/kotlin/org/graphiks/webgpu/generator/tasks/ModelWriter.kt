@@ -7,13 +7,12 @@ import java.nio.file.Paths
 import kotlin.io.path.createDirectories
 
 object ModelWriter {
-    private val descriptorCommonSourcePath = Paths.get("webgpu-descriptors").resolve("src").resolve("commonMain").resolve("kotlin")
-    private val commonSourcePath = Paths.get("webgpu-api").resolve("src").resolve("commonMain").resolve("kotlin")
-    private val commonWebSourcePath = Paths.get("webgpu-api").resolve("src").resolve("webMain").resolve("kotlin")
-    private val commonNativeSourcePath = Paths.get("webgpu-api").resolve("src").resolve("commonNativeMain").resolve("kotlin")
-    private val webSourcePath = Paths.get("webgpu-web").resolve("src").resolve("commonMain").resolve("kotlin")
-
-    fun write(context: MapperContext) {
+    fun write(context: MapperContext, root: Path = Paths.get(".")) {
+        val descriptorCommonSourcePath = root.resolve("webgpu-descriptors").resolve("src").resolve("commonMain").resolve("kotlin")
+        val commonSourcePath = root.resolve("webgpu-api").resolve("src").resolve("commonMain").resolve("kotlin")
+        val commonWebSourcePath = root.resolve("webgpu-api").resolve("src").resolve("webMain").resolve("kotlin")
+        val commonNativeSourcePath = root.resolve("webgpu-api").resolve("src").resolve("commonNativeMain").resolve("kotlin")
+        val webSourcePath = root.resolve("webgpu-web-bindings").resolve("src").resolve("commonMain").resolve("kotlin")
 
         commonSourcePath.createSourceFile("bitflags.kt") {
             appendText(context.bitflagEnumerations.joinToString("\n"))
@@ -39,7 +38,11 @@ object ModelWriter {
             appendText(context.interfaces.joinToString("\n"))
         }
 
-        descriptorCommonSourcePath.createSourceFile("descriptor.kt") {
+        descriptorCommonSourcePath.createSourceFile(
+            "descriptor.kt",
+            packageName = "org.graphiks.webgpu.descriptors",
+            imports = listOf("org.graphiks.webgpu.*"),
+        ) {
             appendText(context.descriptors.joinToString("\n"))
         }
 
@@ -58,15 +61,20 @@ object ModelWriter {
         }
     }
 
-    private fun Path.createSourceFile(fileName: String, block: File.() -> Unit) {
+    private fun Path.createSourceFile(
+        fileName: String,
+        packageName: String = "org.graphiks.webgpu",
+        imports: List<String> = emptyList(),
+        block: File.() -> Unit,
+    ) {
         createDirectories()
         resolve(fileName).toFile().apply {
-            delete()
-            createNewFile()
-
-            appendText("@file:Suppress(\"unused\")\n")
-            appendText("// This file has been generated DO NO EDIT\n")
-            appendText("package org.graphiks.webgpu\n\n")
+            writeText("@file:Suppress(\"unused\")\n// This file has been generated DO NO EDIT\n")
+            appendText("package $packageName\n\n")
+            if (imports.isNotEmpty()) {
+                imports.forEach { appendText("import $it\n") }
+                appendText("\n")
+            }
             block()
         }
     }
@@ -74,13 +82,10 @@ object ModelWriter {
     private fun Path.createWebSourceFile(fileName: String, block: File.() -> Unit) {
         createDirectories()
         resolve(fileName).toFile().apply {
-            delete()
-            createNewFile()
-
-            appendText("@file:Suppress(\"unused\")\n")
-            appendText("@file:OptIn(ExperimentalWasmJsInterop::class)")
+            writeText("@file:Suppress(\"unused\")\n")
+            appendText("@file:OptIn(ExperimentalWasmJsInterop::class)\n")
             appendText("// This file has been generated DO NO EDIT\n")
-            appendText("package org.graphiks.webgpu\n\n")
+            appendText("package org.graphiks.webgpu.bindings\n\n")
             block()
         }
     }

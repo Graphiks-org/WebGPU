@@ -1,6 +1,7 @@
 @file:Suppress("unused")
-@file:OptIn(ExperimentalWasmJsInterop::class)// This file has been generated DO NO EDIT
-package org.graphiks.webgpu
+@file:OptIn(ExperimentalWasmJsInterop::class)
+// This file has been generated DO NO EDIT
+package org.graphiks.webgpu.bindings
 
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.JsAny

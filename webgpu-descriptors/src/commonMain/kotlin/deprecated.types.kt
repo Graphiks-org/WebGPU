@@ -1,4 +1,4 @@
-package org.graphiks.webgpu
+package org.graphiks.webgpu.descriptors
 
 @Deprecated("Use Extent3D instead")
 typealias Size3D = Extent3D
