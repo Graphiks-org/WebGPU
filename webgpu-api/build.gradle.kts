@@ -1,6 +1,5 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
-import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -14,9 +13,7 @@ plugins {
 
 kotlin {
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
-    abiValidation {
-        enabled = true
-    }
+    abiValidation()
 
     js {
         browser()
@@ -34,16 +31,14 @@ kotlin {
     iosSimulatorArm64()
     watchosArm64()
     watchosSimulatorArm64()
-    watchosX64()
     macosArm64()
-    macosX64()
     linuxArm64()
     linuxX64()
     mingwX64()
     androidNativeArm64()
     androidNativeX64()
 
-    androidLibrary {
+    android {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_17
         }
@@ -79,7 +74,7 @@ kotlin {
         }
 
 
-        val commonNativeMain by creating {
+        val commonNativeMain = create("commonNativeMain") {
             dependsOn(commonMain.get())
         }
 
@@ -90,6 +85,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.bundles.kotest)
+                implementation(libs.kotlinx.io.core)
             }
         }
 
