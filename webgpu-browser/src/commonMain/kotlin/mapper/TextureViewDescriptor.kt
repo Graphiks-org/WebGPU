@@ -18,4 +18,6 @@ internal fun map(input: GPUTextureViewDescriptor): WGPUTextureViewDescriptor =
         input.mipLevelCount?.let { mipLevelCount = it.asJsNumber() }
         baseArrayLayer = input.baseArrayLayer.asJsNumber()
         input.arrayLayerCount?.let { arrayLayerCount = it.asJsNumber() }
+        usage = input.usage.value.asJsNumber()
+        swizzle = input.swizzle.toWebGpuString()
     }

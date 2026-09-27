@@ -48,9 +48,7 @@ internal fun map(input: GPURenderPipelineDescriptor): WGPURenderPipelineDescript
 private fun map(input: GPUVertexState): WGPUVertexState = createJsObject<WGPUVertexState>().apply {
     module = (input.module as ShaderModule).handler
     input.entryPoint?.let { entryPoint = it }
-
-    // TODO map this
-    //constants = undefined
+    constants = mapConstants(input.constants)
     buffers = input.buffers.mapJsArray { map(it) }
 }
 
@@ -111,9 +109,7 @@ private fun map(input: GPUFragmentState): WGPUFragmentState =
         targets = input.targets.mapJsArray { map(it) }
         module = (input.module as ShaderModule).handler
         input.entryPoint?.let { entryPoint = it }
-
-        // TODO not sure how to map this
-        //constants = undefined
+        constants = mapConstants(input.constants)
     }
 
 private fun map(input: GPUColorTargetState): WGPUColorTargetState =
