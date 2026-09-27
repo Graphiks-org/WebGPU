@@ -31,3 +31,22 @@ val copyTypeMappingIntoMkDocs = tasks.register<Sync>("copyTypeMappingIntoMkDocs"
 tasks.named("generateMkDocsNavigation") {
     dependsOn(copyWebGpuDokkaIntoMkDocs, copyTypeMappingIntoMkDocs)
 }
+
+val compactMkDocsNavigation = tasks.register("compactMkDocsNavigation") {
+    description = "Keep only the module-level API links in the tracked MkDocs navigation."
+    doLast {
+        val config = layout.projectDirectory.file("mkdocs.yml").asFile
+        val source = config.readText()
+        val startMarker = "# !!! EMBEDDED DOKKA START, DO NOT COMMIT !!! #"
+        val endMarker = "# !!! EMBEDDED DOKKA END, DO NOT COMMIT !!! #"
+        val start = source.indexOf(startMarker)
+        val end = source.indexOf(endMarker)
+        require(start >= 0 && end > start) { "Dokka navigation markers are missing from mkdocs.yml" }
+        val compact = source.substring(0, start + startMarker.length) + "\n" + source.substring(end)
+        if (compact != source) config.writeText(compact)
+    }
+}
+
+tasks.named("embedDokkaIntoMkDocs") {
+    finalizedBy(compactMkDocsNavigation)
+}

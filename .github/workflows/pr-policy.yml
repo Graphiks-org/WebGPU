@@ -3,6 +3,7 @@ name: PR policy
 on:
   pull_request:
     branches: [ master ]
+    types: [ opened, synchronize, reopened, edited ]
 
 permissions:
   contents: read

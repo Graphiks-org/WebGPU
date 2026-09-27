@@ -10,7 +10,7 @@ Use Conventional Commits such as `feat: add texture option` or `fix: correct buf
 
 ## Verify
 
-Use JDK 25 and run `./gradlew check`. Run the relevant platform tests for your change and mention any target you could not exercise. For documentation changes, build the site with `./gradlew :docs:embedDokkaIntoMkDocs` and `mkdocs build --strict -f docs/mkdocs.yml` after installing MkDocs Material and `mkdocs-static-i18n`. Remove generated navigation between the Dokka markers in `docs/mkdocs.yml` before committing.
+Use JDK 25 and run `./gradlew check`. Run the relevant platform tests for your change and mention any target you could not exercise. For documentation changes, build the site with `./gradlew :docs:embedDokkaIntoMkDocs` and `mkdocs build --strict -f docs/mkdocs.yml` after installing MkDocs Material and `mkdocs-static-i18n`. The Gradle task compacts generated API navigation automatically; check that `docs/mkdocs.yml` remains unchanged before committing.
 
 The documentation workflow validates every pull request. Publication from `master` requires repository Pages settings with **GitHub Actions** selected as the source and the `github-pages` environment allowed. If these settings are missing, the deployment job fails and a maintainer must enable them.
 

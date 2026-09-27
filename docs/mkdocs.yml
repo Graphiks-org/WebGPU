@@ -34,6 +34,10 @@ nav:
   - Testing: testing.md
   - Specification Maintenance: specification-maintenance.md
   - Type Mapping: generated/type-mapping.md
+  - Reference:
+      - webgpu-api: api/webgpu-api/index.md
+      - webgpu-descriptors: api/webgpu-descriptors/index.md
+      - webgpu-web: api/webgpu-web/index.md
 
 # !!! EMBEDDED DOKKA START, DO NOT COMMIT !!! #
 # !!! EMBEDDED DOKKA END, DO NOT COMMIT !!! #
@@ -51,3 +55,11 @@ plugins:
           build: true
           site_name: WebGPU
           site_description: Types WebGPU Kotlin Multiplatform et référence API
+          nav_translations:
+            Home: Accueil
+            Getting Started: Démarrage
+            Architecture: Architecture
+            Testing: Tests
+            Specification Maintenance: Maintenance des spécifications
+            Type Mapping: Correspondance des types
+            Reference: Référence API
