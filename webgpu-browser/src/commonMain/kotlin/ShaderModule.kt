@@ -6,7 +6,6 @@ import org.graphiks.webgpu.*
 import org.graphiks.webgpu.bindings.*
 
 import org.graphiks.webgpu.browser.mapper.map
-import js.promise.await
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.unsafeCast
 
@@ -17,7 +16,7 @@ class ShaderModule(val handler: WGPUShaderModule) : GPUShaderModule {
             handler.label = value
         }
 
-    override suspend fun getCompilationInfo(): Result<GPUCompilationInfo> = runCatching {
+    override suspend fun getCompilationInfo(): Result<GPUCompilationInfo> = browserResult {
         handler
             .getCompilationInfo()
             .await()

@@ -5,7 +5,6 @@ package org.graphiks.webgpu.browser
 import org.graphiks.webgpu.*
 import org.graphiks.webgpu.bindings.*
 
-import js.promise.await
 import kotlin.js.ExperimentalWasmJsInterop
 
 class Buffer(val handler: WGPUBuffer) : GPUBuffer {
@@ -32,11 +31,13 @@ class Buffer(val handler: WGPUBuffer) : GPUBuffer {
         mode: GPUMapMode,
         offset: GPUSize64,
         size: GPUSize64?
-    ): Result<Unit> = when (size) {
-        null -> handler.mapAsync(mode.value.asJsNumber(), offset.asJsNumber())
-        else -> handler.mapAsync(mode.value.asJsNumber(), offset.asJsNumber(), size.asJsNumber())
-    }.await()
-        .let { Result.success(Unit) }
+    ): Result<Unit> = browserResult {
+        when (size) {
+            null -> handler.mapAsync(mode.value.asJsNumber(), offset.asJsNumber())
+            else -> handler.mapAsync(mode.value.asJsNumber(), offset.asJsNumber(), size.asJsNumber())
+        }.await()
+        return@browserResult Unit
+    }
 
     override fun unmap() {
         handler.unmap()

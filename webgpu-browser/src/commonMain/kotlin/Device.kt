@@ -7,12 +7,11 @@ import org.graphiks.webgpu.bindings.*
 
 import org.graphiks.webgpu.browser.mapper.errorOf
 import org.graphiks.webgpu.browser.mapper.map
-import js.promise.await
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.toJsString
 import kotlin.js.unsafeCast
 
-class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallback?) : GPUDevice {
+class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallback? = null) : GPUDevice {
 
     init {
         onUncapturedError?.let { callback ->
@@ -63,7 +62,7 @@ class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallb
             .let(::RenderPipeline)
 
     override suspend fun createComputePipelineAsync(descriptor: GPUComputePipelineDescriptor): Result<GPUComputePipeline> =
-        runCatching {
+        browserResult {
             map(descriptor)
                 .let { handler.createComputePipelineAsync(it) }
                 .await()
@@ -72,7 +71,7 @@ class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallb
         }
 
     override suspend fun createRenderPipelineAsync(descriptor: GPURenderPipelineDescriptor): Result<GPURenderPipeline> =
-        runCatching {
+        browserResult {
             map(descriptor)
                 .let { handler.createRenderPipelineAsync(it) }
                 .await()
@@ -123,11 +122,8 @@ class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallb
         handler.pushErrorScope(filter.value)
     }
 
-    override suspend fun popErrorScope(): Result<GPUError?> = runCatching {
-        handler.popErrorScope()
-            .await()
-            ?.unsafeCast<WGPUError>()
-            ?.let { errorOf(it) }
+    override suspend fun popErrorScope(): Result<GPUError?> = browserResult {
+        handler.popErrorScope().await()?.let { errorOf(it.unsafeCast<WGPUError>()) }
     }
 
     override fun close() {

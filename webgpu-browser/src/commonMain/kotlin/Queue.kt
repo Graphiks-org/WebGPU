@@ -6,7 +6,6 @@ import org.graphiks.webgpu.*
 import org.graphiks.webgpu.bindings.*
 
 import org.graphiks.webgpu.browser.mapper.map
-import js.promise.await
 import kotlin.js.ExperimentalWasmJsInterop
 
 class Queue(val handler: WGPUQueue) : GPUQueue {
@@ -15,9 +14,10 @@ class Queue(val handler: WGPUQueue) : GPUQueue {
         get() = handler.label
         set(value) { handler.label = value }
 
-    override suspend fun onSubmittedWorkDone(): Result<Unit> = runCatching {
+    override suspend fun onSubmittedWorkDone(): Result<Unit> = browserResult {
         handler.onSubmittedWorkDone()
             .await()
+        return@browserResult Unit
     }
 
     override fun submit(commandBuffers: List<GPUCommandBuffer>) {

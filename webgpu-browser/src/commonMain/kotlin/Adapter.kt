@@ -6,20 +6,24 @@ import org.graphiks.webgpu.*
 import org.graphiks.webgpu.bindings.*
 
 import org.graphiks.webgpu.browser.mapper.map
-import js.promise.await
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.toJsString
 import kotlin.js.unsafeCast
 
 
-suspend fun requestAdapter(options: GPURequestAdapterOptions? = null): Result<Adapter> = runCatching {
-    val gpu = navigator.gpu ?: error("WebGPU not supported in this browser.")
+suspend fun requestAdapter(options: GPURequestAdapterOptions? = null): Result<Adapter> =
+    requestAdapter(browserGpu(), options)
 
-    when (options) {
+private fun browserGpu(): GPU? = js("globalThis.navigator && globalThis.navigator.gpu")
+
+internal suspend fun requestAdapter(gpu: GPU?, options: GPURequestAdapterOptions?): Result<Adapter> = browserResult {
+    checkNotNull(gpu) { "WebGPU is not available in this environment." }
+
+    val raw = when (options) {
         null -> gpu.requestAdapter()
         else -> gpu.requestAdapter(map(options))
-    }.await().unsafeCast<WGPUAdapter>()
-        .let { Adapter(it) }
+    }.await()
+    Adapter(checkNotNull(raw) { "No WebGPU adapter is available." }.unsafeCast<WGPUAdapter>())
 }
 
 class Adapter(val handler: WGPUAdapter) : GPUAdapter {
@@ -36,7 +40,7 @@ class Adapter(val handler: WGPUAdapter) : GPUAdapter {
         get() = map(handler.info)
 
     override suspend fun requestDevice(descriptor: GPUDeviceDescriptor?): Result<GPUDevice> {
-        return runCatching {
+        return browserResult {
             when (descriptor) {
                 null -> handler.requestDevice()
                 else -> handler.requestDevice(map(descriptor))

@@ -30,8 +30,8 @@ external object window {
 
 external interface GPU: JsAny {
     fun getPreferredCanvasFormat(): String
-    fun requestAdapter(): Promise<JsAny>
-    fun requestAdapter(descriptor: WGPURequestAdapterOptions): Promise<JsAny>
+    fun requestAdapter(): Promise<JsAny?>
+    fun requestAdapter(descriptor: WGPURequestAdapterOptions): Promise<JsAny?>
     var wgslLanguageFeatures: JsAny /* WGSLLanguageFeatures */
 }
 
