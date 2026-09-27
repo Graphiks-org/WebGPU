@@ -11,7 +11,7 @@ Run these commands from the repository root. Fetching the upstream files and gen
 ./gradlew check-cache
 ```
 
-This task downloads the WebGPU HTML specification from [W3C](https://www.w3.org/TR/webgpu/) and the WebGPU IDL from [GPUWeb](https://gpuweb.github.io/gpuweb/webgpu.idl). It stores them in `webgpu-ktypes-specifications/src/jvmMain/resources/` as `webgpu.html` and `webgpu.idl`, and updates `cache.json` with their hashes and refresh times. It runs only when invoked; it is not automatically part of `build` or `check`.
+This task downloads the WebGPU HTML specification from [W3C](https://www.w3.org/TR/webgpu/) and the WebGPU IDL from [GPUWeb](https://gpuweb.github.io/gpuweb/webgpu.idl). It stores them in `webgpu-specifications/src/jvmMain/resources/` as `webgpu.html` and `webgpu.idl`, and updates `cache.json` with their hashes and refresh times. It runs only when invoked; it is not automatically part of `build` or `check`.
 
 ### 2. Rebuild the API documentation JSON
 
@@ -51,4 +51,4 @@ This converts `documentation.json` into `documentation.yaml`, which is consumed 
 ./gradlew generate-binding
 ```
 
-This task reads `webgpu.idl` and `documentation.yaml`, then rewrites the generated Kotlin sources in `webgpu-ktypes`, `webgpu-ktypes-web`, and `webgpu-ktypes-descriptors`. Do not edit those generated files by hand; update the source specifications or documentation data and run the generator again.
+This task reads `webgpu.idl` and `documentation.yaml`, then rewrites the generated Kotlin sources in `webgpu-api`, `webgpu-web`, and `webgpu-descriptors`. Do not edit those generated files by hand; update the source specifications or documentation data and run the generator again.

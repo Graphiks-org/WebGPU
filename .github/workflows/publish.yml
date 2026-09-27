@@ -38,9 +38,9 @@ jobs:
       - name: Publish snapshot
         run: >-
           ./gradlew
-          :webgpu-ktypes:publishToMavenCentral
-          :webgpu-ktypes-descriptors:publishToMavenCentral
-          :webgpu-ktypes-web:publishToMavenCentral
+          :webgpu-api:publishToMavenCentral
+          :webgpu-descriptors:publishToMavenCentral
+          :webgpu-web:publishToMavenCentral
           --no-configuration-cache
           --no-daemon
           --stacktrace
@@ -80,9 +80,9 @@ jobs:
       - name: Publish release
         run: >-
           ./gradlew
-          :webgpu-ktypes:publishToMavenCentral
-          :webgpu-ktypes-descriptors:publishToMavenCentral
-          :webgpu-ktypes-web:publishToMavenCentral
+          :webgpu-api:publishToMavenCentral
+          :webgpu-descriptors:publishToMavenCentral
+          :webgpu-web:publishToMavenCentral
           --no-configuration-cache
           --no-daemon
           --stacktrace

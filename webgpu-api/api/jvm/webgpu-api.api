@@ -1,0 +1,1587 @@
+public abstract interface class org/graphiks/webgpu/ArrayBuffer {
+	public static final field Companion Lorg/graphiks/webgpu/ArrayBuffer$Companion;
+	public abstract fun getByte-VKZWuLQ (J)B
+	public abstract fun getDouble-VKZWuLQ (J)D
+	public abstract fun getFloat-VKZWuLQ (J)F
+	public abstract fun getInt-VKZWuLQ (J)I
+	public abstract fun getShort-VKZWuLQ (J)S
+	public abstract fun getSize-s-VKNKU ()J
+	public abstract fun getUByte-NsiRcpg (J)B
+	public abstract fun getUInt--4l20Xc (J)I
+	public abstract fun getUShort-ZO3KGMw (J)S
+	public abstract fun setByte-4PLdz1A (JB)V
+	public abstract fun setBytes-4PLdz1A (J[B)V
+	public abstract fun setDouble-4PLdz1A (JD)V
+	public abstract fun setDoubles-4PLdz1A (J[D)V
+	public abstract fun setFloat-4PLdz1A (JF)V
+	public abstract fun setFloats-4PLdz1A (J[F)V
+	public abstract fun setInt-4PLdz1A (JI)V
+	public abstract fun setInts-4PLdz1A (J[I)V
+	public abstract fun setShort-4PLdz1A (JS)V
+	public abstract fun setShorts-4PLdz1A (J[S)V
+	public abstract fun setUByte-RFc766c (JB)V
+	public abstract fun setUBytes-DD8cEzA (J[B)V
+	public abstract fun setUInt-8GdB7C8 (JI)V
+	public abstract fun setUInts-TtKN_Aw (J[I)V
+	public abstract fun setUShort-E2t620U (JS)V
+	public abstract fun setUShorts-hATpKzI (J[S)V
+	public abstract fun toByteArray ()[B
+	public abstract fun toDoubleArray ()[D
+	public abstract fun toFloatArray ()[F
+	public abstract fun toIntArray ()[I
+	public abstract fun toShortArray ()[S
+	public abstract fun toUByteArray-TcUX1vc ()[B
+	public abstract fun toUIntArray--hP7Qyg ()[I
+	public abstract fun toUShortArray-amswpOA ()[S
+}
+
+public final class org/graphiks/webgpu/ArrayBuffer$Companion {
+	public final fun allocate-VKZWuLQ (J)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun of ([B)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun of ([D)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun of ([F)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun of ([I)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun of ([S)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun of--ajY-9A ([I)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun of-GBYM_sE ([B)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun of-rL5Bavg ([S)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun wrap (Ljava/lang/foreign/MemorySegment;)Lorg/graphiks/webgpu/ArrayBuffer;
+}
+
+public abstract interface class org/graphiks/webgpu/FlagEnumeration {
+	public abstract fun getValue-s-VKNKU ()J
+}
+
+public final class org/graphiks/webgpu/FlagEnumerationKt {
+	public static final fun toFlagInt (Ljava/util/Set;)I
+	public static final fun toFlagULong (Ljava/util/Set;)J
+}
+
+public abstract interface class org/graphiks/webgpu/GPUAdapter : java/lang/AutoCloseable {
+	public abstract fun getFeatures ()Ljava/util/Set;
+	public abstract fun getInfo ()Lorg/graphiks/webgpu/GPUAdapterInfo;
+	public abstract fun getLimits ()Lorg/graphiks/webgpu/GPUSupportedLimits;
+	public abstract fun requestDevice-gIAlu-s (Lorg/graphiks/webgpu/GPUDeviceDescriptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun requestDevice-gIAlu-s$default (Lorg/graphiks/webgpu/GPUAdapter;Lorg/graphiks/webgpu/GPUDeviceDescriptor;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class org/graphiks/webgpu/GPUAdapter$DefaultImpls {
+	public static synthetic fun requestDevice-gIAlu-s$default (Lorg/graphiks/webgpu/GPUAdapter;Lorg/graphiks/webgpu/GPUDeviceDescriptor;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUAdapterInfo {
+	public abstract fun getArchitecture ()Ljava/lang/String;
+	public abstract fun getDescription ()Ljava/lang/String;
+	public abstract fun getDevice ()Ljava/lang/String;
+	public abstract fun getSubgroupMaxSize-pVg5ArA ()I
+	public abstract fun getSubgroupMinSize-pVg5ArA ()I
+	public abstract fun getVendor ()Ljava/lang/String;
+	public abstract fun isFallbackAdapter ()Z
+}
+
+public final class org/graphiks/webgpu/GPUAddressMode : java/lang/Enum {
+	public static final field ClampToEdge Lorg/graphiks/webgpu/GPUAddressMode;
+	public static final field Companion Lorg/graphiks/webgpu/GPUAddressMode$Companion;
+	public static final field MirrorRepeat Lorg/graphiks/webgpu/GPUAddressMode;
+	public static final field Repeat Lorg/graphiks/webgpu/GPUAddressMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUAddressMode;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUAddressMode;
+}
+
+public final class org/graphiks/webgpu/GPUAddressMode$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUAddressMode;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBindGroup : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBindGroupDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getEntries ()Ljava/util/List;
+	public abstract fun getLayout ()Lorg/graphiks/webgpu/GPUBindGroupLayout;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBindGroupEntry {
+	public abstract fun getBinding-pVg5ArA ()I
+	public abstract fun getResource ()Lorg/graphiks/webgpu/GPUBindingResource;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBindGroupLayout : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBindGroupLayoutDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getEntries ()Ljava/util/List;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBindGroupLayoutEntry {
+	public abstract fun getBinding-pVg5ArA ()I
+	public abstract fun getBuffer ()Lorg/graphiks/webgpu/GPUBufferBindingLayout;
+	public abstract fun getSampler ()Lorg/graphiks/webgpu/GPUSamplerBindingLayout;
+	public abstract fun getStorageTexture ()Lorg/graphiks/webgpu/GPUStorageTextureBindingLayout;
+	public abstract fun getTexture ()Lorg/graphiks/webgpu/GPUTextureBindingLayout;
+	public abstract fun getVisibility--NbGva0 ()J
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBindingCommandsMixin {
+	public abstract fun setBindGroup-OzbTU-A (ILorg/graphiks/webgpu/GPUBindGroup;Ljava/util/List;)V
+	public static synthetic fun setBindGroup-OzbTU-A$default (Lorg/graphiks/webgpu/GPUBindingCommandsMixin;ILorg/graphiks/webgpu/GPUBindGroup;Ljava/util/List;ILjava/lang/Object;)V
+	public abstract fun setImmediates-h5lECac (ILorg/graphiks/webgpu/ArrayBuffer;JLkotlin/ULong;)V
+	public static synthetic fun setImmediates-h5lECac$default (Lorg/graphiks/webgpu/GPUBindingCommandsMixin;ILorg/graphiks/webgpu/ArrayBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+}
+
+public final class org/graphiks/webgpu/GPUBindingCommandsMixin$DefaultImpls {
+	public static synthetic fun setBindGroup-OzbTU-A$default (Lorg/graphiks/webgpu/GPUBindingCommandsMixin;ILorg/graphiks/webgpu/GPUBindGroup;Ljava/util/List;ILjava/lang/Object;)V
+	public static synthetic fun setImmediates-h5lECac$default (Lorg/graphiks/webgpu/GPUBindingCommandsMixin;ILorg/graphiks/webgpu/ArrayBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBindingResource {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBlendComponent {
+	public abstract fun getDstFactor ()Lorg/graphiks/webgpu/GPUBlendFactor;
+	public abstract fun getOperation ()Lorg/graphiks/webgpu/GPUBlendOperation;
+	public abstract fun getSrcFactor ()Lorg/graphiks/webgpu/GPUBlendFactor;
+}
+
+public final class org/graphiks/webgpu/GPUBlendFactor : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUBlendFactor$Companion;
+	public static final field Constant Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field Dst Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field DstAlpha Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field One Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field OneMinusConstant Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field OneMinusDst Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field OneMinusDstAlpha Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field OneMinusSrc Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field OneMinusSrc1 Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field OneMinusSrc1Alpha Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field OneMinusSrcAlpha Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field Src Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field Src1 Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field Src1Alpha Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field SrcAlpha Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field SrcAlphaSaturated Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static final field Zero Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUBlendFactor;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUBlendFactor;
+}
+
+public final class org/graphiks/webgpu/GPUBlendFactor$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUBlendFactor;
+}
+
+public final class org/graphiks/webgpu/GPUBlendOperation : java/lang/Enum {
+	public static final field Add Lorg/graphiks/webgpu/GPUBlendOperation;
+	public static final field Companion Lorg/graphiks/webgpu/GPUBlendOperation$Companion;
+	public static final field Max Lorg/graphiks/webgpu/GPUBlendOperation;
+	public static final field Min Lorg/graphiks/webgpu/GPUBlendOperation;
+	public static final field ReverseSubtract Lorg/graphiks/webgpu/GPUBlendOperation;
+	public static final field Subtract Lorg/graphiks/webgpu/GPUBlendOperation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUBlendOperation;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUBlendOperation;
+}
+
+public final class org/graphiks/webgpu/GPUBlendOperation$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUBlendOperation;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBlendState {
+	public abstract fun getAlpha ()Lorg/graphiks/webgpu/GPUBlendComponent;
+	public abstract fun getColor ()Lorg/graphiks/webgpu/GPUBlendComponent;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBuffer : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase {
+	public abstract fun getMapState ()Lorg/graphiks/webgpu/GPUBufferMapState;
+	public abstract fun getMappedRange-y8-82ps (JLkotlin/ULong;)Lorg/graphiks/webgpu/ArrayBuffer;
+	public static synthetic fun getMappedRange-y8-82ps$default (Lorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)Lorg/graphiks/webgpu/ArrayBuffer;
+	public abstract fun getSize-s-VKNKU ()J
+	public abstract fun getUsage ()Ljava/util/Set;
+	public abstract fun mapAsync-fYWVpIM (JJLkotlin/ULong;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun mapAsync-fYWVpIM$default (Lorg/graphiks/webgpu/GPUBuffer;JJLkotlin/ULong;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun unmap ()V
+}
+
+public final class org/graphiks/webgpu/GPUBuffer$DefaultImpls {
+	public static synthetic fun getMappedRange-y8-82ps$default (Lorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)Lorg/graphiks/webgpu/ArrayBuffer;
+	public static synthetic fun mapAsync-fYWVpIM$default (Lorg/graphiks/webgpu/GPUBuffer;JJLkotlin/ULong;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBufferBinding : org/graphiks/webgpu/GPUBindingResource {
+	public abstract fun getBuffer ()Lorg/graphiks/webgpu/GPUBuffer;
+	public abstract fun getOffset-s-VKNKU ()J
+	public abstract fun getSize-6VbMDqA ()Lkotlin/ULong;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBufferBindingLayout {
+	public abstract fun getHasDynamicOffset ()Z
+	public abstract fun getMinBindingSize-s-VKNKU ()J
+	public abstract fun getType ()Lorg/graphiks/webgpu/GPUBufferBindingType;
+}
+
+public final class org/graphiks/webgpu/GPUBufferBindingType : java/lang/Enum {
+	public static final field BindingNotUsed Lorg/graphiks/webgpu/GPUBufferBindingType;
+	public static final field Companion Lorg/graphiks/webgpu/GPUBufferBindingType$Companion;
+	public static final field ReadOnlyStorage Lorg/graphiks/webgpu/GPUBufferBindingType;
+	public static final field Storage Lorg/graphiks/webgpu/GPUBufferBindingType;
+	public static final field Uniform Lorg/graphiks/webgpu/GPUBufferBindingType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUBufferBindingType;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUBufferBindingType;
+}
+
+public final class org/graphiks/webgpu/GPUBufferBindingType$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUBufferBindingType;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUBufferDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getMappedAtCreation ()Z
+	public abstract fun getSize-s-VKNKU ()J
+	public abstract fun getUsage-582ih68 ()J
+}
+
+public final class org/graphiks/webgpu/GPUBufferMapState : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUBufferMapState$Companion;
+	public static final field Mapped Lorg/graphiks/webgpu/GPUBufferMapState;
+	public static final field Pending Lorg/graphiks/webgpu/GPUBufferMapState;
+	public static final field Unmapped Lorg/graphiks/webgpu/GPUBufferMapState;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUBufferMapState;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUBufferMapState;
+}
+
+public final class org/graphiks/webgpu/GPUBufferMapState$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUBufferMapState;
+}
+
+public final class org/graphiks/webgpu/GPUBufferUsage {
+	public static final field Companion Lorg/graphiks/webgpu/GPUBufferUsage$Companion;
+	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUBufferUsage;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (JLjava/lang/Object;)Z
+	public static final fun equals-impl0 (JJ)Z
+	public final fun getValue-s-VKNKU ()J
+	public fun hashCode ()I
+	public static fun hashCode-impl (J)I
+	public static final fun of-mZYONk4 (J[Lorg/graphiks/webgpu/GPUBufferUsage;)J
+	public static final fun or-ir5s9B8 (JJ)J
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (J)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()J
+}
+
+public final class org/graphiks/webgpu/GPUBufferUsage$Companion {
+	public final fun getCopyDst-582ih68 ()J
+	public final fun getCopySrc-582ih68 ()J
+	public final fun getEntries ()Ljava/util/Set;
+	public final fun getIndex-582ih68 ()J
+	public final fun getIndirect-582ih68 ()J
+	public final fun getMapRead-582ih68 ()J
+	public final fun getMapWrite-582ih68 ()J
+	public final fun getNone-582ih68 ()J
+	public final fun getQueryResolve-582ih68 ()J
+	public final fun getStorage-582ih68 ()J
+	public final fun getUniform-582ih68 ()J
+	public final fun getVertex-582ih68 ()J
+}
+
+public abstract interface class org/graphiks/webgpu/GPUColor {
+	public abstract fun getA ()D
+	public abstract fun getB ()D
+	public abstract fun getG ()D
+	public abstract fun getR ()D
+}
+
+public abstract interface class org/graphiks/webgpu/GPUColorTargetState {
+	public abstract fun getBlend ()Lorg/graphiks/webgpu/GPUBlendState;
+	public abstract fun getFormat ()Lorg/graphiks/webgpu/GPUTextureFormat;
+	public abstract fun getWriteMask-JI3ISog ()J
+}
+
+public final class org/graphiks/webgpu/GPUColorWrite {
+	public static final field Companion Lorg/graphiks/webgpu/GPUColorWrite$Companion;
+	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUColorWrite;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (JLjava/lang/Object;)Z
+	public static final fun equals-impl0 (JJ)Z
+	public final fun getValue-s-VKNKU ()J
+	public fun hashCode ()I
+	public static fun hashCode-impl (J)I
+	public static final fun of-By9g6Uc (J[Lorg/graphiks/webgpu/GPUColorWrite;)J
+	public static final fun or-2DVivfE (JJ)J
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (J)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()J
+}
+
+public final class org/graphiks/webgpu/GPUColorWrite$Companion {
+	public final fun getAll-JI3ISog ()J
+	public final fun getAlpha-JI3ISog ()J
+	public final fun getBlue-JI3ISog ()J
+	public final fun getEntries ()Ljava/util/Set;
+	public final fun getGreen-JI3ISog ()J
+	public final fun getNone-JI3ISog ()J
+	public final fun getRed-JI3ISog ()J
+}
+
+public abstract interface class org/graphiks/webgpu/GPUCommandBuffer : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUCommandBufferDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUCommandEncoder : java/lang/AutoCloseable, org/graphiks/webgpu/GPUCommandsMixin, org/graphiks/webgpu/GPUDebugCommandsMixin, org/graphiks/webgpu/GPUObjectBase {
+	public abstract fun beginComputePass (Lorg/graphiks/webgpu/GPUComputePassDescriptor;)Lorg/graphiks/webgpu/GPUComputePassEncoder;
+	public static synthetic fun beginComputePass$default (Lorg/graphiks/webgpu/GPUCommandEncoder;Lorg/graphiks/webgpu/GPUComputePassDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUComputePassEncoder;
+	public abstract fun beginRenderPass (Lorg/graphiks/webgpu/GPURenderPassDescriptor;)Lorg/graphiks/webgpu/GPURenderPassEncoder;
+	public abstract fun clearBuffer-GkyHQM8 (Lorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;)V
+	public static synthetic fun clearBuffer-GkyHQM8$default (Lorg/graphiks/webgpu/GPUCommandEncoder;Lorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+	public abstract fun copyBufferToBuffer-RAnX-nw (Lorg/graphiks/webgpu/GPUBuffer;JLorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;)V
+	public static synthetic fun copyBufferToBuffer-RAnX-nw$default (Lorg/graphiks/webgpu/GPUCommandEncoder;Lorg/graphiks/webgpu/GPUBuffer;JLorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+	public abstract fun copyBufferToTexture (Lorg/graphiks/webgpu/GPUTexelCopyBufferInfo;Lorg/graphiks/webgpu/GPUTexelCopyTextureInfo;Lorg/graphiks/webgpu/GPUExtent3D;)V
+	public abstract fun copyTextureToBuffer (Lorg/graphiks/webgpu/GPUTexelCopyTextureInfo;Lorg/graphiks/webgpu/GPUTexelCopyBufferInfo;Lorg/graphiks/webgpu/GPUExtent3D;)V
+	public abstract fun copyTextureToTexture (Lorg/graphiks/webgpu/GPUTexelCopyTextureInfo;Lorg/graphiks/webgpu/GPUTexelCopyTextureInfo;Lorg/graphiks/webgpu/GPUExtent3D;)V
+	public abstract fun finish (Lorg/graphiks/webgpu/GPUCommandBufferDescriptor;)Lorg/graphiks/webgpu/GPUCommandBuffer;
+	public static synthetic fun finish$default (Lorg/graphiks/webgpu/GPUCommandEncoder;Lorg/graphiks/webgpu/GPUCommandBufferDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUCommandBuffer;
+	public abstract fun resolveQuerySet-wM6TinI (Lorg/graphiks/webgpu/GPUQuerySet;IILorg/graphiks/webgpu/GPUBuffer;J)V
+}
+
+public final class org/graphiks/webgpu/GPUCommandEncoder$DefaultImpls {
+	public static synthetic fun beginComputePass$default (Lorg/graphiks/webgpu/GPUCommandEncoder;Lorg/graphiks/webgpu/GPUComputePassDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUComputePassEncoder;
+	public static synthetic fun clearBuffer-GkyHQM8$default (Lorg/graphiks/webgpu/GPUCommandEncoder;Lorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+	public static synthetic fun copyBufferToBuffer-RAnX-nw$default (Lorg/graphiks/webgpu/GPUCommandEncoder;Lorg/graphiks/webgpu/GPUBuffer;JLorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+	public static synthetic fun finish$default (Lorg/graphiks/webgpu/GPUCommandEncoder;Lorg/graphiks/webgpu/GPUCommandBufferDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUCommandBuffer;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUCommandEncoderDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUCommandsMixin {
+}
+
+public final class org/graphiks/webgpu/GPUCompareFunction : java/lang/Enum {
+	public static final field Always Lorg/graphiks/webgpu/GPUCompareFunction;
+	public static final field Companion Lorg/graphiks/webgpu/GPUCompareFunction$Companion;
+	public static final field Equal Lorg/graphiks/webgpu/GPUCompareFunction;
+	public static final field Greater Lorg/graphiks/webgpu/GPUCompareFunction;
+	public static final field GreaterEqual Lorg/graphiks/webgpu/GPUCompareFunction;
+	public static final field Less Lorg/graphiks/webgpu/GPUCompareFunction;
+	public static final field LessEqual Lorg/graphiks/webgpu/GPUCompareFunction;
+	public static final field Never Lorg/graphiks/webgpu/GPUCompareFunction;
+	public static final field NotEqual Lorg/graphiks/webgpu/GPUCompareFunction;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUCompareFunction;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUCompareFunction;
+}
+
+public final class org/graphiks/webgpu/GPUCompareFunction$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUCompareFunction;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUCompilationInfo {
+	public abstract fun getMessages ()Ljava/util/List;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUCompilationMessage {
+	public abstract fun getLength-s-VKNKU ()J
+	public abstract fun getLineNum-s-VKNKU ()J
+	public abstract fun getLinePos-s-VKNKU ()J
+	public abstract fun getMessage ()Ljava/lang/String;
+	public abstract fun getOffset-s-VKNKU ()J
+	public abstract fun getType ()Lorg/graphiks/webgpu/GPUCompilationMessageType;
+}
+
+public final class org/graphiks/webgpu/GPUCompilationMessageType : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUCompilationMessageType$Companion;
+	public static final field Error Lorg/graphiks/webgpu/GPUCompilationMessageType;
+	public static final field Info Lorg/graphiks/webgpu/GPUCompilationMessageType;
+	public static final field Warning Lorg/graphiks/webgpu/GPUCompilationMessageType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUCompilationMessageType;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUCompilationMessageType;
+}
+
+public final class org/graphiks/webgpu/GPUCompilationMessageType$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUCompilationMessageType;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUComputePassDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getTimestampWrites ()Lorg/graphiks/webgpu/GPUComputePassTimestampWrites;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUComputePassEncoder : org/graphiks/webgpu/GPUBindingCommandsMixin, org/graphiks/webgpu/GPUCommandsMixin, org/graphiks/webgpu/GPUDebugCommandsMixin, org/graphiks/webgpu/GPUObjectBase {
+	public abstract fun dispatchWorkgroups-zly0blg (III)V
+	public static synthetic fun dispatchWorkgroups-zly0blg$default (Lorg/graphiks/webgpu/GPUComputePassEncoder;IIIILjava/lang/Object;)V
+	public abstract fun dispatchWorkgroupsIndirect-2TYgG_w (Lorg/graphiks/webgpu/GPUBuffer;J)V
+	public abstract fun end ()V
+	public abstract fun setPipeline (Lorg/graphiks/webgpu/GPUComputePipeline;)V
+}
+
+public final class org/graphiks/webgpu/GPUComputePassEncoder$DefaultImpls {
+	public static synthetic fun dispatchWorkgroups-zly0blg$default (Lorg/graphiks/webgpu/GPUComputePassEncoder;IIIILjava/lang/Object;)V
+}
+
+public abstract interface class org/graphiks/webgpu/GPUComputePassTimestampWrites {
+	public abstract fun getBeginningOfPassWriteIndex-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getEndOfPassWriteIndex-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getQuerySet ()Lorg/graphiks/webgpu/GPUQuerySet;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUComputePipeline : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUPipelineBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUComputePipelineDescriptor : org/graphiks/webgpu/GPUPipelineDescriptorBase {
+	public abstract fun getCompute ()Lorg/graphiks/webgpu/GPUProgrammableStage;
+}
+
+public final class org/graphiks/webgpu/GPUCullMode : java/lang/Enum {
+	public static final field Back Lorg/graphiks/webgpu/GPUCullMode;
+	public static final field Companion Lorg/graphiks/webgpu/GPUCullMode$Companion;
+	public static final field Front Lorg/graphiks/webgpu/GPUCullMode;
+	public static final field None Lorg/graphiks/webgpu/GPUCullMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUCullMode;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUCullMode;
+}
+
+public final class org/graphiks/webgpu/GPUCullMode$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUCullMode;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUDebugCommandsMixin {
+	public abstract fun insertDebugMarker (Ljava/lang/String;)V
+	public abstract fun popDebugGroup ()V
+	public abstract fun pushDebugGroup (Ljava/lang/String;)V
+}
+
+public abstract interface class org/graphiks/webgpu/GPUDepthStencilState {
+	public abstract fun getDepthBias ()I
+	public abstract fun getDepthBiasClamp ()F
+	public abstract fun getDepthBiasSlopeScale ()F
+	public abstract fun getDepthCompare ()Lorg/graphiks/webgpu/GPUCompareFunction;
+	public abstract fun getDepthWriteEnabled ()Ljava/lang/Boolean;
+	public abstract fun getFormat ()Lorg/graphiks/webgpu/GPUTextureFormat;
+	public abstract fun getStencilBack ()Lorg/graphiks/webgpu/GPUStencilFaceState;
+	public abstract fun getStencilFront ()Lorg/graphiks/webgpu/GPUStencilFaceState;
+	public abstract fun getStencilReadMask-pVg5ArA ()I
+	public abstract fun getStencilWriteMask-pVg5ArA ()I
+}
+
+public abstract interface class org/graphiks/webgpu/GPUDevice : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
+	public abstract fun createBindGroup (Lorg/graphiks/webgpu/GPUBindGroupDescriptor;)Lorg/graphiks/webgpu/GPUBindGroup;
+	public abstract fun createBindGroupLayout (Lorg/graphiks/webgpu/GPUBindGroupLayoutDescriptor;)Lorg/graphiks/webgpu/GPUBindGroupLayout;
+	public abstract fun createBuffer (Lorg/graphiks/webgpu/GPUBufferDescriptor;)Lorg/graphiks/webgpu/GPUBuffer;
+	public abstract fun createCommandEncoder (Lorg/graphiks/webgpu/GPUCommandEncoderDescriptor;)Lorg/graphiks/webgpu/GPUCommandEncoder;
+	public static synthetic fun createCommandEncoder$default (Lorg/graphiks/webgpu/GPUDevice;Lorg/graphiks/webgpu/GPUCommandEncoderDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUCommandEncoder;
+	public abstract fun createComputePipeline (Lorg/graphiks/webgpu/GPUComputePipelineDescriptor;)Lorg/graphiks/webgpu/GPUComputePipeline;
+	public abstract fun createComputePipelineAsync-gIAlu-s (Lorg/graphiks/webgpu/GPUComputePipelineDescriptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun createPipelineLayout (Lorg/graphiks/webgpu/GPUPipelineLayoutDescriptor;)Lorg/graphiks/webgpu/GPUPipelineLayout;
+	public abstract fun createQuerySet (Lorg/graphiks/webgpu/GPUQuerySetDescriptor;)Lorg/graphiks/webgpu/GPUQuerySet;
+	public abstract fun createRenderBundleEncoder (Lorg/graphiks/webgpu/GPURenderBundleEncoderDescriptor;)Lorg/graphiks/webgpu/GPURenderBundleEncoder;
+	public abstract fun createRenderPipeline (Lorg/graphiks/webgpu/GPURenderPipelineDescriptor;)Lorg/graphiks/webgpu/GPURenderPipeline;
+	public abstract fun createRenderPipelineAsync-gIAlu-s (Lorg/graphiks/webgpu/GPURenderPipelineDescriptor;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun createSampler (Lorg/graphiks/webgpu/GPUSamplerDescriptor;)Lorg/graphiks/webgpu/GPUSampler;
+	public static synthetic fun createSampler$default (Lorg/graphiks/webgpu/GPUDevice;Lorg/graphiks/webgpu/GPUSamplerDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUSampler;
+	public abstract fun createShaderModule (Lorg/graphiks/webgpu/GPUShaderModuleDescriptor;)Lorg/graphiks/webgpu/GPUShaderModule;
+	public abstract fun createTexture (Lorg/graphiks/webgpu/GPUTextureDescriptor;)Lorg/graphiks/webgpu/GPUTexture;
+	public abstract fun getAdapterInfo ()Lorg/graphiks/webgpu/GPUAdapterInfo;
+	public abstract fun getFeatures ()Ljava/util/Set;
+	public abstract fun getLimits ()Lorg/graphiks/webgpu/GPUSupportedLimits;
+	public abstract fun getQueue ()Lorg/graphiks/webgpu/GPUQueue;
+	public abstract fun popErrorScope-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun pushErrorScope (Lorg/graphiks/webgpu/GPUErrorFilter;)V
+}
+
+public final class org/graphiks/webgpu/GPUDevice$DefaultImpls {
+	public static synthetic fun createCommandEncoder$default (Lorg/graphiks/webgpu/GPUDevice;Lorg/graphiks/webgpu/GPUCommandEncoderDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUCommandEncoder;
+	public static synthetic fun createSampler$default (Lorg/graphiks/webgpu/GPUDevice;Lorg/graphiks/webgpu/GPUSamplerDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUSampler;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUDeviceDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getDefaultQueue ()Lorg/graphiks/webgpu/GPUQueueDescriptor;
+	public abstract fun getOnUncapturedError ()Lorg/graphiks/webgpu/GPUUncapturedErrorCallback;
+	public abstract fun getRequiredFeatures ()Ljava/util/List;
+	public abstract fun getRequiredLimits ()Lorg/graphiks/webgpu/GPUSupportedLimits;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUDeviceLostInfo {
+	public abstract fun getMessage ()Ljava/lang/String;
+	public abstract fun getReason ()Lorg/graphiks/webgpu/GPUDeviceLostReason;
+}
+
+public final class org/graphiks/webgpu/GPUDeviceLostReason : java/lang/Enum {
+	public static final field CallbackCancelled Lorg/graphiks/webgpu/GPUDeviceLostReason;
+	public static final field Companion Lorg/graphiks/webgpu/GPUDeviceLostReason$Companion;
+	public static final field Destroyed Lorg/graphiks/webgpu/GPUDeviceLostReason;
+	public static final field FailedCreation Lorg/graphiks/webgpu/GPUDeviceLostReason;
+	public static final field Unknown Lorg/graphiks/webgpu/GPUDeviceLostReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUDeviceLostReason;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUDeviceLostReason;
+}
+
+public final class org/graphiks/webgpu/GPUDeviceLostReason$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUDeviceLostReason;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUError {
+	public abstract fun getMessage ()Ljava/lang/String;
+}
+
+public final class org/graphiks/webgpu/GPUErrorFilter : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUErrorFilter$Companion;
+	public static final field Internal Lorg/graphiks/webgpu/GPUErrorFilter;
+	public static final field OutOfMemory Lorg/graphiks/webgpu/GPUErrorFilter;
+	public static final field Validation Lorg/graphiks/webgpu/GPUErrorFilter;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUErrorFilter;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUErrorFilter;
+}
+
+public final class org/graphiks/webgpu/GPUErrorFilter$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUErrorFilter;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUExtent3D {
+	public abstract fun getDepthOrArrayLayers-pVg5ArA ()I
+	public abstract fun getHeight-pVg5ArA ()I
+	public abstract fun getWidth-pVg5ArA ()I
+}
+
+public final class org/graphiks/webgpu/GPUFeatureName : java/lang/Enum {
+	public static final field BGRA8UnormStorage Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field ClipDistances Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field Companion Lorg/graphiks/webgpu/GPUFeatureName$Companion;
+	public static final field CoreFeaturesAndLimits Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field Depth32FloatStencil8 Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field DepthClipControl Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field DualSourceBlending Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field Float32Blendable Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field Float32Filterable Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field IndirectFirstInstance Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field PrimitiveIndex Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field RG11B10UfloatRenderable Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field ShaderF16 Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field Subgroups Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field TextureComponentSwizzle Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field TextureCompressionASTC Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field TextureCompressionASTCSliced3D Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field TextureCompressionBC Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field TextureCompressionBCSliced3D Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field TextureCompressionETC2 Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field TextureFormatsTier1 Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field TextureFormatsTier2 Lorg/graphiks/webgpu/GPUFeatureName;
+	public static final field TimestampQuery Lorg/graphiks/webgpu/GPUFeatureName;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUFeatureName;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUFeatureName;
+}
+
+public final class org/graphiks/webgpu/GPUFeatureName$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUFeatureName;
+}
+
+public final class org/graphiks/webgpu/GPUFilterMode : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUFilterMode$Companion;
+	public static final field Linear Lorg/graphiks/webgpu/GPUFilterMode;
+	public static final field Nearest Lorg/graphiks/webgpu/GPUFilterMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUFilterMode;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUFilterMode;
+}
+
+public final class org/graphiks/webgpu/GPUFilterMode$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUFilterMode;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUFragmentState : org/graphiks/webgpu/GPUProgrammableStage {
+	public abstract fun getTargets ()Ljava/util/List;
+}
+
+public final class org/graphiks/webgpu/GPUFrontFace : java/lang/Enum {
+	public static final field CCW Lorg/graphiks/webgpu/GPUFrontFace;
+	public static final field CW Lorg/graphiks/webgpu/GPUFrontFace;
+	public static final field Companion Lorg/graphiks/webgpu/GPUFrontFace$Companion;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUFrontFace;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUFrontFace;
+}
+
+public final class org/graphiks/webgpu/GPUFrontFace$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUFrontFace;
+}
+
+public final class org/graphiks/webgpu/GPUIndexFormat : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUIndexFormat$Companion;
+	public static final field Uint16 Lorg/graphiks/webgpu/GPUIndexFormat;
+	public static final field Uint32 Lorg/graphiks/webgpu/GPUIndexFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUIndexFormat;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUIndexFormat;
+}
+
+public final class org/graphiks/webgpu/GPUIndexFormat$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUIndexFormat;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUInternalError : org/graphiks/webgpu/GPUError {
+}
+
+public final class org/graphiks/webgpu/GPULoadOp : java/lang/Enum {
+	public static final field Clear Lorg/graphiks/webgpu/GPULoadOp;
+	public static final field Companion Lorg/graphiks/webgpu/GPULoadOp$Companion;
+	public static final field Load Lorg/graphiks/webgpu/GPULoadOp;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPULoadOp;
+	public static fun values ()[Lorg/graphiks/webgpu/GPULoadOp;
+}
+
+public final class org/graphiks/webgpu/GPULoadOp$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPULoadOp;
+}
+
+public final class org/graphiks/webgpu/GPUMapMode {
+	public static final field Companion Lorg/graphiks/webgpu/GPUMapMode$Companion;
+	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUMapMode;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (JLjava/lang/Object;)Z
+	public static final fun equals-impl0 (JJ)Z
+	public final fun getValue-s-VKNKU ()J
+	public fun hashCode ()I
+	public static fun hashCode-impl (J)I
+	public static final fun of-IcTHA2Y (J[Lorg/graphiks/webgpu/GPUMapMode;)J
+	public static final fun or-7s7L0j4 (JJ)J
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (J)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()J
+}
+
+public final class org/graphiks/webgpu/GPUMapMode$Companion {
+	public final fun getEntries ()Ljava/util/Set;
+	public final fun getNone-TPjGWGg ()J
+	public final fun getRead-TPjGWGg ()J
+	public final fun getWrite-TPjGWGg ()J
+}
+
+public final class org/graphiks/webgpu/GPUMipmapFilterMode : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUMipmapFilterMode$Companion;
+	public static final field Linear Lorg/graphiks/webgpu/GPUMipmapFilterMode;
+	public static final field Nearest Lorg/graphiks/webgpu/GPUMipmapFilterMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUMipmapFilterMode;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUMipmapFilterMode;
+}
+
+public final class org/graphiks/webgpu/GPUMipmapFilterMode$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUMipmapFilterMode;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUMultisampleState {
+	public abstract fun getAlphaToCoverageEnabled ()Z
+	public abstract fun getCount-pVg5ArA ()I
+	public abstract fun getMask-pVg5ArA ()I
+}
+
+public abstract interface class org/graphiks/webgpu/GPUObjectBase {
+	public abstract fun getLabel ()Ljava/lang/String;
+	public abstract fun setLabel (Ljava/lang/String;)V
+}
+
+public abstract interface class org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getLabel ()Ljava/lang/String;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUOrigin2D {
+	public abstract fun getX-pVg5ArA ()I
+	public abstract fun getY-pVg5ArA ()I
+}
+
+public abstract interface class org/graphiks/webgpu/GPUOrigin3D {
+	public abstract fun getX-pVg5ArA ()I
+	public abstract fun getY-pVg5ArA ()I
+	public abstract fun getZ-pVg5ArA ()I
+}
+
+public abstract interface class org/graphiks/webgpu/GPUOutOfMemoryError : org/graphiks/webgpu/GPUError {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUPipelineBase {
+	public abstract fun getBindGroupLayout-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUBindGroupLayout;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUPipelineDescriptorBase : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getLayout ()Lorg/graphiks/webgpu/GPUPipelineLayout;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUPipelineLayout : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUPipelineLayoutDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getBindGroupLayouts ()Ljava/util/List;
+	public abstract fun getImmediateSize-pVg5ArA ()I
+}
+
+public final class org/graphiks/webgpu/GPUPowerPreference : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUPowerPreference$Companion;
+	public static final field HighPerformance Lorg/graphiks/webgpu/GPUPowerPreference;
+	public static final field LowPower Lorg/graphiks/webgpu/GPUPowerPreference;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUPowerPreference;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUPowerPreference;
+}
+
+public final class org/graphiks/webgpu/GPUPowerPreference$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUPowerPreference;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUPrimitiveState {
+	public abstract fun getCullMode ()Lorg/graphiks/webgpu/GPUCullMode;
+	public abstract fun getFrontFace ()Lorg/graphiks/webgpu/GPUFrontFace;
+	public abstract fun getStripIndexFormat ()Lorg/graphiks/webgpu/GPUIndexFormat;
+	public abstract fun getTopology ()Lorg/graphiks/webgpu/GPUPrimitiveTopology;
+	public abstract fun getUnclippedDepth ()Z
+}
+
+public final class org/graphiks/webgpu/GPUPrimitiveTopology : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUPrimitiveTopology$Companion;
+	public static final field LineList Lorg/graphiks/webgpu/GPUPrimitiveTopology;
+	public static final field LineStrip Lorg/graphiks/webgpu/GPUPrimitiveTopology;
+	public static final field PointList Lorg/graphiks/webgpu/GPUPrimitiveTopology;
+	public static final field TriangleList Lorg/graphiks/webgpu/GPUPrimitiveTopology;
+	public static final field TriangleStrip Lorg/graphiks/webgpu/GPUPrimitiveTopology;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUPrimitiveTopology;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUPrimitiveTopology;
+}
+
+public final class org/graphiks/webgpu/GPUPrimitiveTopology$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUPrimitiveTopology;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUProgrammableStage {
+	public abstract fun getConstants ()Ljava/util/Map;
+	public abstract fun getEntryPoint ()Ljava/lang/String;
+	public abstract fun getModule ()Lorg/graphiks/webgpu/GPUShaderModule;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUQuerySet : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
+	public abstract fun getCount-pVg5ArA ()I
+	public abstract fun getType ()Lorg/graphiks/webgpu/GPUQueryType;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUQuerySetDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getCount-pVg5ArA ()I
+	public abstract fun getType ()Lorg/graphiks/webgpu/GPUQueryType;
+}
+
+public final class org/graphiks/webgpu/GPUQueryType : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUQueryType$Companion;
+	public static final field Occlusion Lorg/graphiks/webgpu/GPUQueryType;
+	public static final field Timestamp Lorg/graphiks/webgpu/GPUQueryType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUQueryType;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUQueryType;
+}
+
+public final class org/graphiks/webgpu/GPUQueryType$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUQueryType;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUQueue : org/graphiks/webgpu/GPUObjectBase {
+	public abstract fun onSubmittedWorkDone-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun submit (Ljava/util/List;)V
+	public abstract fun writeBuffer-RAnX-nw (Lorg/graphiks/webgpu/GPUBuffer;JLorg/graphiks/webgpu/ArrayBuffer;JLkotlin/ULong;)V
+	public static synthetic fun writeBuffer-RAnX-nw$default (Lorg/graphiks/webgpu/GPUQueue;Lorg/graphiks/webgpu/GPUBuffer;JLorg/graphiks/webgpu/ArrayBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+	public abstract fun writeTexture (Lorg/graphiks/webgpu/GPUTexelCopyTextureInfo;Lorg/graphiks/webgpu/ArrayBuffer;Lorg/graphiks/webgpu/GPUTexelCopyBufferLayout;Lorg/graphiks/webgpu/GPUExtent3D;)V
+}
+
+public final class org/graphiks/webgpu/GPUQueue$DefaultImpls {
+	public static synthetic fun writeBuffer-RAnX-nw$default (Lorg/graphiks/webgpu/GPUQueue;Lorg/graphiks/webgpu/GPUBuffer;JLorg/graphiks/webgpu/ArrayBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+}
+
+public abstract interface class org/graphiks/webgpu/GPUQueueDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderBundle : org/graphiks/webgpu/GPUObjectBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderBundleDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderBundleEncoder : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingCommandsMixin, org/graphiks/webgpu/GPUCommandsMixin, org/graphiks/webgpu/GPUDebugCommandsMixin, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPURenderCommandsMixin {
+	public abstract fun finish (Lorg/graphiks/webgpu/GPURenderBundleDescriptor;)Lorg/graphiks/webgpu/GPURenderBundle;
+	public static synthetic fun finish$default (Lorg/graphiks/webgpu/GPURenderBundleEncoder;Lorg/graphiks/webgpu/GPURenderBundleDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPURenderBundle;
+}
+
+public final class org/graphiks/webgpu/GPURenderBundleEncoder$DefaultImpls {
+	public static synthetic fun finish$default (Lorg/graphiks/webgpu/GPURenderBundleEncoder;Lorg/graphiks/webgpu/GPURenderBundleDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPURenderBundle;
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderBundleEncoderDescriptor : org/graphiks/webgpu/GPURenderPassLayout {
+	public abstract fun getDepthReadOnly ()Z
+	public abstract fun getStencilReadOnly ()Z
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderCommandsMixin {
+	public abstract fun draw-nAmpug0 (IIII)V
+	public static synthetic fun draw-nAmpug0$default (Lorg/graphiks/webgpu/GPURenderCommandsMixin;IIIIILjava/lang/Object;)V
+	public abstract fun drawIndexed-NfGje7g (IIIII)V
+	public static synthetic fun drawIndexed-NfGje7g$default (Lorg/graphiks/webgpu/GPURenderCommandsMixin;IIIIIILjava/lang/Object;)V
+	public abstract fun drawIndexedIndirect-2TYgG_w (Lorg/graphiks/webgpu/GPUBuffer;J)V
+	public abstract fun drawIndirect-2TYgG_w (Lorg/graphiks/webgpu/GPUBuffer;J)V
+	public abstract fun setIndexBuffer-D2hTHWI (Lorg/graphiks/webgpu/GPUBuffer;Lorg/graphiks/webgpu/GPUIndexFormat;JLkotlin/ULong;)V
+	public static synthetic fun setIndexBuffer-D2hTHWI$default (Lorg/graphiks/webgpu/GPURenderCommandsMixin;Lorg/graphiks/webgpu/GPUBuffer;Lorg/graphiks/webgpu/GPUIndexFormat;JLkotlin/ULong;ILjava/lang/Object;)V
+	public abstract fun setPipeline (Lorg/graphiks/webgpu/GPURenderPipeline;)V
+	public abstract fun setVertexBuffer-h5lECac (ILorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;)V
+	public static synthetic fun setVertexBuffer-h5lECac$default (Lorg/graphiks/webgpu/GPURenderCommandsMixin;ILorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+}
+
+public final class org/graphiks/webgpu/GPURenderCommandsMixin$DefaultImpls {
+	public static synthetic fun draw-nAmpug0$default (Lorg/graphiks/webgpu/GPURenderCommandsMixin;IIIIILjava/lang/Object;)V
+	public static synthetic fun drawIndexed-NfGje7g$default (Lorg/graphiks/webgpu/GPURenderCommandsMixin;IIIIIILjava/lang/Object;)V
+	public static synthetic fun setIndexBuffer-D2hTHWI$default (Lorg/graphiks/webgpu/GPURenderCommandsMixin;Lorg/graphiks/webgpu/GPUBuffer;Lorg/graphiks/webgpu/GPUIndexFormat;JLkotlin/ULong;ILjava/lang/Object;)V
+	public static synthetic fun setVertexBuffer-h5lECac$default (Lorg/graphiks/webgpu/GPURenderCommandsMixin;ILorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)V
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderPassColorAttachment {
+	public abstract fun getClearValue ()Lorg/graphiks/webgpu/GPUColor;
+	public abstract fun getDepthSlice-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getLoadOp ()Lorg/graphiks/webgpu/GPULoadOp;
+	public abstract fun getResolveTarget ()Lorg/graphiks/webgpu/GPUTextureOrGPUTextureView;
+	public abstract fun getStoreOp ()Lorg/graphiks/webgpu/GPUStoreOp;
+	public abstract fun getView ()Lorg/graphiks/webgpu/GPUTextureOrGPUTextureView;
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderPassDepthStencilAttachment {
+	public abstract fun getDepthClearValue ()Ljava/lang/Float;
+	public abstract fun getDepthLoadOp ()Lorg/graphiks/webgpu/GPULoadOp;
+	public abstract fun getDepthReadOnly ()Z
+	public abstract fun getDepthStoreOp ()Lorg/graphiks/webgpu/GPUStoreOp;
+	public abstract fun getStencilClearValue-pVg5ArA ()I
+	public abstract fun getStencilLoadOp ()Lorg/graphiks/webgpu/GPULoadOp;
+	public abstract fun getStencilReadOnly ()Z
+	public abstract fun getStencilStoreOp ()Lorg/graphiks/webgpu/GPUStoreOp;
+	public abstract fun getView ()Lorg/graphiks/webgpu/GPUTextureOrGPUTextureView;
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderPassDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getColorAttachments ()Ljava/util/List;
+	public abstract fun getDepthStencilAttachment ()Lorg/graphiks/webgpu/GPURenderPassDepthStencilAttachment;
+	public abstract fun getMaxDrawCount-s-VKNKU ()J
+	public abstract fun getOcclusionQuerySet ()Lorg/graphiks/webgpu/GPUQuerySet;
+	public abstract fun getTimestampWrites ()Lorg/graphiks/webgpu/GPURenderPassTimestampWrites;
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderPassEncoder : org/graphiks/webgpu/GPUBindingCommandsMixin, org/graphiks/webgpu/GPUCommandsMixin, org/graphiks/webgpu/GPUDebugCommandsMixin, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPURenderCommandsMixin {
+	public abstract fun beginOcclusionQuery-WZ4Q5Ns (I)V
+	public abstract fun end ()V
+	public abstract fun endOcclusionQuery ()V
+	public abstract fun executeBundles (Ljava/util/List;)V
+	public abstract fun setBlendConstant (Lorg/graphiks/webgpu/GPUColor;)V
+	public abstract fun setScissorRect-nAmpug0 (IIII)V
+	public abstract fun setStencilReference-WZ4Q5Ns (I)V
+	public abstract fun setViewport (FFFFFF)V
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderPassLayout : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getColorFormats ()Ljava/util/List;
+	public abstract fun getDepthStencilFormat ()Lorg/graphiks/webgpu/GPUTextureFormat;
+	public abstract fun getSampleCount-pVg5ArA ()I
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderPassTimestampWrites {
+	public abstract fun getBeginningOfPassWriteIndex-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getEndOfPassWriteIndex-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getQuerySet ()Lorg/graphiks/webgpu/GPUQuerySet;
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderPipeline : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUPipelineBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPURenderPipelineDescriptor : org/graphiks/webgpu/GPUPipelineDescriptorBase {
+	public abstract fun getDepthStencil ()Lorg/graphiks/webgpu/GPUDepthStencilState;
+	public abstract fun getFragment ()Lorg/graphiks/webgpu/GPUFragmentState;
+	public abstract fun getMultisample ()Lorg/graphiks/webgpu/GPUMultisampleState;
+	public abstract fun getPrimitive ()Lorg/graphiks/webgpu/GPUPrimitiveState;
+	public abstract fun getVertex ()Lorg/graphiks/webgpu/GPUVertexState;
+}
+
+public abstract interface class org/graphiks/webgpu/GPURequestAdapterOptions {
+	public abstract fun getFeatureLevel ()Ljava/lang/String;
+	public abstract fun getForceFallbackAdapter ()Z
+	public abstract fun getPowerPreference ()Lorg/graphiks/webgpu/GPUPowerPreference;
+	public abstract fun getXrCompatible ()Z
+}
+
+public abstract interface class org/graphiks/webgpu/GPUSampler : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUSamplerBindingLayout {
+	public abstract fun getType ()Lorg/graphiks/webgpu/GPUSamplerBindingType;
+}
+
+public final class org/graphiks/webgpu/GPUSamplerBindingType : java/lang/Enum {
+	public static final field BindingNotUsed Lorg/graphiks/webgpu/GPUSamplerBindingType;
+	public static final field Companion Lorg/graphiks/webgpu/GPUSamplerBindingType$Companion;
+	public static final field Comparison Lorg/graphiks/webgpu/GPUSamplerBindingType;
+	public static final field Filtering Lorg/graphiks/webgpu/GPUSamplerBindingType;
+	public static final field NonFiltering Lorg/graphiks/webgpu/GPUSamplerBindingType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUSamplerBindingType;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUSamplerBindingType;
+}
+
+public final class org/graphiks/webgpu/GPUSamplerBindingType$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUSamplerBindingType;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUSamplerDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getAddressModeU ()Lorg/graphiks/webgpu/GPUAddressMode;
+	public abstract fun getAddressModeV ()Lorg/graphiks/webgpu/GPUAddressMode;
+	public abstract fun getAddressModeW ()Lorg/graphiks/webgpu/GPUAddressMode;
+	public abstract fun getCompare ()Lorg/graphiks/webgpu/GPUCompareFunction;
+	public abstract fun getLodMaxClamp ()F
+	public abstract fun getLodMinClamp ()F
+	public abstract fun getMagFilter ()Lorg/graphiks/webgpu/GPUFilterMode;
+	public abstract fun getMaxAnisotropy-Mh2AYeg ()S
+	public abstract fun getMinFilter ()Lorg/graphiks/webgpu/GPUFilterMode;
+	public abstract fun getMipmapFilter ()Lorg/graphiks/webgpu/GPUMipmapFilterMode;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUShaderModule : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
+	public abstract fun getCompilationInfo-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUShaderModuleCompilationHint {
+	public abstract fun getEntryPoint ()Ljava/lang/String;
+	public abstract fun getLayout ()Lorg/graphiks/webgpu/GPUPipelineLayout;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUShaderModuleDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getCode ()Ljava/lang/String;
+	public abstract fun getCompilationHints ()Ljava/util/List;
+}
+
+public final class org/graphiks/webgpu/GPUShaderStage {
+	public static final field Companion Lorg/graphiks/webgpu/GPUShaderStage$Companion;
+	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUShaderStage;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (JLjava/lang/Object;)Z
+	public static final fun equals-impl0 (JJ)Z
+	public final fun getValue-s-VKNKU ()J
+	public fun hashCode ()I
+	public static fun hashCode-impl (J)I
+	public static final fun of-1BDOmCg (J[Lorg/graphiks/webgpu/GPUShaderStage;)J
+	public static final fun or-hUttLK0 (JJ)J
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (J)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()J
+}
+
+public final class org/graphiks/webgpu/GPUShaderStage$Companion {
+	public final fun getCompute--NbGva0 ()J
+	public final fun getEntries ()Ljava/util/Set;
+	public final fun getFragment--NbGva0 ()J
+	public final fun getNone--NbGva0 ()J
+	public final fun getVertex--NbGva0 ()J
+}
+
+public abstract interface class org/graphiks/webgpu/GPUStencilFaceState {
+	public abstract fun getCompare ()Lorg/graphiks/webgpu/GPUCompareFunction;
+	public abstract fun getDepthFailOp ()Lorg/graphiks/webgpu/GPUStencilOperation;
+	public abstract fun getFailOp ()Lorg/graphiks/webgpu/GPUStencilOperation;
+	public abstract fun getPassOp ()Lorg/graphiks/webgpu/GPUStencilOperation;
+}
+
+public final class org/graphiks/webgpu/GPUStencilOperation : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUStencilOperation$Companion;
+	public static final field DecrementClamp Lorg/graphiks/webgpu/GPUStencilOperation;
+	public static final field DecrementWrap Lorg/graphiks/webgpu/GPUStencilOperation;
+	public static final field IncrementClamp Lorg/graphiks/webgpu/GPUStencilOperation;
+	public static final field IncrementWrap Lorg/graphiks/webgpu/GPUStencilOperation;
+	public static final field Invert Lorg/graphiks/webgpu/GPUStencilOperation;
+	public static final field Keep Lorg/graphiks/webgpu/GPUStencilOperation;
+	public static final field Replace Lorg/graphiks/webgpu/GPUStencilOperation;
+	public static final field Zero Lorg/graphiks/webgpu/GPUStencilOperation;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUStencilOperation;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUStencilOperation;
+}
+
+public final class org/graphiks/webgpu/GPUStencilOperation$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUStencilOperation;
+}
+
+public final class org/graphiks/webgpu/GPUStorageTextureAccess : java/lang/Enum {
+	public static final field BindingNotUsed Lorg/graphiks/webgpu/GPUStorageTextureAccess;
+	public static final field Companion Lorg/graphiks/webgpu/GPUStorageTextureAccess$Companion;
+	public static final field ReadOnly Lorg/graphiks/webgpu/GPUStorageTextureAccess;
+	public static final field ReadWrite Lorg/graphiks/webgpu/GPUStorageTextureAccess;
+	public static final field WriteOnly Lorg/graphiks/webgpu/GPUStorageTextureAccess;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUStorageTextureAccess;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUStorageTextureAccess;
+}
+
+public final class org/graphiks/webgpu/GPUStorageTextureAccess$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUStorageTextureAccess;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUStorageTextureBindingLayout {
+	public abstract fun getAccess ()Lorg/graphiks/webgpu/GPUStorageTextureAccess;
+	public abstract fun getFormat ()Lorg/graphiks/webgpu/GPUTextureFormat;
+	public abstract fun getViewDimension ()Lorg/graphiks/webgpu/GPUTextureViewDimension;
+}
+
+public final class org/graphiks/webgpu/GPUStoreOp : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUStoreOp$Companion;
+	public static final field Discard Lorg/graphiks/webgpu/GPUStoreOp;
+	public static final field Store Lorg/graphiks/webgpu/GPUStoreOp;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUStoreOp;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUStoreOp;
+}
+
+public final class org/graphiks/webgpu/GPUStoreOp$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUStoreOp;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUSupportedLimits {
+	public abstract fun getMaxBindGroups-pVg5ArA ()I
+	public abstract fun getMaxBindGroupsPlusVertexBuffers-pVg5ArA ()I
+	public abstract fun getMaxBindingsPerBindGroup-pVg5ArA ()I
+	public abstract fun getMaxBufferSize-s-VKNKU ()J
+	public abstract fun getMaxColorAttachmentBytesPerSample-pVg5ArA ()I
+	public abstract fun getMaxColorAttachments-pVg5ArA ()I
+	public abstract fun getMaxComputeInvocationsPerWorkgroup-pVg5ArA ()I
+	public abstract fun getMaxComputeWorkgroupSizeX-pVg5ArA ()I
+	public abstract fun getMaxComputeWorkgroupSizeY-pVg5ArA ()I
+	public abstract fun getMaxComputeWorkgroupSizeZ-pVg5ArA ()I
+	public abstract fun getMaxComputeWorkgroupStorageSize-pVg5ArA ()I
+	public abstract fun getMaxComputeWorkgroupsPerDimension-pVg5ArA ()I
+	public abstract fun getMaxDynamicStorageBuffersPerPipelineLayout-pVg5ArA ()I
+	public abstract fun getMaxDynamicUniformBuffersPerPipelineLayout-pVg5ArA ()I
+	public abstract fun getMaxImmediateSize-pVg5ArA ()I
+	public abstract fun getMaxInterStageShaderVariables-pVg5ArA ()I
+	public abstract fun getMaxSampledTexturesPerShaderStage-pVg5ArA ()I
+	public abstract fun getMaxSamplersPerShaderStage-pVg5ArA ()I
+	public abstract fun getMaxStorageBufferBindingSize-s-VKNKU ()J
+	public abstract fun getMaxStorageBuffersInFragmentStage-pVg5ArA ()I
+	public abstract fun getMaxStorageBuffersInVertexStage-pVg5ArA ()I
+	public abstract fun getMaxStorageBuffersPerShaderStage-pVg5ArA ()I
+	public abstract fun getMaxStorageTexturesInFragmentStage-pVg5ArA ()I
+	public abstract fun getMaxStorageTexturesInVertexStage-pVg5ArA ()I
+	public abstract fun getMaxStorageTexturesPerShaderStage-pVg5ArA ()I
+	public abstract fun getMaxTextureArrayLayers-pVg5ArA ()I
+	public abstract fun getMaxTextureDimension1D-pVg5ArA ()I
+	public abstract fun getMaxTextureDimension2D-pVg5ArA ()I
+	public abstract fun getMaxTextureDimension3D-pVg5ArA ()I
+	public abstract fun getMaxUniformBufferBindingSize-s-VKNKU ()J
+	public abstract fun getMaxUniformBuffersPerShaderStage-pVg5ArA ()I
+	public abstract fun getMaxVertexAttributes-pVg5ArA ()I
+	public abstract fun getMaxVertexBufferArrayStride-pVg5ArA ()I
+	public abstract fun getMaxVertexBuffers-pVg5ArA ()I
+	public abstract fun getMinStorageBufferOffsetAlignment-pVg5ArA ()I
+	public abstract fun getMinUniformBufferOffsetAlignment-pVg5ArA ()I
+}
+
+public abstract interface class org/graphiks/webgpu/GPUTexelCopyBufferInfo : org/graphiks/webgpu/GPUTexelCopyBufferLayout {
+	public abstract fun getBuffer ()Lorg/graphiks/webgpu/GPUBuffer;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUTexelCopyBufferLayout {
+	public abstract fun getBytesPerRow-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getOffset-s-VKNKU ()J
+	public abstract fun getRowsPerImage-0hXNFcg ()Lkotlin/UInt;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUTexelCopyTextureInfo {
+	public abstract fun getAspect ()Lorg/graphiks/webgpu/GPUTextureAspect;
+	public abstract fun getMipLevel-pVg5ArA ()I
+	public abstract fun getOrigin ()Lorg/graphiks/webgpu/GPUOrigin3D;
+	public abstract fun getTexture ()Lorg/graphiks/webgpu/GPUTexture;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUTexture : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUTextureOrGPUTextureView {
+	public abstract fun createView (Lorg/graphiks/webgpu/GPUTextureViewDescriptor;)Lorg/graphiks/webgpu/GPUTextureView;
+	public static synthetic fun createView$default (Lorg/graphiks/webgpu/GPUTexture;Lorg/graphiks/webgpu/GPUTextureViewDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUTextureView;
+	public abstract fun getDepthOrArrayLayers-pVg5ArA ()I
+	public abstract fun getDimension ()Lorg/graphiks/webgpu/GPUTextureDimension;
+	public abstract fun getFormat ()Lorg/graphiks/webgpu/GPUTextureFormat;
+	public abstract fun getHeight-pVg5ArA ()I
+	public abstract fun getMipLevelCount-pVg5ArA ()I
+	public abstract fun getSampleCount-pVg5ArA ()I
+	public abstract fun getUsage ()Ljava/util/Set;
+	public abstract fun getWidth-pVg5ArA ()I
+}
+
+public final class org/graphiks/webgpu/GPUTexture$DefaultImpls {
+	public static synthetic fun createView$default (Lorg/graphiks/webgpu/GPUTexture;Lorg/graphiks/webgpu/GPUTextureViewDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUTextureView;
+}
+
+public final class org/graphiks/webgpu/GPUTextureAspect : java/lang/Enum {
+	public static final field All Lorg/graphiks/webgpu/GPUTextureAspect;
+	public static final field Companion Lorg/graphiks/webgpu/GPUTextureAspect$Companion;
+	public static final field DepthOnly Lorg/graphiks/webgpu/GPUTextureAspect;
+	public static final field StencilOnly Lorg/graphiks/webgpu/GPUTextureAspect;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUTextureAspect;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUTextureAspect;
+}
+
+public final class org/graphiks/webgpu/GPUTextureAspect$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUTextureAspect;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUTextureBindingLayout {
+	public abstract fun getMultisampled ()Z
+	public abstract fun getSampleType ()Lorg/graphiks/webgpu/GPUTextureSampleType;
+	public abstract fun getViewDimension ()Lorg/graphiks/webgpu/GPUTextureViewDimension;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUTextureDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getDimension ()Lorg/graphiks/webgpu/GPUTextureDimension;
+	public abstract fun getFormat ()Lorg/graphiks/webgpu/GPUTextureFormat;
+	public abstract fun getMipLevelCount-pVg5ArA ()I
+	public abstract fun getSampleCount-pVg5ArA ()I
+	public abstract fun getSize ()Lorg/graphiks/webgpu/GPUExtent3D;
+	public abstract fun getTextureBindingViewDimension ()Lorg/graphiks/webgpu/GPUTextureViewDimension;
+	public abstract fun getUsage-XIm6oF0 ()J
+	public abstract fun getViewFormats ()Ljava/util/List;
+}
+
+public final class org/graphiks/webgpu/GPUTextureDimension : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUTextureDimension$Companion;
+	public static final field OneD Lorg/graphiks/webgpu/GPUTextureDimension;
+	public static final field ThreeD Lorg/graphiks/webgpu/GPUTextureDimension;
+	public static final field TwoD Lorg/graphiks/webgpu/GPUTextureDimension;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUTextureDimension;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUTextureDimension;
+}
+
+public final class org/graphiks/webgpu/GPUTextureDimension$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUTextureDimension;
+}
+
+public final class org/graphiks/webgpu/GPUTextureFormat : java/lang/Enum {
+	public static final field ASTC10x10Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC10x10UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC10x5Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC10x5UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC10x6Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC10x6UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC10x8Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC10x8UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC12x10Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC12x10UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC12x12Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC12x12UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC4x4Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC4x4UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC5x4Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC5x4UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC5x5Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC5x5UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC6x5Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC6x5UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC6x6Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC6x6UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC8x5Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC8x5UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC8x6Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC8x6UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC8x8Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ASTC8x8UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC1RGBAUnorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC1RGBAUnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC2RGBAUnorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC2RGBAUnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC3RGBAUnorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC3RGBAUnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC4RSnorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC4RUnorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC5RGSnorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC5RGUnorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC6HRGBFloat Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC6HRGBUfloat Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC7RGBAUnorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BC7RGBAUnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BGRA8Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field BGRA8UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field Companion Lorg/graphiks/webgpu/GPUTextureFormat$Companion;
+	public static final field Depth16Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field Depth24Plus Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field Depth24PlusStencil8 Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field Depth32Float Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field Depth32FloatStencil8 Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field EACR11Snorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field EACR11Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field EACRG11Snorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field EACRG11Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ETC2RGB8A1Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ETC2RGB8A1UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ETC2RGB8Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ETC2RGB8UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ETC2RGBA8Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field ETC2RGBA8UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R16Float Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R16Sint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R16Snorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R16Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R16Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R32Float Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R32Sint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R32Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R8Sint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R8Snorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R8Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field R8Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG11B10Ufloat Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG16Float Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG16Sint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG16Snorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG16Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG16Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG32Float Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG32Sint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG32Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG8Sint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG8Snorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG8Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RG8Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGB10A2Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGB10A2Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGB9E5Ufloat Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA16Float Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA16Sint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA16Snorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA16Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA16Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA32Float Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA32Sint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA32Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA8Sint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA8Snorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA8Uint Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA8Unorm Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field RGBA8UnormSrgb Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static final field Stencil8 Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUTextureFormat;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUTextureFormat;
+}
+
+public final class org/graphiks/webgpu/GPUTextureFormat$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUTextureFormat;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUTextureOrGPUTextureView {
+}
+
+public final class org/graphiks/webgpu/GPUTextureSampleType : java/lang/Enum {
+	public static final field BindingNotUsed Lorg/graphiks/webgpu/GPUTextureSampleType;
+	public static final field Companion Lorg/graphiks/webgpu/GPUTextureSampleType$Companion;
+	public static final field Depth Lorg/graphiks/webgpu/GPUTextureSampleType;
+	public static final field Float Lorg/graphiks/webgpu/GPUTextureSampleType;
+	public static final field Sint Lorg/graphiks/webgpu/GPUTextureSampleType;
+	public static final field Uint Lorg/graphiks/webgpu/GPUTextureSampleType;
+	public static final field UnfilterableFloat Lorg/graphiks/webgpu/GPUTextureSampleType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUTextureSampleType;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUTextureSampleType;
+}
+
+public final class org/graphiks/webgpu/GPUTextureSampleType$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUTextureSampleType;
+}
+
+public final class org/graphiks/webgpu/GPUTextureSwizzle {
+	public fun <init> ()V
+	public fun <init> (Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;)V
+	public synthetic fun <init> (Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public final fun component2 ()Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public final fun component3 ()Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public final fun component4 ()Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public final fun copy (Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;)Lorg/graphiks/webgpu/GPUTextureSwizzle;
+	public static synthetic fun copy$default (Lorg/graphiks/webgpu/GPUTextureSwizzle;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;Lorg/graphiks/webgpu/GPUTextureSwizzleSource;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUTextureSwizzle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlpha ()Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public final fun getBlue ()Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public final fun getGreen ()Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public final fun getRed ()Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun toWebGpuString ()Ljava/lang/String;
+}
+
+public final class org/graphiks/webgpu/GPUTextureSwizzleSource : java/lang/Enum {
+	public static final field Alpha Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public static final field Blue Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public static final field Green Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public static final field One Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public static final field Red Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public static final field Zero Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUTextureSwizzleSource;
+}
+
+public final class org/graphiks/webgpu/GPUTextureUsage {
+	public static final field Companion Lorg/graphiks/webgpu/GPUTextureUsage$Companion;
+	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUTextureUsage;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (JLjava/lang/Object;)Z
+	public static final fun equals-impl0 (JJ)Z
+	public final fun getValue-s-VKNKU ()J
+	public fun hashCode ()I
+	public static fun hashCode-impl (J)I
+	public static final fun of-fFzqx84 (J[Lorg/graphiks/webgpu/GPUTextureUsage;)J
+	public static final fun or-fzLF0_M (JJ)J
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (J)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()J
+}
+
+public final class org/graphiks/webgpu/GPUTextureUsage$Companion {
+	public final fun getCopyDst-XIm6oF0 ()J
+	public final fun getCopySrc-XIm6oF0 ()J
+	public final fun getEntries ()Ljava/util/Set;
+	public final fun getNone-XIm6oF0 ()J
+	public final fun getRenderAttachment-XIm6oF0 ()J
+	public final fun getStorageBinding-XIm6oF0 ()J
+	public final fun getTextureBinding-XIm6oF0 ()J
+	public final fun getTransientAttachment-XIm6oF0 ()J
+}
+
+public abstract interface class org/graphiks/webgpu/GPUTextureView : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUTextureOrGPUTextureView {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUTextureViewDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
+	public abstract fun getArrayLayerCount-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getAspect ()Lorg/graphiks/webgpu/GPUTextureAspect;
+	public abstract fun getBaseArrayLayer-pVg5ArA ()I
+	public abstract fun getBaseMipLevel-pVg5ArA ()I
+	public abstract fun getDimension ()Lorg/graphiks/webgpu/GPUTextureViewDimension;
+	public abstract fun getFormat ()Lorg/graphiks/webgpu/GPUTextureFormat;
+	public abstract fun getMipLevelCount-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getSwizzle ()Lorg/graphiks/webgpu/GPUTextureSwizzle;
+	public abstract fun getUsage-XIm6oF0 ()J
+}
+
+public final class org/graphiks/webgpu/GPUTextureViewDimension : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUTextureViewDimension$Companion;
+	public static final field Cube Lorg/graphiks/webgpu/GPUTextureViewDimension;
+	public static final field CubeArray Lorg/graphiks/webgpu/GPUTextureViewDimension;
+	public static final field OneD Lorg/graphiks/webgpu/GPUTextureViewDimension;
+	public static final field ThreeD Lorg/graphiks/webgpu/GPUTextureViewDimension;
+	public static final field TwoD Lorg/graphiks/webgpu/GPUTextureViewDimension;
+	public static final field TwoDArray Lorg/graphiks/webgpu/GPUTextureViewDimension;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUTextureViewDimension;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUTextureViewDimension;
+}
+
+public final class org/graphiks/webgpu/GPUTextureViewDimension$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUTextureViewDimension;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUUncapturedErrorCallback {
+	public abstract fun onUncapturedError (Lorg/graphiks/webgpu/GPUError;)V
+}
+
+public abstract interface class org/graphiks/webgpu/GPUValidationError : org/graphiks/webgpu/GPUError {
+}
+
+public abstract interface class org/graphiks/webgpu/GPUVertexAttribute {
+	public abstract fun getFormat ()Lorg/graphiks/webgpu/GPUVertexFormat;
+	public abstract fun getOffset-s-VKNKU ()J
+	public abstract fun getShaderLocation-pVg5ArA ()I
+}
+
+public abstract interface class org/graphiks/webgpu/GPUVertexBufferLayout {
+	public abstract fun getArrayStride-s-VKNKU ()J
+	public abstract fun getAttributes ()Ljava/util/List;
+	public abstract fun getStepMode ()Lorg/graphiks/webgpu/GPUVertexStepMode;
+}
+
+public final class org/graphiks/webgpu/GPUVertexFormat : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUVertexFormat$Companion;
+	public static final field Float16 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Float16x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Float16x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Float32 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Float32x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Float32x3 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Float32x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint16 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint16x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint16x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint32 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint32x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint32x3 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint32x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint8 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint8x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Sint8x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Snorm16 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Snorm16x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Snorm16x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Snorm8 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Snorm8x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Snorm8x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint16 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint16x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint16x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint32 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint32x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint32x3 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint32x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint8 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint8x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Uint8x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Unorm1010102 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Unorm16 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Unorm16x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Unorm16x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Unorm8 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Unorm8x2 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Unorm8x4 Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static final field Unorm8x4BGRA Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUVertexFormat;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUVertexFormat;
+}
+
+public final class org/graphiks/webgpu/GPUVertexFormat$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUVertexFormat;
+}
+
+public abstract interface class org/graphiks/webgpu/GPUVertexState : org/graphiks/webgpu/GPUProgrammableStage {
+	public abstract fun getBuffers ()Ljava/util/List;
+}
+
+public final class org/graphiks/webgpu/GPUVertexStepMode : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUVertexStepMode$Companion;
+	public static final field Instance Lorg/graphiks/webgpu/GPUVertexStepMode;
+	public static final field Vertex Lorg/graphiks/webgpu/GPUVertexStepMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUVertexStepMode;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUVertexStepMode;
+}
+
+public final class org/graphiks/webgpu/GPUVertexStepMode$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUVertexStepMode;
+}
+
+public final class org/graphiks/webgpu/JvmArrayBuffer : org/graphiks/webgpu/ArrayBuffer {
+	public static final synthetic fun box-impl (Ljava/lang/foreign/MemorySegment;)Lorg/graphiks/webgpu/JvmArrayBuffer;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/foreign/MemorySegment;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/foreign/MemorySegment;Ljava/lang/foreign/MemorySegment;)Z
+	public final fun getBuffer ()Ljava/lang/foreign/MemorySegment;
+	public fun getByte-VKZWuLQ (J)B
+	public static fun getByte-VKZWuLQ (Ljava/lang/foreign/MemorySegment;J)B
+	public fun getDouble-VKZWuLQ (J)D
+	public static fun getDouble-VKZWuLQ (Ljava/lang/foreign/MemorySegment;J)D
+	public fun getFloat-VKZWuLQ (J)F
+	public static fun getFloat-VKZWuLQ (Ljava/lang/foreign/MemorySegment;J)F
+	public fun getInt-VKZWuLQ (J)I
+	public static fun getInt-VKZWuLQ (Ljava/lang/foreign/MemorySegment;J)I
+	public fun getShort-VKZWuLQ (J)S
+	public static fun getShort-VKZWuLQ (Ljava/lang/foreign/MemorySegment;J)S
+	public fun getSize-s-VKNKU ()J
+	public static fun getSize-s-VKNKU (Ljava/lang/foreign/MemorySegment;)J
+	public fun getUByte-NsiRcpg (J)B
+	public static fun getUByte-NsiRcpg (Ljava/lang/foreign/MemorySegment;J)B
+	public fun getUInt--4l20Xc (J)I
+	public static fun getUInt--4l20Xc (Ljava/lang/foreign/MemorySegment;J)I
+	public fun getUShort-ZO3KGMw (J)S
+	public static fun getUShort-ZO3KGMw (Ljava/lang/foreign/MemorySegment;J)S
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/foreign/MemorySegment;)I
+	public fun setByte-4PLdz1A (JB)V
+	public static fun setByte-4PLdz1A (Ljava/lang/foreign/MemorySegment;JB)V
+	public fun setBytes-4PLdz1A (J[B)V
+	public static fun setBytes-4PLdz1A (Ljava/lang/foreign/MemorySegment;J[B)V
+	public fun setDouble-4PLdz1A (JD)V
+	public static fun setDouble-4PLdz1A (Ljava/lang/foreign/MemorySegment;JD)V
+	public fun setDoubles-4PLdz1A (J[D)V
+	public static fun setDoubles-4PLdz1A (Ljava/lang/foreign/MemorySegment;J[D)V
+	public fun setFloat-4PLdz1A (JF)V
+	public static fun setFloat-4PLdz1A (Ljava/lang/foreign/MemorySegment;JF)V
+	public fun setFloats-4PLdz1A (J[F)V
+	public static fun setFloats-4PLdz1A (Ljava/lang/foreign/MemorySegment;J[F)V
+	public fun setInt-4PLdz1A (JI)V
+	public static fun setInt-4PLdz1A (Ljava/lang/foreign/MemorySegment;JI)V
+	public fun setInts-4PLdz1A (J[I)V
+	public static fun setInts-4PLdz1A (Ljava/lang/foreign/MemorySegment;J[I)V
+	public fun setShort-4PLdz1A (JS)V
+	public static fun setShort-4PLdz1A (Ljava/lang/foreign/MemorySegment;JS)V
+	public fun setShorts-4PLdz1A (J[S)V
+	public static fun setShorts-4PLdz1A (Ljava/lang/foreign/MemorySegment;J[S)V
+	public fun setUByte-RFc766c (JB)V
+	public static fun setUByte-RFc766c (Ljava/lang/foreign/MemorySegment;JB)V
+	public fun setUBytes-DD8cEzA (J[B)V
+	public static fun setUBytes-DD8cEzA (Ljava/lang/foreign/MemorySegment;J[B)V
+	public fun setUInt-8GdB7C8 (JI)V
+	public static fun setUInt-8GdB7C8 (Ljava/lang/foreign/MemorySegment;JI)V
+	public fun setUInts-TtKN_Aw (J[I)V
+	public static fun setUInts-TtKN_Aw (Ljava/lang/foreign/MemorySegment;J[I)V
+	public fun setUShort-E2t620U (JS)V
+	public static fun setUShort-E2t620U (Ljava/lang/foreign/MemorySegment;JS)V
+	public fun setUShorts-hATpKzI (J[S)V
+	public static fun setUShorts-hATpKzI (Ljava/lang/foreign/MemorySegment;J[S)V
+	public fun toByteArray ()[B
+	public static fun toByteArray-impl (Ljava/lang/foreign/MemorySegment;)[B
+	public fun toDoubleArray ()[D
+	public static fun toDoubleArray-impl (Ljava/lang/foreign/MemorySegment;)[D
+	public fun toFloatArray ()[F
+	public static fun toFloatArray-impl (Ljava/lang/foreign/MemorySegment;)[F
+	public fun toIntArray ()[I
+	public static fun toIntArray-impl (Ljava/lang/foreign/MemorySegment;)[I
+	public fun toShortArray ()[S
+	public static fun toShortArray-impl (Ljava/lang/foreign/MemorySegment;)[S
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/foreign/MemorySegment;)Ljava/lang/String;
+	public fun toUByteArray-TcUX1vc ()[B
+	public static fun toUByteArray-TcUX1vc (Ljava/lang/foreign/MemorySegment;)[B
+	public fun toUIntArray--hP7Qyg ()[I
+	public static fun toUIntArray--hP7Qyg (Ljava/lang/foreign/MemorySegment;)[I
+	public fun toUShortArray-amswpOA ()[S
+	public static fun toUShortArray-amswpOA (Ljava/lang/foreign/MemorySegment;)[S
+	public final synthetic fun unbox-impl ()Ljava/lang/foreign/MemorySegment;
+}
+

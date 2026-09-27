@@ -12,7 +12,7 @@ class SpecificationResources(projectDirectory: Path) {
     }
 
     val specificationsSourcePath: Path = projectDirectory
-        .resolve("webgpu-ktypes-specifications")
+        .resolve("webgpu-specifications")
         .resolve("src")
         .resolve("jvmMain")
         .resolve("resources")
