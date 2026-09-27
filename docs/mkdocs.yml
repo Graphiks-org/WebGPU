@@ -29,6 +29,10 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Getting Started: getting-started.md
+  - Architecture: architecture.md
+  - Testing: testing.md
+  - Specification Maintenance: specification-maintenance.md
   - Type Mapping: generated/type-mapping.md
 
 # !!! EMBEDDED DOKKA START, DO NOT COMMIT !!! #
