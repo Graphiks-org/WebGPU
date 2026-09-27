@@ -32,7 +32,9 @@ jobs:
         run: ./gradlew --no-daemon check
       - name: Browser target tests
         if: runner.os == 'Linux'
-        run: ./gradlew --no-daemon :webgpu-api:jsNodeTest :webgpu-api:wasmJsNodeTest :webgpu-web-bindings:jsNodeTest :webgpu-web-bindings:wasmJsNodeTest
+        run: ./gradlew --no-daemon :webgpu-api:jsNodeTest :webgpu-api:wasmJsNodeTest :webgpu-web-bindings:jsNodeTest :webgpu-web-bindings:wasmJsNodeTest :webgpu-browser:jsNodeTest :webgpu-browser:wasmJsNodeTest
       - name: Public ABI
         if: runner.os == 'macOS'
         run: ./gradlew --no-daemon :webgpu-api:checkKotlinAbi
+  browser-gpu:
+    uses: ./.github/workflows/browser-gpu.yml
