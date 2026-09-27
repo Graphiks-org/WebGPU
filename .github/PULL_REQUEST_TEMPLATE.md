@@ -21,11 +21,13 @@ Select exactly one:
 
 - [ ] I ran `./gradlew check` or explained why it could not run in Description.
 - [ ] I ran relevant platform tests or explained the gap in Description.
-- [ ] I updated documentation for user-visible changes, or explained why no documentation change is needed in Description.
+- [ ] Documentation updated for a user-visible change.
+- [ ] No documentation change needed, with reason in Description.
 - [ ] `CHANGELOG.md` updated for a user-visible change.
 - [ ] No changelog needed, with reason in Description.
 
-Select exactly one of the last two changelog options.
+Select exactly one documentation option and one changelog option. For an omitted update,
+explain the reason in Description using `Documentation: ...` or `Changelog: ...`.
 
 ## Screenshots (if applicable)
 

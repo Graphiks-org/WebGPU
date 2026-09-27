@@ -1,0 +1,46 @@
+name: PR policy
+
+on:
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out pull request head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Collect pull request metadata
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          git fetch --no-tags origin "$BASE_SHA"
+          merge_base=$(git merge-base "$BASE_SHA" HEAD)
+          git diff --name-only "$merge_base" HEAD > "$RUNNER_TEMP/changed-files.txt"
+          git log --format=%s --no-merges "$merge_base"..HEAD > "$RUNNER_TEMP/commit-subjects.txt"
+          printf '%s' "$PR_BODY" > "$RUNNER_TEMP/pr-body.md"
+      - name: Validate pull request
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          python3 .github/scripts/validate_pr_policy.py \
+            --policy .github/contributing-policy.toml \
+            --title "$PR_TITLE" \
+            --body-file "$RUNNER_TEMP/pr-body.md" \
+            --branch "$PR_BRANCH" \
+            --changed-files-file "$RUNNER_TEMP/changed-files.txt" \
+            --commit-subjects-file "$RUNNER_TEMP/commit-subjects.txt"
