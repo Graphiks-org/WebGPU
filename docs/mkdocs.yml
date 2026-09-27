@@ -1,0 +1,49 @@
+site_name: WebGPU
+site_description: Kotlin Multiplatform WebGPU types and API reference
+site_url: https://graphiks-org.github.io/WebGPU/
+repo_url: https://github.com/Graphiks-org/WebGPU
+repo_name: Graphiks-org/WebGPU
+
+docs_dir: docs
+site_dir: ../_site
+use_directory_urls: false
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - tables
+  - pymdownx.details
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Type Mapping: generated/type-mapping.md
+
+# !!! EMBEDDED DOKKA START, DO NOT COMMIT !!! #
+# !!! EMBEDDED DOKKA END, DO NOT COMMIT !!! #
+
+plugins:
+  - search
+  - i18n:
+      languages:
+        - locale: en
+          name: English
+          default: true
+          build: true
+        - locale: fr
+          name: Français
+          build: true
+          site_name: WebGPU
+          site_description: Types WebGPU Kotlin Multiplatform et référence API

@@ -1,6 +1,7 @@
 plugins {
     id("com.vanniktech.maven.publish")
     id("org.jetbrains.dokka")
+    id("dev.opensavvy.dokka-mkdocs")
 }
 
 val libraryDescription = "Webgpu types to kotlin multiplatform generated from specifications"

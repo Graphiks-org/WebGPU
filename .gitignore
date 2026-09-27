@@ -39,3 +39,6 @@ kotlin-ide/
 .kotlin/
 .teamcity/
 .npmrc
+/_site/
+/docs/docs/api/
+/docs/docs/generated/
