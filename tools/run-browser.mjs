@@ -8,7 +8,7 @@
 import { execFileSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, extname, join, normalize, resolve } from 'node:path';
+import { dirname, extname, isAbsolute, join, normalize, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
@@ -60,7 +60,8 @@ const server = createServer(async (request, response) => {
     const pathname = decodeURIComponent(new URL(request.url, 'http://127.0.0.1').pathname);
     const requested = pathname === '/' ? '/index.html' : pathname;
     const filePath = normalize(join(distRoot, requested));
-    if (!filePath.startsWith(distRoot)) {
+    const relativePath = relative(distRoot, filePath);
+    if (relativePath.startsWith('..') || isAbsolute(relativePath)) {
       response.writeHead(403);
       response.end('forbidden');
       return;

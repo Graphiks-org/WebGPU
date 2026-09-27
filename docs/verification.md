@@ -100,9 +100,10 @@ The browser runner executes eleven foundation cases. The mapping from case to be
   `org.graphiks:suite-acid-tests → suite-acid-tests-jvm → suite-core → suite-core-jvm → webgpu-api → webgpu-api-jvm`.
 - Compiled consumer targets: JVM, JS, Wasm JS and macOS ARM64 (all `BUILD SUCCESSFUL`). This proves
   the published signatures resolve and compile; it is not a GPU execution.
-- Linux x64: the artifact (`suite-acid-tests-linuxx64`, `suite-core-linuxx64`) was published by the
-  macOS host, but the consumer compilation for Linux x64 must run on a Linux host, which is where CI
-  performs it.
+- Linux x64: the artifacts (`suite-acid-tests-linuxx64`, `suite-core-linuxx64`) are published by the
+  macOS host, and the external consumer is compiled for Linux x64 by the `consumption` job in
+  [`.github/workflows/suite.yml`](../.github/workflows/suite.yml) on `ubuntu-latest`
+  (`compileKotlinLinuxX64`). It is not compiled on this macOS host.
 
 ## Known limitations
 

@@ -22,11 +22,11 @@ published for:
 
 | Target | Verified by |
 | --- | --- |
-| JVM 25 | compilation of the published artifact |
+| JVM 25 | compilation of the published artifact (local and CI) |
 | JS (browser) | browser execution |
 | Wasm JS (browser) | browser execution |
-| Linux x64 | compilation of the published artifact |
-| macOS ARM64 | compilation of the published artifact |
+| Linux x64 | compilation of the published artifact (CI `consumption` job on Linux) |
+| macOS ARM64 | compilation of the published artifact (local and CI) |
 
 Native targets other than these are added when their consumption is actually verified; do not
 assume support for a target that is not listed. The browser runner only executes JS and Wasm JS
