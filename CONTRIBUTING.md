@@ -18,7 +18,7 @@ Allowed branch prefixes are **only** `feat/`, `fix/`, and `chore/`; replace `fea
 
 ## 2. Make a focused change
 
-Keep the PR limited to one purpose. Use the [architecture guide](docs/docs/architecture.md) to find the right module and the [type mapping](TYPE_MAPPING.md) for WebGPU-to-Kotlin decisions. Add or update tests for behavior you change. For a user-visible change, update the relevant guide and add a short entry to the [Unreleased changelog](CHANGELOG.md).
+Keep the PR limited to one purpose. Use the [architecture guide](docs/docs/architecture.md) to find the right module and the [type mapping](docs/docs/type-mapping/index.md) for WebGPU-to-Kotlin decisions. Add or update tests for behavior you change. For a user-visible change, update the relevant guide and add a short entry to the [Unreleased changelog](CHANGELOG.md).
 
 The Kotlin bindings are generated from versioned WebGPU specification inputs. When changing them, update the inputs and generated source together. Follow the [specification maintenance guide](docs/docs/specification-maintenance.md) for the manual commands. Specification downloads, optional LLM enrichment, and binding regeneration are outside PR CI.
 

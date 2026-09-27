@@ -33,7 +33,12 @@ nav:
   - Architecture: architecture.md
   - Testing: testing.md
   - Specification Maintenance: specification-maintenance.md
-  - Type Mapping: generated/type-mapping.md
+  - Type Mapping:
+      - Overview: type-mapping/index.md
+      - Primitives and buffers: type-mapping/primitives-and-buffers.md
+      - Enumerations and flags: type-mapping/enumerations-and-flags.md
+      - Dictionaries and unions: type-mapping/dictionaries-and-unions.md
+      - Excluded types: type-mapping/excluded-types.md
   - Reference:
       - webgpu-api: api/webgpu-api/index.md
       - webgpu-descriptors: api/webgpu-descriptors/index.md
@@ -63,4 +68,9 @@ plugins:
             Testing: Tests
             Specification Maintenance: Maintenance des spécifications
             Type Mapping: Correspondance des types
+            Overview: Vue d'ensemble
+            Primitives and buffers: Primitives et buffers
+            Enumerations and flags: Énumérations et drapeaux
+            Dictionaries and unions: Dictionnaires et unions
+            Excluded types: Types exclus
             Reference: Référence API

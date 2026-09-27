@@ -13,4 +13,4 @@ JavaScript bindings for direct interop.
 - [Understand the modules](architecture.md) and their platform boundaries.
 - [Run the business tests](testing.md) before submitting a change.
 - [Maintain the specification](specification-maintenance.md) when upstream WebGPU changes.
-- Consult the [type mapping](generated/type-mapping.md) for WebGPU-to-Kotlin contracts.
+- Consult the [type mapping](type-mapping/index.md) for WebGPU-to-Kotlin contracts.

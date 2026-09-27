@@ -17,4 +17,4 @@ contracts.
 The Kotlin binding generator reads the checked-in WebGPU IDL and documentation YAML and writes
 source in the public modules. Edit the source specification or documentation data, then run the
 manual flow in [Specification maintenance](specification-maintenance.md). See the canonical
-[type mapping](generated/type-mapping.md) for individual type decisions.
+[type mapping](type-mapping/index.md) for individual type decisions.

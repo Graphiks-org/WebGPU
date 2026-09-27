@@ -13,4 +13,4 @@ bindings JavaScript générés pour l’interop directe.
 - [Comprendre les modules](architecture.md) et leurs limites par plateforme.
 - [Lancer les tests métier](testing.md) avant de proposer un changement.
 - [Entretenir la spécification](specification-maintenance.md) lors d’une évolution de WebGPU.
-- Consulter le [mapping des types](generated/type-mapping.md) pour les correspondances WebGPU/Kotlin.
+- Consulter le [mapping des types](type-mapping/index.md) pour les correspondances WebGPU/Kotlin.

@@ -17,4 +17,4 @@ bindings ; les implémentations natives utilisent les contrats portables.
 Le générateur lit l’IDL WebGPU et la documentation YAML versionnés, puis écrit les sources des
 modules publics. Modifiez la spécification ou les données documentaires, puis suivez la procédure
 manuelle d’[entretien de la spécification](specification-maintenance.md). Le
-[mapping des types](generated/type-mapping.md) reste la source canonique des choix de types.
+[mapping des types](type-mapping/index.md) reste la source canonique des choix de types.

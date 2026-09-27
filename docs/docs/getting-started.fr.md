@@ -72,4 +72,4 @@ val identity = GPUTextureSwizzle().toWebGpuString() // "rgba"
 Ce comportement est vérifié par `GPUTextureSwizzleTest` dans `webgpu-api`.
 
 Consultez l’[architecture](architecture.md) pour les limites des modules et le
-[mapping des types](generated/type-mapping.md) pour les correspondances WebGPU/Kotlin.
+[mapping des types](type-mapping/index.md) pour les correspondances WebGPU/Kotlin.

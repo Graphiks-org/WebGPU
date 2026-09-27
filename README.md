@@ -20,7 +20,7 @@ Its Kotlin bindings are generated from versioned WebGPU specification inputs.
 
 `webgpu-api` and `webgpu-descriptors` configure JVM, Android, JS, Wasm JS, and Kotlin/Native
 targets; `webgpu-web-bindings` and `webgpu-browser` configure JS and Wasm JS. See the
-[architecture guide](docs/docs/architecture.md) for boundaries and the [type mapping](TYPE_MAPPING.md)
+[architecture guide](docs/docs/architecture.md) for boundaries and the [type mapping](docs/docs/type-mapping/index.md)
 for WebGPU-to-Kotlin decisions.
 
 ## Use the API

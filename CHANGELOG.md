@@ -15,3 +15,8 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Require contribution pull requests from forks on `feat/`, `fix/`, or `chore/` branches based on the current `master` commit.
 - Drop the deprecated macOS x64 and watchOS x64 native targets.
 - Rename `webgpu-web` to `webgpu-web-bindings` and move generated descriptors and bindings to the `org.graphiks.webgpu.descriptors` and `org.graphiks.webgpu.bindings` packages.
+- Move the type mapping into the documentation site as a dedicated bilingual section (`docs/docs/type-mapping/`) and remove the root `TYPE_MAPPING.md`.
+
+### Removed
+
+- Remove the deprecated descriptor type aliases (`Size3D`, `ImageCopyTexture`, `ImageCopyBuffer`, `ColorAttachment`, `DepthStencilAttachment`).

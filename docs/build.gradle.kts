@@ -23,14 +23,8 @@ val copyWebGpuDokkaIntoMkDocs = tasks.register<Sync>("copyWebGpuDokkaIntoMkDocs"
     }
 }
 
-val copyTypeMappingIntoMkDocs = tasks.register<Sync>("copyTypeMappingIntoMkDocs") {
-    from(rootProject.layout.projectDirectory.file("TYPE_MAPPING.md"))
-    into(layout.projectDirectory.dir("docs/generated"))
-    rename { "type-mapping.md" }
-}
-
 tasks.named("generateMkDocsNavigation") {
-    dependsOn(copyWebGpuDokkaIntoMkDocs, copyTypeMappingIntoMkDocs)
+    dependsOn(copyWebGpuDokkaIntoMkDocs)
 }
 
 val compactMkDocsNavigation = tasks.register("compactMkDocsNavigation") {
