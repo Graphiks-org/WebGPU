@@ -1,5 +1,5 @@
 plugins {
-    generator
+    id("org.graphiks.webgpu-generator")
     id("org.graphiks.webgpu-specification-fetcher")
 }
 
