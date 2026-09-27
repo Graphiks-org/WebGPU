@@ -5,18 +5,20 @@ ktor = "3.5.0"
 webidl-util = "0.10.5"
 wgpu4k-native = "v29.0.0-SNAPSHOT"
 kaml = "0.104.0"
-kotlin = "2.3.21"
-agp = "8.13.2"
+kotlin = "2.4.20"
+agp = "9.1.1"
 coroutines = "1.11.0"
 kotlinpoet = "2.3.0"
 maven-publish = "0.36.0"
+kotlinx-io = "0.9.1"
 
 # Tests
-kotest = "6.1.11"
+kotest = "6.2.5"
 ksp = "2.3.4"
 
 [libraries]
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 webidl-util = { module = "de.fabmax:webidl-util", version.ref = "webidl-util" }

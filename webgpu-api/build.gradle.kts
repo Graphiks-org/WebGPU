@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+@file:Suppress("DEPRECATION")
 
-import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -14,9 +14,7 @@ plugins {
 
 kotlin {
     @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
-    abiValidation {
-        enabled = true
-    }
+    abiValidation()
 
     js {
         browser()
@@ -43,7 +41,7 @@ kotlin {
     androidNativeArm64()
     androidNativeX64()
 
-    androidLibrary {
+    android {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_17
         }
@@ -90,6 +88,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.bundles.kotest)
+                implementation(libs.kotlinx.io.core)
             }
         }
 

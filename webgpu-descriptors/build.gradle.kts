@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+@file:Suppress("DEPRECATION")
 
-import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -36,7 +36,7 @@ kotlin {
     androidNativeArm64()
     androidNativeX64()
 
-    androidLibrary {
+    android {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_17
         }
