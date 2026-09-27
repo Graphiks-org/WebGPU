@@ -1,6 +1,7 @@
 plugins {
     id("com.vanniktech.maven.publish")
     id("org.jetbrains.dokka")
+    id("dev.opensavvy.dokka-mkdocs")
 }
 
 val libraryDescription = "Webgpu types to kotlin multiplatform generated from specifications"
@@ -19,7 +20,7 @@ mavenPublishing {
     pom {
         name.set(project.name)
         description.set(libraryDescription)
-        url.set("https://github.com/wgpu4k/webgpu-ktypes")
+        url.set("https://github.com/Graphiks-org/WebGPU")
         inceptionYear.set("2025")
 
         licenses {
@@ -37,9 +38,9 @@ mavenPublishing {
         }
 
         scm {
-            connection.set("scm:git:https://github.com/wgpu4k/webgpu-ktypes.git")
-            developerConnection.set("scm:git:https://github.com/wgpu4k/webgpu-ktypes.git")
-            url.set("https://github.com/wgpu4k/webgpu-ktypes")
+            connection.set("scm:git:https://github.com/Graphiks-org/WebGPU.git")
+            developerConnection.set("scm:git:https://github.com/Graphiks-org/WebGPU.git")
+            url.set("https://github.com/Graphiks-org/WebGPU")
         }
     }
 }

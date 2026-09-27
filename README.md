@@ -1,54 +1,72 @@
-# webgpu-ktypes
-Kotlin types for webgpu
+# WebGPU
 
-## Refreshing the specifications and generating bindings
+[![Tests](https://github.com/Graphiks-org/WebGPU/actions/workflows/test.yml/badge.svg)](https://github.com/Graphiks-org/WebGPU/actions/workflows/test.yml)
+[![Documentation](https://github.com/Graphiks-org/WebGPU/actions/workflows/docs.yml/badge.svg)](https://github.com/Graphiks-org/WebGPU/actions/workflows/docs.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Run these commands from the repository root. Fetching the upstream files and generating the Kotlin bindings are separate, explicit steps.
+WebGPU provides Kotlin Multiplatform types and interfaces shared by browser and native WebGPU
+implementations. The repository is **incubating**: the API and published coordinates may evolve.
+Its Kotlin bindings are generated from versioned WebGPU specification inputs.
 
-### 1. Fetch the WebGPU source files
+## Modules
 
-```shell
-./gradlew check-cache
+| Module | Maven coordinate | Purpose |
+| --- | --- | --- |
+| `webgpu-api` | `org.graphiks:webgpu-api` | Portable interfaces, enums, aliases, and buffers |
+| `webgpu-descriptors` | `org.graphiks:webgpu-descriptors` | Descriptor implementations on the portable API |
+| `webgpu-web` | `org.graphiks:webgpu-web` | JavaScript and Wasm JS browser interop |
+| `webgpu-specifications` | Not published | Versioned specification and documentation inputs |
+
+`webgpu-api` and `webgpu-descriptors` configure JVM, Android, JS, Wasm JS, and Kotlin/Native
+targets; `webgpu-web` configures JS and Wasm JS. See the [architecture guide](docs/docs/architecture.md)
+for boundaries and the [type mapping](TYPE_MAPPING.md) for WebGPU-to-Kotlin decisions.
+
+## Use the API
+
+Add the module your application needs. Substitute an available version for `<version>`; the
+repository's development default is `0.1.0-SNAPSHOT`, which does not imply that a release is
+already published.
+
+```kotlin
+dependencies {
+    implementation("org.graphiks:webgpu-api:<version>")
+    // Optional: implementation("org.graphiks:webgpu-descriptors:<version>")
+    // Optional: implementation("org.graphiks:webgpu-web:<version>")
+}
 ```
 
-This task downloads the WebGPU HTML specification from [W3C](https://www.w3.org/TR/webgpu/) and the WebGPU IDL from [GPUWeb](https://gpuweb.github.io/gpuweb/webgpu.idl). It stores them in `webgpu-specifications/src/jvmMain/resources/` as `webgpu.html` and `webgpu.idl`, and updates `cache.json` with their hashes and refresh times. It runs only when invoked; it is not automatically part of `build` or `check`.
+For example, a portable texture swizzle encodes to the string required by WebGPU:
 
-### 2. Rebuild the API documentation JSON
+```kotlin
+import org.graphiks.webgpu.GPUTextureSwizzle
 
-```shell
-./gradlew refresh-documentation-from-spec
+val identity = GPUTextureSwizzle().toWebGpuString() // "rgba"
 ```
 
-This replaces `documentation.json` from the checked-in WebGPU HTML and IDL. It rebuilds the full set of documentation keys instead of using the existing JSON descriptions as input. Review the generated prose before regenerating bindings.
+This behavior is covered by `GPUTextureSwizzleTest`. See [Getting started](docs/docs/getting-started.md)
+for requirements and dependency notes.
 
-### 3. Generate additional missing documentation (optional)
+## Build, test, and read the docs
 
-```shell
-./gradlew generate-doc-from-llm
+Use JDK 25 and the repository's Gradle wrapper:
+
+```sh
+./gradlew check
+./gradlew :docs:embedDokkaIntoMkDocs
+mkdocs build -f docs/mkdocs.yml
 ```
 
-This task uses the cached HTML and IDL to infer documentation for API keys still missing from `documentation.json`. It expects an OpenAI-compatible chat-completions server at `http://127.0.0.1:1234/v1`, serving the `mistral-small-3.1-24b-instruct-2503` model. Start that server before running the task.
+The site build needs MkDocs Material and `mkdocs-static-i18n`. The source guides are in English
+and French under [`docs/docs`](docs/docs/index.md); the [testing guide](docs/docs/testing.md)
+lists targeted business-test tasks. API reference is generated with Dokka and embedded into the
+site. The [specification maintenance guide](docs/docs/specification-maintenance.md) contains the
+manual download, documentation, and binding-generation commands. They are separate from `check`.
 
-### 4. Check documentation coverage
+## Contribute
 
-```shell
-./gradlew check-missing-doc
-```
+Read [Contributing](CONTRIBUTING.md), the [Code of Conduct](CODE_OF_CONDUCT.md), the
+[Security policy](SECURITY.md), and [Support](SUPPORT.md) before submitting a change. Notable
+changes are recorded in the [Changelog](CHANGELOG.md). French versions of the community policies
+are linked from their English pages.
 
-This task prints the API documentation keys that are still missing from `documentation.json`. Review the output and add or generate the missing entries before converting the JSON to YAML and regenerating the bindings.
-
-### 5. Convert the documentation to YAML
-
-```shell
-./gradlew tranform-json-doc-to-yaml
-```
-
-This converts `documentation.json` into `documentation.yaml`, which is consumed by the binding generator. The task is currently registered as `tranform-json-doc-to-yaml` (without the second “s” in “transform”).
-
-### 6. Generate the Kotlin bindings
-
-```shell
-./gradlew generate-binding
-```
-
-This task reads `webgpu.idl` and `documentation.yaml`, then rewrites the generated Kotlin sources in `webgpu-api`, `webgpu-web`, and `webgpu-descriptors`. Do not edit those generated files by hand; update the source specifications or documentation data and run the generator again.
+WebGPU is licensed under the [MIT License](LICENSE).
