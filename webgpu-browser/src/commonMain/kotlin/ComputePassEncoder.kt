@@ -47,11 +47,11 @@ class ComputePassEncoder(val handler: WGPUComputePassEncoder) : GPUComputePassEn
         bindGroup: GPUBindGroup?,
         dynamicOffsetsData: List<UInt>
     ) {
-        handler.setBindGroup(
-            index.asJsNumber(),
-            (bindGroup as BindGroup).handler,
-            map(dynamicOffsetsData)
-        )
+        val raw = (bindGroup as BindGroup?)?.handler
+        when {
+            dynamicOffsetsData.isEmpty() -> handler.setBindGroup(index.asJsNumber(), raw)
+            else -> handler.setBindGroup(index.asJsNumber(), raw, map(dynamicOffsetsData))
+        }
     }
 
     override fun setImmediates(

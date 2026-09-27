@@ -46,18 +46,13 @@ class RenderPassEncoder(val handler: WGPURenderPassEncoder): GPURenderPassEncode
         buffer: GPUBuffer?,
         offset: GPUSize64,
         size: GPUSize64?
-    ) = when (size) {
-        null -> handler.setVertexBuffer(
-            slot.asJsNumber(),
-            (buffer as Buffer).handler,
-            offset.asJsNumber()
-        )
-        else -> handler.setVertexBuffer(
-            slot.asJsNumber(),
-            (buffer as Buffer).handler,
-            offset.asJsNumber(),
-            size.asJsNumber()
-        )
+    ) {
+        val raw = (buffer as Buffer?)?.handler
+        when {
+            size != null -> handler.setVertexBuffer(slot.asJsNumber(), raw, offset.asJsNumber(), size.asJsNumber())
+            offset == 0uL -> handler.setVertexBuffer(slot.asJsNumber(), raw)
+            else -> handler.setVertexBuffer(slot.asJsNumber(), raw, offset.asJsNumber())
+        }
     }
 
     override fun draw(
@@ -166,11 +161,11 @@ class RenderPassEncoder(val handler: WGPURenderPassEncoder): GPURenderPassEncode
         bindGroup: GPUBindGroup?,
         dynamicOffsetsData: List<UInt>
     ) {
-        handler.setBindGroup(
-            index.asJsNumber(),
-            (bindGroup as BindGroup).handler,
-            map(dynamicOffsetsData)
-        )
+        val raw = (bindGroup as BindGroup?)?.handler
+        when {
+            dynamicOffsetsData.isEmpty() -> handler.setBindGroup(index.asJsNumber(), raw)
+            else -> handler.setBindGroup(index.asJsNumber(), raw, map(dynamicOffsetsData))
+        }
     }
 
     override fun setImmediates(
