@@ -20,3 +20,4 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 ### Removed
 
 - Remove the deprecated descriptor type aliases (`Size3D`, `ImageCopyTexture`, `ImageCopyBuffer`, `ColorAttachment`, `DepthStencilAttachment`).
+- Remove the redundant browser-target and public-ABI CI steps; `./gradlew check` already runs those tasks on every platform.
