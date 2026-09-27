@@ -6,7 +6,6 @@ import org.graphiks.webgpu.GPUTextureFormat
 import org.graphiks.webgpu.bindings.WGPUCanvasContext
 import org.graphiks.webgpu.bindings.navigator
 import org.graphiks.webgpu.browser.mapper.map
-import web.html.HTMLCanvasElement
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.unsafeCast
 

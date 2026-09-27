@@ -10,6 +10,7 @@ import org.graphiks.webgpu.GPUMapMode
 import org.graphiks.webgpu.GPUStoreOp
 import org.graphiks.webgpu.GPUTextureFormat
 import org.graphiks.webgpu.GPUTextureUsage
+import org.graphiks.webgpu.browser.HTMLCanvasElement
 import org.graphiks.webgpu.browser.SurfaceConfiguration
 import org.graphiks.webgpu.browser.getCanvasSurface
 import org.graphiks.webgpu.browser.requestAdapter
@@ -20,13 +21,23 @@ import org.graphiks.webgpu.descriptors.RenderPassColorAttachment
 import org.graphiks.webgpu.descriptors.RenderPassDescriptor
 import org.graphiks.webgpu.descriptors.TexelCopyBufferInfo
 import org.graphiks.webgpu.descriptors.TexelCopyTextureInfo
-import kotlin.js.unsafeCast
+import kotlin.js.JsAny
+import kotlin.js.js
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertNull
 import kotlin.time.Duration.Companion.seconds
-import web.dom.document
-import web.html.HTMLCanvasElement
+
+private external interface IntegrationElement : JsAny {
+    fun appendChild(child: JsAny): JsAny
+}
+
+private external interface IntegrationDocument : JsAny {
+    val body: IntegrationElement
+    fun createElement(tagName: String): HTMLCanvasElement
+}
+
+private fun integrationDocument(): IntegrationDocument = js("globalThis.document")
 
 class CanvasReadbackTest {
 
@@ -34,10 +45,10 @@ class CanvasReadbackTest {
     fun clearsCanvasAndReadsPixels() = runTest(timeout = 60.seconds) {
         val adapter = requestAdapter().getOrThrow()
         val device = adapter.requestDevice().getOrThrow()
-        val canvas = document.createElement("canvas").unsafeCast<HTMLCanvasElement>()
+        val canvas = integrationDocument().createElement("canvas")
         canvas.width = 4
         canvas.height = 4
-        document.body.appendChild(canvas)
+        integrationDocument().body.appendChild(canvas)
         val surface = canvas.getCanvasSurface()
         val format = surface.preferredCanvasFormat ?: error("No preferred canvas format available.")
         surface.configure(

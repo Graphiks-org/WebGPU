@@ -12,14 +12,50 @@ Les coordonnées publiées utilisent le groupe `org.graphiks`. Choisissez le mod
 ```kotlin
 dependencies {
     implementation("org.graphiks:webgpu-api:<version>")
-    // Facultatif : implémentations des descripteurs ou interop navigateur.
+    // Implémentations des descripteurs (nécessaires à l’implémentation navigateur).
     // implementation("org.graphiks:webgpu-descriptors:<version>")
-    // implementation("org.graphiks:webgpu-web:<version>")
+    // Implémentation navigateur.
+    // implementation("org.graphiks:webgpu-browser:<version>")
+    // Interop JavaScript directe.
+    // implementation("org.graphiks:webgpu-web-bindings:<version>")
 }
 ```
 
 Remplacez `<version>` par une version release ou snapshot disponible. La valeur de développement
 du dépôt est `0.1.0-SNAPSHOT` ; elle ne signifie pas qu’une publication existe déjà.
+
+## Utiliser l’implémentation navigateur
+
+Ajoutez `webgpu-browser` et `webgpu-descriptors` au source set JS/Wasm partagé. L’implémentation
+navigateur expose le package `org.graphiks.webgpu.browser` ; les descripteurs utilisés ci-dessous
+appartiennent à `org.graphiks.webgpu.descriptors`. L’accès WebGPU exige un navigateur compatible et
+un contexte sûr.
+
+```kotlin
+import org.graphiks.webgpu.GPUBufferUsage
+import org.graphiks.webgpu.browser.requestAdapter
+import org.graphiks.webgpu.descriptors.BufferDescriptor
+
+suspend fun createExampleBuffer() {
+    val adapter = requestAdapter().getOrThrow()
+    val device = adapter.requestDevice().getOrThrow()
+    try {
+        val buffer = device.createBuffer(
+            BufferDescriptor(
+                size = 16uL,
+                usage = GPUBufferUsage.CopyDst or GPUBufferUsage.Storage,
+            ),
+        )
+        buffer.close()
+    } finally {
+        device.close()
+        adapter.close()
+    }
+}
+```
+
+Les helpers canvas (`getCanvasSurface`, `SurfaceConfiguration`) se trouvent également dans
+`org.graphiks.webgpu.browser`.
 
 ## Utiliser un type portable
 

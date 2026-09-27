@@ -11,7 +11,8 @@ The WebGPU project is organized into several modules:
 
 1. **webgpu-api**: Core module containing platform-agnostic interfaces and type definitions
 2. **webgpu-descriptors**: Module containing descriptor implementations
-3. **webgpu-web**: Module containing web-specific implementations (JavaScript and WebAssembly)
+3. **webgpu-web-bindings**: Module containing the generated JavaScript bindings and Kotlin JS/Wasm interop
+4. **webgpu-browser**: Module containing the browser implementation: resource wrappers, descriptor converters, and canvas surfaces
 
 ## Mapping Input
 
@@ -73,8 +74,8 @@ typealias GPUSignedOffset32 = Int
 In the web-specific implementation, these types are mapped to JavaScript types:
 
 ```kotlin
-// From types.kt in webgpu-web
-external interface WGPUColor : JsObject {
+// From types.kt in webgpu-web-bindings
+external interface WGPUColor : JsAny {
     var r: JsNumber /* double */
     var g: JsNumber /* double */
     var b: JsNumber /* double */
@@ -116,7 +117,7 @@ Certain WebGPU types are excluded from the core implementation because they are 
 |---------------|--------|
 | `GPUExternalTexture`, `GPUExternalTextureDescriptor`, `GPUExternalTextureBindingLayout`, `GPUCopyExternalImageSource`, `GPUCopyExternalImageDestInfo`, `GPUCopyExternalImageSourceInfo` | These types focus on Web Workers or advanced external texture handling. They are excluded to reduce complexity in the core implementation. |
 
-By excluding these types, the implementation remains focused and avoids unnecessary dependencies on web-specific details. However, some of these types may be implemented in the web-specific modules (`webgpu-web`) when needed for browser compatibility.
+By excluding these types, the implementation remains focused and avoids unnecessary dependencies on web-specific details. However, some of these types may be implemented in the web-specific modules (`webgpu-web-bindings`) when needed for browser compatibility.
 
 ## Union Type Handling
 
@@ -167,8 +168,8 @@ interface GPUColor {
 In the web module, the interface is defined with JavaScript types:
 
 ```kotlin
-// From types.kt in webgpu-web
-external interface WGPUColor : JsObject {
+// From types.kt in webgpu-web-bindings
+external interface WGPUColor : JsAny {
     var r: JsNumber /* double */
     var g: JsNumber /* double */
     var b: JsNumber /* double */
@@ -177,6 +178,20 @@ external interface WGPUColor : JsObject {
 ```
 
 This approach allows for platform-specific implementations while maintaining a consistent API across all platforms.
+
+### WebIDL Records and Nullable Values
+
+A WebIDL `record<K, V>` is not a Kotlin `Map`. The generated binding represents it as
+`WebGpuRecord`, an external `JsAny` created with `createWebGpuRecord()` (a `null`-prototype object)
+and filled with `setRecordValue()`. This keeps the dictionary a plain JavaScript object with
+enumerable own properties, as the browser APIs require, instead of a `Map` instance. It is used for
+pipeline constants and requested/limit dictionaries.
+
+Nullable WebIDL members are preserved through the JavaScript boundary. A nullable binding member is
+generated as a nullable parameter or result (`WGPUBindGroup?`, `WGPUBuffer?`), and a `Promise` whose
+value is nullable becomes `Promise<JsAny?>`. Browser wrappers therefore pass `null` through rather
+than coercing it, and the asynchronous entry points return `Result` values that distinguish an
+absent value, a rejected promise, and a cancelled coroutine.
 
 ## Enumerations and Constants
 
@@ -271,18 +286,18 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 
 ### Web-specific Implementation
 
-The web module (`webgpu-web`) defines JavaScript-specific interfaces with the `WGPU` prefix:
+The web module (`webgpu-web-bindings`) defines JavaScript-specific interfaces with the `WGPU` prefix:
 
 ```kotlin
 // From types.kt
-external interface WGPUBufferDescriptor : JsObject, WGPUObjectDescriptorBase {
+external interface WGPUBufferDescriptor : JsAny, WGPUObjectDescriptorBase {
     var size: JsNumber  /* GPUSize64 */
     var usage: JsNumber  /* GPUBufferUsageFlags */
     var mappedAtCreation: Boolean
 }
 
-external interface WGPUDevice : JsObject, WGPUObjectBase {
-    var features: JsObject /* GPUSupportedFeatures */
+external interface WGPUDevice : JsAny, WGPUObjectBase {
+    var features: JsAny /* GPUSupportedFeatures */
     var limits: WGPUSupportedLimits  /* GPUSupportedLimits */
     var adapterInfo: WGPUAdapterInfo  /* GPUAdapterInfo */
     var queue: WGPUQueue  /* GPUQueue */

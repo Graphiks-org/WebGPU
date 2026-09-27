@@ -5,16 +5,17 @@ package org.graphiks.webgpu.browser
 import org.graphiks.webgpu.bindings.WGPUCanvasContext
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.JsAny
-import kotlin.js.unsafeCast
-import web.html.HTMLCanvasElement
 
-private external interface WebGpuCanvasContextProvider : JsAny {
+/** The minimal HTML canvas element used to obtain a WebGPU canvas surface. */
+external interface HTMLCanvasElement : JsAny {
+    var width: Int
+    var height: Int
     fun getContext(contextId: String): WGPUCanvasContext?
 }
 
 /** Returns the WebGPU canvas surface of this canvas, or fails when the browser has none. */
 fun HTMLCanvasElement.getCanvasSurface(): CanvasSurface {
-    val context = unsafeCast<WebGpuCanvasContextProvider>().getContext("webgpu")
+    val context = getContext("webgpu")
         ?: error("The canvas does not expose a WebGPU context.")
     return CanvasSurface(context)
 }

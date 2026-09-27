@@ -8,6 +8,7 @@ val apiModules = listOf(
     ":webgpu-api",
     ":webgpu-descriptors",
     ":webgpu-web-bindings",
+    ":webgpu-browser",
 ).map { project(it) }
 
 val copyWebGpuDokkaIntoMkDocs = tasks.register<Sync>("copyWebGpuDokkaIntoMkDocs") {

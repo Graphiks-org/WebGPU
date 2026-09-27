@@ -23,8 +23,6 @@ kotlin {
         commonMain.dependencies {
             api(project(":webgpu-api"))
             api(project(":webgpu-web-bindings"))
-            api(kotlinWrappers.browser)
-            api(kotlinWrappers.web)
             implementation(libs.coroutines)
         }
         commonTest.dependencies {

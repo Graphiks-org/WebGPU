@@ -14,12 +14,14 @@ Its Kotlin bindings are generated from versioned WebGPU specification inputs.
 | --- | --- | --- |
 | `webgpu-api` | `org.graphiks:webgpu-api` | Portable interfaces, enums, aliases, and buffers |
 | `webgpu-descriptors` | `org.graphiks:webgpu-descriptors` | Descriptor implementations on the portable API |
-| `webgpu-web` | `org.graphiks:webgpu-web` | JavaScript and Wasm JS browser interop |
+| `webgpu-web-bindings` | `org.graphiks:webgpu-web-bindings` | WebGPU JavaScript bindings and Kotlin JS/Wasm interop |
+| `webgpu-browser` | `org.graphiks:webgpu-browser` | Browser implementation of the Graphiks WebGPU API |
 | `webgpu-specifications` | Not published | Versioned specification and documentation inputs |
 
 `webgpu-api` and `webgpu-descriptors` configure JVM, Android, JS, Wasm JS, and Kotlin/Native
-targets; `webgpu-web` configures JS and Wasm JS. See the [architecture guide](docs/docs/architecture.md)
-for boundaries and the [type mapping](TYPE_MAPPING.md) for WebGPU-to-Kotlin decisions.
+targets; `webgpu-web-bindings` and `webgpu-browser` configure JS and Wasm JS. See the
+[architecture guide](docs/docs/architecture.md) for boundaries and the [type mapping](TYPE_MAPPING.md)
+for WebGPU-to-Kotlin decisions.
 
 ## Use the API
 
@@ -30,10 +32,16 @@ already published.
 ```kotlin
 dependencies {
     implementation("org.graphiks:webgpu-api:<version>")
+    // Browser implementation: implementation("org.graphiks:webgpu-browser:<version>")
     // Optional: implementation("org.graphiks:webgpu-descriptors:<version>")
-    // Optional: implementation("org.graphiks:webgpu-web:<version>")
+    // Direct interop: implementation("org.graphiks:webgpu-web-bindings:<version>")
 }
 ```
+
+`webgpu-browser` is the entry point for browser applications: it provides `requestAdapter`, the
+resource wrappers, and the canvas surface helpers. WebGPU access requires a compatible browser and
+a secure context. When using it, also add `webgpu-descriptors` for the Kotlin descriptor classes,
+and reference the `org.graphiks.webgpu.browser` and `org.graphiks.webgpu.descriptors` packages.
 
 For example, a portable texture swizzle encodes to the string required by WebGPU:
 

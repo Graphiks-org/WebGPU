@@ -49,5 +49,7 @@ actuel est `tranform`, sans le deuxième « s ».
 ```
 
 Le générateur lit l’IDL et le YAML versionnés, puis réécrit les sources Kotlin générées dans
-`webgpu-api`, `webgpu-descriptors` et `webgpu-web`. Relisez les changements et lancez les
-[tests métier](testing.md). Ne modifiez pas directement les sources générées.
+`webgpu-api`, `webgpu-descriptors` et `webgpu-web-bindings`. Relisez les changements et lancez les
+[tests métier](testing.md). Ne modifiez pas directement les sources générées. `webgpu-browser` est
+écrit à la main : il consomme les contrats et les bindings générés et ne contient pas de sources
+générées.

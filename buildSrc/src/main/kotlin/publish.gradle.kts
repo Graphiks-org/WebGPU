@@ -4,7 +4,13 @@ plugins {
     id("dev.opensavvy.dokka-mkdocs")
 }
 
-val libraryDescription = "Webgpu types to kotlin multiplatform generated from specifications"
+val libraryDescription = when (project.name) {
+    "webgpu-api" -> "Shared WebGPU API for Kotlin Multiplatform"
+    "webgpu-descriptors" -> "Descriptor implementations for the Graphiks WebGPU API"
+    "webgpu-web-bindings" -> "WebGPU JavaScript bindings and Kotlin JS/Wasm interop"
+    "webgpu-browser" -> "Browser implementation of the Graphiks WebGPU API for Kotlin JS and Wasm"
+    else -> "Graphiks WebGPU for Kotlin Multiplatform"
+}
 
 val isPublishing = project.findProperty("signingInMemoryKey")?.toString()?.isNotBlank() == true ||
     project.findProperty("signing.keyId")?.toString()?.isNotBlank() == true

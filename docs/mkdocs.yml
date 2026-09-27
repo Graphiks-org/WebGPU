@@ -37,7 +37,8 @@ nav:
   - Reference:
       - webgpu-api: api/webgpu-api/index.md
       - webgpu-descriptors: api/webgpu-descriptors/index.md
-      - webgpu-web: api/webgpu-web/index.md
+      - webgpu-web-bindings: api/webgpu-web-bindings/index.md
+      - webgpu-browser: api/webgpu-browser/index.md
 
 # !!! EMBEDDED DOKKA START, DO NOT COMMIT !!! #
 # !!! EMBEDDED DOKKA END, DO NOT COMMIT !!! #

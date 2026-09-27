@@ -9,7 +9,6 @@ import org.graphiks.webgpu.bindings.WGPUDevice
 import kotlin.js.JsAny
 import kotlin.js.js
 import kotlin.js.unsafeCast
-import web.html.HTMLCanvasElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
