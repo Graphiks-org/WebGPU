@@ -2,9 +2,11 @@ name: Tests
 
 on:
   push:
-    branches: [ master, 'release/**', 'feature/**', 'fix/**']
+    branches: [ master ]
   pull_request:
-    branches: [ master, 'release/**', 'feature/**', 'fix/**']
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -15,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-latest, ubuntu-latest, windows-latest ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -24,15 +26,13 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 25
-          cache: 'gradle'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: ${{ runner.os }}-gradle
-      - name: Build & Test
-        run: ./gradlew check
-
+      - name: Business tests
+        run: ./gradlew --no-daemon check
+      - name: Browser target tests
+        if: runner.os == 'Linux'
+        run: ./gradlew --no-daemon :webgpu-api:jsNodeTest :webgpu-api:wasmJsNodeTest :webgpu-web:jsNodeTest :webgpu-web:wasmJsNodeTest
+      - name: Public ABI
+        if: runner.os == 'macOS'
+        run: ./gradlew --no-daemon :webgpu-api:checkKotlinAbi
