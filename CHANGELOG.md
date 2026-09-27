@@ -9,7 +9,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Bilingual documentation, contributor guidance, and repository automation.
 - `org.graphiks:webgpu-browser`, a browser implementation for Kotlin/JS and Kotlin/Wasm JS with adapter acquisition, resource wrappers, descriptor conversions, and canvas surfaces.
 - `WebGpuRecord` and nullable browser binding values in `org.graphiks:webgpu-web-bindings`.
-- Graphiks WebGPU Suite foundation modules (`suite-core`, `suite-acid-tests`, `suite-browser`) with a portable `AcidCase` contract and a browser runner for the first mapped-buffer validation case.
+- Graphiks WebGPU Suite foundation modules (`suite-core`, `suite-acid-tests`, `suite-browser`) with a portable `AcidCase` contract, eleven browser acid tests, a headless Chromium runner, and a static Validation page published under the documentation site's `suite/` path.
 
 ### Changed
 

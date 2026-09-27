@@ -1,0 +1,13 @@
+[
+  "buffers.mapped-at-creation",
+  "transfers.copy-offsets",
+  "transfers.write-offsets",
+  "transfers.write-remaining",
+  "buffers.partial-map-remap",
+  "compute.auto-layout-constants",
+  "compute.explicit-layout-entrypoint",
+  "errors.empty-scope",
+  "errors.invalid-buffer-usage",
+  "errors.map-alignment",
+  "buffers.map-destroyed"
+]

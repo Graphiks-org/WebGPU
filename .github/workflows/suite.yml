@@ -1,0 +1,56 @@
+name: WebGPU Suite
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+      - name: Install browser tooling
+        run: |
+          npm ci --prefix tools
+          npm exec --prefix tools -- playwright install --with-deps chromium
+      - name: Build libraries and browser distributions
+        run: |
+          ./gradlew --no-daemon \
+            :suite-core:compileKotlinJvm \
+            :suite-acid-tests:compileKotlinJvm \
+            :suite-browser:jsBrowserDistribution \
+            :suite-browser:wasmJsBrowserDistribution
+      - name: Run JS suite
+        if: ${{ !cancelled() }}
+        run: node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+      - name: Run Wasm suite
+        if: ${{ !cancelled() }}
+        run: node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+      - name: Upload reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: suite-reports
+          path: build/reports/
+      - name: Assemble validation site
+        if: ${{ success() }}
+        run: node tools/build-site.mjs
+      - name: Upload validation site
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: suite-site
+          path: build/site/
