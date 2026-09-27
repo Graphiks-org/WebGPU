@@ -2,7 +2,7 @@
 
 ## Intent and scope
 
-Bring `Graphiks-org/WebGPU` to functional parity with the repository conventions used by [Kalligraphie](https://github.com/Graphiks-org/Kalligraphie), while keeping WebGPU-specific content, module names, Maven coordinates, and existing release credentials. A new contributor should be able to discover the API, run its business tests, build its documentation, submit a conforming PR, and understand how releases are published. The reference baseline is WebGPU `master` at `762c250` (2026-09-27), where the group is already `org.graphiks` and the modules are `webgpu-api`, `webgpu-descriptors`, `webgpu-specifications`, and `webgpu-web`.
+Bring `Graphiks-org/WebGPU` to functional parity with the repository conventions used by [Kalligraphie](https://github.com/Graphiks-org/Kalligraphie), while keeping WebGPU-specific content, module names, and Maven coordinates. Adopt Kalligraphie's publication secret names. A new contributor should be able to discover the API, run its business tests, build its documentation, submit a conforming PR, and understand how releases are published. The reference baseline is WebGPU `master` at `762c250` (2026-09-27), where the group is already `org.graphiks` and the modules are `webgpu-api`, `webgpu-descriptors`, `webgpu-specifications`, and `webgpu-web`.
 
 Functional parity means equivalent contributor experience and automation, not copying Kalligraphie's font, shaping, or golden-test content. The user explicitly excluded reproducible regeneration checks: fetching specifications, LLM enrichment, and regenerating bindings remain documented manual operations and are not PR gates.
 
@@ -28,7 +28,16 @@ The CI workflows use least-privilege permissions and avoid duplicate cache layer
 
 On `master`, a docs workflow generates Dokka, builds MkDocs, uploads `_site/`, and deploys GitHub Pages. It also supports manual dispatch. The Pages environment and repository setting may need to be enabled by a maintainer after merging; the workflow must report a clear failure if external configuration is absent.
 
-Keep Maven Central publication from `master` snapshots, `v*` release tags, and manual snapshot dispatch. Use the existing `org.graphiks` group, renamed WebGPU module coordinates, and existing secret names (`SONATYPE_LOGIN`, `SONATYPE_PASSWORD`, `PGP_PRIVATE`, `PGP_PASSPHRASE`). Align the snapshot default with the Gradle project version instead of the stale `0.0.10-SNAPSHOT` workflow text. Validate that snapshot and release versions have the expected form before publishing. Update POM URLs and SCM metadata to `Graphiks-org/WebGPU`, preserve MIT licensing and the known developer attribution, and build/test before publication. No release or Pages deployment is triggered during implementation or spec review.
+Keep Maven Central publication from `master` snapshots, `v*` release tags, and manual snapshot dispatch. Use the existing `org.graphiks` group and renamed WebGPU module coordinates. Align both snapshot and release jobs with Kalligraphie's exact GitHub secret mapping:
+
+| Gradle environment variable | GitHub secret |
+| --- | --- |
+| `ORG_GRADLE_PROJECT_mavenCentralUsername` | `MAVEN_CENTRAL_USERNAME` |
+| `ORG_GRADLE_PROJECT_mavenCentralPassword` | `MAVEN_CENTRAL_PASSWORD` |
+| `ORG_GRADLE_PROJECT_signingInMemoryKey` | `SIGNING_KEY` |
+| `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` | `SIGNING_PASSWORD` |
+
+Replace the old WebGPU secret references throughout the workflow. Align the snapshot default with the Gradle project version instead of the stale `0.0.10-SNAPSHOT` workflow text. Validate that snapshot and release versions have the expected form before publishing. Update POM URLs and SCM metadata to `Graphiks-org/WebGPU`, preserve MIT licensing and the known developer attribution, and build/test before publication. No release or Pages deployment is triggered during implementation or spec review.
 
 ## Validation and completion criteria
 
@@ -36,7 +45,7 @@ Keep Maven Central publication from `master` snapshots, `v*` release tags, and m
 - English and French docs navigation resolves; `:docs:embedDokkaIntoMkDocs` and `mkdocs build -f docs/mkdocs.yml` complete locally or in the docs CI job.
 - Existing business tests and ABI checks pass for the platform tasks actually declared by Gradle; CI matrices do not name missing tasks.
 - PR-policy fixtures cover accepted and rejected title, branch, template, and changelog cases, and the workflow invokes the same validator.
-- Publish workflows reference the existing secrets and current modules, validate versions, and can be inspected without pushing a tag or uploading artifacts.
+- Publish workflows reference Kalligraphie's four secret names and the current WebGPU modules, validate versions, and can be inspected without pushing a tag or uploading artifacts.
 - No automatic specification fetch, LLM call, or binding regeneration is introduced into `check`, PR CI, or publication.
 
 ## Implementation boundaries
