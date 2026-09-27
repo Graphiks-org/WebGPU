@@ -1,19 +1,74 @@
 # Contributing to WebGPU
 
-Thanks for helping improve WebGPU. Read the [Code of Conduct](CODE_OF_CONDUCT.md) before participating. For usage questions, see [Support](SUPPORT.md); report vulnerabilities through the [private security route](SECURITY.md).
+This guide takes a change from a fresh branch to a reviewed pull request (PR). Read the [Code of Conduct](CODE_OF_CONDUCT.md) first. Use [Support](SUPPORT.md) for usage questions and the [private security route](SECURITY.md) for vulnerabilities.
 
-## Prepare a change
+## 1. Prepare your checkout
 
-Open an issue for substantial API or behavior changes so the approach can be discussed. Branch from `master`; use `feat/`, `fix/`, `chore/`, or `codex/` as appropriate. Keep each pull request focused and describe observable behavior. The [architecture](docs/docs/architecture.md), [testing](docs/docs/testing.md), and [specification maintenance](docs/docs/specification-maintenance.md) guides explain the project boundaries.
+Install JDK 25 and use the repository's Gradle wrapper. If you do not have write access, fork [Graphiks-org/WebGPU](https://github.com/Graphiks-org/WebGPU) on GitHub, then clone your fork:
 
-Use Conventional Commits such as `feat: add texture option` or `fix: correct buffer offset`. Kotlin bindings come from checked-in WebGPU specifications; update generated source and its inputs together when changing those bindings. Specification downloads and LLM enrichment are manual activities.
+```sh
+git clone https://github.com/<your-account>/WebGPU.git
+cd WebGPU
+git remote add upstream https://github.com/Graphiks-org/WebGPU.git
+git fetch upstream
+git switch -c feat/short-description upstream/master
+```
 
-## Verify
+If you have write access, clone the organization repository and create the branch from `origin/master` instead. Allowed branch prefixes are `feat/`, `fix/`, `chore/`, and `codex/`; replace `feat/short-description` with the appropriate name. Before starting a substantial API or behavior change, open an issue to agree on the approach.
 
-Use JDK 25 and run `./gradlew check`. Run the relevant platform tests for your change and mention any target you could not exercise. For documentation changes, build the site with `./gradlew :docs:embedDokkaIntoMkDocs` and `mkdocs build --strict -f docs/mkdocs.yml` after installing MkDocs Material and `mkdocs-static-i18n`. The Gradle task compacts generated API navigation automatically; check that `docs/mkdocs.yml` remains unchanged before committing.
+## 2. Make a focused change
 
-The documentation workflow validates every pull request. Publication from `master` requires repository Pages settings with **GitHub Actions** selected as the source and the `github-pages` environment allowed. If these settings are missing, the deployment job fails and a maintainer must enable them.
+Keep the PR limited to one purpose. Use the [architecture guide](docs/docs/architecture.md) to find the right module and the [type mapping](TYPE_MAPPING.md) for WebGPU-to-Kotlin decisions. Add or update tests for behavior you change. For a user-visible change, update the relevant guide and add a short entry to the [Unreleased changelog](CHANGELOG.md).
 
-## Submit a pull request
+The Kotlin bindings are generated from versioned WebGPU specification inputs. When changing them, update the inputs and generated source together. Follow the [specification maintenance guide](docs/docs/specification-maintenance.md) for the manual commands. Specification downloads, optional LLM enrichment, and binding regeneration are outside PR CI.
 
-Use the [pull request template](.github/PULL_REQUEST_TEMPLATE.md). Select one change type, explain testing, and state whether the changelog and documentation were updated or why they are unnecessary. Add an entry under [Unreleased](CHANGELOG.md) for a user-visible change. A maintainer reviews the request and may ask for changes before merging into `master`.
+## 3. Verify locally
+
+From the repository root, run the full business-test suite:
+
+```sh
+./gradlew check
+```
+
+Run focused platform tests for the code you touched; the [testing guide](docs/docs/testing.md) lists JVM, JS, Wasm JS, and ABI commands. Native tests depend on the host. Record any platform you could not test in the PR description.
+
+For documentation changes, install MkDocs Material and `mkdocs-static-i18n` in a Python environment, then build the API reference and bilingual site:
+
+```sh
+python3 -m venv build/docs-venv
+build/docs-venv/bin/python -m pip install mkdocs-material mkdocs-static-i18n
+./gradlew :docs:embedDokkaIntoMkDocs
+build/docs-venv/bin/mkdocs build --strict -f docs/mkdocs.yml
+```
+
+The example uses macOS/Linux paths; on Windows, use executables in `build/docs-venv/Scripts/`. Gradle compacts the generated API navigation automatically. Check `git status --short` before committing: generated files and the site output should not be included.
+
+## 4. Commit and open a PR
+
+Use a Conventional Commit subject for **every commit** and for the PR title. For example, `feat(api): add texture option` or `docs: clarify setup`. The allowed types and scopes are listed in the [PR policy](.github/contributing-policy.toml). Then push your branch:
+
+```sh
+git add <changed-files>
+git commit -m "feat(api): add texture option"
+git push -u origin feat/short-description
+```
+
+Replace `<changed-files>` with the paths you intend to submit, and check `git status --short` before pushing.
+
+Open a PR against `Graphiks-org/WebGPU`'s `master` branch. Fill in the [PR template](.github/PULL_REQUEST_TEMPLATE.md): describe the behavior and tests, select **one** change type, select **one** documentation decision, and select **one** changelog decision. If an update is unnecessary, explain it in Description using `Documentation: ...` or `Changelog: ...`. The PR title type must match the selected type. CI checks the PR policy, business tests, and documentation build; address failures and review comments with additional Conventional Commits.
+
+## Maintainer publication
+
+1. Confirm the PR has merged and the required checks have passed. Configure Pages with **GitHub Actions** as its source and allow the `github-pages` environment. Configure the Actions secrets `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY`, and `SIGNING_PASSWORD`.
+2. A push to `master` builds the site and publishes the default `0.1.0-SNAPSHOT` Maven artifacts. The Pages deployment job fails visibly if its repository settings are missing. To rerun documentation publication, dispatch the **Documentation** workflow from `master`.
+3. To publish a different snapshot, dispatch **Publish to Maven Central** from `master`. Leave `version` empty for Gradle's current default or enter a version ending in `-SNAPSHOT`.
+4. For a release, update [CHANGELOG.md](CHANGELOG.md), choose the release version, ensure `master` is current, then push a non-snapshot `v*` tag such as `v1.0.0`:
+
+   ```sh
+   git switch master
+   git pull --ff-only origin master
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+The Maven workflow runs `check` before publishing `webgpu-api`, `webgpu-descriptors`, and `webgpu-web`. Empty release tags and versions ending in `-SNAPSHOT` are rejected before upload. Only maintainers should initiate a release tag or manual publication.
