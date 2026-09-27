@@ -14,11 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  browser-gpu:
-    uses: ./.github/workflows/browser-gpu.yml
-
   snapshot:
-    needs: browser-gpu
     if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch'
     runs-on: macos-latest
     env:
@@ -72,7 +68,6 @@ jobs:
             :webgpu-browser:publishToMavenCentral "${args[@]}"
 
   release:
-    needs: browser-gpu
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: macos-latest
     env:
