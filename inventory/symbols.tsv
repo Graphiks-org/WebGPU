@@ -1,0 +1,835 @@
+symbol	kind	source	line	family
+ArrayBuffer	interface	ArrayBuffer.kt	14	types de données/descripteurs/flags/swizzle
+ArrayBuffer.size	property	ArrayBuffer.kt	18	types de données/descripteurs/flags/swizzle
+ArrayBuffer.toByteArray	function	ArrayBuffer.kt	26	types de données/descripteurs/flags/swizzle
+ArrayBuffer.toShortArray	function	ArrayBuffer.kt	32	types de données/descripteurs/flags/swizzle
+ArrayBuffer.toIntArray	function	ArrayBuffer.kt	38	types de données/descripteurs/flags/swizzle
+ArrayBuffer.toFloatArray	function	ArrayBuffer.kt	44	types de données/descripteurs/flags/swizzle
+ArrayBuffer.toDoubleArray	function	ArrayBuffer.kt	50	types de données/descripteurs/flags/swizzle
+ArrayBuffer.toUByteArray	function	ArrayBuffer.kt	56	types de données/descripteurs/flags/swizzle
+ArrayBuffer.toUShortArray	function	ArrayBuffer.kt	62	types de données/descripteurs/flags/swizzle
+ArrayBuffer.toUIntArray	function	ArrayBuffer.kt	68	types de données/descripteurs/flags/swizzle
+ArrayBuffer.getByte	function	ArrayBuffer.kt	77	types de données/descripteurs/flags/swizzle
+ArrayBuffer.getShort	function	ArrayBuffer.kt	84	types de données/descripteurs/flags/swizzle
+ArrayBuffer.getInt	function	ArrayBuffer.kt	91	types de données/descripteurs/flags/swizzle
+ArrayBuffer.getFloat	function	ArrayBuffer.kt	98	types de données/descripteurs/flags/swizzle
+ArrayBuffer.getDouble	function	ArrayBuffer.kt	105	types de données/descripteurs/flags/swizzle
+ArrayBuffer.getUByte	function	ArrayBuffer.kt	112	types de données/descripteurs/flags/swizzle
+ArrayBuffer.getUShort	function	ArrayBuffer.kt	119	types de données/descripteurs/flags/swizzle
+ArrayBuffer.getUInt	function	ArrayBuffer.kt	126	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setByte	function	ArrayBuffer.kt	135	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setShort	function	ArrayBuffer.kt	142	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setInt	function	ArrayBuffer.kt	149	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setFloat	function	ArrayBuffer.kt	156	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setDouble	function	ArrayBuffer.kt	163	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setUByte	function	ArrayBuffer.kt	170	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setUShort	function	ArrayBuffer.kt	177	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setUInt	function	ArrayBuffer.kt	184	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setBytes	function	ArrayBuffer.kt	193	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setShorts	function	ArrayBuffer.kt	200	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setInts	function	ArrayBuffer.kt	207	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setFloats	function	ArrayBuffer.kt	214	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setDoubles	function	ArrayBuffer.kt	221	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setUBytes	function	ArrayBuffer.kt	228	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setUShorts	function	ArrayBuffer.kt	235	types de données/descripteurs/flags/swizzle
+ArrayBuffer.setUInts	function	ArrayBuffer.kt	242	types de données/descripteurs/flags/swizzle
+ArrayBuffer.allocate	function	ArrayBuffer.kt	252	types de données/descripteurs/flags/swizzle
+ArrayBuffer.of(ByteArray)	function	ArrayBuffer.kt	259	types de données/descripteurs/flags/swizzle
+ArrayBuffer.of(ShortArray)	function	ArrayBuffer.kt	266	types de données/descripteurs/flags/swizzle
+ArrayBuffer.of(IntArray)	function	ArrayBuffer.kt	273	types de données/descripteurs/flags/swizzle
+ArrayBuffer.of(FloatArray)	function	ArrayBuffer.kt	280	types de données/descripteurs/flags/swizzle
+ArrayBuffer.of(DoubleArray)	function	ArrayBuffer.kt	287	types de données/descripteurs/flags/swizzle
+ArrayBuffer.of(UByteArray)	function	ArrayBuffer.kt	294	types de données/descripteurs/flags/swizzle
+ArrayBuffer.of(UShortArray)	function	ArrayBuffer.kt	301	types de données/descripteurs/flags/swizzle
+ArrayBuffer.of(UIntArray)	function	ArrayBuffer.kt	308	types de données/descripteurs/flags/swizzle
+FlagEnumeration	interface	FlagEnumeration.kt	14	types de données/descripteurs/flags/swizzle
+FlagEnumeration.value	property	FlagEnumeration.kt	16	types de données/descripteurs/flags/swizzle
+Set<FlagEnumeration>.toFlagInt	function	FlagEnumeration.kt	27	types de données/descripteurs/flags/swizzle
+Set<FlagEnumeration>.toFlagULong	function	FlagEnumeration.kt	40	types de données/descripteurs/flags/swizzle
+GPUTextureSwizzleSource	enum	GPUTextureSwizzle.kt	4	textures/views/samplers
+GPUTextureSwizzleSource.Red	enum-entry	GPUTextureSwizzle.kt	5	textures/views/samplers
+GPUTextureSwizzleSource.Green	enum-entry	GPUTextureSwizzle.kt	6	textures/views/samplers
+GPUTextureSwizzleSource.Blue	enum-entry	GPUTextureSwizzle.kt	7	textures/views/samplers
+GPUTextureSwizzleSource.Alpha	enum-entry	GPUTextureSwizzle.kt	8	textures/views/samplers
+GPUTextureSwizzleSource.Zero	enum-entry	GPUTextureSwizzle.kt	9	textures/views/samplers
+GPUTextureSwizzleSource.One	enum-entry	GPUTextureSwizzle.kt	10	textures/views/samplers
+GPUTextureSwizzle	data-class	GPUTextureSwizzle.kt	27	textures/views/samplers
+GPUTextureSwizzle.red	property	GPUTextureSwizzle.kt	28	textures/views/samplers
+GPUTextureSwizzle.green	property	GPUTextureSwizzle.kt	29	textures/views/samplers
+GPUTextureSwizzle.blue	property	GPUTextureSwizzle.kt	30	textures/views/samplers
+GPUTextureSwizzle.alpha	property	GPUTextureSwizzle.kt	31	textures/views/samplers
+GPUTextureSwizzle.toWebGpuString	function	GPUTextureSwizzle.kt	34	textures/views/samplers
+GPUBufferUsage	bitflag	bitflags.kt	6	buffers/mapping
+GPUBufferUsage.value	property	bitflags.kt	7	buffers/mapping
+GPUBufferUsage.or	function	bitflags.kt	9	buffers/mapping
+GPUBufferUsage.of	function	bitflags.kt	11	buffers/mapping
+GPUBufferUsage.None	bitflag-entry	bitflags.kt	14	buffers/mapping
+GPUBufferUsage.MapRead	bitflag-entry	bitflags.kt	16	buffers/mapping
+GPUBufferUsage.MapWrite	bitflag-entry	bitflags.kt	18	buffers/mapping
+GPUBufferUsage.CopySrc	bitflag-entry	bitflags.kt	20	buffers/mapping
+GPUBufferUsage.CopyDst	bitflag-entry	bitflags.kt	22	buffers/mapping
+GPUBufferUsage.Index	bitflag-entry	bitflags.kt	24	buffers/mapping
+GPUBufferUsage.Vertex	bitflag-entry	bitflags.kt	26	buffers/mapping
+GPUBufferUsage.Uniform	bitflag-entry	bitflags.kt	28	buffers/mapping
+GPUBufferUsage.Storage	bitflag-entry	bitflags.kt	30	buffers/mapping
+GPUBufferUsage.Indirect	bitflag-entry	bitflags.kt	32	buffers/mapping
+GPUBufferUsage.QueryResolve	bitflag-entry	bitflags.kt	34	buffers/mapping
+GPUBufferUsage.entries	property	bitflags.kt	36	buffers/mapping
+GPUColorWrite	bitflag	bitflags.kt	41	pipelines/render state
+GPUColorWrite.value	property	bitflags.kt	42	pipelines/render state
+GPUColorWrite.or	function	bitflags.kt	44	pipelines/render state
+GPUColorWrite.of	function	bitflags.kt	46	pipelines/render state
+GPUColorWrite.None	bitflag-entry	bitflags.kt	49	pipelines/render state
+GPUColorWrite.Red	bitflag-entry	bitflags.kt	51	pipelines/render state
+GPUColorWrite.Green	bitflag-entry	bitflags.kt	53	pipelines/render state
+GPUColorWrite.Blue	bitflag-entry	bitflags.kt	55	pipelines/render state
+GPUColorWrite.Alpha	bitflag-entry	bitflags.kt	57	pipelines/render state
+GPUColorWrite.All	bitflag-entry	bitflags.kt	59	pipelines/render state
+GPUColorWrite.entries	property	bitflags.kt	61	pipelines/render state
+GPUMapMode	bitflag	bitflags.kt	66	types de données/descripteurs/flags/swizzle
+GPUMapMode.value	property	bitflags.kt	67	types de données/descripteurs/flags/swizzle
+GPUMapMode.or	function	bitflags.kt	69	types de données/descripteurs/flags/swizzle
+GPUMapMode.of	function	bitflags.kt	71	types de données/descripteurs/flags/swizzle
+GPUMapMode.None	bitflag-entry	bitflags.kt	74	types de données/descripteurs/flags/swizzle
+GPUMapMode.Read	bitflag-entry	bitflags.kt	76	types de données/descripteurs/flags/swizzle
+GPUMapMode.Write	bitflag-entry	bitflags.kt	78	types de données/descripteurs/flags/swizzle
+GPUMapMode.entries	property	bitflags.kt	80	types de données/descripteurs/flags/swizzle
+GPUShaderStage	bitflag	bitflags.kt	85	shaders/compilation
+GPUShaderStage.value	property	bitflags.kt	86	shaders/compilation
+GPUShaderStage.or	function	bitflags.kt	88	shaders/compilation
+GPUShaderStage.of	function	bitflags.kt	90	shaders/compilation
+GPUShaderStage.None	bitflag-entry	bitflags.kt	93	shaders/compilation
+GPUShaderStage.Vertex	bitflag-entry	bitflags.kt	95	shaders/compilation
+GPUShaderStage.Fragment	bitflag-entry	bitflags.kt	97	shaders/compilation
+GPUShaderStage.Compute	bitflag-entry	bitflags.kt	99	shaders/compilation
+GPUShaderStage.entries	property	bitflags.kt	101	shaders/compilation
+GPUTextureUsage	bitflag	bitflags.kt	106	textures/views/samplers
+GPUTextureUsage.value	property	bitflags.kt	107	textures/views/samplers
+GPUTextureUsage.or	function	bitflags.kt	109	textures/views/samplers
+GPUTextureUsage.of	function	bitflags.kt	111	textures/views/samplers
+GPUTextureUsage.None	bitflag-entry	bitflags.kt	114	textures/views/samplers
+GPUTextureUsage.CopySrc	bitflag-entry	bitflags.kt	116	textures/views/samplers
+GPUTextureUsage.CopyDst	bitflag-entry	bitflags.kt	118	textures/views/samplers
+GPUTextureUsage.TextureBinding	bitflag-entry	bitflags.kt	120	textures/views/samplers
+GPUTextureUsage.StorageBinding	bitflag-entry	bitflags.kt	122	textures/views/samplers
+GPUTextureUsage.RenderAttachment	bitflag-entry	bitflags.kt	124	textures/views/samplers
+GPUTextureUsage.TransientAttachment	bitflag-entry	bitflags.kt	126	textures/views/samplers
+GPUTextureUsage.entries	property	bitflags.kt	128	textures/views/samplers
+GPUAddressMode	enum	enumerations.kt	9	textures/views/samplers
+GPUAddressMode.ClampToEdge	enum-entry	enumerations.kt	10	textures/views/samplers
+GPUAddressMode.Repeat	enum-entry	enumerations.kt	11	textures/views/samplers
+GPUAddressMode.MirrorRepeat	enum-entry	enumerations.kt	12	textures/views/samplers
+GPUBlendFactor	enum	enumerations.kt	19	pipelines/render state
+GPUBlendFactor.Zero	enum-entry	enumerations.kt	20	pipelines/render state
+GPUBlendFactor.One	enum-entry	enumerations.kt	21	pipelines/render state
+GPUBlendFactor.Src	enum-entry	enumerations.kt	22	pipelines/render state
+GPUBlendFactor.OneMinusSrc	enum-entry	enumerations.kt	23	pipelines/render state
+GPUBlendFactor.SrcAlpha	enum-entry	enumerations.kt	24	pipelines/render state
+GPUBlendFactor.OneMinusSrcAlpha	enum-entry	enumerations.kt	25	pipelines/render state
+GPUBlendFactor.Dst	enum-entry	enumerations.kt	26	pipelines/render state
+GPUBlendFactor.OneMinusDst	enum-entry	enumerations.kt	27	pipelines/render state
+GPUBlendFactor.DstAlpha	enum-entry	enumerations.kt	28	pipelines/render state
+GPUBlendFactor.OneMinusDstAlpha	enum-entry	enumerations.kt	29	pipelines/render state
+GPUBlendFactor.SrcAlphaSaturated	enum-entry	enumerations.kt	30	pipelines/render state
+GPUBlendFactor.Constant	enum-entry	enumerations.kt	31	pipelines/render state
+GPUBlendFactor.OneMinusConstant	enum-entry	enumerations.kt	32	pipelines/render state
+GPUBlendFactor.Src1	enum-entry	enumerations.kt	33	pipelines/render state
+GPUBlendFactor.OneMinusSrc1	enum-entry	enumerations.kt	34	pipelines/render state
+GPUBlendFactor.Src1Alpha	enum-entry	enumerations.kt	35	pipelines/render state
+GPUBlendFactor.OneMinusSrc1Alpha	enum-entry	enumerations.kt	36	pipelines/render state
+GPUBlendOperation	enum	enumerations.kt	43	pipelines/render state
+GPUBlendOperation.Add	enum-entry	enumerations.kt	44	pipelines/render state
+GPUBlendOperation.Subtract	enum-entry	enumerations.kt	45	pipelines/render state
+GPUBlendOperation.ReverseSubtract	enum-entry	enumerations.kt	46	pipelines/render state
+GPUBlendOperation.Min	enum-entry	enumerations.kt	47	pipelines/render state
+GPUBlendOperation.Max	enum-entry	enumerations.kt	48	pipelines/render state
+GPUBufferBindingType	enum	enumerations.kt	55	types de données/descripteurs/flags/swizzle
+GPUBufferBindingType.BindingNotUsed	enum-entry	enumerations.kt	56	types de données/descripteurs/flags/swizzle
+GPUBufferBindingType.Uniform	enum-entry	enumerations.kt	57	types de données/descripteurs/flags/swizzle
+GPUBufferBindingType.Storage	enum-entry	enumerations.kt	58	types de données/descripteurs/flags/swizzle
+GPUBufferBindingType.ReadOnlyStorage	enum-entry	enumerations.kt	59	types de données/descripteurs/flags/swizzle
+GPUBufferMapState	enum	enumerations.kt	66	buffers/mapping
+GPUBufferMapState.Unmapped	enum-entry	enumerations.kt	67	buffers/mapping
+GPUBufferMapState.Pending	enum-entry	enumerations.kt	68	buffers/mapping
+GPUBufferMapState.Mapped	enum-entry	enumerations.kt	69	buffers/mapping
+GPUCompareFunction	enum	enumerations.kt	76	pipelines/render state
+GPUCompareFunction.Never	enum-entry	enumerations.kt	77	pipelines/render state
+GPUCompareFunction.Less	enum-entry	enumerations.kt	78	pipelines/render state
+GPUCompareFunction.Equal	enum-entry	enumerations.kt	79	pipelines/render state
+GPUCompareFunction.LessEqual	enum-entry	enumerations.kt	80	pipelines/render state
+GPUCompareFunction.Greater	enum-entry	enumerations.kt	81	pipelines/render state
+GPUCompareFunction.NotEqual	enum-entry	enumerations.kt	82	pipelines/render state
+GPUCompareFunction.GreaterEqual	enum-entry	enumerations.kt	83	pipelines/render state
+GPUCompareFunction.Always	enum-entry	enumerations.kt	84	pipelines/render state
+GPUCompilationMessageType	enum	enumerations.kt	91	shaders/compilation
+GPUCompilationMessageType.Error	enum-entry	enumerations.kt	92	shaders/compilation
+GPUCompilationMessageType.Warning	enum-entry	enumerations.kt	93	shaders/compilation
+GPUCompilationMessageType.Info	enum-entry	enumerations.kt	94	shaders/compilation
+GPUCullMode	enum	enumerations.kt	101	pipelines/render state
+GPUCullMode.None	enum-entry	enumerations.kt	102	pipelines/render state
+GPUCullMode.Front	enum-entry	enumerations.kt	103	pipelines/render state
+GPUCullMode.Back	enum-entry	enumerations.kt	104	pipelines/render state
+GPUDeviceLostReason	enum	enumerations.kt	113	erreurs/asynchronisme
+GPUDeviceLostReason.Unknown	enum-entry	enumerations.kt	114	erreurs/asynchronisme
+GPUDeviceLostReason.Destroyed	enum-entry	enumerations.kt	115	erreurs/asynchronisme
+GPUDeviceLostReason.CallbackCancelled	enum-entry	enumerations.kt	116	erreurs/asynchronisme
+GPUDeviceLostReason.FailedCreation	enum-entry	enumerations.kt	117	erreurs/asynchronisme
+GPUErrorFilter	enum	enumerations.kt	124	erreurs/asynchronisme
+GPUErrorFilter.Validation	enum-entry	enumerations.kt	125	erreurs/asynchronisme
+GPUErrorFilter.OutOfMemory	enum-entry	enumerations.kt	126	erreurs/asynchronisme
+GPUErrorFilter.Internal	enum-entry	enumerations.kt	127	erreurs/asynchronisme
+GPUFeatureName	enum	enumerations.kt	134	adapter/device/features/limits
+GPUFeatureName.CoreFeaturesAndLimits	enum-entry	enumerations.kt	135	adapter/device/features/limits
+GPUFeatureName.DepthClipControl	enum-entry	enumerations.kt	136	adapter/device/features/limits
+GPUFeatureName.Depth32FloatStencil8	enum-entry	enumerations.kt	137	adapter/device/features/limits
+GPUFeatureName.TextureCompressionBC	enum-entry	enumerations.kt	138	adapter/device/features/limits
+GPUFeatureName.TextureCompressionBCSliced3D	enum-entry	enumerations.kt	139	adapter/device/features/limits
+GPUFeatureName.TextureCompressionETC2	enum-entry	enumerations.kt	140	adapter/device/features/limits
+GPUFeatureName.TextureCompressionASTC	enum-entry	enumerations.kt	141	adapter/device/features/limits
+GPUFeatureName.TextureCompressionASTCSliced3D	enum-entry	enumerations.kt	142	adapter/device/features/limits
+GPUFeatureName.TimestampQuery	enum-entry	enumerations.kt	143	adapter/device/features/limits
+GPUFeatureName.IndirectFirstInstance	enum-entry	enumerations.kt	144	adapter/device/features/limits
+GPUFeatureName.ShaderF16	enum-entry	enumerations.kt	145	adapter/device/features/limits
+GPUFeatureName.RG11B10UfloatRenderable	enum-entry	enumerations.kt	146	adapter/device/features/limits
+GPUFeatureName.BGRA8UnormStorage	enum-entry	enumerations.kt	147	adapter/device/features/limits
+GPUFeatureName.Float32Filterable	enum-entry	enumerations.kt	148	adapter/device/features/limits
+GPUFeatureName.Float32Blendable	enum-entry	enumerations.kt	149	adapter/device/features/limits
+GPUFeatureName.ClipDistances	enum-entry	enumerations.kt	150	adapter/device/features/limits
+GPUFeatureName.DualSourceBlending	enum-entry	enumerations.kt	151	adapter/device/features/limits
+GPUFeatureName.Subgroups	enum-entry	enumerations.kt	152	adapter/device/features/limits
+GPUFeatureName.TextureFormatsTier1	enum-entry	enumerations.kt	153	adapter/device/features/limits
+GPUFeatureName.TextureFormatsTier2	enum-entry	enumerations.kt	154	adapter/device/features/limits
+GPUFeatureName.PrimitiveIndex	enum-entry	enumerations.kt	155	adapter/device/features/limits
+GPUFeatureName.TextureComponentSwizzle	enum-entry	enumerations.kt	156	adapter/device/features/limits
+GPUFilterMode	enum	enumerations.kt	163	textures/views/samplers
+GPUFilterMode.Nearest	enum-entry	enumerations.kt	164	textures/views/samplers
+GPUFilterMode.Linear	enum-entry	enumerations.kt	165	textures/views/samplers
+GPUFrontFace	enum	enumerations.kt	172	pipelines/render state
+GPUFrontFace.CCW	enum-entry	enumerations.kt	173	pipelines/render state
+GPUFrontFace.CW	enum-entry	enumerations.kt	174	pipelines/render state
+GPUIndexFormat	enum	enumerations.kt	181	pipelines/render state
+GPUIndexFormat.Uint16	enum-entry	enumerations.kt	182	pipelines/render state
+GPUIndexFormat.Uint32	enum-entry	enumerations.kt	183	pipelines/render state
+GPULoadOp	enum	enumerations.kt	190	rendu/passes/attachments
+GPULoadOp.Load	enum-entry	enumerations.kt	191	rendu/passes/attachments
+GPULoadOp.Clear	enum-entry	enumerations.kt	192	rendu/passes/attachments
+GPUMipmapFilterMode	enum	enumerations.kt	199	textures/views/samplers
+GPUMipmapFilterMode.Nearest	enum-entry	enumerations.kt	200	textures/views/samplers
+GPUMipmapFilterMode.Linear	enum-entry	enumerations.kt	201	textures/views/samplers
+GPUPowerPreference	enum	enumerations.kt	208	adapter/device/features/limits
+GPUPowerPreference.LowPower	enum-entry	enumerations.kt	209	adapter/device/features/limits
+GPUPowerPreference.HighPerformance	enum-entry	enumerations.kt	210	adapter/device/features/limits
+GPUPrimitiveTopology	enum	enumerations.kt	217	pipelines/render state
+GPUPrimitiveTopology.PointList	enum-entry	enumerations.kt	218	pipelines/render state
+GPUPrimitiveTopology.LineList	enum-entry	enumerations.kt	219	pipelines/render state
+GPUPrimitiveTopology.LineStrip	enum-entry	enumerations.kt	220	pipelines/render state
+GPUPrimitiveTopology.TriangleList	enum-entry	enumerations.kt	221	pipelines/render state
+GPUPrimitiveTopology.TriangleStrip	enum-entry	enumerations.kt	222	pipelines/render state
+GPUQueryType	enum	enumerations.kt	229	queries/timestamps
+GPUQueryType.Occlusion	enum-entry	enumerations.kt	230	queries/timestamps
+GPUQueryType.Timestamp	enum-entry	enumerations.kt	231	queries/timestamps
+GPUSamplerBindingType	enum	enumerations.kt	238	textures/views/samplers
+GPUSamplerBindingType.BindingNotUsed	enum-entry	enumerations.kt	239	textures/views/samplers
+GPUSamplerBindingType.Filtering	enum-entry	enumerations.kt	240	textures/views/samplers
+GPUSamplerBindingType.NonFiltering	enum-entry	enumerations.kt	241	textures/views/samplers
+GPUSamplerBindingType.Comparison	enum-entry	enumerations.kt	242	textures/views/samplers
+GPUStencilOperation	enum	enumerations.kt	249	pipelines/render state
+GPUStencilOperation.Keep	enum-entry	enumerations.kt	250	pipelines/render state
+GPUStencilOperation.Zero	enum-entry	enumerations.kt	251	pipelines/render state
+GPUStencilOperation.Replace	enum-entry	enumerations.kt	252	pipelines/render state
+GPUStencilOperation.Invert	enum-entry	enumerations.kt	253	pipelines/render state
+GPUStencilOperation.IncrementClamp	enum-entry	enumerations.kt	254	pipelines/render state
+GPUStencilOperation.DecrementClamp	enum-entry	enumerations.kt	255	pipelines/render state
+GPUStencilOperation.IncrementWrap	enum-entry	enumerations.kt	256	pipelines/render state
+GPUStencilOperation.DecrementWrap	enum-entry	enumerations.kt	257	pipelines/render state
+GPUStorageTextureAccess	enum	enumerations.kt	264	textures/views/samplers
+GPUStorageTextureAccess.BindingNotUsed	enum-entry	enumerations.kt	265	textures/views/samplers
+GPUStorageTextureAccess.WriteOnly	enum-entry	enumerations.kt	266	textures/views/samplers
+GPUStorageTextureAccess.ReadOnly	enum-entry	enumerations.kt	267	textures/views/samplers
+GPUStorageTextureAccess.ReadWrite	enum-entry	enumerations.kt	268	textures/views/samplers
+GPUStoreOp	enum	enumerations.kt	275	rendu/passes/attachments
+GPUStoreOp.Store	enum-entry	enumerations.kt	276	rendu/passes/attachments
+GPUStoreOp.Discard	enum-entry	enumerations.kt	277	rendu/passes/attachments
+GPUTextureAspect	enum	enumerations.kt	284	textures/views/samplers
+GPUTextureAspect.All	enum-entry	enumerations.kt	285	textures/views/samplers
+GPUTextureAspect.StencilOnly	enum-entry	enumerations.kt	286	textures/views/samplers
+GPUTextureAspect.DepthOnly	enum-entry	enumerations.kt	287	textures/views/samplers
+GPUTextureDimension	enum	enumerations.kt	294	textures/views/samplers
+GPUTextureDimension.OneD	enum-entry	enumerations.kt	295	textures/views/samplers
+GPUTextureDimension.TwoD	enum-entry	enumerations.kt	296	textures/views/samplers
+GPUTextureDimension.ThreeD	enum-entry	enumerations.kt	297	textures/views/samplers
+GPUTextureFormat	enum	enumerations.kt	304	textures/views/samplers
+GPUTextureFormat.R8Unorm	enum-entry	enumerations.kt	305	textures/views/samplers
+GPUTextureFormat.R8Snorm	enum-entry	enumerations.kt	306	textures/views/samplers
+GPUTextureFormat.R8Uint	enum-entry	enumerations.kt	307	textures/views/samplers
+GPUTextureFormat.R8Sint	enum-entry	enumerations.kt	308	textures/views/samplers
+GPUTextureFormat.R16Unorm	enum-entry	enumerations.kt	309	textures/views/samplers
+GPUTextureFormat.R16Snorm	enum-entry	enumerations.kt	310	textures/views/samplers
+GPUTextureFormat.R16Uint	enum-entry	enumerations.kt	311	textures/views/samplers
+GPUTextureFormat.R16Sint	enum-entry	enumerations.kt	312	textures/views/samplers
+GPUTextureFormat.R16Float	enum-entry	enumerations.kt	313	textures/views/samplers
+GPUTextureFormat.RG8Unorm	enum-entry	enumerations.kt	314	textures/views/samplers
+GPUTextureFormat.RG8Snorm	enum-entry	enumerations.kt	315	textures/views/samplers
+GPUTextureFormat.RG8Uint	enum-entry	enumerations.kt	316	textures/views/samplers
+GPUTextureFormat.RG8Sint	enum-entry	enumerations.kt	317	textures/views/samplers
+GPUTextureFormat.R32Float	enum-entry	enumerations.kt	318	textures/views/samplers
+GPUTextureFormat.R32Uint	enum-entry	enumerations.kt	319	textures/views/samplers
+GPUTextureFormat.R32Sint	enum-entry	enumerations.kt	320	textures/views/samplers
+GPUTextureFormat.RG16Unorm	enum-entry	enumerations.kt	321	textures/views/samplers
+GPUTextureFormat.RG16Snorm	enum-entry	enumerations.kt	322	textures/views/samplers
+GPUTextureFormat.RG16Uint	enum-entry	enumerations.kt	323	textures/views/samplers
+GPUTextureFormat.RG16Sint	enum-entry	enumerations.kt	324	textures/views/samplers
+GPUTextureFormat.RG16Float	enum-entry	enumerations.kt	325	textures/views/samplers
+GPUTextureFormat.RGBA8Unorm	enum-entry	enumerations.kt	326	textures/views/samplers
+GPUTextureFormat.RGBA8UnormSrgb	enum-entry	enumerations.kt	327	textures/views/samplers
+GPUTextureFormat.RGBA8Snorm	enum-entry	enumerations.kt	328	textures/views/samplers
+GPUTextureFormat.RGBA8Uint	enum-entry	enumerations.kt	329	textures/views/samplers
+GPUTextureFormat.RGBA8Sint	enum-entry	enumerations.kt	330	textures/views/samplers
+GPUTextureFormat.BGRA8Unorm	enum-entry	enumerations.kt	331	textures/views/samplers
+GPUTextureFormat.BGRA8UnormSrgb	enum-entry	enumerations.kt	332	textures/views/samplers
+GPUTextureFormat.RGB10A2Uint	enum-entry	enumerations.kt	333	textures/views/samplers
+GPUTextureFormat.RGB10A2Unorm	enum-entry	enumerations.kt	334	textures/views/samplers
+GPUTextureFormat.RG11B10Ufloat	enum-entry	enumerations.kt	335	textures/views/samplers
+GPUTextureFormat.RGB9E5Ufloat	enum-entry	enumerations.kt	336	textures/views/samplers
+GPUTextureFormat.RG32Float	enum-entry	enumerations.kt	337	textures/views/samplers
+GPUTextureFormat.RG32Uint	enum-entry	enumerations.kt	338	textures/views/samplers
+GPUTextureFormat.RG32Sint	enum-entry	enumerations.kt	339	textures/views/samplers
+GPUTextureFormat.RGBA16Unorm	enum-entry	enumerations.kt	340	textures/views/samplers
+GPUTextureFormat.RGBA16Snorm	enum-entry	enumerations.kt	341	textures/views/samplers
+GPUTextureFormat.RGBA16Uint	enum-entry	enumerations.kt	342	textures/views/samplers
+GPUTextureFormat.RGBA16Sint	enum-entry	enumerations.kt	343	textures/views/samplers
+GPUTextureFormat.RGBA16Float	enum-entry	enumerations.kt	344	textures/views/samplers
+GPUTextureFormat.RGBA32Float	enum-entry	enumerations.kt	345	textures/views/samplers
+GPUTextureFormat.RGBA32Uint	enum-entry	enumerations.kt	346	textures/views/samplers
+GPUTextureFormat.RGBA32Sint	enum-entry	enumerations.kt	347	textures/views/samplers
+GPUTextureFormat.Stencil8	enum-entry	enumerations.kt	348	textures/views/samplers
+GPUTextureFormat.Depth16Unorm	enum-entry	enumerations.kt	349	textures/views/samplers
+GPUTextureFormat.Depth24Plus	enum-entry	enumerations.kt	350	textures/views/samplers
+GPUTextureFormat.Depth24PlusStencil8	enum-entry	enumerations.kt	351	textures/views/samplers
+GPUTextureFormat.Depth32Float	enum-entry	enumerations.kt	352	textures/views/samplers
+GPUTextureFormat.Depth32FloatStencil8	enum-entry	enumerations.kt	353	textures/views/samplers
+GPUTextureFormat.BC1RGBAUnorm	enum-entry	enumerations.kt	354	textures/views/samplers
+GPUTextureFormat.BC1RGBAUnormSrgb	enum-entry	enumerations.kt	355	textures/views/samplers
+GPUTextureFormat.BC2RGBAUnorm	enum-entry	enumerations.kt	356	textures/views/samplers
+GPUTextureFormat.BC2RGBAUnormSrgb	enum-entry	enumerations.kt	357	textures/views/samplers
+GPUTextureFormat.BC3RGBAUnorm	enum-entry	enumerations.kt	358	textures/views/samplers
+GPUTextureFormat.BC3RGBAUnormSrgb	enum-entry	enumerations.kt	359	textures/views/samplers
+GPUTextureFormat.BC4RUnorm	enum-entry	enumerations.kt	360	textures/views/samplers
+GPUTextureFormat.BC4RSnorm	enum-entry	enumerations.kt	361	textures/views/samplers
+GPUTextureFormat.BC5RGUnorm	enum-entry	enumerations.kt	362	textures/views/samplers
+GPUTextureFormat.BC5RGSnorm	enum-entry	enumerations.kt	363	textures/views/samplers
+GPUTextureFormat.BC6HRGBUfloat	enum-entry	enumerations.kt	364	textures/views/samplers
+GPUTextureFormat.BC6HRGBFloat	enum-entry	enumerations.kt	365	textures/views/samplers
+GPUTextureFormat.BC7RGBAUnorm	enum-entry	enumerations.kt	366	textures/views/samplers
+GPUTextureFormat.BC7RGBAUnormSrgb	enum-entry	enumerations.kt	367	textures/views/samplers
+GPUTextureFormat.ETC2RGB8Unorm	enum-entry	enumerations.kt	368	textures/views/samplers
+GPUTextureFormat.ETC2RGB8UnormSrgb	enum-entry	enumerations.kt	369	textures/views/samplers
+GPUTextureFormat.ETC2RGB8A1Unorm	enum-entry	enumerations.kt	370	textures/views/samplers
+GPUTextureFormat.ETC2RGB8A1UnormSrgb	enum-entry	enumerations.kt	371	textures/views/samplers
+GPUTextureFormat.ETC2RGBA8Unorm	enum-entry	enumerations.kt	372	textures/views/samplers
+GPUTextureFormat.ETC2RGBA8UnormSrgb	enum-entry	enumerations.kt	373	textures/views/samplers
+GPUTextureFormat.EACR11Unorm	enum-entry	enumerations.kt	374	textures/views/samplers
+GPUTextureFormat.EACR11Snorm	enum-entry	enumerations.kt	375	textures/views/samplers
+GPUTextureFormat.EACRG11Unorm	enum-entry	enumerations.kt	376	textures/views/samplers
+GPUTextureFormat.EACRG11Snorm	enum-entry	enumerations.kt	377	textures/views/samplers
+GPUTextureFormat.ASTC4x4Unorm	enum-entry	enumerations.kt	378	textures/views/samplers
+GPUTextureFormat.ASTC4x4UnormSrgb	enum-entry	enumerations.kt	379	textures/views/samplers
+GPUTextureFormat.ASTC5x4Unorm	enum-entry	enumerations.kt	380	textures/views/samplers
+GPUTextureFormat.ASTC5x4UnormSrgb	enum-entry	enumerations.kt	381	textures/views/samplers
+GPUTextureFormat.ASTC5x5Unorm	enum-entry	enumerations.kt	382	textures/views/samplers
+GPUTextureFormat.ASTC5x5UnormSrgb	enum-entry	enumerations.kt	383	textures/views/samplers
+GPUTextureFormat.ASTC6x5Unorm	enum-entry	enumerations.kt	384	textures/views/samplers
+GPUTextureFormat.ASTC6x5UnormSrgb	enum-entry	enumerations.kt	385	textures/views/samplers
+GPUTextureFormat.ASTC6x6Unorm	enum-entry	enumerations.kt	386	textures/views/samplers
+GPUTextureFormat.ASTC6x6UnormSrgb	enum-entry	enumerations.kt	387	textures/views/samplers
+GPUTextureFormat.ASTC8x5Unorm	enum-entry	enumerations.kt	388	textures/views/samplers
+GPUTextureFormat.ASTC8x5UnormSrgb	enum-entry	enumerations.kt	389	textures/views/samplers
+GPUTextureFormat.ASTC8x6Unorm	enum-entry	enumerations.kt	390	textures/views/samplers
+GPUTextureFormat.ASTC8x6UnormSrgb	enum-entry	enumerations.kt	391	textures/views/samplers
+GPUTextureFormat.ASTC8x8Unorm	enum-entry	enumerations.kt	392	textures/views/samplers
+GPUTextureFormat.ASTC8x8UnormSrgb	enum-entry	enumerations.kt	393	textures/views/samplers
+GPUTextureFormat.ASTC10x5Unorm	enum-entry	enumerations.kt	394	textures/views/samplers
+GPUTextureFormat.ASTC10x5UnormSrgb	enum-entry	enumerations.kt	395	textures/views/samplers
+GPUTextureFormat.ASTC10x6Unorm	enum-entry	enumerations.kt	396	textures/views/samplers
+GPUTextureFormat.ASTC10x6UnormSrgb	enum-entry	enumerations.kt	397	textures/views/samplers
+GPUTextureFormat.ASTC10x8Unorm	enum-entry	enumerations.kt	398	textures/views/samplers
+GPUTextureFormat.ASTC10x8UnormSrgb	enum-entry	enumerations.kt	399	textures/views/samplers
+GPUTextureFormat.ASTC10x10Unorm	enum-entry	enumerations.kt	400	textures/views/samplers
+GPUTextureFormat.ASTC10x10UnormSrgb	enum-entry	enumerations.kt	401	textures/views/samplers
+GPUTextureFormat.ASTC12x10Unorm	enum-entry	enumerations.kt	402	textures/views/samplers
+GPUTextureFormat.ASTC12x10UnormSrgb	enum-entry	enumerations.kt	403	textures/views/samplers
+GPUTextureFormat.ASTC12x12Unorm	enum-entry	enumerations.kt	404	textures/views/samplers
+GPUTextureFormat.ASTC12x12UnormSrgb	enum-entry	enumerations.kt	405	textures/views/samplers
+GPUTextureSampleType	enum	enumerations.kt	412	textures/views/samplers
+GPUTextureSampleType.BindingNotUsed	enum-entry	enumerations.kt	413	textures/views/samplers
+GPUTextureSampleType.Float	enum-entry	enumerations.kt	414	textures/views/samplers
+GPUTextureSampleType.UnfilterableFloat	enum-entry	enumerations.kt	415	textures/views/samplers
+GPUTextureSampleType.Depth	enum-entry	enumerations.kt	416	textures/views/samplers
+GPUTextureSampleType.Sint	enum-entry	enumerations.kt	417	textures/views/samplers
+GPUTextureSampleType.Uint	enum-entry	enumerations.kt	418	textures/views/samplers
+GPUTextureViewDimension	enum	enumerations.kt	425	textures/views/samplers
+GPUTextureViewDimension.OneD	enum-entry	enumerations.kt	426	textures/views/samplers
+GPUTextureViewDimension.TwoD	enum-entry	enumerations.kt	427	textures/views/samplers
+GPUTextureViewDimension.TwoDArray	enum-entry	enumerations.kt	428	textures/views/samplers
+GPUTextureViewDimension.Cube	enum-entry	enumerations.kt	429	textures/views/samplers
+GPUTextureViewDimension.CubeArray	enum-entry	enumerations.kt	430	textures/views/samplers
+GPUTextureViewDimension.ThreeD	enum-entry	enumerations.kt	431	textures/views/samplers
+GPUVertexFormat	enum	enumerations.kt	438	pipelines/render state
+GPUVertexFormat.Uint8	enum-entry	enumerations.kt	439	pipelines/render state
+GPUVertexFormat.Uint8x2	enum-entry	enumerations.kt	440	pipelines/render state
+GPUVertexFormat.Uint8x4	enum-entry	enumerations.kt	441	pipelines/render state
+GPUVertexFormat.Sint8	enum-entry	enumerations.kt	442	pipelines/render state
+GPUVertexFormat.Sint8x2	enum-entry	enumerations.kt	443	pipelines/render state
+GPUVertexFormat.Sint8x4	enum-entry	enumerations.kt	444	pipelines/render state
+GPUVertexFormat.Unorm8	enum-entry	enumerations.kt	445	pipelines/render state
+GPUVertexFormat.Unorm8x2	enum-entry	enumerations.kt	446	pipelines/render state
+GPUVertexFormat.Unorm8x4	enum-entry	enumerations.kt	447	pipelines/render state
+GPUVertexFormat.Snorm8	enum-entry	enumerations.kt	448	pipelines/render state
+GPUVertexFormat.Snorm8x2	enum-entry	enumerations.kt	449	pipelines/render state
+GPUVertexFormat.Snorm8x4	enum-entry	enumerations.kt	450	pipelines/render state
+GPUVertexFormat.Uint16	enum-entry	enumerations.kt	451	pipelines/render state
+GPUVertexFormat.Uint16x2	enum-entry	enumerations.kt	452	pipelines/render state
+GPUVertexFormat.Uint16x4	enum-entry	enumerations.kt	453	pipelines/render state
+GPUVertexFormat.Sint16	enum-entry	enumerations.kt	454	pipelines/render state
+GPUVertexFormat.Sint16x2	enum-entry	enumerations.kt	455	pipelines/render state
+GPUVertexFormat.Sint16x4	enum-entry	enumerations.kt	456	pipelines/render state
+GPUVertexFormat.Unorm16	enum-entry	enumerations.kt	457	pipelines/render state
+GPUVertexFormat.Unorm16x2	enum-entry	enumerations.kt	458	pipelines/render state
+GPUVertexFormat.Unorm16x4	enum-entry	enumerations.kt	459	pipelines/render state
+GPUVertexFormat.Snorm16	enum-entry	enumerations.kt	460	pipelines/render state
+GPUVertexFormat.Snorm16x2	enum-entry	enumerations.kt	461	pipelines/render state
+GPUVertexFormat.Snorm16x4	enum-entry	enumerations.kt	462	pipelines/render state
+GPUVertexFormat.Float16	enum-entry	enumerations.kt	463	pipelines/render state
+GPUVertexFormat.Float16x2	enum-entry	enumerations.kt	464	pipelines/render state
+GPUVertexFormat.Float16x4	enum-entry	enumerations.kt	465	pipelines/render state
+GPUVertexFormat.Float32	enum-entry	enumerations.kt	466	pipelines/render state
+GPUVertexFormat.Float32x2	enum-entry	enumerations.kt	467	pipelines/render state
+GPUVertexFormat.Float32x3	enum-entry	enumerations.kt	468	pipelines/render state
+GPUVertexFormat.Float32x4	enum-entry	enumerations.kt	469	pipelines/render state
+GPUVertexFormat.Uint32	enum-entry	enumerations.kt	470	pipelines/render state
+GPUVertexFormat.Uint32x2	enum-entry	enumerations.kt	471	pipelines/render state
+GPUVertexFormat.Uint32x3	enum-entry	enumerations.kt	472	pipelines/render state
+GPUVertexFormat.Uint32x4	enum-entry	enumerations.kt	473	pipelines/render state
+GPUVertexFormat.Sint32	enum-entry	enumerations.kt	474	pipelines/render state
+GPUVertexFormat.Sint32x2	enum-entry	enumerations.kt	475	pipelines/render state
+GPUVertexFormat.Sint32x3	enum-entry	enumerations.kt	476	pipelines/render state
+GPUVertexFormat.Sint32x4	enum-entry	enumerations.kt	477	pipelines/render state
+GPUVertexFormat.Unorm1010102	enum-entry	enumerations.kt	478	pipelines/render state
+GPUVertexFormat.Unorm8x4BGRA	enum-entry	enumerations.kt	479	pipelines/render state
+GPUVertexStepMode	enum	enumerations.kt	486	pipelines/render state
+GPUVertexStepMode.Vertex	enum-entry	enumerations.kt	487	pipelines/render state
+GPUVertexStepMode.Instance	enum-entry	enumerations.kt	488	pipelines/render state
+GPUBindingResource	interface	interfaces.kt	9	types de données/descripteurs/flags/swizzle
+GPUBuffer	interface	interfaces.kt	14	buffers/mapping
+GPUBuffer.size	property	interfaces.kt	21	buffers/mapping
+GPUBuffer.usage	property	interfaces.kt	28	buffers/mapping
+GPUBuffer.mapState	property	interfaces.kt	33	buffers/mapping
+GPUBuffer.mapAsync	function	interfaces.kt	42	buffers/mapping
+GPUBuffer.getMappedRange	function	interfaces.kt	50	buffers/mapping
+GPUBuffer.unmap	function	interfaces.kt	55	buffers/mapping
+GPUBufferBinding	interface	interfaces.kt	62	bind groups/layouts
+GPUBufferBinding.buffer	property	interfaces.kt	69	bind groups/layouts
+GPUBufferBinding.offset	property	interfaces.kt	74	bind groups/layouts
+GPUBufferBinding.size	property	interfaces.kt	79	bind groups/layouts
+GPUSampler	interface	interfaces.kt	86	textures/views/samplers
+GPUTexture	interface	interfaces.kt	91	textures/views/samplers
+GPUTexture.width	property	interfaces.kt	98	textures/views/samplers
+GPUTexture.height	property	interfaces.kt	105	textures/views/samplers
+GPUTexture.depthOrArrayLayers	property	interfaces.kt	112	textures/views/samplers
+GPUTexture.mipLevelCount	property	interfaces.kt	119	textures/views/samplers
+GPUTexture.sampleCount	property	interfaces.kt	126	textures/views/samplers
+GPUTexture.dimension	property	interfaces.kt	131	textures/views/samplers
+GPUTexture.format	property	interfaces.kt	138	textures/views/samplers
+GPUTexture.usage	property	interfaces.kt	145	textures/views/samplers
+GPUTexture.createView	function	interfaces.kt	152	textures/views/samplers
+GPUTextureView	interface	interfaces.kt	159	textures/views/samplers
+GPUColor	interface	interfaces.kt	166	types de données/descripteurs/flags/swizzle
+GPUColor.r	property	interfaces.kt	173	types de données/descripteurs/flags/swizzle
+GPUColor.g	property	interfaces.kt	180	types de données/descripteurs/flags/swizzle
+GPUColor.b	property	interfaces.kt	187	types de données/descripteurs/flags/swizzle
+GPUColor.a	property	interfaces.kt	194	types de données/descripteurs/flags/swizzle
+GPUOrigin2D	interface	interfaces.kt	201	types de données/descripteurs/flags/swizzle
+GPUOrigin2D.x	property	interfaces.kt	206	types de données/descripteurs/flags/swizzle
+GPUOrigin2D.y	property	interfaces.kt	211	types de données/descripteurs/flags/swizzle
+GPUOrigin3D	interface	interfaces.kt	218	types de données/descripteurs/flags/swizzle
+GPUOrigin3D.x	property	interfaces.kt	223	types de données/descripteurs/flags/swizzle
+GPUOrigin3D.y	property	interfaces.kt	228	types de données/descripteurs/flags/swizzle
+GPUOrigin3D.z	property	interfaces.kt	233	types de données/descripteurs/flags/swizzle
+GPUExtent3D	interface	interfaces.kt	240	types de données/descripteurs/flags/swizzle
+GPUExtent3D.width	property	interfaces.kt	247	types de données/descripteurs/flags/swizzle
+GPUExtent3D.height	property	interfaces.kt	254	types de données/descripteurs/flags/swizzle
+GPUExtent3D.depthOrArrayLayers	property	interfaces.kt	259	types de données/descripteurs/flags/swizzle
+GPUObjectBase	interface	interfaces.kt	266	types de données/descripteurs/flags/swizzle
+GPUObjectBase.label	property	interfaces.kt	271	types de données/descripteurs/flags/swizzle
+GPUSupportedLimits	interface	interfaces.kt	278	adapter/device/features/limits
+GPUSupportedLimits.maxTextureDimension1D	property	interfaces.kt	283	adapter/device/features/limits
+GPUSupportedLimits.maxTextureDimension2D	property	interfaces.kt	288	adapter/device/features/limits
+GPUSupportedLimits.maxTextureDimension3D	property	interfaces.kt	293	adapter/device/features/limits
+GPUSupportedLimits.maxTextureArrayLayers	property	interfaces.kt	298	adapter/device/features/limits
+GPUSupportedLimits.maxBindGroups	property	interfaces.kt	303	adapter/device/features/limits
+GPUSupportedLimits.maxBindGroupsPlusVertexBuffers	property	interfaces.kt	308	adapter/device/features/limits
+GPUSupportedLimits.maxImmediateSize	property	interfaces.kt	313	adapter/device/features/limits
+GPUSupportedLimits.maxBindingsPerBindGroup	property	interfaces.kt	318	adapter/device/features/limits
+GPUSupportedLimits.maxDynamicUniformBuffersPerPipelineLayout	property	interfaces.kt	323	adapter/device/features/limits
+GPUSupportedLimits.maxDynamicStorageBuffersPerPipelineLayout	property	interfaces.kt	328	adapter/device/features/limits
+GPUSupportedLimits.maxSampledTexturesPerShaderStage	property	interfaces.kt	333	adapter/device/features/limits
+GPUSupportedLimits.maxSamplersPerShaderStage	property	interfaces.kt	338	adapter/device/features/limits
+GPUSupportedLimits.maxStorageBuffersPerShaderStage	property	interfaces.kt	343	adapter/device/features/limits
+GPUSupportedLimits.maxStorageBuffersInVertexStage	property	interfaces.kt	348	adapter/device/features/limits
+GPUSupportedLimits.maxStorageBuffersInFragmentStage	property	interfaces.kt	353	adapter/device/features/limits
+GPUSupportedLimits.maxStorageTexturesPerShaderStage	property	interfaces.kt	358	adapter/device/features/limits
+GPUSupportedLimits.maxStorageTexturesInVertexStage	property	interfaces.kt	363	adapter/device/features/limits
+GPUSupportedLimits.maxStorageTexturesInFragmentStage	property	interfaces.kt	368	adapter/device/features/limits
+GPUSupportedLimits.maxUniformBuffersPerShaderStage	property	interfaces.kt	373	adapter/device/features/limits
+GPUSupportedLimits.maxUniformBufferBindingSize	property	interfaces.kt	378	adapter/device/features/limits
+GPUSupportedLimits.maxStorageBufferBindingSize	property	interfaces.kt	383	adapter/device/features/limits
+GPUSupportedLimits.minUniformBufferOffsetAlignment	property	interfaces.kt	388	adapter/device/features/limits
+GPUSupportedLimits.minStorageBufferOffsetAlignment	property	interfaces.kt	393	adapter/device/features/limits
+GPUSupportedLimits.maxVertexBuffers	property	interfaces.kt	398	adapter/device/features/limits
+GPUSupportedLimits.maxBufferSize	property	interfaces.kt	403	adapter/device/features/limits
+GPUSupportedLimits.maxVertexAttributes	property	interfaces.kt	408	adapter/device/features/limits
+GPUSupportedLimits.maxVertexBufferArrayStride	property	interfaces.kt	413	adapter/device/features/limits
+GPUSupportedLimits.maxInterStageShaderVariables	property	interfaces.kt	418	adapter/device/features/limits
+GPUSupportedLimits.maxColorAttachments	property	interfaces.kt	423	adapter/device/features/limits
+GPUSupportedLimits.maxColorAttachmentBytesPerSample	property	interfaces.kt	428	adapter/device/features/limits
+GPUSupportedLimits.maxComputeWorkgroupStorageSize	property	interfaces.kt	433	adapter/device/features/limits
+GPUSupportedLimits.maxComputeInvocationsPerWorkgroup	property	interfaces.kt	438	adapter/device/features/limits
+GPUSupportedLimits.maxComputeWorkgroupSizeX	property	interfaces.kt	443	adapter/device/features/limits
+GPUSupportedLimits.maxComputeWorkgroupSizeY	property	interfaces.kt	448	adapter/device/features/limits
+GPUSupportedLimits.maxComputeWorkgroupSizeZ	property	interfaces.kt	453	adapter/device/features/limits
+GPUSupportedLimits.maxComputeWorkgroupsPerDimension	property	interfaces.kt	458	adapter/device/features/limits
+GPUAdapterInfo	interface	interfaces.kt	465	adapter/device/features/limits
+GPUAdapterInfo.vendor	property	interfaces.kt	470	adapter/device/features/limits
+GPUAdapterInfo.architecture	property	interfaces.kt	475	adapter/device/features/limits
+GPUAdapterInfo.device	property	interfaces.kt	480	adapter/device/features/limits
+GPUAdapterInfo.description	property	interfaces.kt	485	adapter/device/features/limits
+GPUAdapterInfo.subgroupMinSize	property	interfaces.kt	490	adapter/device/features/limits
+GPUAdapterInfo.subgroupMaxSize	property	interfaces.kt	495	adapter/device/features/limits
+GPUAdapterInfo.isFallbackAdapter	property	interfaces.kt	502	adapter/device/features/limits
+GPUAdapter	interface	interfaces.kt	509	adapter/device/features/limits
+GPUAdapter.features	property	interfaces.kt	514	adapter/device/features/limits
+GPUAdapter.limits	property	interfaces.kt	521	adapter/device/features/limits
+GPUAdapter.info	property	interfaces.kt	526	adapter/device/features/limits
+GPUAdapter.requestDevice	function	interfaces.kt	533	adapter/device/features/limits
+GPUDevice	interface	interfaces.kt	540	adapter/device/features/limits
+GPUDevice.features	property	interfaces.kt	545	adapter/device/features/limits
+GPUDevice.limits	property	interfaces.kt	550	adapter/device/features/limits
+GPUDevice.adapterInfo	property	interfaces.kt	555	adapter/device/features/limits
+GPUDevice.queue	property	interfaces.kt	562	queue/commandes
+GPUDevice.createBuffer	function	interfaces.kt	569	buffers/mapping
+GPUDevice.createTexture	function	interfaces.kt	576	textures/views/samplers
+GPUDevice.createSampler	function	interfaces.kt	583	textures/views/samplers
+GPUDevice.createBindGroupLayout	function	interfaces.kt	590	bind groups/layouts
+GPUDevice.createPipelineLayout	function	interfaces.kt	597	bind groups/layouts
+GPUDevice.createBindGroup	function	interfaces.kt	604	bind groups/layouts
+GPUDevice.createShaderModule	function	interfaces.kt	611	shaders/compilation
+GPUDevice.createComputePipeline	function	interfaces.kt	618	compute
+GPUDevice.createRenderPipeline	function	interfaces.kt	625	pipelines/render state
+GPUDevice.createComputePipelineAsync	function	interfaces.kt	632	compute
+GPUDevice.createRenderPipelineAsync	function	interfaces.kt	639	pipelines/render state
+GPUDevice.createCommandEncoder	function	interfaces.kt	646	queue/commandes
+GPUDevice.createRenderBundleEncoder	function	interfaces.kt	653	render bundles
+GPUDevice.createQuerySet	function	interfaces.kt	660	queries/timestamps
+GPUDevice.pushErrorScope	function	interfaces.kt	667	erreurs/asynchronisme
+GPUDevice.popErrorScope	function	interfaces.kt	672	erreurs/asynchronisme
+GPUBindGroupLayout	interface	interfaces.kt	679	bind groups/layouts
+GPUBindGroup	interface	interfaces.kt	684	bind groups/layouts
+GPUPipelineLayout	interface	interfaces.kt	689	bind groups/layouts
+GPUShaderModule	interface	interfaces.kt	694	shaders/compilation
+GPUShaderModule.getCompilationInfo	function	interfaces.kt	699	shaders/compilation
+GPUCompilationMessage	interface	interfaces.kt	706	shaders/compilation
+GPUCompilationMessage.message	property	interfaces.kt	711	shaders/compilation
+GPUCompilationMessage.type	property	interfaces.kt	716	shaders/compilation
+GPUCompilationMessage.lineNum	property	interfaces.kt	721	shaders/compilation
+GPUCompilationMessage.linePos	property	interfaces.kt	726	shaders/compilation
+GPUCompilationMessage.offset	property	interfaces.kt	731	shaders/compilation
+GPUCompilationMessage.length	property	interfaces.kt	736	shaders/compilation
+GPUCompilationInfo	interface	interfaces.kt	743	shaders/compilation
+GPUCompilationInfo.messages	property	interfaces.kt	748	shaders/compilation
+GPUPipelineBase	interface	interfaces.kt	755	pipelines/render state
+GPUPipelineBase.getBindGroupLayout	function	interfaces.kt	762	pipelines/render state
+GPUComputePipeline	interface	interfaces.kt	769	compute
+GPURenderPipeline	interface	interfaces.kt	774	pipelines/render state
+GPUCommandBuffer	interface	interfaces.kt	779	queue/commandes
+GPUCommandsMixin	interface	interfaces.kt	784	queue/commandes
+GPUCommandEncoder	interface	interfaces.kt	789	queue/commandes
+GPUCommandEncoder.beginRenderPass	function	interfaces.kt	796	rendu/passes/attachments
+GPUCommandEncoder.beginComputePass	function	interfaces.kt	801	compute
+GPUCommandEncoder.copyBufferToBuffer	function	interfaces.kt	812	transferts buffers/textures
+GPUCommandEncoder.copyBufferToTexture	function	interfaces.kt	820	transferts buffers/textures
+GPUCommandEncoder.copyTextureToBuffer	function	interfaces.kt	828	transferts buffers/textures
+GPUCommandEncoder.copyTextureToTexture	function	interfaces.kt	836	transferts buffers/textures
+GPUCommandEncoder.clearBuffer	function	interfaces.kt	845	transferts buffers/textures
+GPUCommandEncoder.resolveQuerySet	function	interfaces.kt	850	queries/timestamps
+GPUCommandEncoder.finish	function	interfaces.kt	855	queue/commandes
+GPUBindingCommandsMixin	interface	interfaces.kt	862	types de données/descripteurs/flags/swizzle
+GPUBindingCommandsMixin.setBindGroup	function	interfaces.kt	869	types de données/descripteurs/flags/swizzle
+GPUBindingCommandsMixin.setImmediates	function	interfaces.kt	879	types de données/descripteurs/flags/swizzle
+GPUDebugCommandsMixin	interface	interfaces.kt	886	types de données/descripteurs/flags/swizzle
+GPUDebugCommandsMixin.pushDebugGroup	function	interfaces.kt	893	types de données/descripteurs/flags/swizzle
+GPUDebugCommandsMixin.popDebugGroup	function	interfaces.kt	898	types de données/descripteurs/flags/swizzle
+GPUDebugCommandsMixin.insertDebugMarker	function	interfaces.kt	905	types de données/descripteurs/flags/swizzle
+GPUComputePassEncoder	interface	interfaces.kt	912	compute
+GPUComputePassEncoder.setPipeline	function	interfaces.kt	919	compute
+GPUComputePassEncoder.dispatchWorkgroups	function	interfaces.kt	928	compute
+GPUComputePassEncoder.dispatchWorkgroupsIndirect	function	interfaces.kt	936	compute
+GPUComputePassEncoder.end	function	interfaces.kt	941	compute
+GPURenderPassEncoder	interface	interfaces.kt	948	rendu/passes/attachments
+GPURenderPassEncoder.setViewport	function	interfaces.kt	960	rendu/passes/attachments
+GPURenderPassEncoder.setScissorRect	function	interfaces.kt	970	rendu/passes/attachments
+GPURenderPassEncoder.setBlendConstant	function	interfaces.kt	977	rendu/passes/attachments
+GPURenderPassEncoder.setStencilReference	function	interfaces.kt	984	rendu/passes/attachments
+GPURenderPassEncoder.beginOcclusionQuery	function	interfaces.kt	989	rendu/passes/attachments
+GPURenderPassEncoder.endOcclusionQuery	function	interfaces.kt	994	rendu/passes/attachments
+GPURenderPassEncoder.executeBundles	function	interfaces.kt	1001	rendu/passes/attachments
+GPURenderPassEncoder.end	function	interfaces.kt	1006	rendu/passes/attachments
+GPURenderCommandsMixin	interface	interfaces.kt	1013	types de données/descripteurs/flags/swizzle
+GPURenderCommandsMixin.setPipeline	function	interfaces.kt	1020	types de données/descripteurs/flags/swizzle
+GPURenderCommandsMixin.setIndexBuffer	function	interfaces.kt	1030	types de données/descripteurs/flags/swizzle
+GPURenderCommandsMixin.setVertexBuffer	function	interfaces.kt	1040	types de données/descripteurs/flags/swizzle
+GPURenderCommandsMixin.draw	function	interfaces.kt	1050	types de données/descripteurs/flags/swizzle
+GPURenderCommandsMixin.drawIndexed	function	interfaces.kt	1061	types de données/descripteurs/flags/swizzle
+GPURenderCommandsMixin.drawIndirect	function	interfaces.kt	1069	types de données/descripteurs/flags/swizzle
+GPURenderCommandsMixin.drawIndexedIndirect	function	interfaces.kt	1077	types de données/descripteurs/flags/swizzle
+GPURenderBundle	interface	interfaces.kt	1084	render bundles
+GPURenderBundleEncoder	interface	interfaces.kt	1091	render bundles
+GPURenderBundleEncoder.finish	function	interfaces.kt	1096	render bundles
+GPUQueue	interface	interfaces.kt	1103	queue/commandes
+GPUQueue.submit	function	interfaces.kt	1108	queue/commandes
+GPUQueue.onSubmittedWorkDone	function	interfaces.kt	1113	erreurs/asynchronisme
+GPUQueue.writeBuffer	function	interfaces.kt	1124	transferts buffers/textures
+GPUQueue.writeTexture	function	interfaces.kt	1134	transferts buffers/textures
+GPUQuerySet	interface	interfaces.kt	1141	queries/timestamps
+GPUQuerySet.type	property	interfaces.kt	1146	queries/timestamps
+GPUQuerySet.count	property	interfaces.kt	1153	queries/timestamps
+GPUDeviceLostInfo	interface	interfaces.kt	1160	erreurs/asynchronisme
+GPUDeviceLostInfo.reason	property	interfaces.kt	1167	erreurs/asynchronisme
+GPUDeviceLostInfo.message	property	interfaces.kt	1172	erreurs/asynchronisme
+GPUError	interface	interfaces.kt	1179	erreurs/asynchronisme
+GPUError.message	property	interfaces.kt	1184	erreurs/asynchronisme
+GPUValidationError	interface	interfaces.kt	1191	erreurs/asynchronisme
+GPUOutOfMemoryError	interface	interfaces.kt	1196	erreurs/asynchronisme
+GPUInternalError	interface	interfaces.kt	1201	erreurs/asynchronisme
+GPUObjectDescriptorBase	interface	interfaces.kt	1206	types de données/descripteurs/flags/swizzle
+GPUObjectDescriptorBase.label	property	interfaces.kt	1213	types de données/descripteurs/flags/swizzle
+GPURequestAdapterOptions	interface	interfaces.kt	1220	adapter/device/features/limits
+GPURequestAdapterOptions.featureLevel	property	interfaces.kt	1225	adapter/device/features/limits
+GPURequestAdapterOptions.powerPreference	property	interfaces.kt	1230	adapter/device/features/limits
+GPURequestAdapterOptions.forceFallbackAdapter	property	interfaces.kt	1235	adapter/device/features/limits
+GPURequestAdapterOptions.xrCompatible	property	interfaces.kt	1240	adapter/device/features/limits
+GPUDeviceDescriptor	interface	interfaces.kt	1249	types de données/descripteurs/flags/swizzle
+GPUDeviceDescriptor.requiredFeatures	property	interfaces.kt	1254	types de données/descripteurs/flags/swizzle
+GPUDeviceDescriptor.requiredLimits	property	interfaces.kt	1259	types de données/descripteurs/flags/swizzle
+GPUDeviceDescriptor.defaultQueue	property	interfaces.kt	1266	types de données/descripteurs/flags/swizzle
+GPUDeviceDescriptor.onUncapturedError	property	interfaces.kt	1271	types de données/descripteurs/flags/swizzle
+GPUBufferDescriptor	interface	interfaces.kt	1278	buffers/mapping
+GPUBufferDescriptor.size	property	interfaces.kt	1285	buffers/mapping
+GPUBufferDescriptor.usage	property	interfaces.kt	1292	buffers/mapping
+GPUBufferDescriptor.mappedAtCreation	property	interfaces.kt	1297	buffers/mapping
+GPUTextureDescriptor	interface	interfaces.kt	1304	textures/views/samplers
+GPUTextureDescriptor.size	property	interfaces.kt	1309	textures/views/samplers
+GPUTextureDescriptor.mipLevelCount	property	interfaces.kt	1316	textures/views/samplers
+GPUTextureDescriptor.sampleCount	property	interfaces.kt	1321	textures/views/samplers
+GPUTextureDescriptor.dimension	property	interfaces.kt	1326	textures/views/samplers
+GPUTextureDescriptor.format	property	interfaces.kt	1333	textures/views/samplers
+GPUTextureDescriptor.usage	property	interfaces.kt	1340	textures/views/samplers
+GPUTextureDescriptor.viewFormats	property	interfaces.kt	1345	textures/views/samplers
+GPUTextureDescriptor.textureBindingViewDimension	property	interfaces.kt	1350	textures/views/samplers
+GPUTextureViewDescriptor	interface	interfaces.kt	1357	textures/views/samplers
+GPUTextureViewDescriptor.format	property	interfaces.kt	1362	textures/views/samplers
+GPUTextureViewDescriptor.dimension	property	interfaces.kt	1369	textures/views/samplers
+GPUTextureViewDescriptor.usage	property	interfaces.kt	1374	textures/views/samplers
+GPUTextureViewDescriptor.aspect	property	interfaces.kt	1379	textures/views/samplers
+GPUTextureViewDescriptor.baseMipLevel	property	interfaces.kt	1384	textures/views/samplers
+GPUTextureViewDescriptor.mipLevelCount	property	interfaces.kt	1389	textures/views/samplers
+GPUTextureViewDescriptor.baseArrayLayer	property	interfaces.kt	1394	textures/views/samplers
+GPUTextureViewDescriptor.arrayLayerCount	property	interfaces.kt	1399	textures/views/samplers
+GPUTextureViewDescriptor.swizzle	property	interfaces.kt	1404	textures/views/samplers
+GPUSamplerDescriptor	interface	interfaces.kt	1411	textures/views/samplers
+GPUSamplerDescriptor.addressModeU	property	interfaces.kt	1416	textures/views/samplers
+GPUSamplerDescriptor.addressModeV	property	interfaces.kt	1421	textures/views/samplers
+GPUSamplerDescriptor.addressModeW	property	interfaces.kt	1426	textures/views/samplers
+GPUSamplerDescriptor.magFilter	property	interfaces.kt	1431	textures/views/samplers
+GPUSamplerDescriptor.minFilter	property	interfaces.kt	1436	textures/views/samplers
+GPUSamplerDescriptor.mipmapFilter	property	interfaces.kt	1441	textures/views/samplers
+GPUSamplerDescriptor.lodMinClamp	property	interfaces.kt	1446	textures/views/samplers
+GPUSamplerDescriptor.lodMaxClamp	property	interfaces.kt	1451	textures/views/samplers
+GPUSamplerDescriptor.compare	property	interfaces.kt	1456	textures/views/samplers
+GPUSamplerDescriptor.maxAnisotropy	property	interfaces.kt	1461	textures/views/samplers
+GPUBindGroupLayoutDescriptor	interface	interfaces.kt	1468	bind groups/layouts
+GPUBindGroupLayoutDescriptor.entries	property	interfaces.kt	1473	bind groups/layouts
+GPUBindGroupLayoutEntry	interface	interfaces.kt	1480	bind groups/layouts
+GPUBindGroupLayoutEntry.binding	property	interfaces.kt	1485	bind groups/layouts
+GPUBindGroupLayoutEntry.visibility	property	interfaces.kt	1490	bind groups/layouts
+GPUBindGroupLayoutEntry.buffer	property	interfaces.kt	1495	bind groups/layouts
+GPUBindGroupLayoutEntry.sampler	property	interfaces.kt	1500	bind groups/layouts
+GPUBindGroupLayoutEntry.texture	property	interfaces.kt	1505	bind groups/layouts
+GPUBindGroupLayoutEntry.storageTexture	property	interfaces.kt	1510	bind groups/layouts
+GPUBufferBindingLayout	interface	interfaces.kt	1517	bind groups/layouts
+GPUBufferBindingLayout.type	property	interfaces.kt	1522	bind groups/layouts
+GPUBufferBindingLayout.hasDynamicOffset	property	interfaces.kt	1527	bind groups/layouts
+GPUBufferBindingLayout.minBindingSize	property	interfaces.kt	1532	bind groups/layouts
+GPUSamplerBindingLayout	interface	interfaces.kt	1539	textures/views/samplers
+GPUSamplerBindingLayout.type	property	interfaces.kt	1544	textures/views/samplers
+GPUTextureBindingLayout	interface	interfaces.kt	1551	textures/views/samplers
+GPUTextureBindingLayout.sampleType	property	interfaces.kt	1556	textures/views/samplers
+GPUTextureBindingLayout.viewDimension	property	interfaces.kt	1561	textures/views/samplers
+GPUTextureBindingLayout.multisampled	property	interfaces.kt	1566	textures/views/samplers
+GPUStorageTextureBindingLayout	interface	interfaces.kt	1573	types de données/descripteurs/flags/swizzle
+GPUStorageTextureBindingLayout.access	property	interfaces.kt	1578	types de données/descripteurs/flags/swizzle
+GPUStorageTextureBindingLayout.format	property	interfaces.kt	1583	types de données/descripteurs/flags/swizzle
+GPUStorageTextureBindingLayout.viewDimension	property	interfaces.kt	1588	types de données/descripteurs/flags/swizzle
+GPUBindGroupDescriptor	interface	interfaces.kt	1595	bind groups/layouts
+GPUBindGroupDescriptor.layout	property	interfaces.kt	1600	bind groups/layouts
+GPUBindGroupDescriptor.entries	property	interfaces.kt	1605	bind groups/layouts
+GPUBindGroupEntry	interface	interfaces.kt	1612	bind groups/layouts
+GPUBindGroupEntry.binding	property	interfaces.kt	1617	bind groups/layouts
+GPUBindGroupEntry.resource	property	interfaces.kt	1622	bind groups/layouts
+GPUPipelineLayoutDescriptor	interface	interfaces.kt	1631	bind groups/layouts
+GPUPipelineLayoutDescriptor.bindGroupLayouts	property	interfaces.kt	1636	bind groups/layouts
+GPUPipelineLayoutDescriptor.immediateSize	property	interfaces.kt	1641	bind groups/layouts
+GPUShaderModuleDescriptor	interface	interfaces.kt	1648	shaders/compilation
+GPUShaderModuleDescriptor.code	property	interfaces.kt	1655	shaders/compilation
+GPUShaderModuleDescriptor.compilationHints	property	interfaces.kt	1660	shaders/compilation
+GPUShaderModuleCompilationHint	interface	interfaces.kt	1667	shaders/compilation
+GPUShaderModuleCompilationHint.entryPoint	property	interfaces.kt	1672	shaders/compilation
+GPUShaderModuleCompilationHint.layout	property	interfaces.kt	1677	shaders/compilation
+GPUPipelineDescriptorBase	interface	interfaces.kt	1684	pipelines/render state
+GPUPipelineDescriptorBase.layout	property	interfaces.kt	1689	pipelines/render state
+GPUProgrammableStage	interface	interfaces.kt	1696	shaders/compilation
+GPUProgrammableStage.module	property	interfaces.kt	1701	shaders/compilation
+GPUProgrammableStage.entryPoint	property	interfaces.kt	1706	shaders/compilation
+GPUProgrammableStage.constants	property	interfaces.kt	1711	shaders/compilation
+GPUComputePipelineDescriptor	interface	interfaces.kt	1718	compute
+GPUComputePipelineDescriptor.compute	property	interfaces.kt	1723	compute
+GPURenderPipelineDescriptor	interface	interfaces.kt	1730	pipelines/render state
+GPURenderPipelineDescriptor.vertex	property	interfaces.kt	1735	pipelines/render state
+GPURenderPipelineDescriptor.primitive	property	interfaces.kt	1740	pipelines/render state
+GPURenderPipelineDescriptor.depthStencil	property	interfaces.kt	1745	pipelines/render state
+GPURenderPipelineDescriptor.multisample	property	interfaces.kt	1750	pipelines/render state
+GPURenderPipelineDescriptor.fragment	property	interfaces.kt	1755	pipelines/render state
+GPUPrimitiveState	interface	interfaces.kt	1762	pipelines/render state
+GPUPrimitiveState.topology	property	interfaces.kt	1767	pipelines/render state
+GPUPrimitiveState.stripIndexFormat	property	interfaces.kt	1772	pipelines/render state
+GPUPrimitiveState.frontFace	property	interfaces.kt	1777	pipelines/render state
+GPUPrimitiveState.cullMode	property	interfaces.kt	1782	pipelines/render state
+GPUPrimitiveState.unclippedDepth	property	interfaces.kt	1787	pipelines/render state
+GPUMultisampleState	interface	interfaces.kt	1794	pipelines/render state
+GPUMultisampleState.count	property	interfaces.kt	1799	pipelines/render state
+GPUMultisampleState.mask	property	interfaces.kt	1806	pipelines/render state
+GPUMultisampleState.alphaToCoverageEnabled	property	interfaces.kt	1811	pipelines/render state
+GPUFragmentState	interface	interfaces.kt	1818	pipelines/render state
+GPUFragmentState.targets	property	interfaces.kt	1823	pipelines/render state
+GPUColorTargetState	interface	interfaces.kt	1830	pipelines/render state
+GPUColorTargetState.format	property	interfaces.kt	1835	pipelines/render state
+GPUColorTargetState.blend	property	interfaces.kt	1840	pipelines/render state
+GPUColorTargetState.writeMask	property	interfaces.kt	1845	pipelines/render state
+GPUBlendState	interface	interfaces.kt	1852	pipelines/render state
+GPUBlendState.color	property	interfaces.kt	1857	pipelines/render state
+GPUBlendState.alpha	property	interfaces.kt	1862	pipelines/render state
+GPUBlendComponent	interface	interfaces.kt	1869	pipelines/render state
+GPUBlendComponent.operation	property	interfaces.kt	1874	pipelines/render state
+GPUBlendComponent.srcFactor	property	interfaces.kt	1879	pipelines/render state
+GPUBlendComponent.dstFactor	property	interfaces.kt	1884	pipelines/render state
+GPUDepthStencilState	interface	interfaces.kt	1891	pipelines/render state
+GPUDepthStencilState.format	property	interfaces.kt	1896	pipelines/render state
+GPUDepthStencilState.depthWriteEnabled	property	interfaces.kt	1901	pipelines/render state
+GPUDepthStencilState.depthCompare	property	interfaces.kt	1906	pipelines/render state
+GPUDepthStencilState.stencilFront	property	interfaces.kt	1911	pipelines/render state
+GPUDepthStencilState.stencilBack	property	interfaces.kt	1916	pipelines/render state
+GPUDepthStencilState.stencilReadMask	property	interfaces.kt	1921	pipelines/render state
+GPUDepthStencilState.stencilWriteMask	property	interfaces.kt	1926	pipelines/render state
+GPUDepthStencilState.depthBias	property	interfaces.kt	1931	pipelines/render state
+GPUDepthStencilState.depthBiasSlopeScale	property	interfaces.kt	1936	pipelines/render state
+GPUDepthStencilState.depthBiasClamp	property	interfaces.kt	1941	pipelines/render state
+GPUStencilFaceState	interface	interfaces.kt	1948	pipelines/render state
+GPUStencilFaceState.compare	property	interfaces.kt	1953	pipelines/render state
+GPUStencilFaceState.failOp	property	interfaces.kt	1958	pipelines/render state
+GPUStencilFaceState.depthFailOp	property	interfaces.kt	1963	pipelines/render state
+GPUStencilFaceState.passOp	property	interfaces.kt	1968	pipelines/render state
+GPUVertexState	interface	interfaces.kt	1975	pipelines/render state
+GPUVertexState.buffers	property	interfaces.kt	1980	pipelines/render state
+GPUVertexBufferLayout	interface	interfaces.kt	1987	pipelines/render state
+GPUVertexBufferLayout.arrayStride	property	interfaces.kt	1992	pipelines/render state
+GPUVertexBufferLayout.stepMode	property	interfaces.kt	1997	pipelines/render state
+GPUVertexBufferLayout.attributes	property	interfaces.kt	2002	pipelines/render state
+GPUVertexAttribute	interface	interfaces.kt	2009	pipelines/render state
+GPUVertexAttribute.format	property	interfaces.kt	2016	pipelines/render state
+GPUVertexAttribute.offset	property	interfaces.kt	2021	pipelines/render state
+GPUVertexAttribute.shaderLocation	property	interfaces.kt	2026	pipelines/render state
+GPUTexelCopyBufferLayout	interface	interfaces.kt	2033	transferts buffers/textures
+GPUTexelCopyBufferLayout.offset	property	interfaces.kt	2038	transferts buffers/textures
+GPUTexelCopyBufferLayout.bytesPerRow	property	interfaces.kt	2043	transferts buffers/textures
+GPUTexelCopyBufferLayout.rowsPerImage	property	interfaces.kt	2048	transferts buffers/textures
+GPUTexelCopyBufferInfo	interface	interfaces.kt	2055	transferts buffers/textures
+GPUTexelCopyBufferInfo.buffer	property	interfaces.kt	2060	transferts buffers/textures
+GPUTexelCopyTextureInfo	interface	interfaces.kt	2067	transferts buffers/textures
+GPUTexelCopyTextureInfo.texture	property	interfaces.kt	2074	transferts buffers/textures
+GPUTexelCopyTextureInfo.mipLevel	property	interfaces.kt	2081	transferts buffers/textures
+GPUTexelCopyTextureInfo.origin	property	interfaces.kt	2086	transferts buffers/textures
+GPUTexelCopyTextureInfo.aspect	property	interfaces.kt	2091	transferts buffers/textures
+GPUCommandBufferDescriptor	interface	interfaces.kt	2098	queue/commandes
+GPUCommandEncoderDescriptor	interface	interfaces.kt	2105	queue/commandes
+GPUComputePassTimestampWrites	interface	interfaces.kt	2110	compute
+GPUComputePassTimestampWrites.querySet	property	interfaces.kt	2115	compute
+GPUComputePassTimestampWrites.beginningOfPassWriteIndex	property	interfaces.kt	2120	compute
+GPUComputePassTimestampWrites.endOfPassWriteIndex	property	interfaces.kt	2125	compute
+GPUComputePassDescriptor	interface	interfaces.kt	2132	compute
+GPUComputePassDescriptor.timestampWrites	property	interfaces.kt	2137	compute
+GPURenderPassTimestampWrites	interface	interfaces.kt	2144	queries/timestamps
+GPURenderPassTimestampWrites.querySet	property	interfaces.kt	2149	queries/timestamps
+GPURenderPassTimestampWrites.beginningOfPassWriteIndex	property	interfaces.kt	2154	queries/timestamps
+GPURenderPassTimestampWrites.endOfPassWriteIndex	property	interfaces.kt	2159	queries/timestamps
+GPURenderPassDescriptor	interface	interfaces.kt	2166	rendu/passes/attachments
+GPURenderPassDescriptor.colorAttachments	property	interfaces.kt	2171	rendu/passes/attachments
+GPURenderPassDescriptor.depthStencilAttachment	property	interfaces.kt	2176	rendu/passes/attachments
+GPURenderPassDescriptor.occlusionQuerySet	property	interfaces.kt	2181	rendu/passes/attachments
+GPURenderPassDescriptor.timestampWrites	property	interfaces.kt	2186	rendu/passes/attachments
+GPURenderPassDescriptor.maxDrawCount	property	interfaces.kt	2191	rendu/passes/attachments
+GPURenderPassColorAttachment	interface	interfaces.kt	2198	rendu/passes/attachments
+GPURenderPassColorAttachment.view	property	interfaces.kt	2203	rendu/passes/attachments
+GPURenderPassColorAttachment.depthSlice	property	interfaces.kt	2208	rendu/passes/attachments
+GPURenderPassColorAttachment.resolveTarget	property	interfaces.kt	2213	rendu/passes/attachments
+GPURenderPassColorAttachment.clearValue	property	interfaces.kt	2218	rendu/passes/attachments
+GPURenderPassColorAttachment.loadOp	property	interfaces.kt	2223	rendu/passes/attachments
+GPURenderPassColorAttachment.storeOp	property	interfaces.kt	2228	rendu/passes/attachments
+GPUTextureOrGPUTextureView	interface	interfaces.kt	2235	textures/views/samplers
+GPURenderPassDepthStencilAttachment	interface	interfaces.kt	2240	rendu/passes/attachments
+GPURenderPassDepthStencilAttachment.view	property	interfaces.kt	2245	rendu/passes/attachments
+GPURenderPassDepthStencilAttachment.depthClearValue	property	interfaces.kt	2250	rendu/passes/attachments
+GPURenderPassDepthStencilAttachment.depthLoadOp	property	interfaces.kt	2255	rendu/passes/attachments
+GPURenderPassDepthStencilAttachment.depthStoreOp	property	interfaces.kt	2260	rendu/passes/attachments
+GPURenderPassDepthStencilAttachment.depthReadOnly	property	interfaces.kt	2265	rendu/passes/attachments
+GPURenderPassDepthStencilAttachment.stencilClearValue	property	interfaces.kt	2270	rendu/passes/attachments
+GPURenderPassDepthStencilAttachment.stencilLoadOp	property	interfaces.kt	2275	rendu/passes/attachments
+GPURenderPassDepthStencilAttachment.stencilStoreOp	property	interfaces.kt	2280	rendu/passes/attachments
+GPURenderPassDepthStencilAttachment.stencilReadOnly	property	interfaces.kt	2285	rendu/passes/attachments
+GPURenderPassLayout	interface	interfaces.kt	2292	pipelines/render state
+GPURenderPassLayout.colorFormats	property	interfaces.kt	2297	pipelines/render state
+GPURenderPassLayout.depthStencilFormat	property	interfaces.kt	2302	pipelines/render state
+GPURenderPassLayout.sampleCount	property	interfaces.kt	2307	pipelines/render state
+GPURenderBundleDescriptor	interface	interfaces.kt	2314	render bundles
+GPURenderBundleEncoderDescriptor	interface	interfaces.kt	2321	render bundles
+GPURenderBundleEncoderDescriptor.depthReadOnly	property	interfaces.kt	2326	render bundles
+GPURenderBundleEncoderDescriptor.stencilReadOnly	property	interfaces.kt	2331	render bundles
+GPUQueueDescriptor	interface	interfaces.kt	2340	queue/commandes
+GPUQuerySetDescriptor	interface	interfaces.kt	2345	queries/timestamps
+GPUQuerySetDescriptor.type	property	interfaces.kt	2352	queries/timestamps
+GPUQuerySetDescriptor.count	property	interfaces.kt	2359	queries/timestamps
+GPUUncapturedErrorCallback	callback	interfaces.kt	2366	erreurs/asynchronisme
+GPUUncapturedErrorCallback.onUncapturedError	function	interfaces.kt	2371	erreurs/asynchronisme
+GPUPipelineConstantValue	typealias	typealiases.kt	5	types de données/descripteurs/flags/swizzle
+GPUBufferDynamicOffset	typealias	typealiases.kt	6	buffers/mapping
+GPUStencilValue	typealias	typealiases.kt	7	pipelines/render state
+GPUSampleMask	typealias	typealiases.kt	8	pipelines/render state
+GPUDepthBias	typealias	typealiases.kt	9	pipelines/render state
+GPUSize64	typealias	typealiases.kt	10	types de données/descripteurs/flags/swizzle
+GPUIntegerCoordinate	typealias	typealiases.kt	11	types de données/descripteurs/flags/swizzle
+GPUIndex32	typealias	typealiases.kt	12	types de données/descripteurs/flags/swizzle
+GPUSize32	typealias	typealiases.kt	13	types de données/descripteurs/flags/swizzle
+GPUSignedOffset32	typealias	typealiases.kt	14	types de données/descripteurs/flags/swizzle
+GPUSize64Out	typealias	typealiases.kt	15	types de données/descripteurs/flags/swizzle
+GPUIntegerCoordinateOut	typealias	typealiases.kt	16	types de données/descripteurs/flags/swizzle
+GPUSize32Out	typealias	typealiases.kt	17	types de données/descripteurs/flags/swizzle
+GPUFlagsConstant	typealias	typealiases.kt	18	types de données/descripteurs/flags/swizzle
+GPUSupportedFeatures	typealias	typealiases.kt	19	adapter/device/features/limits
