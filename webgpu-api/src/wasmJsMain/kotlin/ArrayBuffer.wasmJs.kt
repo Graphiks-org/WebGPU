@@ -2,11 +2,12 @@
 
 package org.graphiks.webgpu
 
-import js.core.JsPrimitives.toJsByte
-import js.core.JsPrimitives.toJsFloat
-import js.core.JsPrimitives.toJsInt
-import js.core.JsPrimitives.toJsShort
-import js.core.JsPrimitives.toJsUByte
+import js.array.toJsArray
+import js.numbers.JsNumbers.toJsByte
+import js.numbers.JsNumbers.toJsFloat
+import js.numbers.JsNumbers.toJsInt
+import js.numbers.JsNumbers.toJsShort
+import js.numbers.JsNumbers.toJsUByte
 import js.typedarrays.Float32Array
 import js.typedarrays.Float64Array
 import js.typedarrays.Int16Array
@@ -17,76 +18,36 @@ import js.typedarrays.Uint32Array
 import js.typedarrays.Uint8Array
 
 @Suppress("NOTHING_TO_INLINE")
-internal actual inline fun ByteArray.toArrayBuffer(): ArrayBuffer {
-    val array = JsArray<JsNumber>()
-    forEachIndexed { index, value ->
-        array[index] = value.toJsByte()
-    }
-    return ArrayBuffer.wrap(Int8Array<js.buffer.ArrayBuffer>(array).buffer)
-}
+internal actual inline fun ByteArray.toArrayBuffer(): ArrayBuffer =
+    ArrayBuffer.wrap(Int8Array<js.buffer.ArrayBuffer>(map { it.toJsByte() }.toJsArray()).buffer)
 
 @Suppress("NOTHING_TO_INLINE")
-internal actual inline fun ShortArray.toArrayBuffer(): ArrayBuffer {
-    val array = JsArray<JsNumber>()
-    forEachIndexed { index, value ->
-        array[index] = value.toJsShort()
-    }
-    return ArrayBuffer.wrap(Int16Array<js.buffer.ArrayBuffer>(array).buffer)
-}
+internal actual inline fun ShortArray.toArrayBuffer(): ArrayBuffer =
+    ArrayBuffer.wrap(Int16Array<js.buffer.ArrayBuffer>(map { it.toJsShort() }.toJsArray()).buffer)
 
 @Suppress("NOTHING_TO_INLINE")
-internal actual inline fun IntArray.toArrayBuffer(): ArrayBuffer {
-    val array = JsArray<JsNumber>()
-    forEachIndexed { index, value ->
-        array[index] = value.toJsNumber()
-    }
-    return ArrayBuffer.wrap(Int32Array<js.buffer.ArrayBuffer>(array).buffer)
-}
+internal actual inline fun IntArray.toArrayBuffer(): ArrayBuffer =
+    ArrayBuffer.wrap(Int32Array<js.buffer.ArrayBuffer>(map { it.toJsNumber() }.toJsArray()).buffer)
 
 @Suppress("NOTHING_TO_INLINE")
-internal actual inline fun FloatArray.toArrayBuffer(): ArrayBuffer {
-    val array = JsArray<JsNumber>()
-    forEachIndexed { index, value ->
-        array[index] = value.toJsFloat()
-    }
-    return ArrayBuffer.wrap(Float32Array<js.buffer.ArrayBuffer>(array).buffer)
-}
+internal actual inline fun FloatArray.toArrayBuffer(): ArrayBuffer =
+    ArrayBuffer.wrap(Float32Array<js.buffer.ArrayBuffer>(map { it.toJsFloat() }.toJsArray()).buffer)
 
 @Suppress("NOTHING_TO_INLINE")
-internal actual inline fun DoubleArray.toArrayBuffer(): ArrayBuffer {
-    val array = JsArray<JsNumber>()
-    forEachIndexed { index, value ->
-        array[index] = value.toJsNumber()
-    }
-    return ArrayBuffer.wrap(Float64Array<js.buffer.ArrayBuffer>(array).buffer)
-}
+internal actual inline fun DoubleArray.toArrayBuffer(): ArrayBuffer =
+    ArrayBuffer.wrap(Float64Array<js.buffer.ArrayBuffer>(map { it.toJsNumber() }.toJsArray()).buffer)
 
 @Suppress("NOTHING_TO_INLINE")
-internal actual inline fun UByteArray.toArrayBuffer(): ArrayBuffer {
-    val array = JsArray<JsNumber>()
-    forEachIndexed { index, value ->
-        array[index] = value.toJsUByte()
-    }
-    return ArrayBuffer.wrap(Uint8Array<js.buffer.ArrayBuffer>(array).buffer)
-}
+internal actual inline fun UByteArray.toArrayBuffer(): ArrayBuffer =
+    ArrayBuffer.wrap(Uint8Array<js.buffer.ArrayBuffer>(map { it.toJsUByte() }.toJsArray()).buffer)
 
 @Suppress("NOTHING_TO_INLINE")
-internal actual inline fun UShortArray.toArrayBuffer(): ArrayBuffer {
-    val array = JsArray<JsNumber>()
-    forEachIndexed { index, value ->
-        array[index] = value.toShort().toJsShort()
-    }
-    return ArrayBuffer.wrap(Uint16Array<js.buffer.ArrayBuffer>(array).buffer)
-}
+internal actual inline fun UShortArray.toArrayBuffer(): ArrayBuffer =
+    ArrayBuffer.wrap(Uint16Array<js.buffer.ArrayBuffer>(map { it.toShort().toJsShort() }.toJsArray()).buffer)
 
 @Suppress("NOTHING_TO_INLINE")
-internal actual inline fun UIntArray.toArrayBuffer(): ArrayBuffer {
-    val array = JsArray<JsNumber>()
-    forEachIndexed { index, value ->
-        array[index] = value.toInt().toJsInt()
-    }
-    return ArrayBuffer.wrap(Uint32Array<js.buffer.ArrayBuffer>(array).buffer)
-}
+internal actual inline fun UIntArray.toArrayBuffer(): ArrayBuffer =
+    ArrayBuffer.wrap(Uint32Array<js.buffer.ArrayBuffer>(map { it.toInt().toJsInt() }.toJsArray()).buffer)
 
 // Read methods - convert ArrayBuffer to typed arrays
 @Suppress("NOTHING_TO_INLINE")
