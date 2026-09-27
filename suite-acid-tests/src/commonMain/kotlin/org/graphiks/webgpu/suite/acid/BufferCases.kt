@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
  * A buffer created with [BufferDescriptor.mappedAtCreation] exposes its whole mapping
  * immediately and reports the mapped state until the case unmaps it.
  */
-suspend fun mappedAtCreation(device: GPUDevice) {
+suspend fun mappedAtCreation(device: GPUDevice) = withValidationScope(device) {
     val buffer = device.createBuffer(
         BufferDescriptor(
             size = 16uL,
