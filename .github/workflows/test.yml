@@ -28,11 +28,5 @@ jobs:
           java-version: 25
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
-      - name: Business tests
+      - name: Tests and checks
         run: ./gradlew --no-daemon check
-      - name: Browser target tests
-        if: runner.os == 'Linux'
-        run: ./gradlew --no-daemon :webgpu-api:jsNodeTest :webgpu-api:wasmJsNodeTest :webgpu-web:jsNodeTest :webgpu-web:wasmJsNodeTest
-      - name: Public ABI
-        if: runner.os == 'macOS'
-        run: ./gradlew --no-daemon :webgpu-api:checkKotlinAbi

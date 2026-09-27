@@ -55,15 +55,23 @@ internal fun MapperContext.loadWebInterfaces() {
     }
 }
 
-fun MapperContext.convertType(type: String): String = when {
-    type.startsWith("GPU") -> when {
-        webInterfaces.any { "W${type}" == it.name } -> "W${type}  /* $type */"
-        webTypeAlias.any { "W${type}" == it.name } -> "W${type}  /* $type */"
-        commonEnumerations.any { type == it.name } -> "String  /* $type */"
-        isNumberTypeAlias(type) -> "JsNumber  /* $type */"
-        else -> "JsAny /* $type */"
+fun MapperContext.convertType(type: String): String {
+    val commentIndex = type.indexOf("/*")
+    val name = (if (commentIndex >= 0) type.substring(0, commentIndex) else type).trim()
+    val nullable = name.endsWith("?")
+    val baseName = name.removeSuffix("?")
+    if (!baseName.startsWith("GPU")) return type
+
+    val resolved = when {
+        webInterfaces.any { "W$baseName" == it.name } -> "W$baseName"
+        webTypeAlias.any { "W$baseName" == it.name } -> "W$baseName"
+        commonEnumerations.any { baseName == it.name } -> "String"
+        isNumberTypeAlias(baseName) -> "JsNumber"
+        else -> "JsAny"
     }
-    else -> type
+    val marker = if (nullable) "?" else ""
+    val spacing = if (resolved == "JsAny") " " else "  "
+    return "$resolved$marker$spacing/* $baseName$marker */"
 }
 
 fun MapperContext.isNumberTypeAlias(type: String): Boolean {

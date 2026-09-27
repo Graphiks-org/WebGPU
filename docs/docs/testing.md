@@ -7,13 +7,13 @@ Run the standard business-test lifecycle from the repository root:
 ```
 
 Gradle runs tasks supported by the current host. The `webgpu-api` suites exercise buffer and
-enumeration behavior; `webgpu-web` covers JS/Wasm interop. On a suitable host, useful targeted
-commands include:
+enumeration behavior; `webgpu-web-bindings` covers JS/Wasm interop. On a suitable host, useful
+targeted commands include:
 
 ```sh
 ./gradlew :webgpu-api:jvmTest :webgpu-api:checkKotlinAbi
-./gradlew :webgpu-api:jsNodeTest :webgpu-web:jsNodeTest
-./gradlew :webgpu-api:wasmJsNodeTest :webgpu-web:wasmJsNodeTest
+./gradlew :webgpu-api:jsNodeTest :webgpu-web-bindings:jsNodeTest
+./gradlew :webgpu-api:wasmJsNodeTest :webgpu-web-bindings:wasmJsNodeTest
 ```
 
 Kotlin/Native test tasks depend on the host. CI runs the business tests on Linux, macOS, and

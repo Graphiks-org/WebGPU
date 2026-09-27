@@ -64,7 +64,8 @@ jobs:
           ./gradlew --no-configuration-cache --no-daemon \
             :webgpu-api:publishToMavenCentral \
             :webgpu-descriptors:publishToMavenCentral \
-            :webgpu-web:publishToMavenCentral "${args[@]}"
+            :webgpu-web-bindings:publishToMavenCentral \
+            :webgpu-browser:publishToMavenCentral "${args[@]}"
 
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
@@ -106,4 +107,5 @@ jobs:
           ./gradlew --no-configuration-cache --no-daemon \
             :webgpu-api:publishToMavenCentral \
             :webgpu-descriptors:publishToMavenCentral \
-            :webgpu-web:publishToMavenCentral "-PreleaseVersion=$VERSION"
+            :webgpu-web-bindings:publishToMavenCentral \
+            :webgpu-browser:publishToMavenCentral "-PreleaseVersion=$VERSION"

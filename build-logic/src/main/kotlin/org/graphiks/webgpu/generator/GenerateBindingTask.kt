@@ -18,6 +18,6 @@ open class GenerateBindingTask : DefaultTask() {
         val context = ModelGenerator(specificationResources)
             .also { it.injectDocumentation() }
             .context
-        ModelWriter.write(context)
+        ModelWriter.write(context, project.projectDir.toPath())
     }
 }

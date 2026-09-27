@@ -21,6 +21,7 @@ dependencies {
     implementation(libs.webidl.util)
     implementation(libs.kaml)
     implementation(libs.kotlinpoet)
+    implementation(libs.wgpu.specs)
     implementation(libs.jsoup)
     implementation(libs.coroutines)
     implementation(libs.ktor.client.core)

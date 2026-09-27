@@ -48,5 +48,7 @@ currently spelled `tranform` without the second “s”.
 ```
 
 The generator reads the checked-in IDL and YAML and rewrites generated Kotlin sources in
-`webgpu-api`, `webgpu-descriptors`, and `webgpu-web`. Review the changes and run the
-[business tests](testing.md). Do not edit generated sources directly.
+`webgpu-api`, `webgpu-descriptors`, and `webgpu-web-bindings`. Review the changes and run the
+[business tests](testing.md). Do not edit generated sources directly. `webgpu-browser` is
+hand-written: it consumes the contracts and the generated bindings and does not contain generated
+sources.

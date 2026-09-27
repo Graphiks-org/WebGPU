@@ -18,7 +18,7 @@ Allowed branch prefixes are **only** `feat/`, `fix/`, and `chore/`; replace `fea
 
 ## 2. Make a focused change
 
-Keep the PR limited to one purpose. Use the [architecture guide](docs/docs/architecture.md) to find the right module and the [type mapping](TYPE_MAPPING.md) for WebGPU-to-Kotlin decisions. Add or update tests for behavior you change. For a user-visible change, update the relevant guide and add a short entry to the [Unreleased changelog](CHANGELOG.md).
+Keep the PR limited to one purpose. Use the [architecture guide](docs/docs/architecture.md) to find the right module and the [type mapping](docs/docs/type-mapping/index.md) for WebGPU-to-Kotlin decisions. Add or update tests for behavior you change. For a user-visible change, update the relevant guide and add a short entry to the [Unreleased changelog](CHANGELOG.md).
 
 The Kotlin bindings are generated from versioned WebGPU specification inputs. When changing them, update the inputs and generated source together. Follow the [specification maintenance guide](docs/docs/specification-maintenance.md) for the manual commands. Specification downloads, optional LLM enrichment, and binding regeneration are outside PR CI.
 
@@ -51,7 +51,7 @@ Use a Conventional Commit subject for **every non-merge commit** and for the PR 
 | --- | --- |
 | `api` | Portable API in `webgpu-api` |
 | `descriptors` | Descriptor implementations in `webgpu-descriptors` |
-| `web` | Browser interop in `webgpu-web` |
+| `web` | Browser interop in `webgpu-web-bindings` and the `webgpu-browser` implementation |
 | `specifications` | Versioned WebGPU inputs and maintenance tasks |
 | `buildSrc` | Shared Gradle conventions |
 | `build-logic` | Included Gradle build logic |
@@ -93,4 +93,4 @@ Open a PR **from your fork** against `Graphiks-org/WebGPU`'s `master` branch. Fi
    git push upstream v1.0.0
    ```
 
-The Maven workflow runs `check` before publishing `webgpu-api`, `webgpu-descriptors`, and `webgpu-web`. Empty release tags and versions ending in `-SNAPSHOT` are rejected before upload. Only maintainers should initiate a release tag or manual publication.
+The Maven workflow runs `check` before publishing `webgpu-api`, `webgpu-descriptors`, `webgpu-web-bindings`, and `webgpu-browser`. Empty release tags and versions ending in `-SNAPSHOT` are rejected before upload. Only maintainers should initiate a release tag or manual publication.

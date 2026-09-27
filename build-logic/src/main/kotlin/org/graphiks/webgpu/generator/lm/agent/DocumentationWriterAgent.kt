@@ -54,7 +54,7 @@ class DocumentationWriterAgent(private val client: LLMClient) {
            - Include notes on JavaScript interoperability where applicable
     
         6. TYPES ET MAPPAGES:
-           - Utilisez précisément les mappages de types définis dans le document TYPE_MAPPING.md
+           - Utilisez précisément les mappages de types définis dans la section de documentation `docs/docs/type-mapping/`
            - Respectez les conventions de nommage pour les types WebGPU vers Kotlin
            - Documentez clairement les différences de comportement entre les plateformes
            - Référencez les types spécifiques (GPUSize32, GPUIndex32, etc.) tels que définis dans le mappage

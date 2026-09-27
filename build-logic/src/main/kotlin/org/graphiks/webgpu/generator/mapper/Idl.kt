@@ -43,29 +43,47 @@ internal val unwantedTypesOnCommon = setOf(
 
 
 internal fun IdlType.toWebKotlinType(): String = when (this) {
-    is IdlSimpleType -> when (typeName) {
-        "unsigned long",
-        "unsigned long long",
-        "short",
-        "unsigned short",
-        "long",
-        "long long",
-        "float",
-        "double" -> "JsNumber /* $this */"
-        "boolean" -> "Boolean"
-        "AllowSharedBufferSource" -> "js.buffer.ArrayBuffer /* $this */"
-        "ArrayBuffer" -> "js.buffer.ArrayBuffer"
-        "undefined" -> "Unit"
-        "DOMString", "USVString" -> "String /* $this */"
-        "sequence", "FrozenArray" -> "JsArray<JsAny> /* $this<${this.parameterTypes?.get(0)}> */"
-        "record" -> "JsMap<JsAny, JsAny> /* $this<${this.parameterTypes?.get(0)}, ${this.parameterTypes?.get(1)}>  */"
-        "Promise" -> "Promise<JsAny> /* $this */"
-        else -> when {
-            typeName.startsWith("GPU") -> typeName
-            else -> "JsAny /* $this */"
+    is IdlSimpleType -> {
+        val nullable = typeName.endsWith("?")
+        val baseName = typeName.removeSuffix("?")
+        val converted = when (baseName) {
+            "unsigned long",
+            "unsigned long long",
+            "short",
+            "unsigned short",
+            "long",
+            "long long",
+            "float",
+            "double" -> "JsNumber /* $this */"
+            "boolean" -> "Boolean"
+            "AllowSharedBufferSource" -> "js.buffer.ArrayBuffer /* $this */"
+            "ArrayBuffer" -> "js.buffer.ArrayBuffer"
+            "undefined" -> "Unit"
+            "DOMString", "USVString" -> "String /* $this */"
+            "sequence", "FrozenArray" -> "JsArray<JsAny> /* $this<${this.parameterTypes?.get(0)}> */"
+            "record" -> "WebGpuRecord /* $this<${this.parameterTypes?.get(0)}, ${this.parameterTypes?.get(1)}>  */"
+            "Promise" -> {
+                val nullableValue = parameterTypes?.firstOrNull()?.endsWith("?") == true
+                "Promise<JsAny${if (nullableValue) "?" else ""}> /* $this */"
+            }
+            else -> when {
+                baseName.startsWith("GPU") -> baseName
+                else -> "JsAny /* $this */"
+            }
         }
+        converted.reapplyNullability(nullable)
     }
     is IdlUnionType ->  "JsAny /* $this */"
+}
+
+private fun String.reapplyNullability(nullable: Boolean): String {
+    if (!nullable) return this
+    val commentIndex = indexOf("/*")
+    return if (commentIndex >= 0) {
+        substring(0, commentIndex).trimEnd() + "? " + substring(commentIndex)
+    } else {
+        "$this?"
+    }
 }
 
 internal fun IdlType.toKotlinType(): String = (this as IdlSimpleType).let {

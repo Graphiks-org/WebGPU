@@ -1,0 +1,25 @@
+@file:OptIn(ExperimentalWasmJsInterop::class)
+
+package org.graphiks.webgpu.bindings
+
+@Suppress(names = ["NOTHING_TO_INLINE"])
+actual inline fun Float.asJsNumber(): JsNumber = unsafeCast<JsNumber>()
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun Double.asJsNumber(): JsNumber = unsafeCast<JsNumber>()
+@Suppress(names = ["NOTHING_TO_INLINE"])
+actual inline fun Byte.asJsNumber(): JsNumber = unsafeCast<JsNumber>()
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun Short.asJsNumber(): JsNumber = unsafeCast<JsNumber>()
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun Int.asJsNumber(): JsNumber = unsafeCast<JsNumber>()
+@Suppress("NOTHING_TO_INLINE")
+actual inline fun Long.asJsNumber(): JsNumber = toDouble().asJsNumber()
+
+@Suppress(names = ["NOTHING_TO_INLINE"])
+actual inline fun UByte.asJsNumber(): JsNumber = toShort().asJsNumber()
+@Suppress(names = ["NOTHING_TO_INLINE"])
+actual inline fun UShort.asJsNumber(): JsNumber = toInt().asJsNumber()
+@Suppress(names = ["NOTHING_TO_INLINE"])
+actual inline fun UInt.asJsNumber(): JsNumber = toDouble().asJsNumber()
+@Suppress(names = ["NOTHING_TO_INLINE"])
+actual inline fun ULong.asJsNumber(): JsNumber = toDouble().asJsNumber()

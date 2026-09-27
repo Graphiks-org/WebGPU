@@ -7,13 +7,13 @@ Lancez le cycle normal de tests métier depuis la racine du dépôt :
 ```
 
 Gradle exécute les tâches compatibles avec la machine. Les suites de `webgpu-api` vérifient les
-buffers et les énumérations ; `webgpu-web` couvre l’interop JS/Wasm. Sur une machine adaptée,
+buffers et les énumérations ; `webgpu-web-bindings` couvre l’interop JS/Wasm. Sur une machine adaptée,
 vous pouvez cibler les tâches suivantes :
 
 ```sh
 ./gradlew :webgpu-api:jvmTest :webgpu-api:checkKotlinAbi
-./gradlew :webgpu-api:jsNodeTest :webgpu-web:jsNodeTest
-./gradlew :webgpu-api:wasmJsNodeTest :webgpu-web:wasmJsNodeTest
+./gradlew :webgpu-api:jsNodeTest :webgpu-web-bindings:jsNodeTest
+./gradlew :webgpu-api:wasmJsNodeTest :webgpu-web-bindings:wasmJsNodeTest
 ```
 
 Les tests Kotlin/Native dépendent de la machine. La CI lance les tests métier sous Linux, macOS
