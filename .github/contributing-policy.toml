@@ -1,5 +1,5 @@
 types = ["feat", "fix", "build", "chore", "ci", "docs", "perf", "refactor", "test", "style"]
 scopes = ["api", "descriptors", "web", "specifications", "buildSrc", "build-logic", "ci", "docs", "release"]
-branch_prefixes = ["feat/", "fix/", "chore/", "codex/"]
+branch_prefixes = ["feat/", "fix/", "chore/"]
 required_sections = ["Description", "Type of Change", "Checklist", "Screenshots (if applicable)", "Additional Notes"]
 changelog_file = "CHANGELOG.md"

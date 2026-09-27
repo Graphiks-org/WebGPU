@@ -1,7 +1,7 @@
 name: PR policy
 
 on:
-  pull_request:
+  pull_request_target:
     branches: [ master ]
     types: [ opened, synchronize, reopened, edited ]
 
@@ -9,13 +9,14 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  pr-policy:
+    name: PR policy
     runs-on: ubuntu-latest
     steps:
-      - name: Check out pull request head
+      - name: Check out trusted base
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.base.sha }}
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Python
@@ -26,17 +27,36 @@ jobs:
         shell: bash
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          PR_BODY: ${{ github.event.pull_request.body }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          git fetch --no-tags origin "$BASE_SHA"
-          merge_base=$(git merge-base "$BASE_SHA" HEAD)
-          git diff --name-only "$merge_base" HEAD > "$RUNNER_TEMP/changed-files.txt"
-          git log --format=%s --no-merges "$merge_base"..HEAD > "$RUNNER_TEMP/commit-subjects.txt"
-          printf '%s' "$PR_BODY" > "$RUNNER_TEMP/pr-body.md"
+          git fetch --no-tags origin "refs/pull/$PR_NUMBER/head"
+          test "$(git rev-parse FETCH_HEAD)" = "$HEAD_SHA"
+          merge_base=$(git merge-base "$BASE_SHA" "$HEAD_SHA")
+          git diff --name-only "$merge_base" "$HEAD_SHA" > "$RUNNER_TEMP/changed-files.txt"
+          git log --format=%s --no-merges "$merge_base".."$HEAD_SHA" > "$RUNNER_TEMP/commit-subjects.txt"
+          if git merge-base --is-ancestor "$BASE_SHA" "$HEAD_SHA"; then
+            printf 'true\n' > "$RUNNER_TEMP/base-ancestor.txt"
+          else
+            printf 'false\n' > "$RUNNER_TEMP/base-ancestor.txt"
+          fi
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text(encoding='utf-8'))
+          Path(os.environ['RUNNER_TEMP'], 'pr-body.md').write_text(
+              event['pull_request'].get('body') or '', encoding='utf-8'
+          )
+          PY
       - name: Validate pull request
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_BASE_REPOSITORY: ${{ github.event.pull_request.base.repo.full_name }}
+          PR_HEAD_IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
         run: |
           python3 .github/scripts/validate_pr_policy.py \
             --policy .github/contributing-policy.toml \
@@ -44,4 +64,8 @@ jobs:
             --body-file "$RUNNER_TEMP/pr-body.md" \
             --branch "$PR_BRANCH" \
             --changed-files-file "$RUNNER_TEMP/changed-files.txt" \
-            --commit-subjects-file "$RUNNER_TEMP/commit-subjects.txt"
+            --commit-subjects-file "$RUNNER_TEMP/commit-subjects.txt" \
+            --base-ancestor "$(cat "$RUNNER_TEMP/base-ancestor.txt")" \
+            --head-repository "$PR_HEAD_REPOSITORY" \
+            --base-repository "$PR_BASE_REPOSITORY" \
+            --head-is-fork "$PR_HEAD_IS_FORK"

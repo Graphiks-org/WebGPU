@@ -7,3 +7,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 ### Added
 
 - Bilingual documentation, contributor guidance, and repository automation.
+
+### Changed
+
+- Require contribution pull requests from forks on `feat/`, `fix/`, or `chore/` branches based on the current `master` commit.

@@ -1,5 +1,6 @@
 import importlib.util
 import pathlib
+import tomllib
 import unittest
 
 
@@ -12,7 +13,7 @@ spec.loader.exec_module(module)
 POLICY = {
     "types": ["feat", "fix", "build", "chore", "ci", "docs", "perf", "refactor", "test", "style"],
     "scopes": ["api", "descriptors", "web", "specifications", "buildSrc", "build-logic", "ci", "docs", "release"],
-    "branch_prefixes": ["feat/", "fix/", "chore/", "codex/"],
+    "branch_prefixes": ["feat/", "fix/", "chore/"],
     "required_sections": ["Description", "Type of Change", "Checklist", "Screenshots (if applicable)", "Additional Notes"],
     "changelog_file": "CHANGELOG.md",
 }
@@ -44,19 +45,48 @@ None.
 
 
 class PolicyTests(unittest.TestCase):
+    def test_repository_branch_prefixes_match_reference_contract(self):
+        with (ROOT / ".github" / "contributing-policy.toml").open("rb") as stream:
+            actual = tomllib.load(stream)
+        self.assertEqual(["feat/", "fix/", "chore/"], actual["branch_prefixes"])
+
     def validate(self, title="feat(api): add texture option", body=BODY,
-                 branch="codex/texture-option", commits=None, files=None):
+                 branch="feat/texture-option", commits=None, files=None,
+                 base_ancestor=True, head_repository="ygdrasil-io/WebGPU",
+                 base_repository="Graphiks-org/WebGPU", head_is_fork=True):
         if commits is None:
             commits = ["feat(api): add texture option"]
         if files is None:
             files = ["CHANGELOG.md", "webgpu-api/src/commonMain/Foo.kt"]
-        return module.validate_pr(title, body, branch, commits, files, POLICY)
+        return module.validate_pr(title, body, branch, commits, files, POLICY,
+                                  base_ancestor=base_ancestor,
+                                  head_repository=head_repository,
+                                  base_repository=base_repository,
+                                  head_is_fork=head_is_fork)
 
-    def test_valid_codex_branch_and_scoped_title(self):
+    def test_valid_fork_branch_and_scoped_title(self):
         self.assertEqual([], self.validate())
+
+    def test_codex_branch_is_rejected(self):
+        self.assertTrue(any("branch" in e.lower() for e in self.validate(branch="codex/texture-option")))
+
+    def test_same_repository_is_rejected(self):
+        self.assertTrue(any("fork" in e.lower() for e in self.validate(head_repository="Graphiks-org/WebGPU")))
+
+    def test_non_fork_is_rejected(self):
+        self.assertTrue(any("fork" in e.lower() for e in self.validate(head_is_fork=False)))
+
+    def test_stale_master_ancestry_is_rejected(self):
+        self.assertTrue(any("ancestor" in e.lower() for e in self.validate(base_ancestor=False)))
 
     def test_invalid_title(self):
         self.assertTrue(any("title" in e.lower() for e in self.validate(title="Add texture option")))
+
+    def test_one_character_description_matches_reference(self):
+        self.assertEqual([], self.validate(title="feat(api): x", commits=["feat(api): x"]))
+
+    def test_bang_subject_is_not_in_reference_format(self):
+        self.assertTrue(any("title" in e.lower() for e in self.validate(title="feat(api)!: breaking option")))
 
     def test_disallowed_branch(self):
         self.assertTrue(any("branch" in e.lower() for e in self.validate(branch="feature/texture")))

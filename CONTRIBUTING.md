@@ -4,17 +4,17 @@ This guide takes a change from a fresh branch to a reviewed pull request (PR). R
 
 ## 1. Prepare your checkout
 
-Install JDK 25 and use the repository's Gradle wrapper. If you do not have write access, fork [Graphiks-org/WebGPU](https://github.com/Graphiks-org/WebGPU) on GitHub, then clone your fork:
+Install JDK 25 and use the repository's Gradle wrapper. **Every contribution starts from your own fork** of [Graphiks-org/WebGPU](https://github.com/Graphiks-org/WebGPU), including contributions from organization members. Fork the repository on GitHub, then clone your fork:
 
 ```sh
-git clone https://github.com/<your-account>/WebGPU.git
-cd WebGPU
+git clone https://github.com/<your-account>/<your-fork>.git
+cd <your-fork>
 git remote add upstream https://github.com/Graphiks-org/WebGPU.git
 git fetch upstream
 git switch -c feat/short-description upstream/master
 ```
 
-If you have write access, clone the organization repository and create the branch from `origin/master` instead. Allowed branch prefixes are `feat/`, `fix/`, `chore/`, and `codex/`; replace `feat/short-description` with the appropriate name. Before starting a substantial API or behavior change, open an issue to agree on the approach.
+Allowed branch prefixes are **only** `feat/`, `fix/`, and `chore/`; replace `feat/short-description` with the appropriate name. Do not create contribution branches in the primary repository. Before starting a substantial API or behavior change, open an issue to agree on the approach.
 
 ## 2. Make a focused change
 
@@ -45,17 +45,39 @@ The example uses macOS/Linux paths; on Windows, use executables in `build/docs-v
 
 ## 4. Commit and open a PR
 
-Use a Conventional Commit subject for **every commit** and for the PR title. For example, `feat(api): add texture option` or `docs: clarify setup`. The allowed types and scopes are listed in the [PR policy](.github/contributing-policy.toml). Then push your branch:
+Use a Conventional Commit subject for **every non-merge commit** and for the PR title. For example, `feat(api): add texture option` or `docs: clarify setup`. The allowed types are `feat`, `fix`, `build`, `chore`, `ci`, `docs`, `perf`, `refactor`, `test`, and `style`. Choose an optional scope from the current project responsibilities:
+
+| Scope | Responsibility |
+| --- | --- |
+| `api` | Portable API in `webgpu-api` |
+| `descriptors` | Descriptor implementations in `webgpu-descriptors` |
+| `web` | Browser interop in `webgpu-web` |
+| `specifications` | Versioned WebGPU inputs and maintenance tasks |
+| `buildSrc` | Shared Gradle conventions |
+| `build-logic` | Included Gradle build logic |
+| `ci` | GitHub workflows and validation scripts |
+| `docs` | Site guides and repository documentation |
+| `release` | Versioning and Maven publication |
+
+Keep this table aligned with the [machine-readable PR policy](.github/contributing-policy.toml) when modules change. Commit your focused change first:
 
 ```sh
 git add <changed-files>
 git commit -m "feat(api): add texture option"
+```
+
+Replace `<changed-files>` with the paths you intend to submit. Before pushing, include the latest `master` commit in your branch; the PR policy checks this ancestry:
+
+```sh
+git fetch upstream master
+git merge --no-edit upstream/master
+./gradlew check
 git push -u origin feat/short-description
 ```
 
-Replace `<changed-files>` with the paths you intend to submit, and check `git status --short` before pushing.
+Resolve any merge conflicts and rerun relevant tests before continuing. Check `git status --short` before pushing.
 
-Open a PR against `Graphiks-org/WebGPU`'s `master` branch. Fill in the [PR template](.github/PULL_REQUEST_TEMPLATE.md): describe the behavior and tests, select **one** change type, select **one** documentation decision, and select **one** changelog decision. If an update is unnecessary, explain it in Description using `Documentation: ...` or `Changelog: ...`. The PR title type must match the selected type. CI checks the PR policy, business tests, and documentation build; address failures and review comments with additional Conventional Commits.
+Open a PR **from your fork** against `Graphiks-org/WebGPU`'s `master` branch. Fill in the [PR template](.github/PULL_REQUEST_TEMPLATE.md): describe the behavior and tests, select **one** change type, select **one** documentation decision, and select **one** changelog decision. If an update is unnecessary, explain it in Description using `Documentation: ...` or `Changelog: ...`. The PR title type must match the selected type. Wait for the **PR policy** check, business tests, and documentation build to pass. Address failures and review comments with additional Conventional Commits, and update your branch from `upstream/master` if it advances.
 
 ## Maintainer publication
 
@@ -66,9 +88,9 @@ Open a PR against `Graphiks-org/WebGPU`'s `master` branch. Fill in the [PR templ
 
    ```sh
    git switch master
-   git pull --ff-only origin master
+   git pull --ff-only upstream master
    git tag v1.0.0
-   git push origin v1.0.0
+   git push upstream v1.0.0
    ```
 
 The Maven workflow runs `check` before publishing `webgpu-api`, `webgpu-descriptors`, and `webgpu-web`. Empty release tags and versions ending in `-SNAPSHOT` are rejected before upload. Only maintainers should initiate a release tag or manual publication.

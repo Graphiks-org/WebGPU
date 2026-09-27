@@ -7,7 +7,7 @@ import re
 import tomllib
 
 
-SUBJECT = re.compile(r"^(?P<type>[a-z]+)(?:\((?P<scope>[^()]+)\))?!?: .+\S$")
+SUBJECT = re.compile(r"^(?P<type>[a-z]+)(?:\((?P<scope>[A-Za-z0-9_-]+)\))?: \S.*$")
 HEADING = re.compile(r"^## (.+)$", re.MULTILINE)
 CHECKBOX = re.compile(r"^- \[([ xX])\] (.+)$", re.MULTILINE)
 
@@ -33,7 +33,9 @@ def _section(body: str, heading: str) -> str:
 
 
 def validate_pr(title: str, body: str, branch: str,
-                commit_subjects: list[str], changed_files: list[str], policy: dict) -> list[str]:
+                commit_subjects: list[str], changed_files: list[str], policy: dict,
+                *, base_ancestor: bool, head_repository: str,
+                base_repository: str, head_is_fork: bool) -> list[str]:
     """Return every policy violation; no network or GitHub API is used."""
     errors = []
     title_error = _subject_error(title, policy)
@@ -42,6 +44,10 @@ def validate_pr(title: str, body: str, branch: str,
     if not any(branch.startswith(prefix) and len(branch) > len(prefix)
                for prefix in policy["branch_prefixes"]):
         errors.append("Branch must use an allowed prefix and a nonempty name.")
+    if not head_is_fork or not head_repository or head_repository.casefold() == base_repository.casefold():
+        errors.append("Pull request head must come from a fork of the base repository.")
+    if not base_ancestor:
+        errors.append("Current base commit must be an ancestor of the pull request head.")
 
     headings = HEADING.findall(body)
     for heading in policy["required_sections"]:
@@ -92,6 +98,14 @@ def validate_pr(title: str, body: str, branch: str,
     return errors
 
 
+def _parse_bool(value: str) -> bool:
+    if value.lower() == "true":
+        return True
+    if value.lower() == "false":
+        return False
+    raise argparse.ArgumentTypeError("expected true or false")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--policy", type=pathlib.Path, required=True)
@@ -100,6 +114,10 @@ def main() -> int:
     parser.add_argument("--branch", required=True)
     parser.add_argument("--changed-files-file", type=pathlib.Path, required=True)
     parser.add_argument("--commit-subjects-file", type=pathlib.Path, required=True)
+    parser.add_argument("--base-ancestor", type=_parse_bool, required=True)
+    parser.add_argument("--head-repository", required=True)
+    parser.add_argument("--base-repository", required=True)
+    parser.add_argument("--head-is-fork", type=_parse_bool, required=True)
     args = parser.parse_args()
 
     with args.policy.open("rb") as stream:
@@ -107,7 +125,13 @@ def main() -> int:
     body = args.body_file.read_text(encoding="utf-8")
     changed_files = args.changed_files_file.read_text(encoding="utf-8").splitlines()
     commits = args.commit_subjects_file.read_text(encoding="utf-8").splitlines()
-    errors = validate_pr(args.title, body, args.branch, commits, changed_files, policy)
+    errors = validate_pr(
+        args.title, body, args.branch, commits, changed_files, policy,
+        base_ancestor=args.base_ancestor,
+        head_repository=args.head_repository,
+        base_repository=args.base_repository,
+        head_is_fork=args.head_is_fork,
+    )
     for error in errors:
         print(f"ERROR: {error}")
     if errors:
