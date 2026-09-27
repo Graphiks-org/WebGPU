@@ -14,7 +14,7 @@ kotlinx-io = "0.9.1"
 
 # Tests
 kotest = "6.2.5"
-ksp = "2.3.4"
+ksp = "2.3.12"
 
 [libraries]
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
