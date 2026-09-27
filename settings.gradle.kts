@@ -26,7 +26,7 @@ dependencyResolutionManagement {
     }
 }
 
-include("webgpu-ktypes")
-include("webgpu-ktypes-descriptors")
-include("webgpu-ktypes-web")
-include("webgpu-ktypes-specifications")
+include("webgpu-api")
+include("webgpu-descriptors")
+include("webgpu-web")
+include("webgpu-specifications")

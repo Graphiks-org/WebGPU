@@ -7,11 +7,11 @@ This documentation is essential for developers working on WebGPU implementations
 
 ## Project Structure
 
-The webgpu-ktypes project is organized into several modules:
+The WebGPU project is organized into several modules:
 
-1. **webgpu-ktypes**: Core module containing platform-agnostic interfaces and type definitions
-2. **webgpu-ktypes-descriptors**: Module containing descriptor implementations
-3. **webgpu-ktypes-web**: Module containing web-specific implementations (JavaScript and WebAssembly)
+1. **webgpu-api**: Core module containing platform-agnostic interfaces and type definitions
+2. **webgpu-descriptors**: Module containing descriptor implementations
+3. **webgpu-web**: Module containing web-specific implementations (JavaScript and WebAssembly)
 
 ## Mapping Input
 
@@ -73,7 +73,7 @@ typealias GPUSignedOffset32 = Int
 In the web-specific implementation, these types are mapped to JavaScript types:
 
 ```kotlin
-// From types.kt in webgpu-ktypes-web
+// From types.kt in webgpu-web
 external interface WGPUColor : JsObject {
     var r: JsNumber /* double */
     var g: JsNumber /* double */
@@ -116,7 +116,7 @@ Certain WebGPU types are excluded from the core implementation because they are 
 |---------------|--------|
 | `GPUExternalTexture`, `GPUExternalTextureDescriptor`, `GPUExternalTextureBindingLayout`, `GPUCopyExternalImageSource`, `GPUCopyExternalImageDestInfo`, `GPUCopyExternalImageSourceInfo` | These types focus on Web Workers or advanced external texture handling. They are excluded to reduce complexity in the core implementation. |
 
-By excluding these types, the implementation remains focused and avoids unnecessary dependencies on web-specific details. However, some of these types may be implemented in the web-specific modules (`webgpu-ktypes-web`) when needed for browser compatibility.
+By excluding these types, the implementation remains focused and avoids unnecessary dependencies on web-specific details. However, some of these types may be implemented in the web-specific modules (`webgpu-web`) when needed for browser compatibility.
 
 ## Union Type Handling
 
@@ -155,7 +155,7 @@ This transformation offers several benefits:
 In the core module, the interface is defined with Kotlin types:
 
 ```kotlin
-// From interfaces.kt in webgpu-ktypes
+// From interfaces.kt in webgpu-api
 interface GPUColor {
     val r: Double
     val g: Double
@@ -167,7 +167,7 @@ interface GPUColor {
 In the web module, the interface is defined with JavaScript types:
 
 ```kotlin
-// From types.kt in webgpu-ktypes-web
+// From types.kt in webgpu-web
 external interface WGPUColor : JsObject {
     var r: JsNumber /* double */
     var g: JsNumber /* double */
@@ -249,7 +249,7 @@ Dictionary types and interfaces in WebGPU are transformed into Kotlin `interface
 
 ### Core Implementation
 
-The core module (`webgpu-ktypes`) defines platform-agnostic interfaces with Kotlin types:
+The core module (`webgpu-api`) defines platform-agnostic interfaces with Kotlin types:
 
 ```kotlin
 // From interfaces.kt
@@ -271,7 +271,7 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 
 ### Web-specific Implementation
 
-The web module (`webgpu-ktypes-web`) defines JavaScript-specific interfaces with the `WGPU` prefix:
+The web module (`webgpu-web`) defines JavaScript-specific interfaces with the `WGPU` prefix:
 
 ```kotlin
 // From types.kt
@@ -331,7 +331,7 @@ This document outlines the comprehensive strategy for mapping WebGPU types to Ko
 4. **Extensibility**: Interface-based design allows for different implementations and extensions
 5. **Consistency**: Naming conventions and values are aligned with the official WebGPU specifications
 
-By following these principles, the webgpu-ktypes project provides a solid foundation for WebGPU development in Kotlin, enabling developers to create high-performance graphics applications that work across multiple platforms.
+By following these principles, the WebGPU project provides a solid foundation for WebGPU development in Kotlin, enabling developers to create high-performance graphics applications that work across multiple platforms.
 
 ### Implementation Guidelines
 

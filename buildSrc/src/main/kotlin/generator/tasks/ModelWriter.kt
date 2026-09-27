@@ -7,11 +7,11 @@ import java.nio.file.Paths
 import kotlin.io.path.createDirectories
 
 object ModelWriter {
-    private val descriptorCommonSourcePath = Paths.get("webgpu-ktypes-descriptors").resolve("src").resolve("commonMain").resolve("kotlin")
-    private val commonSourcePath = Paths.get("webgpu-ktypes").resolve("src").resolve("commonMain").resolve("kotlin")
-    private val commonWebSourcePath = Paths.get("webgpu-ktypes").resolve("src").resolve("webMain").resolve("kotlin")
-    private val commonNativeSourcePath = Paths.get("webgpu-ktypes").resolve("src").resolve("commonNativeMain").resolve("kotlin")
-    private val webSourcePath = Paths.get("webgpu-ktypes-web").resolve("src").resolve("commonMain").resolve("kotlin")
+    private val descriptorCommonSourcePath = Paths.get("webgpu-descriptors").resolve("src").resolve("commonMain").resolve("kotlin")
+    private val commonSourcePath = Paths.get("webgpu-api").resolve("src").resolve("commonMain").resolve("kotlin")
+    private val commonWebSourcePath = Paths.get("webgpu-api").resolve("src").resolve("webMain").resolve("kotlin")
+    private val commonNativeSourcePath = Paths.get("webgpu-api").resolve("src").resolve("commonNativeMain").resolve("kotlin")
+    private val webSourcePath = Paths.get("webgpu-web").resolve("src").resolve("commonMain").resolve("kotlin")
 
     fun write(context: MapperContext) {
 
@@ -66,7 +66,7 @@ object ModelWriter {
 
             appendText("@file:Suppress(\"unused\")\n")
             appendText("// This file has been generated DO NO EDIT\n")
-            appendText("package io.ygdrasil.webgpu\n\n")
+            appendText("package org.graphiks.webgpu\n\n")
             block()
         }
     }
@@ -80,7 +80,7 @@ object ModelWriter {
             appendText("@file:Suppress(\"unused\")\n")
             appendText("@file:OptIn(ExperimentalWasmJsInterop::class)")
             appendText("// This file has been generated DO NO EDIT\n")
-            appendText("package io.ygdrasil.webgpu\n\n")
+            appendText("package org.graphiks.webgpu\n\n")
             block()
         }
     }

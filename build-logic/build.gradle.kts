@@ -6,8 +6,8 @@ plugins {
 gradlePlugin {
     plugins {
         create("webGpuSpecificationFetcher") {
-            id = "io.ygdrasil.webgpu-specification-fetcher"
-            implementationClass = "io.ygdrasil.webgpu.fetcher.WebGpuSpecificationFetcherPlugin"
+            id = "org.graphiks.webgpu-specification-fetcher"
+            implementationClass = "org.graphiks.webgpu.fetcher.WebGpuSpecificationFetcherPlugin"
         }
     }
 }
