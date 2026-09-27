@@ -39,5 +39,6 @@ dependencyResolutionManagement {
 include("webgpu-api")
 include("webgpu-descriptors")
 include("webgpu-web-bindings")
+include("webgpu-browser")
 include("webgpu-specifications")
 include("docs")

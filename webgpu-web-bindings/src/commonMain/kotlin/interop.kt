@@ -11,10 +11,9 @@ import kotlin.js.js
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 fun JsNumber.toLong(): Long = toLong(this)
-fun JsNumber.toULong(): ULong = toULong(this)
+fun JsNumber.toULong(): ULong = toLong().toULong()
 
 private fun toLong(ref: JsNumber): Long = js("BigInt(ref)")
-private fun toULong(ref: JsNumber): ULong = js("BigInt(ref)")
 
 external interface EventTarget: JsAny
 external interface DOMException: JsAny
