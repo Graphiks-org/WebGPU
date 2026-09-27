@@ -1023,7 +1023,7 @@ abstract interface org.graphiks.webgpu/GPUAdapterInfo { // org.graphiks.webgpu/G
         abstract fun <get-vendor>(): kotlin/String // org.graphiks.webgpu/GPUAdapterInfo.vendor.<get-vendor>|<get-vendor>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUBindGroup : org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable // org.graphiks.webgpu/GPUBindGroup|null[0]
+abstract interface org.graphiks.webgpu/GPUBindGroup : kotlin/AutoCloseable, org.graphiks.webgpu/GPUObjectBase // org.graphiks.webgpu/GPUBindGroup|null[0]
 
 abstract interface org.graphiks.webgpu/GPUBindGroupDescriptor : org.graphiks.webgpu/GPUObjectDescriptorBase { // org.graphiks.webgpu/GPUBindGroupDescriptor|null[0]
     abstract val entries // org.graphiks.webgpu/GPUBindGroupDescriptor.entries|{}entries[0]
@@ -1039,7 +1039,7 @@ abstract interface org.graphiks.webgpu/GPUBindGroupEntry { // org.graphiks.webgp
         abstract fun <get-resource>(): org.graphiks.webgpu/GPUBindingResource // org.graphiks.webgpu/GPUBindGroupEntry.resource.<get-resource>|<get-resource>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUBindGroupLayout : org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable // org.graphiks.webgpu/GPUBindGroupLayout|null[0]
+abstract interface org.graphiks.webgpu/GPUBindGroupLayout : kotlin/AutoCloseable, org.graphiks.webgpu/GPUObjectBase // org.graphiks.webgpu/GPUBindGroupLayout|null[0]
 
 abstract interface org.graphiks.webgpu/GPUBindGroupLayoutDescriptor : org.graphiks.webgpu/GPUObjectDescriptorBase { // org.graphiks.webgpu/GPUBindGroupLayoutDescriptor|null[0]
     abstract val entries // org.graphiks.webgpu/GPUBindGroupLayoutDescriptor.entries|{}entries[0]
@@ -1082,7 +1082,7 @@ abstract interface org.graphiks.webgpu/GPUBlendState { // org.graphiks.webgpu/GP
         abstract fun <get-color>(): org.graphiks.webgpu/GPUBlendComponent // org.graphiks.webgpu/GPUBlendState.color.<get-color>|<get-color>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUBuffer : org.graphiks.webgpu/GPUBindingResource, org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable { // org.graphiks.webgpu/GPUBuffer|null[0]
+abstract interface org.graphiks.webgpu/GPUBuffer : kotlin/AutoCloseable, org.graphiks.webgpu/GPUBindingResource, org.graphiks.webgpu/GPUObjectBase { // org.graphiks.webgpu/GPUBuffer|null[0]
     abstract val mapState // org.graphiks.webgpu/GPUBuffer.mapState|{}mapState[0]
         abstract fun <get-mapState>(): org.graphiks.webgpu/GPUBufferMapState // org.graphiks.webgpu/GPUBuffer.mapState.<get-mapState>|<get-mapState>(){}[0]
     abstract val size // org.graphiks.webgpu/GPUBuffer.size|{}size[0]
@@ -1142,11 +1142,11 @@ abstract interface org.graphiks.webgpu/GPUColorTargetState { // org.graphiks.web
         abstract fun <get-writeMask>(): org.graphiks.webgpu/GPUColorWrite // org.graphiks.webgpu/GPUColorTargetState.writeMask.<get-writeMask>|<get-writeMask>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUCommandBuffer : org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable // org.graphiks.webgpu/GPUCommandBuffer|null[0]
+abstract interface org.graphiks.webgpu/GPUCommandBuffer : kotlin/AutoCloseable, org.graphiks.webgpu/GPUObjectBase // org.graphiks.webgpu/GPUCommandBuffer|null[0]
 
 abstract interface org.graphiks.webgpu/GPUCommandBufferDescriptor : org.graphiks.webgpu/GPUObjectDescriptorBase // org.graphiks.webgpu/GPUCommandBufferDescriptor|null[0]
 
-abstract interface org.graphiks.webgpu/GPUCommandEncoder : org.graphiks.webgpu/GPUCommandsMixin, org.graphiks.webgpu/GPUDebugCommandsMixin, org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable { // org.graphiks.webgpu/GPUCommandEncoder|null[0]
+abstract interface org.graphiks.webgpu/GPUCommandEncoder : kotlin/AutoCloseable, org.graphiks.webgpu/GPUCommandsMixin, org.graphiks.webgpu/GPUDebugCommandsMixin, org.graphiks.webgpu/GPUObjectBase { // org.graphiks.webgpu/GPUCommandEncoder|null[0]
     abstract fun beginComputePass(org.graphiks.webgpu/GPUComputePassDescriptor? = ...): org.graphiks.webgpu/GPUComputePassEncoder // org.graphiks.webgpu/GPUCommandEncoder.beginComputePass|beginComputePass(org.graphiks.webgpu.GPUComputePassDescriptor?){}[0]
     abstract fun beginRenderPass(org.graphiks.webgpu/GPURenderPassDescriptor): org.graphiks.webgpu/GPURenderPassEncoder // org.graphiks.webgpu/GPUCommandEncoder.beginRenderPass|beginRenderPass(org.graphiks.webgpu.GPURenderPassDescriptor){}[0]
     abstract fun clearBuffer(org.graphiks.webgpu/GPUBuffer, kotlin/ULong = ..., kotlin/ULong? = ...) // org.graphiks.webgpu/GPUCommandEncoder.clearBuffer|clearBuffer(org.graphiks.webgpu.GPUBuffer;kotlin.ULong;kotlin.ULong?){}[0]
@@ -1203,7 +1203,7 @@ abstract interface org.graphiks.webgpu/GPUComputePassTimestampWrites { // org.gr
         abstract fun <get-querySet>(): org.graphiks.webgpu/GPUQuerySet // org.graphiks.webgpu/GPUComputePassTimestampWrites.querySet.<get-querySet>|<get-querySet>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUComputePipeline : org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPUPipelineBase, kotlin/AutoCloseable // org.graphiks.webgpu/GPUComputePipeline|null[0]
+abstract interface org.graphiks.webgpu/GPUComputePipeline : kotlin/AutoCloseable, org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPUPipelineBase // org.graphiks.webgpu/GPUComputePipeline|null[0]
 
 abstract interface org.graphiks.webgpu/GPUComputePipelineDescriptor : org.graphiks.webgpu/GPUPipelineDescriptorBase { // org.graphiks.webgpu/GPUComputePipelineDescriptor|null[0]
     abstract val compute // org.graphiks.webgpu/GPUComputePipelineDescriptor.compute|{}compute[0]
@@ -1239,7 +1239,7 @@ abstract interface org.graphiks.webgpu/GPUDepthStencilState { // org.graphiks.we
         abstract fun <get-stencilWriteMask>(): kotlin/UInt // org.graphiks.webgpu/GPUDepthStencilState.stencilWriteMask.<get-stencilWriteMask>|<get-stencilWriteMask>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUDevice : org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable { // org.graphiks.webgpu/GPUDevice|null[0]
+abstract interface org.graphiks.webgpu/GPUDevice : kotlin/AutoCloseable, org.graphiks.webgpu/GPUObjectBase { // org.graphiks.webgpu/GPUDevice|null[0]
     abstract val adapterInfo // org.graphiks.webgpu/GPUDevice.adapterInfo|{}adapterInfo[0]
         abstract fun <get-adapterInfo>(): org.graphiks.webgpu/GPUAdapterInfo // org.graphiks.webgpu/GPUDevice.adapterInfo.<get-adapterInfo>|<get-adapterInfo>(){}[0]
     abstract val features // org.graphiks.webgpu/GPUDevice.features|{}features[0]
@@ -1348,7 +1348,7 @@ abstract interface org.graphiks.webgpu/GPUPipelineDescriptorBase : org.graphiks.
         abstract fun <get-layout>(): org.graphiks.webgpu/GPUPipelineLayout? // org.graphiks.webgpu/GPUPipelineDescriptorBase.layout.<get-layout>|<get-layout>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUPipelineLayout : org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable // org.graphiks.webgpu/GPUPipelineLayout|null[0]
+abstract interface org.graphiks.webgpu/GPUPipelineLayout : kotlin/AutoCloseable, org.graphiks.webgpu/GPUObjectBase // org.graphiks.webgpu/GPUPipelineLayout|null[0]
 
 abstract interface org.graphiks.webgpu/GPUPipelineLayoutDescriptor : org.graphiks.webgpu/GPUObjectDescriptorBase { // org.graphiks.webgpu/GPUPipelineLayoutDescriptor|null[0]
     abstract val bindGroupLayouts // org.graphiks.webgpu/GPUPipelineLayoutDescriptor.bindGroupLayouts|{}bindGroupLayouts[0]
@@ -1379,7 +1379,7 @@ abstract interface org.graphiks.webgpu/GPUProgrammableStage { // org.graphiks.we
         abstract fun <get-module>(): org.graphiks.webgpu/GPUShaderModule // org.graphiks.webgpu/GPUProgrammableStage.module.<get-module>|<get-module>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUQuerySet : org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable { // org.graphiks.webgpu/GPUQuerySet|null[0]
+abstract interface org.graphiks.webgpu/GPUQuerySet : kotlin/AutoCloseable, org.graphiks.webgpu/GPUObjectBase { // org.graphiks.webgpu/GPUQuerySet|null[0]
     abstract val count // org.graphiks.webgpu/GPUQuerySet.count|{}count[0]
         abstract fun <get-count>(): kotlin/UInt // org.graphiks.webgpu/GPUQuerySet.count.<get-count>|<get-count>(){}[0]
     abstract val type // org.graphiks.webgpu/GPUQuerySet.type|{}type[0]
@@ -1406,7 +1406,7 @@ abstract interface org.graphiks.webgpu/GPURenderBundle : org.graphiks.webgpu/GPU
 
 abstract interface org.graphiks.webgpu/GPURenderBundleDescriptor : org.graphiks.webgpu/GPUObjectDescriptorBase // org.graphiks.webgpu/GPURenderBundleDescriptor|null[0]
 
-abstract interface org.graphiks.webgpu/GPURenderBundleEncoder : org.graphiks.webgpu/GPUBindingCommandsMixin, org.graphiks.webgpu/GPUCommandsMixin, org.graphiks.webgpu/GPUDebugCommandsMixin, org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPURenderCommandsMixin, kotlin/AutoCloseable { // org.graphiks.webgpu/GPURenderBundleEncoder|null[0]
+abstract interface org.graphiks.webgpu/GPURenderBundleEncoder : kotlin/AutoCloseable, org.graphiks.webgpu/GPUBindingCommandsMixin, org.graphiks.webgpu/GPUCommandsMixin, org.graphiks.webgpu/GPUDebugCommandsMixin, org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPURenderCommandsMixin { // org.graphiks.webgpu/GPURenderBundleEncoder|null[0]
     abstract fun finish(org.graphiks.webgpu/GPURenderBundleDescriptor? = ...): org.graphiks.webgpu/GPURenderBundle // org.graphiks.webgpu/GPURenderBundleEncoder.finish|finish(org.graphiks.webgpu.GPURenderBundleDescriptor?){}[0]
 }
 
@@ -1505,7 +1505,7 @@ abstract interface org.graphiks.webgpu/GPURenderPassTimestampWrites { // org.gra
         abstract fun <get-querySet>(): org.graphiks.webgpu/GPUQuerySet // org.graphiks.webgpu/GPURenderPassTimestampWrites.querySet.<get-querySet>|<get-querySet>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPURenderPipeline : org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPUPipelineBase, kotlin/AutoCloseable // org.graphiks.webgpu/GPURenderPipeline|null[0]
+abstract interface org.graphiks.webgpu/GPURenderPipeline : kotlin/AutoCloseable, org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPUPipelineBase // org.graphiks.webgpu/GPURenderPipeline|null[0]
 
 abstract interface org.graphiks.webgpu/GPURenderPipelineDescriptor : org.graphiks.webgpu/GPUPipelineDescriptorBase { // org.graphiks.webgpu/GPURenderPipelineDescriptor|null[0]
     abstract val depthStencil // org.graphiks.webgpu/GPURenderPipelineDescriptor.depthStencil|{}depthStencil[0]
@@ -1531,7 +1531,7 @@ abstract interface org.graphiks.webgpu/GPURequestAdapterOptions { // org.graphik
         abstract fun <get-xrCompatible>(): kotlin/Boolean // org.graphiks.webgpu/GPURequestAdapterOptions.xrCompatible.<get-xrCompatible>|<get-xrCompatible>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUSampler : org.graphiks.webgpu/GPUBindingResource, org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable // org.graphiks.webgpu/GPUSampler|null[0]
+abstract interface org.graphiks.webgpu/GPUSampler : kotlin/AutoCloseable, org.graphiks.webgpu/GPUBindingResource, org.graphiks.webgpu/GPUObjectBase // org.graphiks.webgpu/GPUSampler|null[0]
 
 abstract interface org.graphiks.webgpu/GPUSamplerBindingLayout { // org.graphiks.webgpu/GPUSamplerBindingLayout|null[0]
     abstract val type // org.graphiks.webgpu/GPUSamplerBindingLayout.type|{}type[0]
@@ -1561,7 +1561,7 @@ abstract interface org.graphiks.webgpu/GPUSamplerDescriptor : org.graphiks.webgp
         abstract fun <get-mipmapFilter>(): org.graphiks.webgpu/GPUMipmapFilterMode // org.graphiks.webgpu/GPUSamplerDescriptor.mipmapFilter.<get-mipmapFilter>|<get-mipmapFilter>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUShaderModule : org.graphiks.webgpu/GPUObjectBase, kotlin/AutoCloseable { // org.graphiks.webgpu/GPUShaderModule|null[0]
+abstract interface org.graphiks.webgpu/GPUShaderModule : kotlin/AutoCloseable, org.graphiks.webgpu/GPUObjectBase { // org.graphiks.webgpu/GPUShaderModule|null[0]
     abstract suspend fun getCompilationInfo(): kotlin/Result<org.graphiks.webgpu/GPUCompilationInfo> // org.graphiks.webgpu/GPUShaderModule.getCompilationInfo|getCompilationInfo(){}[0]
 }
 
@@ -1699,7 +1699,7 @@ abstract interface org.graphiks.webgpu/GPUTexelCopyTextureInfo { // org.graphiks
         abstract fun <get-texture>(): org.graphiks.webgpu/GPUTexture // org.graphiks.webgpu/GPUTexelCopyTextureInfo.texture.<get-texture>|<get-texture>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUTexture : org.graphiks.webgpu/GPUBindingResource, org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPUTextureOrGPUTextureView, kotlin/AutoCloseable { // org.graphiks.webgpu/GPUTexture|null[0]
+abstract interface org.graphiks.webgpu/GPUTexture : kotlin/AutoCloseable, org.graphiks.webgpu/GPUBindingResource, org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPUTextureOrGPUTextureView { // org.graphiks.webgpu/GPUTexture|null[0]
     abstract val depthOrArrayLayers // org.graphiks.webgpu/GPUTexture.depthOrArrayLayers|{}depthOrArrayLayers[0]
         abstract fun <get-depthOrArrayLayers>(): kotlin/UInt // org.graphiks.webgpu/GPUTexture.depthOrArrayLayers.<get-depthOrArrayLayers>|<get-depthOrArrayLayers>(){}[0]
     abstract val dimension // org.graphiks.webgpu/GPUTexture.dimension|{}dimension[0]
@@ -1748,7 +1748,7 @@ abstract interface org.graphiks.webgpu/GPUTextureDescriptor : org.graphiks.webgp
         abstract fun <get-viewFormats>(): kotlin.collections/List<org.graphiks.webgpu/GPUTextureFormat> // org.graphiks.webgpu/GPUTextureDescriptor.viewFormats.<get-viewFormats>|<get-viewFormats>(){}[0]
 }
 
-abstract interface org.graphiks.webgpu/GPUTextureView : org.graphiks.webgpu/GPUBindingResource, org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPUTextureOrGPUTextureView, kotlin/AutoCloseable // org.graphiks.webgpu/GPUTextureView|null[0]
+abstract interface org.graphiks.webgpu/GPUTextureView : kotlin/AutoCloseable, org.graphiks.webgpu/GPUBindingResource, org.graphiks.webgpu/GPUObjectBase, org.graphiks.webgpu/GPUTextureOrGPUTextureView // org.graphiks.webgpu/GPUTextureView|null[0]
 
 abstract interface org.graphiks.webgpu/GPUTextureViewDescriptor : org.graphiks.webgpu/GPUObjectDescriptorBase { // org.graphiks.webgpu/GPUTextureViewDescriptor|null[0]
     abstract val arrayLayerCount // org.graphiks.webgpu/GPUTextureViewDescriptor.arrayLayerCount|{}arrayLayerCount[0]

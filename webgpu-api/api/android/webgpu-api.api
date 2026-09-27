@@ -173,7 +173,7 @@ public final class org/graphiks/webgpu/GPUAddressMode$Companion {
 	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUAddressMode;
 }
 
-public abstract interface class org/graphiks/webgpu/GPUBindGroup : org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUBindGroup : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
 }
 
 public abstract interface class org/graphiks/webgpu/GPUBindGroupDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
@@ -186,7 +186,7 @@ public abstract interface class org/graphiks/webgpu/GPUBindGroupEntry {
 	public abstract fun getResource ()Lorg/graphiks/webgpu/GPUBindingResource;
 }
 
-public abstract interface class org/graphiks/webgpu/GPUBindGroupLayout : org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUBindGroupLayout : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
 }
 
 public abstract interface class org/graphiks/webgpu/GPUBindGroupLayoutDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
@@ -274,7 +274,7 @@ public abstract interface class org/graphiks/webgpu/GPUBlendState {
 	public abstract fun getColor ()Lorg/graphiks/webgpu/GPUBlendComponent;
 }
 
-public abstract interface class org/graphiks/webgpu/GPUBuffer : org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUBuffer : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase {
 	public abstract fun getMapState ()Lorg/graphiks/webgpu/GPUBufferMapState;
 	public abstract fun getMappedRange-y8-82ps (JLkotlin/ULong;)Lorg/graphiks/webgpu/ArrayBuffer;
 	public static synthetic fun getMappedRange-y8-82ps$default (Lorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)Lorg/graphiks/webgpu/ArrayBuffer;
@@ -409,13 +409,13 @@ public final class org/graphiks/webgpu/GPUColorWrite$Companion {
 	public final fun getRed-JI3ISog ()J
 }
 
-public abstract interface class org/graphiks/webgpu/GPUCommandBuffer : org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUCommandBuffer : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
 }
 
 public abstract interface class org/graphiks/webgpu/GPUCommandBufferDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
 }
 
-public abstract interface class org/graphiks/webgpu/GPUCommandEncoder : org/graphiks/webgpu/GPUCommandsMixin, org/graphiks/webgpu/GPUDebugCommandsMixin, org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUCommandEncoder : java/lang/AutoCloseable, org/graphiks/webgpu/GPUCommandsMixin, org/graphiks/webgpu/GPUDebugCommandsMixin, org/graphiks/webgpu/GPUObjectBase {
 	public abstract fun beginComputePass (Lorg/graphiks/webgpu/GPUComputePassDescriptor;)Lorg/graphiks/webgpu/GPUComputePassEncoder;
 	public static synthetic fun beginComputePass$default (Lorg/graphiks/webgpu/GPUCommandEncoder;Lorg/graphiks/webgpu/GPUComputePassDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUComputePassEncoder;
 	public abstract fun beginRenderPass (Lorg/graphiks/webgpu/GPURenderPassDescriptor;)Lorg/graphiks/webgpu/GPURenderPassEncoder;
@@ -514,7 +514,7 @@ public abstract interface class org/graphiks/webgpu/GPUComputePassTimestampWrite
 	public abstract fun getQuerySet ()Lorg/graphiks/webgpu/GPUQuerySet;
 }
 
-public abstract interface class org/graphiks/webgpu/GPUComputePipeline : org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUPipelineBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUComputePipeline : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUPipelineBase {
 }
 
 public abstract interface class org/graphiks/webgpu/GPUComputePipelineDescriptor : org/graphiks/webgpu/GPUPipelineDescriptorBase {
@@ -555,7 +555,7 @@ public abstract interface class org/graphiks/webgpu/GPUDepthStencilState {
 	public abstract fun getStencilWriteMask-pVg5ArA ()I
 }
 
-public abstract interface class org/graphiks/webgpu/GPUDevice : org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUDevice : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
 	public abstract fun createBindGroup (Lorg/graphiks/webgpu/GPUBindGroupDescriptor;)Lorg/graphiks/webgpu/GPUBindGroup;
 	public abstract fun createBindGroupLayout (Lorg/graphiks/webgpu/GPUBindGroupLayoutDescriptor;)Lorg/graphiks/webgpu/GPUBindGroupLayout;
 	public abstract fun createBuffer (Lorg/graphiks/webgpu/GPUBufferDescriptor;)Lorg/graphiks/webgpu/GPUBuffer;
@@ -809,7 +809,7 @@ public abstract interface class org/graphiks/webgpu/GPUPipelineDescriptorBase : 
 	public abstract fun getLayout ()Lorg/graphiks/webgpu/GPUPipelineLayout;
 }
 
-public abstract interface class org/graphiks/webgpu/GPUPipelineLayout : org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUPipelineLayout : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
 }
 
 public abstract interface class org/graphiks/webgpu/GPUPipelineLayoutDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
@@ -862,7 +862,7 @@ public abstract interface class org/graphiks/webgpu/GPUProgrammableStage {
 	public abstract fun getModule ()Lorg/graphiks/webgpu/GPUShaderModule;
 }
 
-public abstract interface class org/graphiks/webgpu/GPUQuerySet : org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUQuerySet : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
 	public abstract fun getCount-pVg5ArA ()I
 	public abstract fun getType ()Lorg/graphiks/webgpu/GPUQueryType;
 }
@@ -907,7 +907,7 @@ public abstract interface class org/graphiks/webgpu/GPURenderBundle : org/graphi
 public abstract interface class org/graphiks/webgpu/GPURenderBundleDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
 }
 
-public abstract interface class org/graphiks/webgpu/GPURenderBundleEncoder : org/graphiks/webgpu/GPUBindingCommandsMixin, org/graphiks/webgpu/GPUCommandsMixin, org/graphiks/webgpu/GPUDebugCommandsMixin, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPURenderCommandsMixin, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPURenderBundleEncoder : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingCommandsMixin, org/graphiks/webgpu/GPUCommandsMixin, org/graphiks/webgpu/GPUDebugCommandsMixin, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPURenderCommandsMixin {
 	public abstract fun finish (Lorg/graphiks/webgpu/GPURenderBundleDescriptor;)Lorg/graphiks/webgpu/GPURenderBundle;
 	public static synthetic fun finish$default (Lorg/graphiks/webgpu/GPURenderBundleEncoder;Lorg/graphiks/webgpu/GPURenderBundleDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPURenderBundle;
 }
@@ -994,7 +994,7 @@ public abstract interface class org/graphiks/webgpu/GPURenderPassTimestampWrites
 	public abstract fun getQuerySet ()Lorg/graphiks/webgpu/GPUQuerySet;
 }
 
-public abstract interface class org/graphiks/webgpu/GPURenderPipeline : org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUPipelineBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPURenderPipeline : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUPipelineBase {
 }
 
 public abstract interface class org/graphiks/webgpu/GPURenderPipelineDescriptor : org/graphiks/webgpu/GPUPipelineDescriptorBase {
@@ -1012,7 +1012,7 @@ public abstract interface class org/graphiks/webgpu/GPURequestAdapterOptions {
 	public abstract fun getXrCompatible ()Z
 }
 
-public abstract interface class org/graphiks/webgpu/GPUSampler : org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUSampler : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase {
 }
 
 public abstract interface class org/graphiks/webgpu/GPUSamplerBindingLayout {
@@ -1048,7 +1048,7 @@ public abstract interface class org/graphiks/webgpu/GPUSamplerDescriptor : org/g
 	public abstract fun getMipmapFilter ()Lorg/graphiks/webgpu/GPUMipmapFilterMode;
 }
 
-public abstract interface class org/graphiks/webgpu/GPUShaderModule : org/graphiks/webgpu/GPUObjectBase, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUShaderModule : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
 	public abstract fun getCompilationInfo-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -1205,7 +1205,7 @@ public abstract interface class org/graphiks/webgpu/GPUTexelCopyTextureInfo {
 	public abstract fun getTexture ()Lorg/graphiks/webgpu/GPUTexture;
 }
 
-public abstract interface class org/graphiks/webgpu/GPUTexture : org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUTextureOrGPUTextureView, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUTexture : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUTextureOrGPUTextureView {
 	public abstract fun createView (Lorg/graphiks/webgpu/GPUTextureViewDescriptor;)Lorg/graphiks/webgpu/GPUTextureView;
 	public static synthetic fun createView$default (Lorg/graphiks/webgpu/GPUTexture;Lorg/graphiks/webgpu/GPUTextureViewDescriptor;ILjava/lang/Object;)Lorg/graphiks/webgpu/GPUTextureView;
 	public abstract fun getDepthOrArrayLayers-pVg5ArA ()I
@@ -1462,7 +1462,7 @@ public final class org/graphiks/webgpu/GPUTextureUsage$Companion {
 	public final fun getTransientAttachment-XIm6oF0 ()J
 }
 
-public abstract interface class org/graphiks/webgpu/GPUTextureView : org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUTextureOrGPUTextureView, java/lang/AutoCloseable {
+public abstract interface class org/graphiks/webgpu/GPUTextureView : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase, org/graphiks/webgpu/GPUTextureOrGPUTextureView {
 }
 
 public abstract interface class org/graphiks/webgpu/GPUTextureViewDescriptor : org/graphiks/webgpu/GPUObjectDescriptorBase {
@@ -1584,3 +1584,4 @@ public final class org/graphiks/webgpu/GPUVertexStepMode : java/lang/Enum {
 public final class org/graphiks/webgpu/GPUVertexStepMode$Companion {
 	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUVertexStepMode;
 }
+
