@@ -1,5 +1,4 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
-@file:Suppress("DEPRECATION")
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -75,7 +74,7 @@ kotlin {
         }
 
 
-        val commonNativeMain by creating {
+        val commonNativeMain = create("commonNativeMain") {
             dependsOn(commonMain.get())
         }
 
