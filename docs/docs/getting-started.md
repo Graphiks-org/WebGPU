@@ -55,7 +55,10 @@ suspend fun createExampleBuffer() {
 ```
 
 The canvas helpers (`getCanvasSurface`, `SurfaceConfiguration`) also live in
-`org.graphiks.webgpu.browser`.
+`org.graphiks.webgpu.browser`. `getCanvasSurface()` is an extension on the module's lightweight
+`org.graphiks.webgpu.browser.HTMLCanvasElement`; cast your DOM canvas to that type (for example
+`(canvas as HTMLCanvasElement).getCanvasSurface()`). `webgpu-browser` does not bring a DOM wrapper
+library transitively, so add one (for example `kotlin-browser`) when your code needs DOM types.
 
 ## Use a portable type
 

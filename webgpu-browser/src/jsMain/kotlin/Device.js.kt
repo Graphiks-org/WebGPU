@@ -7,7 +7,7 @@ import org.graphiks.webgpu.browser.mapper.errorOf
 
 internal actual fun configureUncapturedError(handler: WGPUDevice, callback: GPUUncapturedErrorCallback) {
     val device: dynamic = handler
-    val listener = { event: dynamic -> callback.onUncapturedError(errorOf(event.error)) }
-    device.addEventListener("uncapturederror", listener)
-    device.onuncapturederror = listener
+    device.addEventListener("uncapturederror", { event: dynamic ->
+        callback.onUncapturedError(errorOf(event.error))
+    })
 }

@@ -51,7 +51,7 @@ Use a Conventional Commit subject for **every non-merge commit** and for the PR 
 | --- | --- |
 | `api` | Portable API in `webgpu-api` |
 | `descriptors` | Descriptor implementations in `webgpu-descriptors` |
-| `web` | Browser interop in `webgpu-web` |
+| `web` | Browser interop in `webgpu-web-bindings` and the `webgpu-browser` implementation |
 | `specifications` | Versioned WebGPU inputs and maintenance tasks |
 | `buildSrc` | Shared Gradle conventions |
 | `build-logic` | Included Gradle build logic |
@@ -93,4 +93,4 @@ Open a PR **from your fork** against `Graphiks-org/WebGPU`'s `master` branch. Fi
    git push upstream v1.0.0
    ```
 
-The Maven workflow runs `check` before publishing `webgpu-api`, `webgpu-descriptors`, and `webgpu-web`. Empty release tags and versions ending in `-SNAPSHOT` are rejected before upload. Only maintainers should initiate a release tag or manual publication.
+The Maven workflow runs `check` before publishing `webgpu-api`, `webgpu-descriptors`, `webgpu-web-bindings`, and `webgpu-browser`. Empty release tags and versions ending in `-SNAPSHOT` are rejected before upload. Only maintainers should initiate a release tag or manual publication.

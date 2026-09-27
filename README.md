@@ -42,6 +42,8 @@ dependencies {
 resource wrappers, and the canvas surface helpers. WebGPU access requires a compatible browser and
 a secure context. When using it, also add `webgpu-descriptors` for the Kotlin descriptor classes,
 and reference the `org.graphiks.webgpu.browser` and `org.graphiks.webgpu.descriptors` packages.
+`getCanvasSurface()` extends the module's lightweight `org.graphiks.webgpu.browser.HTMLCanvasElement`;
+cast your DOM canvas to that type. The module does not bring a DOM wrapper library transitively.
 
 For example, a portable texture swizzle encodes to the string required by WebGPU:
 
