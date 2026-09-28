@@ -283,6 +283,38 @@
     "stencil.depth-fail": {
       "title": "Déclencher l'opération depth-fail du stencil",
       "expectation": "depthFailOp s'exécute quand le test de profondeur échoue mais que le test stencil passe."
+    },
+    "msaa.resolve": {
+      "title": "Résoudre un attachement multisample",
+      "expectation": "Un attachement sampleCount 4 rend et se résout dans une cible sampleCount 1."
+    },
+    "msaa.sample-mask-zero": {
+      "title": "Écarter tous les samples avec un masque nul",
+      "expectation": "Un masque d'échantillons de pipeline à 0 laisse le clear intact après résolution."
+    },
+    "bundles.draw": {
+      "title": "Dessiner depuis un render bundle",
+      "expectation": "Un bundle enregistré exécute sa pipeline et son draw dans une passe."
+    },
+    "bundles.reuse": {
+      "title": "Réutiliser un render bundle entre passes",
+      "expectation": "Un même bundle s'exécute à l'identique sur deux cibles aux fonds différents."
+    },
+    "render.draw-indirect": {
+      "title": "Dessiner avec des arguments indirects",
+      "expectation": "drawIndirect lit son nombre de sommets dans un buffer ; un compte nul ne dessine rien."
+    },
+    "render.draw-indexed-indirect": {
+      "title": "Dessiner en indexé avec des arguments indirects",
+      "expectation": "drawIndexedIndirect lit son nombre d'index dans un buffer."
+    },
+    "queries.occlusion": {
+      "title": "Compter les samples visibles avec des requêtes d'occlusion",
+      "expectation": "Une requête d'occlusion compte des samples pour un draw visible et aucun pour un draw rejeté par la profondeur."
+    },
+    "render.indirect-first-instance": {
+      "title": "Définir la première instance par arguments indirects",
+      "expectation": "Avec la feature IndirectFirstInstance, les arguments indirects sélectionnent l'instance de base."
     }
   },
   "behaviours": {
@@ -302,12 +334,9 @@
     "texture.usage-and-formats": "Les usages de texture se combinent et chaque format déclare ses capacités de binding et d'attachement.",
     "render.color-resolve": "Un attachement couleur peut résoudre une vue multisample, et une vue 3D sélectionne une tranche de profondeur.",
     "render.pass-state": "Le descripteur de passe peut borner son nombre de draw.",
-    "render.occlusion-queries": "Une requête d'occlusion encadre des draw calls et ses résultats sont écrits dans le query set.",
-    "render.primitive-and-multisample": "La topologie, le culling et le multisampling sont validés par rapport aux attachements de la passe.",
+    "render.primitive-and-multisample": "La topologie, le culling et le layout de passe sont validés par rapport aux attachements.",
     "render.depth-bias": "Le biais de profondeur de la pipeline décale la profondeur des fragments.",
     "render.pipeline-async": "La création asynchrone résout une pipeline render prête ou échoue explicitement.",
-    "renderbundle.record-and-execute": "Un render bundle enregistre des commandes réutilisables et ne partage pas l'état de la passe qui l'exécute.",
-    "query.create-and-resolve": "Un query set expose son type et son nombre, et resolveQuerySet écrit les résultats dans un buffer.",
     "query.timestamp-writes": "Les écritures de timestamp encadrent une passe compute ou render et exigent la feature timestamp-query.",
     "errors.uncaptured-error": "Une erreur non capturée est signalée au callback du device et ne peut pas se transformer en succès apparent.",
     "errors.device-lost": "Une perte de device expose une raison et un message exploitables par le runner.",

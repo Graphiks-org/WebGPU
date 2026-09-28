@@ -283,6 +283,38 @@
     "stencil.depth-fail": {
       "title": "Run the stencil depth-fail operation",
       "expectation": "depthFailOp runs when the depth test fails but the stencil test passes."
+    },
+    "msaa.resolve": {
+      "title": "Resolve a multisampled attachment",
+      "expectation": "A sample-count-4 attachment renders and resolves into a sample-count-1 target."
+    },
+    "msaa.sample-mask-zero": {
+      "title": "Discard every sample with a mask of zero",
+      "expectation": "A pipeline sample mask of 0 lets no draw sample write, so the resolve keeps the clear."
+    },
+    "bundles.draw": {
+      "title": "Draw from a render bundle",
+      "expectation": "A recorded bundle executes its pipeline and draw in a pass."
+    },
+    "bundles.reuse": {
+      "title": "Reuse a render bundle across passes",
+      "expectation": "One bundle runs unchanged over two differently cleared targets."
+    },
+    "render.draw-indirect": {
+      "title": "Draw with indirect arguments",
+      "expectation": "drawIndirect reads its vertex count from a buffer; a zero count draws nothing."
+    },
+    "render.draw-indexed-indirect": {
+      "title": "Draw indexed with indirect arguments",
+      "expectation": "drawIndexedIndirect reads its index count from a buffer."
+    },
+    "queries.occlusion": {
+      "title": "Count visible samples with occlusion queries",
+      "expectation": "An occlusion query contributes samples for a visible draw and none for a depth-rejected one."
+    },
+    "render.indirect-first-instance": {
+      "title": "Set the first instance with indirect arguments",
+      "expectation": "With the IndirectFirstInstance feature, the indirect arguments select the base instance."
     }
   },
   "behaviours": {
@@ -302,12 +334,9 @@
     "texture.usage-and-formats": "Texture usages combine and each format declares its binding and attachment capabilities.",
     "render.color-resolve": "A colour attachment can resolve a multisampled view, and a 3D view selects a depth slice.",
     "render.pass-state": "The pass descriptor can cap its draw count.",
-    "render.occlusion-queries": "An occlusion query wraps draw calls and its results are written to the query set.",
-    "render.primitive-and-multisample": "Topology, culling and multisampling are validated against the pass attachments.",
+    "render.primitive-and-multisample": "Topology, culling and the pass layout are validated against the attachments.",
     "render.depth-bias": "The pipeline depth bias offsets fragment depth.",
     "render.pipeline-async": "Asynchronous creation resolves a ready render pipeline or fails explicitly.",
-    "renderbundle.record-and-execute": "A render bundle records reusable commands and does not share the executing pass state.",
-    "query.create-and-resolve": "A query set exposes its type and count, and resolveQuerySet writes results into a buffer.",
     "query.timestamp-writes": "Timestamp writes wrap a compute or render pass and require the timestamp-query feature.",
     "errors.uncaptured-error": "An uncaptured error is delivered to the device callback and cannot become an apparent success.",
     "errors.device-lost": "A device loss exposes an actionable reason and message to the runner.",

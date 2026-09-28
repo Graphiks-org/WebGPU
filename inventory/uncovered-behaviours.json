@@ -213,15 +213,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "render.occlusion-queries",
-    "family": "rendu/passes/attachments",
-    "contract": [
-      "GPURenderPassEncoder.beginOcclusionQuery",
-      "GPURenderPassEncoder.endOcclusionQuery"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "render.primitive-and-multisample",
     "family": "pipelines/render state",
     "contract": [
@@ -229,8 +220,6 @@
       "GPUPrimitiveTopology",
       "GPUFrontFace",
       "GPUCullMode",
-      "GPUMultisampleState",
-      "GPUSampleMask",
       "GPUColor",
       "GPURenderPassLayout"
     ],
@@ -252,34 +241,6 @@
     "family": "pipelines/render state",
     "contract": [
       "GPUDevice.createRenderPipelineAsync"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "renderbundle.record-and-execute",
-    "family": "render bundles",
-    "contract": [
-      "GPUDevice.createRenderBundleEncoder",
-      "GPURenderBundleEncoder",
-      "GPURenderBundleEncoder.finish",
-      "GPURenderBundle",
-      "GPURenderBundleDescriptor",
-      "GPURenderBundleEncoderDescriptor",
-      "GPURenderPassEncoder.executeBundles"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "query.create-and-resolve",
-    "family": "queries/timestamps",
-    "contract": [
-      "GPUDevice.createQuerySet",
-      "GPUQuerySet",
-      "GPUQuerySetDescriptor",
-      "GPUQuerySet.type",
-      "GPUQuerySet.count",
-      "GPUQueryType",
-      "GPUCommandEncoder.resolveQuerySet"
     ],
     "requiredFeatures": []
   },

@@ -69,4 +69,12 @@ enum class AcidCaseId(val id: String) {
     StencilReadMask("stencil.read-mask"),
     StencilWriteMask("stencil.write-mask"),
     StencilDepthFail("stencil.depth-fail"),
+    MsaaResolve("msaa.resolve"),
+    MsaaSampleMaskZero("msaa.sample-mask-zero"),
+    BundlesDraw("bundles.draw"),
+    BundlesReuse("bundles.reuse"),
+    RenderDrawIndirect("render.draw-indirect"),
+    RenderDrawIndexedIndirect("render.draw-indexed-indirect"),
+    QueriesOcclusion("queries.occlusion"),
+    RenderIndirectFirstInstance("render.indirect-first-instance"),
 }
