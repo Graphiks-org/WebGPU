@@ -12,6 +12,7 @@ val libraryDescription = when (project.name) {
     "suite-core" -> "Execution contracts for Graphiks WebGPU validation cases"
     "suite-acid-tests" -> "Portable acid tests for the Graphiks WebGPU public API"
     "suite-demos" -> "Portable demonstrations of the Graphiks WebGPU public API"
+    "suite-benchmarks" -> "Portable workloads and measurements for the Graphiks WebGPU API"
     else -> "Graphiks WebGPU for Kotlin Multiplatform"
 }
 

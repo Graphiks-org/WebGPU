@@ -10,6 +10,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.graphiks.webgpu.browser.requestAdapter
 import org.graphiks.webgpu.suite.acid.foundationCases
+import org.graphiks.webgpu.suite.benchmarks.BenchmarkProfile
+import org.graphiks.webgpu.suite.browser.benchmarks.showBenchmarkRouteError
+import org.graphiks.webgpu.suite.browser.benchmarks.showBenchmarksPage
 import org.graphiks.webgpu.suite.browser.demos.BoundsPauseResetId
 import org.graphiks.webgpu.suite.browser.demos.ComputeRenderReadbackId
 import org.graphiks.webgpu.suite.browser.demos.DemoReport
@@ -20,16 +23,24 @@ import org.graphiks.webgpu.suite.browser.demos.selectedLocale
 import org.graphiks.webgpu.suite.browser.demos.showParticlesPage
 
 /**
- * The page has two explicit routes: without a `demo` parameter it runs the foundation validation
- * suite exactly as before and publishes `graphiksSuiteReport`; `?demo=particles` runs the interactive
- * particle demo, and `?demo=particles&verify=1` runs its GPU checks and publishes a separate
- * `graphiksDemoReport`. An unknown demo name fails visibly rather than silently running nothing.
+ * The page has explicit routes. Without parameters it runs the foundation validation suite and
+ * publishes `graphiksSuiteReport`. `?demo=particles` runs the interactive particle demo, and
+ * `?demo=particles&verify=1` runs its GPU checks and publishes `graphiksDemoReport`.
+ * `?benchmark=foundations&profile=standard|ci` runs the benchmark campaign and publishes
+ * `graphiksBenchmarkReport`; `autorun=1` starts it without the user, for the collector. Asking for
+ * a demo and a benchmark at once, or naming an unknown demo, benchmark or profile, fails visibly
+ * rather than silently running nothing.
  */
 fun main() {
     MainScope().launch {
-        when (val demo = queryParameter("demo")) {
-            null -> runValidation()
-            "particles" -> if (queryParameter("verify") == "1") {
+        val demo = queryParameter("demo")
+        val benchmark = queryParameter("benchmark")
+        when {
+            demo != null && benchmark != null ->
+                showBenchmarkRouteError("Use either 'demo' or 'benchmark', not both.")
+            benchmark != null -> routeBenchmark(benchmark)
+            demo == null -> runValidation()
+            demo == "particles" -> if (queryParameter("verify") == "1") {
                 verifyParticles()
             } else {
                 showParticlesPage(selectedLocale())
@@ -37,6 +48,24 @@ fun main() {
             else -> showUnknownRoute(demo)
         }
     }
+}
+
+/** Resolves the benchmark route, refusing an unknown benchmark name or profile visibly. */
+private suspend fun routeBenchmark(name: String) {
+    if (name != "foundations") {
+        showBenchmarkRouteError("Unknown benchmark '$name'. Available benchmarks: foundations.")
+        return
+    }
+    val profileName = queryParameter("profile") ?: "standard"
+    val profile = when (profileName) {
+        "standard" -> BenchmarkProfile.Standard
+        "ci" -> BenchmarkProfile.Ci
+        else -> {
+            showBenchmarkRouteError("Unknown profile '$profileName'. Use 'standard' or 'ci'.")
+            return
+        }
+    }
+    showBenchmarksPage(selectedLocale(), profile, autorun = queryParameter("autorun") == "1")
 }
 
 private suspend fun runValidation() {

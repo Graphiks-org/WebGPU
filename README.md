@@ -19,6 +19,7 @@ Its Kotlin bindings are generated from versioned WebGPU specification inputs.
 | `suite-core` | `org.graphiks:suite-core` | Execution contract for portable validation cases |
 | `suite-acid-tests` | `org.graphiks:suite-acid-tests` | Portable acid tests for the public API |
 | `suite-demos` | `org.graphiks:suite-demos` | Portable particle demo scene and reproducible data |
+| `suite-benchmarks` | `org.graphiks:suite-benchmarks` | Portable transfer and compute workloads and measurements |
 | `suite-browser` | Not published | Browser runner that executes the suite and reports results |
 | `webgpu-specifications` | Not published | Versioned specification and documentation inputs |
 
@@ -64,10 +65,11 @@ for requirements and dependency notes.
 
 Graphiks WebGPU Suite exercises the public contract with portable acid tests that run against a real
 browser WebGPU implementation. `suite-core` holds the execution contract, `suite-acid-tests` the
-cases, `suite-demos` a portable compute particle scene, and `suite-browser` runs them on Kotlin/JS
-and Kotlin/Wasm JS and publishes a report. The site's Validation page presents the contract
-inventory, the behaviour coverage, and the published results, and links to both local launches; its
-Demos page presents the interactive particle demo.
+cases, `suite-demos` a portable compute particle scene, `suite-benchmarks` two portable measurement
+workloads, and `suite-browser` runs them on Kotlin/JS and Kotlin/Wasm JS and publishes reports. The
+site's Validation page presents the contract inventory, the behaviour coverage, and the published
+results, and links to both local launches; its Demos page presents the interactive particle demo; its
+Benchmarks page presents the published measurements with their protocol and environment.
 
 Run the browser suite locally with JDK 25 and Node 22:
 
@@ -79,14 +81,18 @@ node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
 node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
 node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
 node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
+node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --benchmark --profile=ci --backend=swiftshader
+node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --benchmark --profile=ci --backend=swiftshader
 node tools/build-site.mjs
 ```
 
 Each `run-browser.mjs` invocation writes a report under `build/reports/` and exits non-zero when the
 run is incomplete or failed. See [docs/running.md](docs/running.md) for the published matrix, the
-demo routes and consumption from a binding, and [docs/verification.md](docs/verification.md) for
-recorded evidence. Results published on the site come from identified runs and are never conflated
-with a local execution.
+demo and benchmark routes and consumption from a binding, [docs/benchmarks.md](docs/benchmarks.md)
+for the `foundations-v1` protocol, and [docs/verification.md](docs/verification.md) for recorded
+evidence. Results published on the site come from identified runs and are never conflated with a
+local execution. The canonical figures are the reports with their raw samples, never a promised
+performance table.
 
 ## Build, test, and read the docs
 

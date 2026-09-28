@@ -109,8 +109,8 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   successful compilation of every native target.
 - The artifacts use the repository's existing publication convention: `buildSrc` supplies the POM,
   licence, sources and signature, and `.github/workflows/publish.yml` publishes
-  `org.graphiks:suite-core`, `org.graphiks:suite-acid-tests` and `org.graphiks:suite-demos` alongside
-  the four base modules under the shared `releaseVersion`.
+  `org.graphiks:suite-core`, `org.graphiks:suite-acid-tests`, `org.graphiks:suite-demos` and
+  `org.graphiks:suite-benchmarks` alongside the four base modules under the shared `releaseVersion`.
 - There is no dedicated consumer project, isolated Maven repository or publication/consumption test:
   the amended plan and spec exclude such an architecture test. Artifact resolution by external
   bindings is exercised in their own repositories, not here.
@@ -167,6 +167,65 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
 - Compilation versus native execution: `suite-demos` compiles for JVM 25, JS, Wasm JS, Linux x64 and
   macOS ARM64 through its normal tasks. No native GPU execution is performed in this repository; that
   belongs to the consuming binding repositories, as for the acid tests.
+
+## Benchmark evidence (2026-09-28)
+
+- Implementation commits: `af212a4` (portable transfer workload), `e2311db` (compute encoding and
+  submission), `779e318` (browser runner and protocol), `5131fcf` (collector and Benchmarks page).
+  The CI, publication and documentation integration is recorded by the commit that adds this section.
+- Commands (local shell runs were prefixed by `rtk proxy`, a local output filter; the runner command
+  itself is unchanged):
+
+  ```sh
+  ./gradlew :suite-benchmarks:compileKotlinJvm :suite-benchmarks:compileKotlinJs :suite-benchmarks:compileKotlinWasmJs
+  ./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --benchmark --profile=ci --backend=swiftshader
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --benchmark --profile=ci --backend=swiftshader
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --benchmark --profile=standard --backend=swiftshader
+  node tools/build-site.mjs
+  ```
+
+- Result: **10/10 scenarios `completed` and GPU-verified on JS and 10/10 on Wasm**, for the `ci`
+  profile (5 retained samples per scenario) and, on JS, for the `standard` profile (30 samples). No
+  page errors and no fatal error. The protocol fields were `schemaVersion=1`,
+  `protocol=foundations-v1`, `clock=kotlin.time.TimeSource.Monotonic`. The ten ids, the profile and the
+  sample count were required by the collector; a missing, duplicated, non-`completed`, unverified or
+  wrong-count scenario makes it exit non-zero. No threshold is applied to a duration.
+- Control readback: each scenario reads its whole result buffer back before the warm-ups and after the
+  last sample, against a value computed from the index. `transfer.write-buffer` verifies the word
+  `i xor (0x9e3779b9 + j)` for the last write of a batch; `compute.encode-submit` verifies `i * 3 + 7`.
+- The check detects a real GPU regression: replacing `+ 7u` with `+ 8u` in the compute shader made all
+  four compute scenarios `failed` with a readback mismatch (the six transfer scenarios still passed),
+  the collector exited non-zero, and restoring the shader returned **10/10 on both targets**. The
+  mutation was not committed.
+- Clock and environment limitations observed: under the requested `swiftshader` backend, most
+  `cpuIssueMs` values are exactly `0.000` — below the practical resolution of the clock — and are kept
+  and counted as `zeroCpuSamples` rather than filtered or turned into a rate. `completionMs` resolves
+  the compute wait (about 2.6 ms for one dispatch over 65 536 elements, about 17–19 ms for sixteen,
+  and about 0.9–1.4 ms for sixteen 1 MiB writes). The reported adapter description was empty and is
+  recorded as `null`/unknown; `isFallbackAdapter` was `true`. These are software-backend functional
+  observations, not physical-GPU performances.
+- Timeout classification: with the campaign budget temporarily reduced to one second, the in-flight
+  scenario was reported as `failed` with `The campaign timed out after 16 minutes.` rather than the
+  90-second scenario-timeout or a tab-hidden cancellation diagnostic; restoring the budget returned
+  10/10. The temporary change was not committed.
+- Collector options: `--profile=ci|standard` (default `ci` in the tool) and
+  `--backend=swiftshader|default` (default `swiftshader`). `--backend=default` drops the SwiftShader
+  flags and records `default`, never `hardware`. JS and Wasm were run sequentially, never in parallel.
+- Site inspection: the assembled Benchmarks page was served under a local prefix and checked at a
+  390 px mobile viewport in EN and FR, with the `ci` and `standard` profiles loaded side by side. It
+  shows size, batch, warm-ups, retained/planned samples, the GPU check, and the median and min/max of
+  both durations; p95 appears only from 20 samples. A displayed median and p95 were compared by hand
+  with the raw samples of a real campaign and matched (`median 0.9 [0.8..11.4]`, `p95 1.1` for the
+  sixteen 1 MiB writes). With a report removed the page shows "No published measurements: not run.",
+  never a series of zeros. These are manual delivery checks, not HTML-structure or statistical tests.
+- Cancellation and refusal, observed on both targets through the local page: cancelling a campaign
+  marked the in-flight scenario `interrupted` and the rest `not-run`, kept the previous displayed
+  result and its note, and published the incomplete report for tooling. Without WebGPU
+  (`navigator.gpu` removed) the page refused to start with a visible message and published no report.
+- Compilation: `suite-benchmarks` compiles for JVM 25, JS and Wasm JS through its normal tasks; its
+  Linux x64 and macOS ARM64 targets are declared and publish with the same convention as the other
+  suite contents. No native GPU execution and no Maven consumption test are performed here.
 
 ## Known limitations
 

@@ -13,6 +13,16 @@ instancié.
 
 [Ouvrir les démos](../suite/demos/)
 
+La suite fournit aussi deux charges de benchmark portables. Elles mesurent `queue.writeBuffer` ainsi
+que l'encodage et la soumission d'une charge compute, et publient leurs échantillons bruts avec le
+protocole, le profil et l'environnement. Chaque cible et profil est présenté séparément ; une durée
+est une observation de soumission CPU et d'achèvement, pas du temps GPU pur.
+
+[Ouvrir les benchmarks](../suite/benchmarks/)
+
+Le protocole et ses limites d'interprétation sont documentés dans
+[`docs/benchmarks.md`](https://github.com/Graphiks-org/WebGPU/blob/master/docs/benchmarks.md).
+
 Les résultats publiés proviennent d'exécutions identifiées et restent distincts d'un lancement
 local. Les preuves enregistrées se trouvent dans
 [`docs/verification.md`](https://github.com/Graphiks-org/WebGPU/blob/master/docs/verification.md).

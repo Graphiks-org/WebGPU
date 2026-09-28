@@ -168,6 +168,9 @@ th {
 .suite-nav {
   margin: 0.5rem 0 0;
   font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .gallery {
