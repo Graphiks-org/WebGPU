@@ -53,6 +53,21 @@ passes on JS and Wasm. It lists no result that was not observed.
   does not depend on the padding-stripping readback helper. Inventory: 57 behaviours; the broad
   `transfers.buffer-texture-copies` uncovered entry is replaced by the narrower
   `transfers.texture-copy-aspect`, whose aspect selection remains to be tested.
+- **Lot C — texture views, formats and storage** (8 cases: `textures.view-base-mip`,
+  `textures.view-base-layer`, `textures.view-dimensions`, `textures.uint-load`,
+  `textures.storage-write`, `textures.srgb-decode`, `textures.srgb-view-format`,
+  `textures.cube-faces`). Result: **8/8 passed on JS and 8/8 on Wasm** in targeted runs; the full
+  catalogue is **35/35 passed on JS and 35/35 on Wasm** (wave 1 complete). Inventory: 65 behaviours;
+  the broad `texture.view` uncovered entry is narrowed to `texture.view-usage-aspect` and
+  `sampler.creation` to `sampler.comparison`.
+- **Binding defect found by Lot C and fixed separately** (commit "fix(web): omit identity swizzle from
+  texture view descriptors"). `GPUTexture.createView(descriptor)` failed on Chromium 140 with
+  "Failed to read the 'swizzle' property ... not of type 'GPUTextureComponentSwizzle'": the mapper
+  always sent the four-character `swizzle` string (the current spec and Chrome 143 form) while
+  Chromium 140 type-checks the earlier dictionary form. The fix omits `swizzle` when it is the identity
+  default, which is valid under both encodings; five Lot C cases that pass a descriptor went from
+  `failed` to `passed` on both targets. A non-identity swizzle still sends the spec string and is not
+  exercised here (`texture.view-swizzle` remains uncovered); no expectation was weakened.
 
 ## Reference contract
 

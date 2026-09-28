@@ -29,4 +29,12 @@ enum class AcidCaseId(val id: String) {
     TransfersTextureRegionCopy("transfers.texture-region-copy"),
     TransfersMipLevelCopy("transfers.mip-level-copy"),
     TransfersVolumeSlices("transfers.volume-slices"),
+    TexturesViewBaseMip("textures.view-base-mip"),
+    TexturesViewBaseLayer("textures.view-base-layer"),
+    TexturesViewDimensions("textures.view-dimensions"),
+    TexturesUintLoad("textures.uint-load"),
+    TexturesStorageWrite("textures.storage-write"),
+    TexturesSrgbDecode("textures.srgb-decode"),
+    TexturesSrgbViewFormat("textures.srgb-view-format"),
+    TexturesCubeFaces("textures.cube-faces"),
 }

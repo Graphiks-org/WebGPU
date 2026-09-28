@@ -136,20 +136,11 @@
     "requiredFeatures": []
   },
   {
-    "id": "texture.view",
+    "id": "texture.view-usage-aspect",
     "family": "textures/views/samplers",
     "contract": [
-      "GPUTexture.createView",
-      "GPUTextureView",
-      "GPUTextureViewDescriptor",
-      "GPUTextureViewDescriptor.format",
-      "GPUTextureViewDescriptor.dimension",
       "GPUTextureViewDescriptor.usage",
-      "GPUTextureViewDescriptor.aspect",
-      "GPUTextureViewDescriptor.baseMipLevel",
-      "GPUTextureViewDescriptor.mipLevelCount",
-      "GPUTextureViewDescriptor.baseArrayLayer",
-      "GPUTextureViewDescriptor.arrayLayerCount"
+      "GPUTextureViewDescriptor.aspect"
     ],
     "requiredFeatures": []
   },
@@ -171,17 +162,12 @@
     ]
   },
   {
-    "id": "sampler.creation",
+    "id": "sampler.comparison",
     "family": "textures/views/samplers",
     "contract": [
-      "GPUDevice.createSampler",
-      "GPUSampler",
-      "GPUSamplerDescriptor",
-      "GPUAddressMode",
-      "GPUFilterMode",
-      "GPUMipmapFilterMode",
       "GPUCompareFunction",
-      "GPUSamplerBindingType"
+      "GPUSamplerBindingType",
+      "GPUSamplerDescriptor.compare"
     ],
     "requiredFeatures": []
   },

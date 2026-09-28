@@ -123,6 +123,38 @@
     "transfers.volume-slices": {
       "title": "Copy depth slices of a 3D texture",
       "expectation": "One buffer image feeds each depth slice of a 3D texture copy."
+    },
+    "textures.view-base-mip": {
+      "title": "Start a view at a mip level",
+      "expectation": "A view's baseMipLevel selects the mip level its level 0 reads."
+    },
+    "textures.view-base-layer": {
+      "title": "Start a view at an array layer",
+      "expectation": "A view's baseArrayLayer selects the first array layer its local indices address."
+    },
+    "textures.view-dimensions": {
+      "title": "Report dimensions relative to a view",
+      "expectation": "textureDimensions and textureNumLevels are relative to the view's base level and level count."
+    },
+    "textures.uint-load": {
+      "title": "Load integer texels exactly",
+      "expectation": "A texture_2d<u32> load returns the stored words without float conversion."
+    },
+    "textures.storage-write": {
+      "title": "Write a storage texture from compute",
+      "expectation": "textureStore writes each texel addressed by the dispatch and the readback returns them exactly."
+    },
+    "textures.srgb-decode": {
+      "title": "Decode an sRGB texel on load",
+      "expectation": "Loading RGBA8UnormSrgb linearises RGB while alpha is used as-is."
+    },
+    "textures.srgb-view-format": {
+      "title": "Read the same bytes through a linear and an sRGB view",
+      "expectation": "A viewFormats entry lets two views of one texture read the bytes linearly or sRGB-decoded."
+    },
+    "textures.cube-faces": {
+      "title": "Sample the six cube faces",
+      "expectation": "A cube view maps each axis direction to its layer and a nearest sample returns that layer's colour."
     }
   },
   "behaviours": {
@@ -136,9 +168,9 @@
     "compute.pipeline-async": "Asynchronous creation resolves a ready-to-use pipeline or fails explicitly.",
     "compute.pass-descriptor": "The compute pass descriptor carries the optional timestamp writes.",
     "texture.creation": "A texture exposes its dimensions, format and usages; an invalid combination fails validation.",
-    "texture.view": "A view selects a subresource compatible with the requested format and usage.",
+    "texture.view-usage-aspect": "A view can restrict its usages and select a texture aspect.",
     "texture.view-swizzle": "A non-identity swizzle produces the expected DOMString and requires the texture-component-swizzle feature.",
-    "sampler.creation": "A sampler exposes its address and filter modes, and a comparison sampler reports it.",
+    "sampler.comparison": "A comparison sampler reports its compare function and comparison binding type.",
     "texture.usage-and-formats": "Texture usages combine and each format declares its binding and attachment capabilities.",
     "render.color-load-store": "Load and store operations preserve, replace or resolve the colour attachment content.",
     "render.depth.load-store": "Load and store operations preserve or replace depth according to the descriptor.",

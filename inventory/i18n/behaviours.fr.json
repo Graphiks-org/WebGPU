@@ -123,6 +123,38 @@
     "transfers.volume-slices": {
       "title": "Copier les tranches de profondeur d'une texture 3D",
       "expectation": "Une image de buffer alimente chaque tranche de profondeur d'une copie de texture 3D."
+    },
+    "textures.view-base-mip": {
+      "title": "Commencer une vue à un niveau de mip",
+      "expectation": "Le baseMipLevel d'une vue sélectionne le niveau lu par son niveau 0."
+    },
+    "textures.view-base-layer": {
+      "title": "Commencer une vue à une couche d'un tableau",
+      "expectation": "Le baseArrayLayer d'une vue sélectionne la première couche adressée par ses indices locaux."
+    },
+    "textures.view-dimensions": {
+      "title": "Rapporter les dimensions relatives à une vue",
+      "expectation": "textureDimensions et textureNumLevels sont relatifs au niveau de base et au nombre de niveaux de la vue."
+    },
+    "textures.uint-load": {
+      "title": "Charger des texels entiers exactement",
+      "expectation": "Un chargement texture_2d<u32> renvoie les mots stockés sans conversion float."
+    },
+    "textures.storage-write": {
+      "title": "Écrire une storage texture depuis un compute",
+      "expectation": "textureStore écrit chaque texel adressé par le dispatch et la relecture les renvoie exactement."
+    },
+    "textures.srgb-decode": {
+      "title": "Décoder un texel sRGB au chargement",
+      "expectation": "Charger une RGBA8UnormSrgb linéarise le RGB tandis que l'alpha est utilisé tel quel."
+    },
+    "textures.srgb-view-format": {
+      "title": "Lire les mêmes octets via une vue linéaire et une vue sRGB",
+      "expectation": "Une entrée viewFormats permet à deux vues d'une texture de lire les octets en linéaire ou décodés sRGB."
+    },
+    "textures.cube-faces": {
+      "title": "Échantillonner les six faces d'un cube",
+      "expectation": "Une vue cube associe chaque direction d'axe à sa couche et un échantillonnage nearest renvoie la couleur de cette couche."
     }
   },
   "behaviours": {
@@ -136,9 +168,9 @@
     "compute.pipeline-async": "La création asynchrone résout un pipeline prêt à l'emploi ou échoue explicitement.",
     "compute.pass-descriptor": "Le descripteur de passe compute porte les écritures de timestamp optionnelles.",
     "texture.creation": "Une texture expose ses dimensions, son format et ses usages ; une combinaison invalide échoue la validation.",
-    "texture.view": "Une vue sélectionne une sous-ressource compatible avec le format et l'usage demandés.",
+    "texture.view-usage-aspect": "Une vue peut restreindre ses usages et sélectionner un aspect de texture.",
     "texture.view-swizzle": "Un swizzle non identitaire produit la chaîne DOMString attendue et exige la feature texture-component-swizzle.",
-    "sampler.creation": "Un sampler expose ses modes d'adressage et de filtrage et un sampler de comparaison l'indique.",
+    "sampler.comparison": "Un sampler de comparaison expose sa fonction de comparaison et son type de binding de comparaison.",
     "texture.usage-and-formats": "Les usages de texture se combinent et chaque format déclare ses capacités de binding et d'attachement.",
     "render.color-load-store": "Les opérations de chargement et de stockage préservent, remplacent ou résolvent le contenu de l'attachement couleur.",
     "render.depth.load-store": "Les opérations de chargement et de stockage préservent ou remplacent la profondeur selon le descripteur.",
