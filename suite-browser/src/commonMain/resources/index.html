@@ -17,6 +17,17 @@
         .demo-status { min-height: 1.4rem; }
         .demo-status[data-error="true"] { color: #c62828; font-weight: 600; }
         .demo-nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+        .benchmark { max-width: 64rem; margin: 0 auto; display: grid; gap: 1rem; }
+        .benchmark h1 { margin: 0; font-size: 1.5rem; }
+        .benchmark p { margin: 0; }
+        .benchmark-controls { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .benchmark-controls button { font: inherit; padding: 0.35rem 0.6rem; }
+        .benchmark-status { min-height: 1.4rem; }
+        .benchmark-status[data-error="true"] { color: #c62828; font-weight: 600; }
+        .benchmark-note { color: #555; }
+        .benchmark table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+        .benchmark th, .benchmark td { border: 1px solid #ccc; padding: 0.25rem 0.4rem; text-align: left; }
+        @media (prefers-color-scheme: dark) { .benchmark-note { color: #aaa; } .benchmark th, .benchmark td { border-color: #555; } }
     </style>
 </head>
 <body>
@@ -26,6 +37,7 @@
         <pre id="result">Running…</pre>
     </section>
     <main id="demo-root" hidden></main>
+    <main id="benchmark-root" hidden></main>
     <script src="suite.js"></script>
 </body>
 </html>

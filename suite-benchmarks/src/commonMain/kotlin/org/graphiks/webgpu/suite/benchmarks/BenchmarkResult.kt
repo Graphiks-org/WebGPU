@@ -38,13 +38,13 @@ data class BenchmarkResult(
 )
 
 /** The transfer sizes of the foundations-v1 protocol, in bytes. */
-internal val TransferSizeBytes = listOf(4 * 1024, 64 * 1024, 1024 * 1024)
+val TransferSizeBytes = listOf(4 * 1024, 64 * 1024, 1024 * 1024)
 
 /** The allowed number of writes encoded per measured transfer batch. */
-internal val TransferBatches = listOf(1, 16)
+val TransferBatches = listOf(1, 16)
 
 /** The compute sizes of the foundations-v1 protocol, in u32 elements. */
-internal val ComputeElementCounts = listOf(1024, 64 * 1024)
+val ComputeElementCounts = listOf(1024, 64 * 1024)
 
 /** The allowed number of dispatches encoded per measured compute batch. */
-internal val ComputeBatches = listOf(1, 16)
+val ComputeBatches = listOf(1, 16)
