@@ -65,15 +65,9 @@ jobs:
         run: |
           args=()
           if [[ -n "${VERSION:-}" ]]; then args+=("-PreleaseVersion=$VERSION"); fi
-          ./gradlew --no-configuration-cache --no-daemon \
-            :webgpu-api:publishToMavenCentral \
-            :webgpu-descriptors:publishToMavenCentral \
-            :webgpu-web-bindings:publishToMavenCentral \
-            :webgpu-browser:publishToMavenCentral \
-            :suite-core:publishToMavenCentral \
-            :suite-acid-tests:publishToMavenCentral \
-            :suite-demos:publishToMavenCentral \
-            :suite-benchmarks:publishToMavenCentral "${args[@]}"
+          # The task selector publishes every subproject that applies the `publish` convention;
+          # a new shared module is published without editing this list.
+          ./gradlew --no-configuration-cache --no-daemon publishToMavenCentral "${args[@]}"
 
   release:
     needs: suite
@@ -112,13 +106,4 @@ jobs:
       - name: Build and test
         run: ./gradlew --no-configuration-cache --no-daemon check "-PreleaseVersion=$VERSION"
       - name: Publish release
-        run: |
-          ./gradlew --no-configuration-cache --no-daemon \
-            :webgpu-api:publishToMavenCentral \
-            :webgpu-descriptors:publishToMavenCentral \
-            :webgpu-web-bindings:publishToMavenCentral \
-            :webgpu-browser:publishToMavenCentral \
-            :suite-core:publishToMavenCentral \
-            :suite-acid-tests:publishToMavenCentral \
-            :suite-demos:publishToMavenCentral \
-            :suite-benchmarks:publishToMavenCentral "-PreleaseVersion=$VERSION"
+        run: ./gradlew --no-configuration-cache --no-daemon publishToMavenCentral "-PreleaseVersion=$VERSION"
