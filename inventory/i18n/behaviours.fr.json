@@ -251,6 +251,38 @@
     "render.srgb-encode": {
       "title": "Encoder un attachement sRGB",
       "expectation": "Une cible rgba8unorm-srgb encode les fragments linéaires à l'écriture."
+    },
+    "depth.less": {
+      "title": "Comparer la profondeur avec Less",
+      "expectation": "Un fragment plus proche gagne le test de profondeur et bloque un fragment plus lointain."
+    },
+    "depth.greater": {
+      "title": "Comparer la profondeur avec Greater",
+      "expectation": "Un fragment plus lointain gagne lorsque le test est Greater."
+    },
+    "depth.write-disabled": {
+      "title": "Désactiver l'écriture de profondeur pour un draw",
+      "expectation": "Un draw sans écriture de profondeur ne bloque pas un fragment ultérieur."
+    },
+    "depth.load-preserves": {
+      "title": "Préserver la profondeur entre passes",
+      "expectation": "Une passe de chargement de profondeur conserve la profondeur écrite par une passe store antérieure."
+    },
+    "stencil.replace-equal": {
+      "title": "Remplacer puis comparer le stencil",
+      "expectation": "Un draw Replace pose une référence que le draw Equal suivant retrouve."
+    },
+    "stencil.read-mask": {
+      "title": "Masquer les bits de comparaison du stencil",
+      "expectation": "stencilReadMask limite les bits utilisés par la comparaison."
+    },
+    "stencil.write-mask": {
+      "title": "Masquer les bits écrits du stencil",
+      "expectation": "stencilWriteMask limite les bits qu'une opération stencil modifie."
+    },
+    "stencil.depth-fail": {
+      "title": "Déclencher l'opération depth-fail du stencil",
+      "expectation": "depthFailOp s'exécute quand le test de profondeur échoue mais que le test stencil passe."
     }
   },
   "behaviours": {
@@ -269,11 +301,10 @@
     "sampler.comparison": "Un sampler de comparaison expose sa fonction de comparaison et son type de binding de comparaison.",
     "texture.usage-and-formats": "Les usages de texture se combinent et chaque format déclare ses capacités de binding et d'attachement.",
     "render.color-resolve": "Un attachement couleur peut résoudre une vue multisample, et une vue 3D sélectionne une tranche de profondeur.",
-    "render.depth.load-store": "Les opérations de chargement et de stockage préservent ou remplacent la profondeur selon le descripteur.",
-    "render.pass-state": "Le descripteur de passe expose son nombre de draw et la passe fixe la référence stencil.",
+    "render.pass-state": "Le descripteur de passe peut borner son nombre de draw.",
     "render.occlusion-queries": "Une requête d'occlusion encadre des draw calls et ses résultats sont écrits dans le query set.",
     "render.primitive-and-multisample": "La topologie, le culling et le multisampling sont validés par rapport aux attachements de la passe.",
-    "render.depth-stencil-state": "L'état profondeur/stencil de la pipeline est compatible avec le format d'attachement de la passe.",
+    "render.depth-bias": "Le biais de profondeur de la pipeline décale la profondeur des fragments.",
     "render.pipeline-async": "La création asynchrone résout une pipeline render prête ou échoue explicitement.",
     "renderbundle.record-and-execute": "Un render bundle enregistre des commandes réutilisables et ne partage pas l'état de la passe qui l'exécute.",
     "query.create-and-resolve": "Un query set expose son type et son nombre, et resolveQuerySet écrit les résultats dans un buffer.",

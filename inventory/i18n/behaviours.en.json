@@ -251,6 +251,38 @@
     "render.srgb-encode": {
       "title": "Encode an sRGB attachment",
       "expectation": "An rgba8unorm-srgb target encodes linear fragments on write."
+    },
+    "depth.less": {
+      "title": "Compare depth with Less",
+      "expectation": "A nearer fragment wins the depth test and blocks a later, farther one."
+    },
+    "depth.greater": {
+      "title": "Compare depth with Greater",
+      "expectation": "A farther fragment wins when the test is Greater."
+    },
+    "depth.write-disabled": {
+      "title": "Disable depth writes for one draw",
+      "expectation": "A draw with depth writes off does not block a later fragment."
+    },
+    "depth.load-preserves": {
+      "title": "Preserve depth across passes",
+      "expectation": "A depth load pass keeps the depth a prior store pass wrote."
+    },
+    "stencil.replace-equal": {
+      "title": "Replace then compare stencil",
+      "expectation": "A Replace draw stamps a reference the next Equal draw matches."
+    },
+    "stencil.read-mask": {
+      "title": "Mask the stencil comparison bits",
+      "expectation": "stencilReadMask limits which bits the comparison uses."
+    },
+    "stencil.write-mask": {
+      "title": "Mask the stencil written bits",
+      "expectation": "stencilWriteMask limits which bits a stencil operation changes."
+    },
+    "stencil.depth-fail": {
+      "title": "Run the stencil depth-fail operation",
+      "expectation": "depthFailOp runs when the depth test fails but the stencil test passes."
     }
   },
   "behaviours": {
@@ -269,11 +301,10 @@
     "sampler.comparison": "A comparison sampler reports its compare function and comparison binding type.",
     "texture.usage-and-formats": "Texture usages combine and each format declares its binding and attachment capabilities.",
     "render.color-resolve": "A colour attachment can resolve a multisampled view, and a 3D view selects a depth slice.",
-    "render.depth.load-store": "Load and store operations preserve or replace depth according to the descriptor.",
-    "render.pass-state": "The pass descriptor exposes its draw-count state and the pass sets the stencil reference.",
+    "render.pass-state": "The pass descriptor can cap its draw count.",
     "render.occlusion-queries": "An occlusion query wraps draw calls and its results are written to the query set.",
     "render.primitive-and-multisample": "Topology, culling and multisampling are validated against the pass attachments.",
-    "render.depth-stencil-state": "The pipeline depth/stencil state is compatible with the pass attachment format.",
+    "render.depth-bias": "The pipeline depth bias offsets fragment depth.",
     "render.pipeline-async": "Asynchronous creation resolves a ready render pipeline or fails explicitly.",
     "renderbundle.record-and-execute": "A render bundle records reusable commands and does not share the executing pass state.",
     "query.create-and-resolve": "A query set exposes its type and count, and resolveQuerySet writes results into a buffer.",

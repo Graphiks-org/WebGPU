@@ -61,4 +61,12 @@ enum class AcidCaseId(val id: String) {
     BlendConstant("blend.constant"),
     RenderMultipleTargets("render.multiple-targets"),
     RenderSrgbEncode("render.srgb-encode"),
+    DepthLess("depth.less"),
+    DepthGreater("depth.greater"),
+    DepthWriteDisabled("depth.write-disabled"),
+    DepthLoadPreserves("depth.load-preserves"),
+    StencilReplaceEqual("stencil.replace-equal"),
+    StencilReadMask("stencil.read-mask"),
+    StencilWriteMask("stencil.write-mask"),
+    StencilDepthFail("stencil.depth-fail"),
 }

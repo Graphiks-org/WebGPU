@@ -205,19 +205,10 @@
     "requiredFeatures": []
   },
   {
-    "id": "render.depth.load-store",
-    "family": "rendu/passes/attachments",
-    "contract": [
-      "GPURenderPassDepthStencilAttachment"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "render.pass-state",
     "family": "rendu/passes/attachments",
     "contract": [
-      "GPURenderPassDescriptor.maxDrawCount",
-      "GPURenderPassEncoder.setStencilReference"
+      "GPURenderPassDescriptor.maxDrawCount"
     ],
     "requiredFeatures": []
   },
@@ -246,16 +237,13 @@
     "requiredFeatures": []
   },
   {
-    "id": "render.depth-stencil-state",
+    "id": "render.depth-bias",
     "family": "pipelines/render state",
     "contract": [
-      "GPUDepthStencilState",
-      "GPUStencilFaceState",
-      "GPUStencilOperation",
-      "GPUStencilValue",
       "GPUDepthBias",
-      "GPUDepthStencilState.depthWriteEnabled",
-      "GPUDepthStencilState.depthCompare"
+      "GPUDepthStencilState.depthBias",
+      "GPUDepthStencilState.depthBiasSlopeScale",
+      "GPUDepthStencilState.depthBiasClamp"
     ],
     "requiredFeatures": []
   },
