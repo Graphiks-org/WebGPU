@@ -24,12 +24,12 @@ import org.graphiks.webgpu.suite.browser.demos.showParticlesPage
 
 /**
  * The page has explicit routes. Without parameters it runs the foundation validation suite and
- * publishes `graphiksSuiteReport`. `?demo=particles` runs the interactive particle demo, and
- * `?demo=particles&verify=1` runs its GPU checks and publishes `graphiksDemoReport`.
- * `?benchmark=foundations&profile=standard|ci` runs the benchmark campaign and publishes
- * `graphiksBenchmarkReport`; `autorun=1` starts it without the user, for the collector. Asking for
- * a demo and a benchmark at once, or naming an unknown demo, benchmark or profile, fails visibly
- * rather than silently running nothing.
+ * publishes `graphiksSuiteReport`; `?cases=id1,id2` runs only the named cases. `?demo=particles`
+ * runs the interactive particle demo, and `?demo=particles&verify=1` runs its GPU checks and
+ * publishes `graphiksDemoReport`. `?benchmark=foundations&profile=standard|ci` runs the benchmark
+ * campaign and publishes `graphiksBenchmarkReport`; `autorun=1` starts it without the user, for the
+ * collector. Asking for a demo and a benchmark at once, or naming an unknown demo, benchmark or
+ * profile, fails visibly rather than silently running nothing.
  */
 fun main() {
     MainScope().launch {
@@ -69,8 +69,9 @@ private suspend fun routeBenchmark(name: String) {
 }
 
 private suspend fun runValidation() {
+    val selection = parseCaseSelection(queryParameter("cases"))
     val report = try {
-        runFoundations()
+        runFoundations(selection)
     } catch (cancelled: CancellationException) {
         throw cancelled
     } catch (failure: Throwable) {
@@ -83,6 +84,10 @@ private suspend fun runValidation() {
     }
     publishReport(Json.encodeToString(report))
 }
+
+/** Reads `?cases=id1,id2`: `null` without the parameter, the trimmed non-empty ids otherwise. */
+private fun parseCaseSelection(value: String?): Set<String>? =
+    value?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }?.toSet()
 
 /**
  * Runs the two demo GPU checks on their own adapter and device and publishes `graphiksDemoReport`.

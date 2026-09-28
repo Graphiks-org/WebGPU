@@ -12,15 +12,31 @@ import org.graphiks.webgpu.suite.AcidCase
 import org.graphiks.webgpu.suite.acid.foundationCases
 
 /**
- * Runs every foundation case, each on a fresh adapter and device.
+ * Runs the foundation catalogue, each case on a fresh adapter and device.
+ *
+ * [caseIds] selects an explicit subset for targeted development, keeping the requested order of the
+ * catalogue. `null` (the default) runs every case. An explicit selection must be non-empty and name
+ * only known case ids; an unknown id or an empty selection fails before any case runs, so a typo is
+ * never silently executed as a full catalogue.
  *
  * Cases run sequentially: `requestDevice` consumes its adapter, so the runner never asks one
  * adapter for two devices. A case that times out or throws is reported as `failed`; a missing
  * optional feature is reported as `unsupported` without running the case.
  */
-suspend fun runFoundations(): BrowserReport {
+suspend fun runFoundations(caseIds: Set<String>? = null): BrowserReport {
+    val catalogue = foundationCases()
+    val selected = if (caseIds == null) {
+        catalogue
+    } else {
+        val known = catalogue.mapTo(mutableSetOf()) { it.id.id }
+        val unknown = (caseIds - known).sorted()
+        require(unknown.isEmpty()) { "Unknown case id(s): ${unknown.joinToString(", ")}" }
+        require(caseIds.isNotEmpty()) { "An explicit case selection cannot be empty." }
+        catalogue.filter { it.id.id in caseIds }
+    }
+
     val results = mutableListOf<CaseResult>()
-    for (case in foundationCases()) {
+    for (case in selected) {
         val result = try {
             withTimeout(30.seconds) { runCase(case) }
         } catch (timeout: TimeoutCancellationException) {
@@ -38,9 +54,14 @@ suspend fun runFoundations(): BrowserReport {
 private suspend fun runCase(case: AcidCase): CaseResult {
     val adapter = requestAdapter().getOrThrow()
     try {
-        val missing = case.requiredFeatures - adapter.features
+        val missing = (case.requiredFeatures - adapter.features).map { it.name }.sorted()
         if (missing.isNotEmpty()) {
-            return CaseResult(case.id.id, "unsupported", "Missing optional features: $missing")
+            return CaseResult(
+                id = case.id.id,
+                status = "unsupported",
+                diagnostic = "Missing optional features: ${missing.joinToString(", ")}",
+                missingFeatures = missing,
+            )
         }
 
         val uncapturedErrors = mutableListOf<String>()

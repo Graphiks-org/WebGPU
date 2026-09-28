@@ -9,6 +9,25 @@ The execution evidence below was recorded during implementation, before that mer
 fresh run of the merge commit. This review checked source configuration and authored inventory
 resources, without rerunning GPU tests or confirming remote publication.
 
+## Acid test expansion progress (2026-09-28)
+
+The plan `docs/superpowers/plans/2026-09-28-webgpu-suite-acid-expansion.md` extends the eleven cases
+to eighty-three. This section records the increments actually delivered and is updated as each lot
+passes on JS and Wasm. It lists no result that was not observed.
+
+- **Task 1 — targeted acid selection and declared optional features** (runner only; no new case).
+  `--cases=id1,id2` / `?cases=id1,id2` runs a non-empty subset of known ids; a targeted run writes
+  `build/reports/selected-<target>.json` with a `selectedCaseIds` field and never replaces
+  `<target>.json`; `CaseResult.missingFeatures` records declared-but-absent features and the acid
+  collector accepts `unsupported` only for them, counting passed and unsupported separately.
+  Evidence on the eleven-case catalogue: `--cases=does.not-exist`, an empty selection and
+  `--cases` with `--benchmark` each exit 2 before a browser launches; `--cases=transfers.write-offsets`
+  (JS) and `--cases=buffers.mapped-at-creation,compute.auto-layout-constants` (Wasm) each wrote their
+  selected report while `js.json` stayed byte-identical; the full JS run printed "reported 11 passed
+  and 0 unsupported of 11 acid cases"; `tools/build-site.mjs` still consumes only the full reports and
+  no `selected-*` file reached `build/site/`. No case declares an optional feature yet, so the
+  `unsupported` present→executed path is deferred to Lot I.
+
 ## Reference contract
 
 - API and suite version: `0.1.0-SNAPSHOT`.

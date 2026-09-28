@@ -70,6 +70,21 @@ distributions. It fails when a report or the inventory is missing, so an absent 
 published as a success. The Validation page shows JS and Wasm results separately and offers local
 launch links that do not modify the published reports.
 
+### Run a subset while developing
+
+`--cases=id1,id2` (or `?cases=id1,id2` on the page) runs only the named acid cases. The selection
+must be non-empty and name only known ids; an unknown id fails before the browser starts. A targeted
+run writes its own `build/reports/selected-<target>.json` with a `selectedCaseIds` field and never
+replaces the full `<target>.json`, so the site still consumes only complete campaigns. Without
+`--cases`, every case runs and the full report is written. The collector waits
+`cases × 30 s + 60 s`, capped at one hour; a longer budget never turns a stopped case into a success.
+
+A case is `unsupported` only when it declares optional features and the adapter lacks them, and the
+report records them in `missingFeatures` using the generated manifest's enum names. The collector
+accepts that status for exactly those declared features; every other non-`passed` status, and any
+`unsupported` without a matching declaration, fails the run. The summary counts passed and
+unsupported separately.
+
 ## Run the particle demo
 
 The `?demo=particles` route runs a portable particle scene. `suite-demos` owns the GPU resources and

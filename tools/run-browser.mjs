@@ -1,7 +1,8 @@
 // Runs the browser suite distributions in headless Chromium and collects the published report.
 //
 // Usage: node tools/run-browser.mjs <js|wasm> <distribution-directory> [--demo-check | --benchmark]
-//                                     [--profile=ci|standard] [--backend=swiftshader|default]
+//                                     [--cases=id1,id2] [--profile=ci|standard]
+//                                     [--backend=swiftshader|default]
 //
 // Serves only the given distribution directory on 127.0.0.1 with an automatic port, waits for the
 // published report, writes the envelope to build/reports/<target>.json — demos-<target>.json with
@@ -27,6 +28,7 @@ const demoCheck = process.argv.includes('--demo-check');
 const benchmark = process.argv.includes('--benchmark');
 const profile = optionValue('--profile') ?? 'ci';
 const backend = optionValue('--backend') ?? 'swiftshader';
+const casesOption = optionValue('--cases');
 
 function optionValue(name) {
   const prefix = `${name}=`;
@@ -35,7 +37,7 @@ function optionValue(name) {
 }
 
 if (!['js', 'wasm'].includes(target) || !distribution) {
-  console.error('usage: node tools/run-browser.mjs <js|wasm> <distribution-directory> [--demo-check | --benchmark] [--profile=ci|standard] [--backend=swiftshader|default]');
+  console.error('usage: node tools/run-browser.mjs <js|wasm> <distribution-directory> [--demo-check | --benchmark] [--cases=id1,id2] [--profile=ci|standard] [--backend=swiftshader|default]');
   process.exit(2);
 }
 if (demoCheck && benchmark) {
@@ -52,6 +54,10 @@ if (!['swiftshader', 'default'].includes(backend)) {
 }
 
 const mode = benchmark ? 'benchmark' : demoCheck ? 'demo' : 'suite';
+if (casesOption != null && mode !== 'suite') {
+  console.error('--cases is only valid for the acid-test suite, not with --demo-check or --benchmark.');
+  process.exit(2);
+}
 const profileSamples = { ci: 5, standard: 30 };
 
 // The ten foundations-v1 scenario ids, in their published order. Kept here so the collector checks
@@ -69,16 +75,48 @@ function benchmarkExpectedIds() {
 
 const distRoot = resolve(distribution);
 const reportsDir = join(root, 'build', 'reports');
+const generatedInventory = join(root, 'suite-acid-tests', 'build', 'suite-inventory');
+const allCaseIds = mode === 'suite'
+  ? JSON.parse(await readFile(join(generatedInventory, 'foundation-case-ids.json'), 'utf8'))
+  : [];
+const declaredFeaturesById = mode === 'suite'
+  ? new Map(
+    JSON.parse(await readFile(join(generatedInventory, 'cases.json'), 'utf8'))
+      .map((entry) => [entry.id, entry.requiredFeatures ?? []]),
+  )
+  : new Map();
+
+// The acid suite accepts an explicit subset for targeted development. An unknown or empty
+// selection fails before a browser is launched; a targeted run keeps its own report so it never
+// replaces the full catalogue's `<target>.json`.
+const selectedCaseIds = (() => {
+  if (casesOption == null) return null;
+  const requested = casesOption.split(',').map((id) => id.trim()).filter((id) => id.length > 0);
+  if (requested.length === 0) {
+    console.error('--cases must select at least one case id.');
+    process.exit(2);
+  }
+  const unknown = requested.filter((id) => !allCaseIds.includes(id));
+  if (unknown.length > 0) {
+    console.error(`--cases names unknown case id(s): ${unknown.join(', ')}`);
+    process.exit(2);
+  }
+  return [...new Set(requested)];
+})();
+
 const reportName = mode === 'benchmark'
   ? `benchmarks-${target}.json`
-  : mode === 'demo' ? `demos-${target}.json` : `${target}.json`;
+  : mode === 'demo'
+    ? `demos-${target}.json`
+    : selectedCaseIds == null ? `${target}.json` : `selected-${target}.json`;
 const reportPath = join(reportsDir, reportName);
-const generatedInventory = join(root, 'suite-acid-tests', 'build', 'suite-inventory');
 const expectedIds = mode === 'benchmark'
   ? benchmarkExpectedIds()
   : mode === 'demo'
     ? ['particles.compute-render-readback', 'particles.bounds-pause-reset']
-    : JSON.parse(await readFile(join(generatedInventory, 'foundation-case-ids.json'), 'utf8'));
+    : selectedCaseIds == null
+      ? allCaseIds
+      : allCaseIds.filter((id) => selectedCaseIds.includes(id));
 const baseline = JSON.parse(await readFile(join(generatedInventory, 'baseline.json'), 'utf8'));
 
 const suiteCommit = (() => {
@@ -120,11 +158,20 @@ const server = createServer(async (request, response) => {
 
 const urlQuery = mode === 'benchmark'
   ? `?benchmark=foundations&profile=${profile}&autorun=1`
-  : mode === 'demo' ? '?demo=particles&verify=1' : '';
+  : mode === 'demo'
+    ? '?demo=particles&verify=1'
+    : selectedCaseIds == null ? '' : `?cases=${encodeURIComponent(selectedCaseIds.join(','))}`;
 const reportGlobal = mode === 'benchmark'
   ? 'graphiksBenchmarkReport'
   : mode === 'demo' ? 'graphiksDemoReport' : 'graphiksSuiteReport';
-const waitTimeout = mode === 'benchmark' ? 17 * 60 * 1000 : mode === 'demo' ? 120000 : 420000;
+// 30 s per case plus a minute of slack, capped at one hour: a larger budget never turns a stopped
+// case into a success, it only lets a long catalogue finish.
+const caseTimeoutMs = 30000;
+const waitTimeout = mode === 'benchmark'
+  ? 17 * 60 * 1000
+  : mode === 'demo'
+    ? 120000
+    : Math.min(expectedIds.length * caseTimeoutMs + 60000, 60 * 60 * 1000);
 const launchArgs = backend === 'swiftshader'
   ? ['--enable-unsafe-webgpu', '--enable-unsafe-swiftshader', '--use-angle=swiftshader', '--disable-dev-shm-usage']
   : ['--enable-unsafe-webgpu', '--disable-dev-shm-usage'];
@@ -188,6 +235,7 @@ const envelope = {
   baseline,
   suiteCommit,
   generatedAt: new Date().toISOString(),
+  selectedCaseIds,
   environment,
   report,
   pageErrors,
@@ -234,10 +282,21 @@ if (mode === 'benchmark') {
   const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
   const missing = expectedIds.filter((id) => !ids.includes(id));
   const unexpected = ids.filter((id) => !expectedIds.includes(id));
-  const notPassed = cases.filter((entry) => entry.status !== 'passed');
   if (duplicates.length > 0) problems.push(`duplicate case ids: ${duplicates.join(', ')}`);
   if (missing.length > 0) problems.push(`missing case ids: ${missing.join(', ')}`);
   if (unexpected.length > 0) problems.push(`unexpected case ids: ${unexpected.join(', ')}`);
+  // `unsupported` is accepted only for a declared optional feature: the case must declare
+  // features and every reported missing one must fall within that declaration. Anything else —
+  // failed, not-run, or an undeclared "unsupported" — stays a real failure, never a silent skip.
+  const notPassed = cases.filter((entry) => {
+    if (entry.status === 'passed') return false;
+    if (entry.status !== 'unsupported') return true;
+    const declared = declaredFeaturesById.get(entry.id) ?? [];
+    const reported = entry.missingFeatures ?? [];
+    return declared.length === 0
+      || reported.length === 0
+      || !reported.every((feature) => declared.includes(feature));
+  });
   if (notPassed.length > 0) {
     problems.push(`cases not passed: ${notPassed.map((entry) => `${entry.id}=${entry.status}`).join(', ')}`);
   }
@@ -247,12 +306,17 @@ if (problems.length > 0) {
   console.error(`incomplete or failed run (${target}${mode === 'benchmark' ? `, ${mode}/${profile}/${backend}` : ''}):`);
   for (const problem of problems) console.error(`- ${problem}`);
   process.exitCode = 1;
+} else if (mode === 'suite') {
+  const cases = report?.cases ?? [];
+  const passed = cases.filter((entry) => entry.status === 'passed').length;
+  const unsupported = cases.filter((entry) => entry.status === 'unsupported').length;
+  console.log(
+    `reported ${passed} passed and ${unsupported} unsupported of ${expectedIds.length} acid cases on ${target} (${environment.browser})`,
+  );
 } else {
   const label = mode === 'benchmark'
     ? `benchmark scenarios passed on ${target} (${profile}, ${backend}, ${environment.browser})`
-    : mode === 'demo'
-      ? `demo cases passed on ${target} (${environment.browser})`
-      : `cases passed on ${target} (${environment.browser})`;
+    : `demo cases passed on ${target} (${environment.browser})`;
   const count = mode === 'benchmark' ? (report?.scenarios?.length ?? 0) : (report?.cases?.length ?? 0);
   console.log(`reported ${count}/${expectedIds.length} ${label}`);
 }
