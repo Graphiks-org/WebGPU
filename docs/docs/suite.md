@@ -7,6 +7,11 @@ lets you execute the suite locally.
 
 [Open the Validation page](suite/)
 
+The suite also ships a demonstration gallery. Its first scene, **compute particles**, updates a
+particle buffer with a compute pass and draws that same buffer as an instanced vertex buffer.
+
+[Open the demos](suite/demos/)
+
 The published results come from identified runs and are kept separate from a local execution. The
 recorded evidence is in
 [`docs/verification.md`](https://github.com/Graphiks-org/WebGPU/blob/master/docs/verification.md).

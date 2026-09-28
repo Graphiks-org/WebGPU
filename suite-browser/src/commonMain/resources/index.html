@@ -3,12 +3,29 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Graphiks WebGPU Suite — Validation</title>
+    <title>Graphiks WebGPU Suite</title>
+    <style>
+        :root { color-scheme: light dark; }
+        body { margin: 0; padding: 1rem; font-family: system-ui, sans-serif; line-height: 1.4; }
+        .demo { max-width: 48rem; margin: 0 auto; display: grid; gap: 1rem; }
+        .demo h1 { margin: 0; font-size: 1.5rem; }
+        .demo p { margin: 0; }
+        .demo canvas { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; background: #000; border-radius: 0.5rem; }
+        .demo-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+        .demo-controls label { display: inline-flex; align-items: center; gap: 0.4rem; }
+        .demo-controls button, .demo-controls select { font: inherit; padding: 0.35rem 0.6rem; }
+        .demo-status { min-height: 1.4rem; }
+        .demo-status[data-error="true"] { color: #c62828; font-weight: 600; }
+        .demo-nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+    </style>
 </head>
 <body>
-    <h1>Graphiks WebGPU Suite — Validation</h1>
-    <p>Runs the portable foundation acid tests against this browser's WebGPU implementation.</p>
-    <pre id="result">Running…</pre>
+    <section id="validation">
+        <h1>Graphiks WebGPU Suite — Validation</h1>
+        <p>Runs the portable foundation acid tests against this browser's WebGPU implementation.</p>
+        <pre id="result">Running…</pre>
+    </section>
+    <main id="demo-root" hidden></main>
     <script src="suite.js"></script>
 </body>
 </html>

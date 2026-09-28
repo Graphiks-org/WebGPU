@@ -39,6 +39,12 @@ jobs:
       - name: Run Wasm suite
         if: ${{ !cancelled() }}
         run: node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+      - name: Run JS demo check
+        if: ${{ !cancelled() }}
+        run: node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
+      - name: Run Wasm demo check
+        if: ${{ !cancelled() }}
+        run: node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
       - name: Upload reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4

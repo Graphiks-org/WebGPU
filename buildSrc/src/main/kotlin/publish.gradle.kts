@@ -11,6 +11,7 @@ val libraryDescription = when (project.name) {
     "webgpu-browser" -> "Browser implementation of the Graphiks WebGPU API for Kotlin JS and Wasm"
     "suite-core" -> "Execution contracts for Graphiks WebGPU validation cases"
     "suite-acid-tests" -> "Portable acid tests for the Graphiks WebGPU public API"
+    "suite-demos" -> "Portable demonstrations of the Graphiks WebGPU public API"
     else -> "Graphiks WebGPU for Kotlin Multiplatform"
 }
 

@@ -1,8 +1,8 @@
 // Assembles the static Validation page into build/site/.
 //
-// Copies the page, the two browser reports and the two runnable distributions, and builds the
-// generated contract inventory. Fails when the inventory or a report is missing: an absent report
-// is never treated as a success.
+// Copies the page, the two browser reports, the two demo reports and the two runnable distributions,
+// and builds the generated contract inventory. Fails when the inventory or any report is missing: an
+// absent report is never treated as a success.
 import { execFileSync } from 'node:child_process';
 import { access, cp, mkdir, rm } from 'node:fs/promises';
 import { constants } from 'node:fs';
@@ -17,10 +17,18 @@ const distributionByTarget = {
   wasm: join(root, 'suite-browser', 'build', 'dist', 'wasmJs', 'productionExecutable'),
 };
 
+const demoReportByTarget = {
+  js: 'demos-js.json',
+  wasm: 'demos-wasm.json',
+};
+
 await access(join(root, 'suite-acid-tests', 'build', 'suite-inventory'), constants.R_OK);
 for (const target of Object.keys(distributionByTarget)) {
   await access(join(root, 'build', 'reports', `${target}.json`), constants.R_OK);
   await access(distributionByTarget[target], constants.R_OK);
+}
+for (const report of Object.values(demoReportByTarget)) {
+  await access(join(root, 'build', 'reports', report), constants.R_OK);
 }
 
 await rm(out, { recursive: true, force: true });
@@ -33,6 +41,9 @@ await mkdir(join(out, 'run'), { recursive: true });
 for (const [target, distribution] of Object.entries(distributionByTarget)) {
   await cp(join(root, 'build', 'reports', `${target}.json`), join(out, 'reports', `${target}.json`));
   await cp(distribution, join(out, 'run', target), { recursive: true });
+}
+for (const report of Object.values(demoReportByTarget)) {
+  await cp(join(root, 'build', 'reports', report), join(out, 'reports', report));
 }
 
 execFileSync(process.execPath, [join(root, 'tools', 'build-inventory.mjs'), join(out, 'inventory')], { stdio: 'inherit' });

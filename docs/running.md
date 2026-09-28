@@ -17,21 +17,37 @@ The suite and the API share the repository version (`releaseVersion`, default `0
 Each delivery records the API version, the reference commit and the source hashes in the generated
 `baseline.json` (published at `suite/inventory/baseline.json`).
 
-The two shared artifacts, `org.graphiks:suite-core` and `org.graphiks:suite-acid-tests`, are
-published for:
+The shared artifacts `org.graphiks:suite-core`, `org.graphiks:suite-acid-tests` and
+`org.graphiks:suite-demos` are published for:
 
 | Target | Built by |
 | --- | --- |
-| JVM 25 | normal `check` compilation (local and CI) |
+| JVM 25 | explicit compilation in the suite CI workflow |
 | JS (browser) | browser execution and normal compilation |
 | Wasm JS (browser) | browser execution and normal compilation |
-| Linux x64 | normal `check` compilation on the Linux CI host |
-| macOS ARM64 | normal `check` compilation on the macOS CI host |
+| Linux x64 | `:suite-core:compileKotlinLinuxX64`, `:suite-acid-tests:compileKotlinLinuxX64` and `:suite-demos:compileKotlinLinuxX64` on a compatible host |
+| macOS ARM64 | `:suite-core:compileKotlinMacosArm64`, `:suite-acid-tests:compileKotlinMacosArm64` and `:suite-demos:compileKotlinMacosArm64` on a compatible host |
 
 Other API targets can be added progressively; do not assume support for a target that is not
 listed. The browser runner only executes JS and Wasm JS here. Native GPU execution results belong
 to the consuming binding repositories; this repository compiles the shared modules and runs the
 browser cases.
+
+The module builds declare these targets; this table is not a record of a successful remote
+publication. The current suite workflow explicitly compiles JVM and the browser distributions.
+The module scripts do not add explicit dependencies from `check` to all five compilation tasks.
+
+## Generated inventory
+
+Browser compilation runs `:suite-acid-tests:generateSuiteInventory`, supplied by the
+`org.graphiks.webgpu-suite-inventory` plugin in `build-logic`. It generates `ApiSymbols.kt` and
+`FoundationCases.kt` under `suite-acid-tests/build/generated/suite/commonMain/kotlin/`, and the case
+manifest and baseline under `suite-acid-tests/build/suite-inventory/`.
+
+`tools/build-inventory.mjs`, invoked by `tools/build-site.mjs`, combines these outputs with the API
+sources, `inventory/uncovered-behaviours.json` and the EN/FR resources to produce
+`build/site/inventory/`. Edit annotations and authored resources, not generated outputs. See
+[adding-a-case.md](adding-a-case.md) for the case layout and localization keys.
 
 ## Run the browser suite
 
@@ -53,6 +69,30 @@ node tools/build-site.mjs
 distributions. It fails when a report or the inventory is missing, so an absent report is never
 published as a success. The Validation page shows JS and Wasm results separately and offers local
 launch links that do not modify the published reports.
+
+## Run the particle demo
+
+The `?demo=particles` route runs a portable particle scene. `suite-demos` owns the GPU resources and
+the runner supplies the device, the texture format and the render target. Two routes are available:
+
+- `?demo=particles&lang=en|fr` — the interactive demo. The count select offers 256, 1024, 4096,
+  16384 and 65536 particles, filtered by `maxParticleCount(device.limits)`; the default is 4096 and
+  reset reproduces the same layout for a given count (fixed seed `1u`).
+- `?demo=particles&verify=1` — the two GPU checks, published in `globalThis.graphiksDemoReport`.
+
+Build and run the distributions as for the suite, then add `--demo-check`:
+
+```sh
+./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
+node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
+```
+
+`--demo-check` opens `?demo=particles&verify=1`, requires both demo ids to pass and writes
+`build/reports/demos-<target>.json`, separate from the acid-test reports. The gallery page at
+`site/demos/` presents the demo with local launches and links to the scene sources. The demo is an
+illustration, not a benchmark: this increment records no frame rate presented as a measurement, no
+GPU time and no ranking.
 
 ## Consume the artifacts from a binding
 
@@ -79,6 +119,34 @@ suspend fun validateSuppliedDevice(device: GPUDevice) {
 The runner decides its own isolation and manages the device lifecycle; the browser runner creates a
 fresh adapter and device per case. A case closes the resources it creates and never destroys
 resources supplied by the runner.
+
+A native binding can reuse the demo scene the same way. `ParticleScene` is portable and takes the
+device, the target format and the initial particle data:
+
+```kotlin
+import org.graphiks.webgpu.suite.demos.particles.ParticleScene
+import org.graphiks.webgpu.suite.demos.particles.initialParticles
+
+val scene = ParticleScene.create(device, format, initialParticles(4096))
+try {
+    val encoder = device.createCommandEncoder()
+    try {
+        scene.encodeFrame(encoder, targetView, width, height, deltaSeconds)
+        val commands = encoder.finish()
+        try { device.queue.submit(listOf(commands)) } finally { commands.close() }
+    } finally {
+        encoder.close()
+    }
+} finally {
+    scene.close()
+}
+```
+
+One `encodeFrame` call is one submission: the application owns the encoder, the target view and the
+device and closes them, while the scene owns `particleBuffer`, the parameter buffer, the pipelines
+and the bind groups. `particleBuffer` is exposed for readback-style composition but must not be
+closed by the consumer. `deltaSeconds` must stay within `0f..0.05f`; a zero delta renders the
+current state without a compute pass, so a paused runner can repaint on reset or resize.
 
 ## Statuses
 

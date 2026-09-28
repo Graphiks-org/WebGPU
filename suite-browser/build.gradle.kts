@@ -30,9 +30,11 @@ kotlin {
 
     sourceSets.commonMain.dependencies {
         implementation(project(":suite-acid-tests"))
+        implementation(project(":suite-demos"))
         implementation(project(":webgpu-browser"))
         implementation(project(":webgpu-descriptors"))
         implementation(libs.coroutines)
         implementation(libs.kotlinx.serialization.json)
+        implementation(kotlin("test"))
     }
 }

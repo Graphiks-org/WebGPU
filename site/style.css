@@ -164,3 +164,54 @@ th {
   font-weight: 700;
   text-decoration: none;
 }
+
+.suite-nav {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+}
+
+.gallery {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+
+.card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.card p {
+  margin: 0;
+  max-width: none;
+}
+
+.card-links,
+.card-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.card-sources {
+  font-size: 0.85rem;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+  background: var(--bg);
+  text-decoration: none;
+}
