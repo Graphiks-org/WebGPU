@@ -5,6 +5,7 @@ package org.graphiks.webgpu.suite.browser.demos
 import kotlin.math.min
 import kotlin.js.JsNumber
 import kotlin.js.unsafeCast
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -319,6 +320,8 @@ private class ParticleDemoPage(private val texts: ParticleTexts) : AutoCloseable
                 transitioning = false
                 setControlsEnabled(true)
                 if (!paused) startLoop()
+            } catch (cancelled: CancellationException) {
+                throw cancelled
             } catch (failure: Throwable) {
                 fail(texts.failed + " " + failure.message)
             }

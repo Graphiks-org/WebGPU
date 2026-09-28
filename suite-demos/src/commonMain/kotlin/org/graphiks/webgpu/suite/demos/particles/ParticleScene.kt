@@ -233,7 +233,7 @@ class ParticleScene private constructor(
                     ),
                 )
                 device.queue.writeBuffer(particleBuffer, 0uL, ArrayBuffer.of(initial))
-                return ParticleScene(
+                val scene = ParticleScene(
                     device = device,
                     count = count,
                     particleBuffer = particleBuffer,
@@ -244,20 +244,31 @@ class ParticleScene private constructor(
                     renderPipeline = renderPipeline,
                     renderGroup = renderGroup,
                 )
+                // The shader modules and the two automatic layouts are only needed while building;
+                // the scene keeps the buffers, pipelines and bind groups. Null each one as it is
+                // released so a failure while releasing a later temporary does not close it twice.
+                renderShader.close()
+                renderShader = null
+                computeShader.close()
+                computeShader = null
+                renderLayout.close()
+                renderLayout = null
+                computeLayout.close()
+                computeLayout = null
+                return scene
             } catch (failure: Throwable) {
+                // Close everything created so far, in reverse creation order, buffers included.
                 renderGroup?.close()
                 computeGroup?.close()
+                parametersBuffer?.close()
+                particleBuffer?.close()
+                renderLayout?.close()
+                computeLayout?.close()
                 renderPipeline?.close()
                 computePipeline?.close()
-                renderLayout?.close()
-                computeLayout?.close()
-                throw failure
-            } finally {
-                // Shader modules and the two automatic layouts are only needed while building.
                 renderShader?.close()
                 computeShader?.close()
-                renderLayout?.close()
-                computeLayout?.close()
+                throw failure
             }
         }
 
