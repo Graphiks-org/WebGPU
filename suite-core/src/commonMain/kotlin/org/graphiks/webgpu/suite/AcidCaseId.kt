@@ -37,4 +37,12 @@ enum class AcidCaseId(val id: String) {
     TexturesSrgbDecode("textures.srgb-decode"),
     TexturesSrgbViewFormat("textures.srgb-view-format"),
     TexturesCubeFaces("textures.cube-faces"),
+    TexturesSamplingNearest("sampling.nearest"),
+    TexturesSamplingLinear("sampling.linear"),
+    TexturesSamplingClamp("sampling.clamp"),
+    TexturesSamplingRepeat("sampling.repeat"),
+    TexturesSamplingMirrorRepeat("sampling.mirror-repeat"),
+    TexturesSamplingExplicitMip("sampling.explicit-mip"),
+    TexturesSamplingLinearMip("sampling.linear-mip"),
+    TexturesSamplingLodClamp("sampling.lod-clamp"),
 }

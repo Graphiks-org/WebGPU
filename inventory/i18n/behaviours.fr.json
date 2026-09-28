@@ -155,6 +155,38 @@
     "textures.cube-faces": {
       "title": "Échantillonner les six faces d'un cube",
       "expectation": "Une vue cube associe chaque direction d'axe à sa couche et un échantillonnage nearest renvoie la couleur de cette couche."
+    },
+    "sampling.nearest": {
+      "title": "Échantillonner en nearest",
+      "expectation": "Le filtrage nearest choisit le texel sous la coordonnée sans mélange."
+    },
+    "sampling.linear": {
+      "title": "Échantillonner en linéaire",
+      "expectation": "Le filtrage linéaire mélange les deux texels autour de la coordonnée."
+    },
+    "sampling.clamp": {
+      "title": "Bloquer les coordonnées au bord",
+      "expectation": "ClampToEdge utilise le texel de bord pour les coordonnées hors de 0..1."
+    },
+    "sampling.repeat": {
+      "title": "Répéter les coordonnées de texture",
+      "expectation": "Repeat ramène les coordonnées hors de 0..1 à leur partie fractionnaire."
+    },
+    "sampling.mirror-repeat": {
+      "title": "Miroiter les coordonnées de texture",
+      "expectation": "MirrorRepeat réfléchit chaque période, à l'inverse de repeat."
+    },
+    "sampling.explicit-mip": {
+      "title": "Sélectionner explicitement un niveau de mip",
+      "expectation": "Un LOD explicite sélectionne le niveau de mip correspondant."
+    },
+    "sampling.linear-mip": {
+      "title": "Mélanger les niveaux de mip adjacents",
+      "expectation": "Un filtre de mipmap linéaire mélange les deux niveaux autour du LOD demandé."
+    },
+    "sampling.lod-clamp": {
+      "title": "Borner le LOD demandé",
+      "expectation": "lodMinClamp et lodMaxClamp bornent le LOD utilisé par un échantillonnage."
     }
   },
   "behaviours": {

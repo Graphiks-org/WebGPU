@@ -155,6 +155,38 @@
     "textures.cube-faces": {
       "title": "Sample the six cube faces",
       "expectation": "A cube view maps each axis direction to its layer and a nearest sample returns that layer's colour."
+    },
+    "sampling.nearest": {
+      "title": "Sample with nearest filtering",
+      "expectation": "Nearest filtering picks the texel under the coordinate with no blending."
+    },
+    "sampling.linear": {
+      "title": "Sample with linear filtering",
+      "expectation": "Linear filtering blends the two texels around the coordinate."
+    },
+    "sampling.clamp": {
+      "title": "Clamp texture coordinates at the edge",
+      "expectation": "ClampToEdge uses the edge texel for coordinates outside 0..1."
+    },
+    "sampling.repeat": {
+      "title": "Wrap texture coordinates with repeat",
+      "expectation": "Repeat maps coordinates outside 0..1 to their fractional part."
+    },
+    "sampling.mirror-repeat": {
+      "title": "Mirror texture coordinates",
+      "expectation": "MirrorRepeat reflects each period, mapping the opposite way from repeat."
+    },
+    "sampling.explicit-mip": {
+      "title": "Select a mip level explicitly",
+      "expectation": "An explicit LOD selects the matching mip level."
+    },
+    "sampling.linear-mip": {
+      "title": "Blend adjacent mip levels",
+      "expectation": "A linear mipmap filter blends the two mip levels around the requested LOD."
+    },
+    "sampling.lod-clamp": {
+      "title": "Clamp the requested LOD",
+      "expectation": "lodMinClamp and lodMaxClamp bound the LOD a sample uses."
     }
   },
   "behaviours": {
