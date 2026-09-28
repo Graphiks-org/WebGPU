@@ -17,16 +17,16 @@ The suite and the API share the repository version (`releaseVersion`, default `0
 Each delivery records the API version, the reference commit and the source hashes in the generated
 `baseline.json` (published at `suite/inventory/baseline.json`).
 
-The shared artifacts `org.graphiks:suite-core`, `org.graphiks:suite-acid-tests` and
-`org.graphiks:suite-demos` are published for:
+The shared artifacts `org.graphiks:suite-core`, `org.graphiks:suite-acid-tests`,
+`org.graphiks:suite-demos` and `org.graphiks:suite-benchmarks` are published for:
 
 | Target | Built by |
 | --- | --- |
 | JVM 25 | explicit compilation in the suite CI workflow |
 | JS (browser) | browser execution and normal compilation |
 | Wasm JS (browser) | browser execution and normal compilation |
-| Linux x64 | `:suite-core:compileKotlinLinuxX64`, `:suite-acid-tests:compileKotlinLinuxX64` and `:suite-demos:compileKotlinLinuxX64` on a compatible host |
-| macOS ARM64 | `:suite-core:compileKotlinMacosArm64`, `:suite-acid-tests:compileKotlinMacosArm64` and `:suite-demos:compileKotlinMacosArm64` on a compatible host |
+| Linux x64 | `:suite-core:compileKotlinLinuxX64`, `:suite-acid-tests:compileKotlinLinuxX64`, `:suite-demos:compileKotlinLinuxX64` and `:suite-benchmarks:compileKotlinLinuxX64` on a compatible host |
+| macOS ARM64 | `:suite-core:compileKotlinMacosArm64`, `:suite-acid-tests:compileKotlinMacosArm64`, `:suite-demos:compileKotlinMacosArm64` and `:suite-benchmarks:compileKotlinMacosArm64` on a compatible host |
 
 Other API targets can be added progressively; do not assume support for a target that is not
 listed. The browser runner only executes JS and Wasm JS here. Native GPU execution results belong
@@ -94,6 +94,30 @@ node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecut
 illustration, not a benchmark: this increment records no frame rate presented as a measurement, no
 GPU time and no ranking.
 
+## Run the benchmarks
+
+The `?benchmark=foundations&profile=standard|ci` route runs the two portable workloads — writing
+buffers and encoding/submitting compute — and publishes `globalThis.graphiksBenchmarkReport`. The
+route accepts `autorun=1` for the collector; the page shows a Start button otherwise. The protocol,
+the ten scenarios and the temporal boundaries are documented in [benchmarks.md](benchmarks.md).
+
+Build and run the distributions as for the suite, then add `--benchmark`:
+
+```sh
+./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --benchmark --profile=ci --backend=swiftshader
+node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --benchmark --profile=ci --backend=swiftshader
+```
+
+`--benchmark` opens `?benchmark=foundations&profile=<profile>&autorun=1`, requires all ten scenarios
+`completed` with `outputVerified = true` and the profile's sample count, and writes
+`build/reports/benchmarks-<target>.json`, separate from the acid-test and demo reports. It never fails
+on the value of a duration. `--profile=ci` (default in the tool) keeps 5 samples per scenario;
+`--profile=standard` keeps 30. `--backend=swiftshader` (default) forces the software backend with
+explicit flags; `--backend=default` lets Chromium choose and records `default`, not `hardware`. Run
+JS and Wasm sequentially: never measure both targets in parallel on the same machine. The Benchmarks
+page at `site/benchmarks/` presents the two reports separately, with the raw samples downloadable.
+
 ## Consume the artifacts from a binding
 
 A native binding depends on the published artifact and supplies the device it owns:
@@ -147,6 +171,20 @@ device and closes them, while the scene owns `particleBuffer`, the parameter buf
 and the bind groups. `particleBuffer` is exposed for readback-style composition but must not be
 closed by the consumer. `deltaSeconds` must stay within `0f..0.05f`; a zero delta renders the
 current state without a compute pass, so a paused runner can repaint on reset or resize.
+
+A native binding can measure the portable workloads the same way. The functions take the device the
+binding owns, close the resources they allocate and never close the device:
+
+```kotlin
+import org.graphiks.webgpu.suite.benchmarks.BenchmarkProfile
+import org.graphiks.webgpu.suite.benchmarks.benchmarkWriteBuffer
+
+val result = benchmarkWriteBuffer(device, 65536, 16, BenchmarkProfile.Standard)
+```
+
+The binding keeps its own error scopes, timeouts, uncaptured errors and environment metadata, as the
+browser runner does. See [benchmarks.md](benchmarks.md) for the protocol and the interpretation
+limits.
 
 ## Statuses
 

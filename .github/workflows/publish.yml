@@ -72,7 +72,8 @@ jobs:
             :webgpu-browser:publishToMavenCentral \
             :suite-core:publishToMavenCentral \
             :suite-acid-tests:publishToMavenCentral \
-            :suite-demos:publishToMavenCentral "${args[@]}"
+            :suite-demos:publishToMavenCentral \
+            :suite-benchmarks:publishToMavenCentral "${args[@]}"
 
   release:
     needs: suite
@@ -119,4 +120,5 @@ jobs:
             :webgpu-browser:publishToMavenCentral \
             :suite-core:publishToMavenCentral \
             :suite-acid-tests:publishToMavenCentral \
-            :suite-demos:publishToMavenCentral "-PreleaseVersion=$VERSION"
+            :suite-demos:publishToMavenCentral \
+            :suite-benchmarks:publishToMavenCentral "-PreleaseVersion=$VERSION"

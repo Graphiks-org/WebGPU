@@ -19,3 +19,29 @@ vous pouvez cibler les tâches suivantes :
 Les tests Kotlin/Native dépendent de la machine. La CI lance les tests métier sous Linux, macOS
 et Windows. Le téléchargement des spécifications, la documentation LLM facultative et la
 régénération des bindings restent des opérations manuelles, hors des contrôles de PR.
+
+## Acid tests navigateur
+
+Les onze cas de fondations s’exécutent sur WebGPU réel via un workflow navigateur distinct ;
+`check` seul ne lance pas ce runner. Avec JDK 25 et Node.js 22 :
+
+```sh
+npm ci --prefix tools
+npm exec --prefix tools -- playwright install chromium
+./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
+node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
+node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --benchmark --profile=ci --backend=swiftshader
+node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --benchmark --profile=ci --backend=swiftshader
+node tools/build-site.mjs
+```
+
+La compilation génère le catalogue depuis les cas annotés. Le runner produit des rapports JS et
+Wasm séparés et échoue en cas d’exécution absente, échouée ou incomplète. Le mode `--benchmark`
+exige les dix scénarios `completed` et vérifiés côté GPU avec le nombre d’échantillons du profil ;
+il n’échoue jamais sur la valeur d’une durée. La [page Validation](suite.md) distingue couverture des
+comportements et résultats d’exécution, et la [page Benchmarks](suite.md) présente les mesures
+publiées et leur protocole. Les tests portent sur les données, erreurs et états WebGPU ; aucun projet
+dédié ne teste l’architecture de publication ou de consommation Maven, ni la présentation statistique.
