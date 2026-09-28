@@ -35,5 +35,6 @@ kotlin {
         implementation(project(":webgpu-descriptors"))
         implementation(libs.coroutines)
         implementation(libs.kotlinx.serialization.json)
+        implementation(kotlin("test"))
     }
 }

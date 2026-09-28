@@ -1,10 +1,12 @@
 // Runs the browser suite distributions in headless Chromium and collects the published report.
 //
-// Usage: node tools/run-browser.mjs <js|wasm> <distribution-directory>
+// Usage: node tools/run-browser.mjs <js|wasm> <distribution-directory> [--demo-check]
 //
-// Serves only the given distribution directory on 127.0.0.1 with an automatic port, waits for
-// `globalThis.graphiksSuiteReport`, writes the report envelope to build/reports/<target>.json and
-// exits non-zero when the run is incomplete or failed.
+// Serves only the given distribution directory on 127.0.0.1 with an automatic port, waits for the
+// published report, writes the envelope to build/reports/<target>.json — or demos-<target>.json with
+// --demo-check — and exits non-zero when the run is incomplete or failed. --demo-check opens the
+// particle verification route and expects `globalThis.graphiksDemoReport` instead of the acid-test
+// report, so the two modes and their reports stay separate.
 import { execFileSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -15,19 +17,20 @@ import { chromium } from 'playwright';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const target = process.argv[2];
 const distribution = process.argv[3];
+const demoCheck = process.argv.includes('--demo-check');
 
 if (!['js', 'wasm'].includes(target) || !distribution) {
-  console.error('usage: node tools/run-browser.mjs <js|wasm> <distribution-directory>');
+  console.error('usage: node tools/run-browser.mjs <js|wasm> <distribution-directory> [--demo-check]');
   process.exit(2);
 }
 
 const distRoot = resolve(distribution);
 const reportsDir = join(root, 'build', 'reports');
-const reportPath = join(reportsDir, `${target}.json`);
+const reportPath = join(reportsDir, demoCheck ? `demos-${target}.json` : `${target}.json`);
 const generatedInventory = join(root, 'suite-acid-tests', 'build', 'suite-inventory');
-const expectedIds = JSON.parse(
-  await readFile(join(generatedInventory, 'foundation-case-ids.json'), 'utf8'),
-);
+const expectedIds = demoCheck
+  ? ['particles.compute-render-readback', 'particles.bounds-pause-reset']
+  : JSON.parse(await readFile(join(generatedInventory, 'foundation-case-ids.json'), 'utf8'));
 const baseline = JSON.parse(await readFile(join(generatedInventory, 'baseline.json'), 'utf8'));
 
 const suiteCommit = (() => {
@@ -74,6 +77,7 @@ let report = null;
 let fatalError = null;
 const environment = {
   target,
+  demoCheck,
   browser: 'unknown',
   userAgent: 'unknown',
   platform: process.platform,
@@ -82,7 +86,7 @@ const environment = {
 
 await new Promise((ok) => server.listen(0, '127.0.0.1', ok));
 const { port } = server.address();
-const url = `http://127.0.0.1:${port}/`;
+const url = `http://127.0.0.1:${port}/${demoCheck ? '?demo=particles&verify=1' : ''}`;
 
 try {
   browser = await chromium.launch({
@@ -98,9 +102,13 @@ try {
 
   await page.goto(url);
   environment.userAgent = await page.evaluate(() => navigator.userAgent);
-  await page.waitForFunction(() => typeof globalThis.graphiksSuiteReport === 'string', {
-  }, { timeout: 420000 });
-  report = JSON.parse(await page.evaluate(() => globalThis.graphiksSuiteReport));
+  const reportGlobal = demoCheck ? 'graphiksDemoReport' : 'graphiksSuiteReport';
+  await page.waitForFunction(
+    (name) => typeof globalThis[name] === 'string',
+    reportGlobal,
+    { timeout: demoCheck ? 120000 : 420000 },
+  );
+  report = JSON.parse(await page.evaluate((name) => globalThis[name], reportGlobal));
 } catch (failure) {
   fatalError = String(failure && failure.stack ? failure.stack : failure);
 } finally {
@@ -154,5 +162,8 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`- ${problem}`);
   process.exitCode = 1;
 } else {
-  console.log(`reported ${cases.length}/${expectedIds.length} cases passed on ${target} (${environment.browser})`);
+  const label = demoCheck ? 'demo cases' : 'cases';
+  console.log(
+    `reported ${cases.length}/${expectedIds.length} ${label} passed on ${target} (${environment.browser})`,
+  );
 }
