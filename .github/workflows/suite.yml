@@ -54,28 +54,3 @@ jobs:
         with:
           name: suite-site
           path: build/site/
-
-  consumption:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 25
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
-      - name: Publish the shared artifacts to an isolated repository
-        run: |
-          ./gradlew --no-daemon -Dmaven.repo.local="$RUNNER_TEMP/suite-maven" \
-            :webgpu-api:publishToMavenLocal \
-            :webgpu-descriptors:publishToMavenLocal \
-            :suite-core:publishToMavenLocal \
-            :suite-acid-tests:publishToMavenLocal
-      - name: Compile an external consumer for every published target
-        run: |
-          ./gradlew --no-daemon -p consumption \
-            -PpublicationRepository="$RUNNER_TEMP/suite-maven" \
-            -PsuiteVersion=0.1.0-SNAPSHOT \
-            compileKotlinJvm compileKotlinJs compileKotlinWasmJs compileKotlinLinuxX64

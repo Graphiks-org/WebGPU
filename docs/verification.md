@@ -60,7 +60,7 @@ The browser runner executes eleven foundation cases. The mapping from case to be
 
 ## Browser execution evidence
 
-- Runner commit: `e8c58f4` (`suiteCommit` recorded in both reports); reference contract commit
+- Execution commit: the `suiteCommit` recorded in both browser reports; reference contract commit
   `918de19`.
 - Commands:
 
@@ -87,23 +87,20 @@ The browser runner executes eleven foundation cases. The mapping from case to be
   distributions loaded, the local launch page published a report, and the page had no horizontal
   overflow. These are manual delivery checks, not HTML-structure tests.
 
-## Maven consumption evidence
+## Compilation and publication evidence
 
-- Version: `0.1.0-verification-SNAPSHOT`.
-- Published to an isolated Maven repository with
-  `./gradlew --no-daemon -Dmaven.repo.local=<isolated> -PreleaseVersion=0.1.0-verification-SNAPSHOT
-  :webgpu-api:publishToMavenLocal :webgpu-descriptors:publishToMavenLocal :suite-core:publishToMavenLocal
-  :suite-acid-tests:publishToMavenLocal`.
-- The standalone [`consumption`](../consumption/build.gradle.kts) build has no `includeBuild` and no
-  local substitution; its only `org.graphiks` source is the isolated repository, configured as
-  exclusive content. Its resolved tree is
-  `org.graphiks:suite-acid-tests → suite-acid-tests-jvm → suite-core → suite-core-jvm → webgpu-api → webgpu-api-jvm`.
-- Compiled consumer targets: JVM, JS, Wasm JS and macOS ARM64 (all `BUILD SUCCESSFUL`). This proves
-  the published signatures resolve and compile; it is not a GPU execution.
-- Linux x64: the artifacts (`suite-acid-tests-linuxx64`, `suite-core-linuxx64`) are published by the
-  macOS host, and the external consumer is compiled for Linux x64 by the `consumption` job in
-  [`.github/workflows/suite.yml`](../.github/workflows/suite.yml) on `ubuntu-latest`
-  (`compileKotlinLinuxX64`). It is not compiled on this macOS host.
+- The two shared modules compile for the five announced targets through their normal Gradle tasks
+  (`compileKotlinJvm`, `compileKotlinJs`, `compileKotlinWasmJs`, `compileKotlinLinuxX64`,
+  `compileKotlinMacosArm64`). `:suite-core:check` and `:suite-acid-tests:check` depend on all five,
+  so the CI `Tests` matrix compiles Linux x64 on the Linux host and macOS ARM64 on the macOS host. A
+  local run also compiled the Linux x64 klib by cross-compilation on macOS ARM64.
+- The artifacts use the repository's existing publication convention: `buildSrc` supplies the POM,
+  licence, sources and signature, and `.github/workflows/publish.yml` publishes
+  `org.graphiks:suite-core` and `org.graphiks:suite-acid-tests` alongside the four base modules under
+  the shared `releaseVersion`.
+- There is no dedicated consumer project, isolated Maven repository or publication/consumption test:
+  the amended plan and spec exclude such an architecture test. Artifact resolution by external
+  bindings is exercised in their own repositories, not here.
 
 ## Known limitations
 
@@ -115,8 +112,8 @@ The browser runner executes eleven foundation cases. The mapping from case to be
   because that Python plugin is not installed here. The navigation entry and the relative suite link
   were validated statically; the assembled documentation site is exercised by the Documentation
   workflow in CI.
-- Native execution of the shared cases on JVM, Linux x64 or macOS ARM64 is not performed in this
+- Native GPU execution of the shared cases on JVM, Linux x64 or macOS ARM64 is not performed in this
   repository. Those results belong to the consuming binding repositories, which supply their own
-  device. Only artifact resolution and compilation are verified here.
+  device. This repository compiles the shared modules and runs the browser cases.
 - The results above are functional software-backend results. They are not performance measurements
   and do not represent a physical GPU.

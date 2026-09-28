@@ -20,17 +20,18 @@ Each delivery documents the API version it is built against in
 The two shared artifacts, `org.graphiks:suite-core` and `org.graphiks:suite-acid-tests`, are
 published for:
 
-| Target | Verified by |
+| Target | Built by |
 | --- | --- |
-| JVM 25 | compilation of the published artifact (local and CI) |
-| JS (browser) | browser execution |
-| Wasm JS (browser) | browser execution |
-| Linux x64 | compilation of the published artifact (CI `consumption` job on Linux) |
-| macOS ARM64 | compilation of the published artifact (local and CI) |
+| JVM 25 | normal `check` compilation (local and CI) |
+| JS (browser) | browser execution and normal compilation |
+| Wasm JS (browser) | browser execution and normal compilation |
+| Linux x64 | normal `check` compilation on the Linux CI host |
+| macOS ARM64 | normal `check` compilation on the macOS CI host |
 
-Native targets other than these are added when their consumption is actually verified; do not
-assume support for a target that is not listed. The browser runner only executes JS and Wasm JS
-here. Native execution results belong to the consuming binding repositories.
+Other API targets can be added progressively; do not assume support for a target that is not
+listed. The browser runner only executes JS and Wasm JS here. Native GPU execution results belong
+to the consuming binding repositories; this repository compiles the shared modules and runs the
+browser cases.
 
 ## Run the browser suite
 
@@ -77,9 +78,7 @@ suspend fun validateSuppliedDevice(device: GPUDevice) {
 
 The runner decides its own isolation and manages the device lifecycle; the browser runner creates a
 fresh adapter and device per case. A case closes the resources it creates and never destroys
-resources supplied by the runner. The consumer build under
-[`consumption/`](../consumption/build.gradle.kts) proves the published signatures resolve and
-compile; it does not execute a GPU.
+resources supplied by the runner.
 
 ## Statuses
 
