@@ -10,6 +10,11 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - `org.graphiks:webgpu-browser`, a browser implementation for Kotlin/JS and Kotlin/Wasm JS with adapter acquisition, resource wrappers, descriptor conversions, and canvas surfaces.
 - `WebGpuRecord` and nullable browser binding values in `org.graphiks:webgpu-web-bindings`.
 - Graphiks WebGPU Suite foundation modules (`suite-core`, `suite-acid-tests`, `suite-browser`) with a portable `AcidCase` contract, eleven browser acid tests typed with `@AcidTest` annotations, a headless Chromium runner, a generated contract inventory, and a bilingual (English/French) Validation page published under the documentation site's `suite/` path.
+- `org.graphiks:suite-demos`, a portable compute particle scene, plus a bilingual Demos gallery and GPU readback checks (`--demo-check`) published under the suite site's `demos/` path.
+
+### Fixed
+
+- `webgpu-browser` no longer throws on Kotlin/Wasm when an implementation omits a `GPUSupportedLimits` property; an absent limit is read as zero.
 
 ### Changed
 

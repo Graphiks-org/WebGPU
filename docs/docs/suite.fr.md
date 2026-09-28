@@ -7,6 +7,12 @@ publiées, et permet d'exécuter la suite localement.
 
 [Ouvrir la page Validation](../suite/)
 
+La suite fournit aussi une galerie de démonstrations. Sa première scène, **particules compute**, met
+à jour un buffer de particules avec une passe compute et dessine ce même buffer comme vertex buffer
+instancié.
+
+[Ouvrir les démos](../suite/demos/)
+
 Les résultats publiés proviennent d'exécutions identifiées et restent distincts d'un lancement
 local. Les preuves enregistrées se trouvent dans
 [`docs/verification.md`](https://github.com/Graphiks-org/WebGPU/blob/master/docs/verification.md).
