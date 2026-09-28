@@ -7,6 +7,9 @@ import org.graphiks.webgpu.GPUErrorFilter
 import org.graphiks.webgpu.GPUMapMode
 import org.graphiks.webgpu.GPUValidationError
 import org.graphiks.webgpu.descriptors.BufferDescriptor
+import org.graphiks.webgpu.suite.AcidCaseId
+import org.graphiks.webgpu.suite.AcidFamily
+import org.graphiks.webgpu.suite.AcidTest
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNull
@@ -15,6 +18,14 @@ import kotlin.test.assertTrue
 /**
  * A validation scope with no operation inside resolves to `null` and does not fail.
  */
+@AcidTest(
+    id = AcidCaseId.ErrorsEmptyScope,
+    family = AcidFamily.ErrorsAsync,
+    contract = [
+        ApiSymbols.GPUDevice_pushErrorScope,
+        ApiSymbols.GPUDevice_popErrorScope,
+    ],
+)
 suspend fun emptyErrorScope(device: GPUDevice) {
     device.pushErrorScope(GPUErrorFilter.Validation)
     val result = device.popErrorScope()
@@ -25,6 +36,15 @@ suspend fun emptyErrorScope(device: GPUDevice) {
 /**
  * A buffer with no usage fails validation; the error scope captures a [GPUValidationError].
  */
+@AcidTest(
+    id = AcidCaseId.ErrorsInvalidBufferUsage,
+    family = AcidFamily.ErrorsAsync,
+    contract = [
+        ApiSymbols.GPUDevice_createBuffer,
+        ApiSymbols.GPUDevice_pushErrorScope,
+        ApiSymbols.GPUDevice_popErrorScope,
+    ],
+)
 suspend fun invalidBufferUsage(device: GPUDevice) {
     device.pushErrorScope(GPUErrorFilter.Validation)
     try {
@@ -38,6 +58,16 @@ suspend fun invalidBufferUsage(device: GPUDevice) {
 /**
  * A mapping offset that is not 8-byte aligned fails validation and leaves the buffer unmapped.
  */
+@AcidTest(
+    id = AcidCaseId.ErrorsMapAlignment,
+    family = AcidFamily.ErrorsAsync,
+    contract = [
+        ApiSymbols.GPUBuffer_mapAsync,
+        ApiSymbols.GPUBuffer_mapState,
+        ApiSymbols.GPUDevice_pushErrorScope,
+        ApiSymbols.GPUDevice_popErrorScope,
+    ],
+)
 suspend fun invalidMapAlignment(device: GPUDevice) {
     device.createBuffer(
         BufferDescriptor(16uL, GPUBufferUsage.MapRead or GPUBufferUsage.CopyDst),
@@ -56,6 +86,17 @@ suspend fun invalidMapAlignment(device: GPUDevice) {
 /**
  * Mapping a destroyed buffer fails and is reported through the validation error scope.
  */
+@AcidTest(
+    id = AcidCaseId.BuffersMapDestroyed,
+    family = AcidFamily.BuffersMapping,
+    contract = [
+        ApiSymbols.GPUDevice_createBuffer,
+        ApiSymbols.GPUBuffer_mapAsync,
+        ApiSymbols.GPUBuffer_close,
+        ApiSymbols.GPUDevice_pushErrorScope,
+        ApiSymbols.GPUDevice_popErrorScope,
+    ],
+)
 suspend fun mappingDestroyedBuffer(device: GPUDevice) {
     val buffer = device.createBuffer(
         BufferDescriptor(16uL, GPUBufferUsage.MapRead or GPUBufferUsage.CopyDst),

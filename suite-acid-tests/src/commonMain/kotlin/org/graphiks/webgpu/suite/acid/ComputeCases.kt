@@ -19,6 +19,9 @@ import org.graphiks.webgpu.descriptors.ComputePipelineDescriptor
 import org.graphiks.webgpu.descriptors.PipelineLayoutDescriptor
 import org.graphiks.webgpu.descriptors.ProgrammableStage
 import org.graphiks.webgpu.descriptors.ShaderModuleDescriptor
+import org.graphiks.webgpu.suite.AcidCaseId
+import org.graphiks.webgpu.suite.AcidFamily
+import org.graphiks.webgpu.suite.AcidTest
 import kotlin.test.assertContentEquals
 
 /**
@@ -38,6 +41,21 @@ fn main(@builtin(global_invocation_id) id: vec3<u32>) {
  * Creates the pipeline from the shader alone (`layout = null`), dispatches four workgroups and
  * reads the storage buffer back through a staging copy. The constant comes from the stage.
  */
+@AcidTest(
+    id = AcidCaseId.ComputeAutoLayoutConstants,
+    family = AcidFamily.Compute,
+    contract = [
+        ApiSymbols.GPUDevice_createShaderModule,
+        ApiSymbols.GPUDevice_createComputePipeline,
+        ApiSymbols.GPUComputePipeline_getBindGroupLayout,
+        ApiSymbols.GPUDevice_createBindGroup,
+        ApiSymbols.GPUComputePassEncoder_setPipeline,
+        ApiSymbols.GPUComputePassEncoder_setBindGroup,
+        ApiSymbols.GPUComputePassEncoder_dispatchWorkgroups,
+        ApiSymbols.GPUComputePassEncoder_end,
+        ApiSymbols.GPUProgrammableStage_constants,
+    ],
+)
 suspend fun computeAutoLayout(device: GPUDevice) = withValidationScope(device) {
     device.createBuffer(
         BufferDescriptor(16uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),
@@ -72,6 +90,18 @@ suspend fun computeAutoLayout(device: GPUDevice) = withValidationScope(device) {
  * The same compute dispatch with an explicit bind group layout and pipeline layout. The stage
  * omits the entry point: the shader has a single compute entry point.
  */
+@AcidTest(
+    id = AcidCaseId.ComputeExplicitLayoutEntrypoint,
+    family = AcidFamily.Compute,
+    contract = [
+        ApiSymbols.GPUDevice_createBindGroupLayout,
+        ApiSymbols.GPUDevice_createPipelineLayout,
+        ApiSymbols.GPUDevice_createComputePipeline,
+        ApiSymbols.GPUDevice_createBindGroup,
+        ApiSymbols.GPUComputePassEncoder_dispatchWorkgroups,
+        ApiSymbols.GPUBufferBindingLayout_minBindingSize,
+    ],
+)
 suspend fun computeExplicitLayout(device: GPUDevice) = withValidationScope(device) {
     device.createBuffer(
         BufferDescriptor(16uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),

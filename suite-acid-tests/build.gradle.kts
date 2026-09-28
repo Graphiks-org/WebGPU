@@ -1,6 +1,7 @@
 plugins {
     kmp
     publish
+    id("org.graphiks.webgpu-suite-inventory")
 }
 
 kotlin {
@@ -30,3 +31,9 @@ kotlin {
         implementation(project(":webgpu-descriptors"))
     }
 }
+
+val generateSuiteInventory = tasks.named(
+    "generateSuiteInventory",
+    org.graphiks.webgpu.inventory.GenerateSuiteInventoryTask::class.java,
+)
+kotlin.sourceSets.getByName("commonMain").kotlin.srcDir(generateSuiteInventory.flatMap { it.generatedSourceDir })

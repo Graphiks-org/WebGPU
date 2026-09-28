@@ -24,11 +24,11 @@ suspend fun runFoundations(): BrowserReport {
         val result = try {
             withTimeout(30.seconds) { runCase(case) }
         } catch (timeout: TimeoutCancellationException) {
-            CaseResult(case.id, "failed", "Timed out after 30 seconds")
+            CaseResult(case.id.id, "failed", "Timed out after 30 seconds")
         } catch (cancelled: CancellationException) {
             throw cancelled
         } catch (failure: Throwable) {
-            CaseResult(case.id, "failed", failure.stackTraceToString())
+            CaseResult(case.id.id, "failed", failure.stackTraceToString())
         }
         results += result
     }
@@ -40,7 +40,7 @@ private suspend fun runCase(case: AcidCase): CaseResult {
     try {
         val missing = case.requiredFeatures - adapter.features
         if (missing.isNotEmpty()) {
-            return CaseResult(case.id, "unsupported", "Missing optional features: $missing")
+            return CaseResult(case.id.id, "unsupported", "Missing optional features: $missing")
         }
 
         val uncapturedErrors = mutableListOf<String>()
@@ -55,7 +55,7 @@ private suspend fun runCase(case: AcidCase): CaseResult {
             device.queue.onSubmittedWorkDone().getOrThrow()
             delay(50) // let the browser deliver pending uncaptured-error callbacks
             check(uncapturedErrors.isEmpty()) { uncapturedErrors.joinToString("\n") }
-            return CaseResult(case.id, "passed", adapterDescription = adapter.info.description)
+            return CaseResult(case.id.id, "passed", adapterDescription = adapter.info.description)
         } finally {
             device.close()
         }

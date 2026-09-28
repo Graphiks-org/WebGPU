@@ -24,19 +24,11 @@ if (!['js', 'wasm'].includes(target) || !distribution) {
 const distRoot = resolve(distribution);
 const reportsDir = join(root, 'build', 'reports');
 const reportPath = join(reportsDir, `${target}.json`);
+const generatedInventory = join(root, 'suite-acid-tests', 'build', 'suite-inventory');
 const expectedIds = JSON.parse(
-  await readFile(join(root, 'inventory', 'foundation-case-ids.json'), 'utf8'),
+  await readFile(join(generatedInventory, 'foundation-case-ids.json'), 'utf8'),
 );
-const baseline = JSON.parse(await readFile(join(root, 'inventory', 'baseline.json'), 'utf8'));
-const foundationSource = await readFile(
-  join(root, 'suite-acid-tests', 'src', 'commonMain', 'kotlin', 'org', 'graphiks', 'webgpu', 'suite', 'acid', 'FoundationCases.kt'),
-  'utf8',
-);
-const missingFromCatalogue = expectedIds.filter((id) => !foundationSource.includes(`"${id}"`));
-if (missingFromCatalogue.length > 0) {
-  console.error(`foundation catalogue is missing expected ids: ${missingFromCatalogue.join(', ')}`);
-  process.exitCode = 1;
-}
+const baseline = JSON.parse(await readFile(join(generatedInventory, 'baseline.json'), 'utf8'));
 
 const suiteCommit = (() => {
   try {

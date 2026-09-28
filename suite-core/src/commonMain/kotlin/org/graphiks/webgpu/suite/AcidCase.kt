@@ -11,8 +11,8 @@ import org.graphiks.webgpu.GPUFeatureName
  * core contract is never hidden here.
  */
 data class AcidCase(
-    val id: String,
-    val title: String,
+    val id: AcidCaseId,
+    val family: AcidFamily,
     val contract: List<String>,
     val requiredFeatures: Set<GPUFeatureName> = emptySet(),
     val run: suspend (GPUDevice) -> Unit,

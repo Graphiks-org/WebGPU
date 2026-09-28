@@ -16,7 +16,7 @@ fun main() {
         } catch (failure: Throwable) {
             BrowserReport(
                 cases = foundationCases().map {
-                    CaseResult(it.id, "not-run", "Runner could not complete")
+                    CaseResult(it.id.id, "not-run", "Runner could not complete")
                 },
                 fatalError = failure.stackTraceToString(),
             )

@@ -4,6 +4,9 @@ import org.graphiks.webgpu.GPUBufferMapState
 import org.graphiks.webgpu.GPUBufferUsage
 import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.descriptors.BufferDescriptor
+import org.graphiks.webgpu.suite.AcidCaseId
+import org.graphiks.webgpu.suite.AcidFamily
+import org.graphiks.webgpu.suite.AcidTest
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
@@ -11,6 +14,18 @@ import kotlin.test.assertEquals
  * A buffer created with [BufferDescriptor.mappedAtCreation] exposes its whole mapping
  * immediately and reports the mapped state until the case unmaps it.
  */
+@AcidTest(
+    id = AcidCaseId.BuffersMappedAtCreation,
+    family = AcidFamily.BuffersMapping,
+    contract = [
+        ApiSymbols.GPUDevice_createBuffer,
+        ApiSymbols.GPUBuffer_getMappedRange,
+        ApiSymbols.GPUBuffer_unmap,
+        ApiSymbols.GPUBuffer_size,
+        ApiSymbols.GPUBuffer_usage,
+        ApiSymbols.GPUBuffer_mapState,
+    ],
+)
 suspend fun mappedAtCreation(device: GPUDevice) = withValidationScope(device) {
     val buffer = device.createBuffer(
         BufferDescriptor(

@@ -13,6 +13,10 @@ gradlePlugin {
             id = "org.graphiks.webgpu-generator"
             implementationClass = "org.graphiks.webgpu.generator.GeneratorPlugin"
         }
+        create("webGpuSuiteInventory") {
+            id = "org.graphiks.webgpu-suite-inventory"
+            implementationClass = "org.graphiks.webgpu.inventory.SuiteInventoryPlugin"
+        }
     }
 }
 

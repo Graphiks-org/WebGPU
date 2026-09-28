@@ -6,6 +6,9 @@ import org.graphiks.webgpu.GPUBufferUsage
 import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.GPUMapMode
 import org.graphiks.webgpu.descriptors.BufferDescriptor
+import org.graphiks.webgpu.suite.AcidCaseId
+import org.graphiks.webgpu.suite.AcidFamily
+import org.graphiks.webgpu.suite.AcidTest
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
@@ -16,6 +19,19 @@ import kotlin.test.assertEquals
  * the source and lands at byte 8 of the destination, so the surrounding words stay as the
  * sentinels the destination was created with.
  */
+@AcidTest(
+    id = AcidCaseId.TransfersCopyOffsets,
+    family = AcidFamily.TransfersBufferTexture,
+    contract = [
+        ApiSymbols.GPUDevice_createBuffer,
+        ApiSymbols.GPUCommandEncoder_copyBufferToBuffer,
+        ApiSymbols.GPUCommandEncoder_finish,
+        ApiSymbols.GPUQueue_submit,
+        ApiSymbols.GPUBuffer_getMappedRange,
+        ApiSymbols.GPUBuffer_mapAsync,
+        ApiSymbols.GPUBuffer_unmap,
+    ],
+)
 suspend fun bufferCopyOffsets(device: GPUDevice) = withValidationScope(device) {
     device.createBuffer(
         BufferDescriptor(16uL, GPUBufferUsage.CopySrc, mappedAtCreation = true),
@@ -48,6 +64,18 @@ suspend fun bufferCopyOffsets(device: GPUDevice) = withValidationScope(device) {
  * Writes two words into the middle of a buffer from a data offset, then copies the whole
  * buffer into a staging buffer to read the result.
  */
+@AcidTest(
+    id = AcidCaseId.TransfersWriteOffsets,
+    family = AcidFamily.TransfersBufferTexture,
+    contract = [
+        ApiSymbols.GPUDevice_createBuffer,
+        ApiSymbols.GPUQueue_writeBuffer,
+        ApiSymbols.GPUCommandEncoder_copyBufferToBuffer,
+        ApiSymbols.GPUBuffer_mapAsync,
+        ApiSymbols.GPUBuffer_getMappedRange,
+        ApiSymbols.GPUBuffer_unmap,
+    ],
+)
 suspend fun queueWriteOffsets(device: GPUDevice) = withValidationScope(device) {
     device.createBuffer(
         BufferDescriptor(16uL, GPUBufferUsage.CopyDst or GPUBufferUsage.CopySrc),
@@ -79,6 +107,18 @@ suspend fun queueWriteOffsets(device: GPUDevice) = withValidationScope(device) {
  * The same write as [queueWriteOffsets] with the size omitted: everything from the data
  * offset to the end of the data is written.
  */
+@AcidTest(
+    id = AcidCaseId.TransfersWriteRemaining,
+    family = AcidFamily.TransfersBufferTexture,
+    contract = [
+        ApiSymbols.GPUDevice_createBuffer,
+        ApiSymbols.GPUQueue_writeBuffer,
+        ApiSymbols.GPUCommandEncoder_copyBufferToBuffer,
+        ApiSymbols.GPUBuffer_mapAsync,
+        ApiSymbols.GPUBuffer_getMappedRange,
+        ApiSymbols.GPUBuffer_unmap,
+    ],
+)
 suspend fun queueWriteRemaining(device: GPUDevice) = withValidationScope(device) {
     device.createBuffer(
         BufferDescriptor(16uL, GPUBufferUsage.CopyDst or GPUBufferUsage.CopySrc),
@@ -112,6 +152,17 @@ suspend fun queueWriteRemaining(device: GPUDevice) = withValidationScope(device)
  * The first view is never reused after `unmap`; the second mapping reads the whole buffer
  * from a fresh view.
  */
+@AcidTest(
+    id = AcidCaseId.BuffersPartialMapRemap,
+    family = AcidFamily.BuffersMapping,
+    contract = [
+        ApiSymbols.GPUDevice_createBuffer,
+        ApiSymbols.GPUBuffer_mapAsync,
+        ApiSymbols.GPUBuffer_getMappedRange,
+        ApiSymbols.GPUBuffer_unmap,
+        ApiSymbols.GPUBuffer_mapState,
+    ],
+)
 suspend fun partialMapping(device: GPUDevice) = withValidationScope(device) {
     device.createBuffer(
         BufferDescriptor(16uL, GPUBufferUsage.CopySrc, mappedAtCreation = true),
