@@ -187,6 +187,38 @@
     "sampling.lod-clamp": {
       "title": "Borner le LOD demandé",
       "expectation": "lodMinClamp et lodMaxClamp bornent le LOD utilisé par un échantillonnage."
+    },
+    "render.vertex-buffer-offset": {
+      "title": "Décaler un vertex buffer",
+      "expectation": "setVertexBuffer lit les sommets depuis l'offset d'octets donné."
+    },
+    "render.indexed-u16": {
+      "title": "Dessiner avec des index 16 bits",
+      "expectation": "Un index buffer uint16 pilote drawIndexed sur les sommets référencés."
+    },
+    "render.indexed-u32-offset": {
+      "title": "Dessiner avec des index 32 bits à un offset",
+      "expectation": "Un index buffer uint32 lu depuis un offset d'octets pilote drawIndexed."
+    },
+    "render.first-vertex": {
+      "title": "Commencer le dessin à un offset de sommet",
+      "expectation": "draw(firstVertex) démarre le flux de sommets à l'index donné."
+    },
+    "render.base-vertex": {
+      "title": "Décaler les sommets indexés par un base vertex",
+      "expectation": "drawIndexed(baseVertex) ajoute une constante à chaque index."
+    },
+    "render.instanced-attributes": {
+      "title": "Fournir des attributs par instance",
+      "expectation": "Un buffer en step mode Instance fait varier l'offset et la couleur par instance."
+    },
+    "render.viewport": {
+      "title": "Limiter le rendu à un viewport",
+      "expectation": "setViewport restreint la rasterisation au rectangle donné."
+    },
+    "render.scissor": {
+      "title": "Découper le rendu à un rectangle de scissor",
+      "expectation": "setScissorRect écarte les fragments hors du rectangle."
     }
   },
   "behaviours": {
@@ -209,7 +241,6 @@
     "render.pass-descriptor": "Le descripteur de passe assemble les attachements et l'état de passe, et la passe écrit dans les attachements.",
     "render.occlusion-queries": "Une requête d'occlusion encadre des draw calls et ses résultats sont écrits dans le query set.",
     "render.pipeline.creation": "Un pipeline render compile les états vertex/fragment et décrit ses cibles de couleur et leurs blends.",
-    "render.vertex-state": "Les layouts vertex relient buffers et attributs aux locations du shader, et les commandes de draw les consomment.",
     "render.primitive-and-multisample": "La topologie, le culling et le multisampling sont validés par rapport aux attachements de la passe.",
     "render.depth-stencil-state": "L'état profondeur/stencil de la pipeline est compatible avec le format d'attachement de la passe.",
     "render.pipeline-async": "La création asynchrone résout une pipeline render prête ou échoue explicitement.",

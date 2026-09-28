@@ -270,24 +270,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "render.vertex-state",
-    "family": "pipelines/render state",
-    "contract": [
-      "GPUVertexState",
-      "GPUVertexState.buffers",
-      "GPUVertexBufferLayout",
-      "GPUVertexAttribute",
-      "GPUVertexFormat",
-      "GPUVertexStepMode",
-      "GPURenderCommandsMixin.setVertexBuffer",
-      "GPURenderCommandsMixin.setIndexBuffer",
-      "GPURenderCommandsMixin.draw",
-      "GPURenderCommandsMixin.drawIndexed",
-      "GPUIndexFormat"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "render.primitive-and-multisample",
     "family": "pipelines/render state",
     "contract": [

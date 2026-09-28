@@ -45,4 +45,12 @@ enum class AcidCaseId(val id: String) {
     TexturesSamplingExplicitMip("sampling.explicit-mip"),
     TexturesSamplingLinearMip("sampling.linear-mip"),
     TexturesSamplingLodClamp("sampling.lod-clamp"),
+    RenderVertexBufferOffset("render.vertex-buffer-offset"),
+    RenderIndexedU16("render.indexed-u16"),
+    RenderIndexedU32Offset("render.indexed-u32-offset"),
+    RenderFirstVertex("render.first-vertex"),
+    RenderBaseVertex("render.base-vertex"),
+    RenderInstancedAttributes("render.instanced-attributes"),
+    RenderViewport("render.viewport"),
+    RenderScissor("render.scissor"),
 }
