@@ -22,6 +22,7 @@
   "columnCpu": "CPU issue ms, median [min..max]",
   "columnCompletion": "Completion ms, median [min..max]",
   "columnVerified": "GPU output verified",
+  "columnDiagnostic": "Diagnostic",
   "adapter": "Adapter",
   "fallback": "Fallback adapter",
   "features": "Features",

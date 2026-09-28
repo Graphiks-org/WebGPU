@@ -46,6 +46,7 @@ internal data class BenchmarkTexts(
     val columnCpu: String,
     val columnCompletion: String,
     val columnVerified: String,
+    val columnDiagnostic: String,
     val adapter: String,
     val fallback: String,
     val features: String,
@@ -329,6 +330,7 @@ private class BenchmarkPage(
             texts.columnCpu,
             texts.columnCompletion,
             texts.columnVerified,
+            texts.columnDiagnostic,
         )
         for (header in headers) {
             val cell = createElement("th")
@@ -371,6 +373,7 @@ private class BenchmarkPage(
             interval(cpuValues),
             interval(completionValues),
             if (scenario.outputVerified) texts.yes else texts.no,
+            scenario.diagnostic ?: "",
         )
         for (value in cells) {
             val cell = createElement("td")

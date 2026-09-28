@@ -6,6 +6,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import org.graphiks.webgpu.GPUAdapterInfo
 import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.GPUErrorFilter
@@ -83,9 +84,10 @@ private suspend fun runScenarioSafely(
     profile: BenchmarkProfile,
     scenario: BenchmarkScenario,
 ): BenchmarkScenarioResult = try {
-    withTimeout(ScenarioTimeoutSeconds.seconds) { runScenario(profile, scenario) }
-} catch (timeout: TimeoutCancellationException) {
-    scenarioResult(
+    // withTimeoutOrNull returns null only for its own timeout; a campaign cancellation is a
+    // foreign CancellationException and is rethrown, so the two cases stay distinct.
+    val outcome = withTimeoutOrNull(ScenarioTimeoutSeconds.seconds) { runScenario(profile, scenario) }
+    outcome ?: scenarioResult(
         scenario,
         profile,
         status = "failed",

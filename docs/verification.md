@@ -185,7 +185,7 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   node tools/build-site.mjs
   ```
 
-- Result: **10/10 scenarios `completed` and GPU-verified on JS and on 10/10 on Wasm**, for the `ci`
+- Result: **10/10 scenarios `completed` and GPU-verified on JS and 10/10 on Wasm**, for the `ci`
   profile (5 retained samples per scenario) and, on JS, for the `standard` profile (30 samples). No
   page errors and no fatal error. The protocol fields were `schemaVersion=1`,
   `protocol=foundations-v1`, `clock=kotlin.time.TimeSource.Monotonic`. The ten ids, the profile and the
@@ -205,6 +205,10 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   and about 0.9–1.4 ms for sixteen 1 MiB writes). The reported adapter description was empty and is
   recorded as `null`/unknown; `isFallbackAdapter` was `true`. These are software-backend functional
   observations, not physical-GPU performances.
+- Timeout classification: with the campaign budget temporarily reduced to one second, the in-flight
+  scenario was reported as `failed` with `The campaign timed out after 16 minutes.` rather than the
+  90-second scenario-timeout or a tab-hidden cancellation diagnostic; restoring the budget returned
+  10/10. The temporary change was not committed.
 - Collector options: `--profile=ci|standard` (default `ci` in the tool) and
   `--backend=swiftshader|default` (default `swiftshader`). `--backend=default` drops the SwiftShader
   flags and records `default`, never `hardware`. JS and Wasm were run sequentially, never in parallel.

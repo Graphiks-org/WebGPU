@@ -25,9 +25,11 @@ const TEXT = {
     backendLabel: 'Backend requested', headlessLabel: 'Headless', commitLabel: 'Commit', dateLabel: 'Date',
     adapterLabel: 'Adapter', fallbackLabel: 'Fallback adapter', featuresLabel: 'Features', limitsLabel: 'Limits used',
     unknown: 'unknown', yes: 'yes', no: 'no',
-    headers: ['Scenario', 'Status', 'Size', 'Operations', 'Warm-ups', 'Samples', 'GPU output verified', 'cpuIssueMs (ms)', 'completionMs (ms)'],
+    headers: ['Scenario', 'Status', 'Size', 'Operations', 'Warm-ups', 'Samples', 'GPU output verified', 'Diagnostic', 'cpuIssueMs (ms)', 'completionMs (ms)'],
     statuses: { completed: 'Completed', failed: 'Failed', interrupted: 'Interrupted', 'not-run': 'Not run' },
     unit: { bytes: 'bytes', elements: 'elements' },
+    lowResolution: 'Low resolution: the clock returned zero for some cpuIssueMs samples.',
+    zeroSamples: 'samples at zero cpuIssueMs',
     p95: 'p95',
     downloadRaw: 'Download the raw samples (JSON)',
     runTitle: 'Run locally',
@@ -57,9 +59,11 @@ const TEXT = {
     backendLabel: 'Backend demandé', headlessLabel: 'Sans interface', commitLabel: 'Commit', dateLabel: 'Date',
     adapterLabel: 'Adapter', fallbackLabel: 'Adapter de secours', featuresLabel: 'Fonctionnalités', limitsLabel: 'Limites utilisées',
     unknown: 'inconnu', yes: 'oui', no: 'non',
-    headers: ['Scénario', 'Statut', 'Taille', 'Opérations', 'Warm-ups', 'Échantillons', 'Résultat GPU vérifié', 'cpuIssueMs (ms)', 'completionMs (ms)'],
+    headers: ['Scénario', 'Statut', 'Taille', 'Opérations', 'Warm-ups', 'Échantillons', 'Résultat GPU vérifié', 'Diagnostic', 'cpuIssueMs (ms)', 'completionMs (ms)'],
     statuses: { completed: 'Terminé', failed: 'Échoué', interrupted: 'Interrompu', 'not-run': 'Non exécuté' },
     unit: { bytes: 'octets', elements: 'éléments' },
+    lowResolution: 'Résolution faible : l’horloge a renvoyé zéro pour certains échantillons cpuIssueMs.',
+    zeroSamples: 'échantillons à cpuIssueMs nul',
     p95: 'p95',
     downloadRaw: 'Télécharger les échantillons bruts (JSON)',
     runTitle: 'Exécution locale',
@@ -191,6 +195,7 @@ function scenarioRow(scenario) {
     scenario.warmups,
     `${scenario.samples?.length ?? 0}/${scenario.plannedSamples}`,
     scenario.outputVerified ? t.yes : t.no,
+    scenario.diagnostic ?? '',
     describe(cpu),
     describe(completion),
   ];
@@ -239,6 +244,15 @@ function renderTarget(target, envelope) {
       details.push(`${t.limitsLabel}: ${Object.entries(first.limitsUsed).map(([name, value]) => `${name}=${value}`).join(', ')}`);
     }
     container.append(el('p', details.join(' · '), 'meta'));
+  }
+
+  const zeroScenarios = (report.scenarios ?? []).filter((scenario) => (scenario.zeroCpuSamples ?? 0) > 0);
+  if (zeroScenarios.length > 0) {
+    container.append(el(
+      'p',
+      `${t.lowResolution} (${t.zeroSamples}: ${zeroScenarios.map((scenario) => `${scenario.id}=${scenario.zeroCpuSamples}`).join(', ')})`,
+      'meta',
+    ));
   }
 
   const table = document.createElement('table');
