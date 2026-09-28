@@ -219,6 +219,38 @@
     "render.scissor": {
       "title": "Clip rendering to a scissor rectangle",
       "expectation": "setScissorRect discards fragments outside the rectangle."
+    },
+    "render.clear-only": {
+      "title": "Clear an attachment without drawing",
+      "expectation": "A pass with no draw keeps the clear value it stores."
+    },
+    "render.load-preserves": {
+      "title": "Preserve an attachment across passes",
+      "expectation": "A load pass keeps the content a prior store pass wrote."
+    },
+    "render.color-write-mask": {
+      "title": "Mask the colour channels written",
+      "expectation": "writeMask writes only the selected channels and keeps the clear elsewhere."
+    },
+    "blend.source-alpha": {
+      "title": "Blend with the source alpha",
+      "expectation": "SrcAlpha/OneMinusSrcAlpha composites a translucent fragment over the target."
+    },
+    "blend.additive": {
+      "title": "Blend additively",
+      "expectation": "One/One addition sums the fragment and the target."
+    },
+    "blend.constant": {
+      "title": "Blend with a constant factor",
+      "expectation": "setBlendConstant supplies the constant blend factor."
+    },
+    "render.multiple-targets": {
+      "title": "Write several colour targets",
+      "expectation": "A fragment writes location 0 and 1 into two attachments read back separately."
+    },
+    "render.srgb-encode": {
+      "title": "Encode an sRGB attachment",
+      "expectation": "An rgba8unorm-srgb target encodes linear fragments on write."
     }
   },
   "behaviours": {
@@ -236,11 +268,10 @@
     "texture.view-swizzle": "A non-identity swizzle produces the expected DOMString and requires the texture-component-swizzle feature.",
     "sampler.comparison": "A comparison sampler reports its compare function and comparison binding type.",
     "texture.usage-and-formats": "Texture usages combine and each format declares its binding and attachment capabilities.",
-    "render.color-load-store": "Load and store operations preserve, replace or resolve the colour attachment content.",
+    "render.color-resolve": "A colour attachment can resolve a multisampled view, and a 3D view selects a depth slice.",
     "render.depth.load-store": "Load and store operations preserve or replace depth according to the descriptor.",
-    "render.pass-descriptor": "The pass descriptor assembles the attachments and pass state, and the pass writes to the attachments.",
+    "render.pass-state": "The pass descriptor exposes its draw-count state and the pass sets the stencil reference.",
     "render.occlusion-queries": "An occlusion query wraps draw calls and its results are written to the query set.",
-    "render.pipeline.creation": "A render pipeline compiles the vertex/fragment state and describes its colour targets and blends.",
     "render.primitive-and-multisample": "Topology, culling and multisampling are validated against the pass attachments.",
     "render.depth-stencil-state": "The pipeline depth/stencil state is compatible with the pass attachment format.",
     "render.pipeline-async": "Asynchronous creation resolves a ready render pipeline or fails explicitly.",

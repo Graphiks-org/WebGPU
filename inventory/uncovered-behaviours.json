@@ -196,21 +196,11 @@
     "requiredFeatures": []
   },
   {
-    "id": "render.color-load-store",
+    "id": "render.color-resolve",
     "family": "rendu/passes/attachments",
     "contract": [
-      "GPUCommandEncoder.beginRenderPass",
-      "GPURenderPassEncoder",
-      "GPURenderPassDescriptor",
-      "GPURenderPassColorAttachment",
-      "GPURenderPassColorAttachment.view",
-      "GPURenderPassColorAttachment.loadOp",
-      "GPURenderPassColorAttachment.storeOp",
-      "GPURenderPassColorAttachment.clearValue",
       "GPURenderPassColorAttachment.resolveTarget",
-      "GPURenderPassColorAttachment.depthSlice",
-      "GPULoadOp",
-      "GPUStoreOp"
+      "GPURenderPassColorAttachment.depthSlice"
     ],
     "requiredFeatures": []
   },
@@ -223,19 +213,11 @@
     "requiredFeatures": []
   },
   {
-    "id": "render.pass-descriptor",
+    "id": "render.pass-state",
     "family": "rendu/passes/attachments",
     "contract": [
-      "GPURenderPassDescriptor.colorAttachments",
-      "GPURenderPassDescriptor.depthStencilAttachment",
-      "GPURenderPassDescriptor.occlusionQuerySet",
-      "GPURenderPassDescriptor.timestampWrites",
       "GPURenderPassDescriptor.maxDrawCount",
-      "GPURenderPassEncoder.setViewport",
-      "GPURenderPassEncoder.setScissorRect",
-      "GPURenderPassEncoder.setBlendConstant",
-      "GPURenderPassEncoder.setStencilReference",
-      "GPURenderPassEncoder.end"
+      "GPURenderPassEncoder.setStencilReference"
     ],
     "requiredFeatures": []
   },
@@ -245,27 +227,6 @@
     "contract": [
       "GPURenderPassEncoder.beginOcclusionQuery",
       "GPURenderPassEncoder.endOcclusionQuery"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "render.pipeline.creation",
-    "family": "pipelines/render state",
-    "contract": [
-      "GPUDevice.createRenderPipeline",
-      "GPURenderPipeline",
-      "GPURenderPipelineDescriptor",
-      "GPUFragmentState",
-      "GPUFragmentState.targets",
-      "GPUColorTargetState",
-      "GPUColorTargetState.format",
-      "GPUColorTargetState.blend",
-      "GPUColorTargetState.writeMask",
-      "GPUBlendState",
-      "GPUBlendComponent",
-      "GPUBlendOperation",
-      "GPUBlendFactor",
-      "GPUColorWrite"
     ],
     "requiredFeatures": []
   },

@@ -53,4 +53,12 @@ enum class AcidCaseId(val id: String) {
     RenderInstancedAttributes("render.instanced-attributes"),
     RenderViewport("render.viewport"),
     RenderScissor("render.scissor"),
+    RenderClearOnly("render.clear-only"),
+    RenderLoadPreserves("render.load-preserves"),
+    RenderColorWriteMask("render.color-write-mask"),
+    BlendSourceAlpha("blend.source-alpha"),
+    BlendAdditive("blend.additive"),
+    BlendConstant("blend.constant"),
+    RenderMultipleTargets("render.multiple-targets"),
+    RenderSrgbEncode("render.srgb-encode"),
 }

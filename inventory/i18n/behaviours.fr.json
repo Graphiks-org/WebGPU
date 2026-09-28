@@ -219,6 +219,38 @@
     "render.scissor": {
       "title": "Découper le rendu à un rectangle de scissor",
       "expectation": "setScissorRect écarte les fragments hors du rectangle."
+    },
+    "render.clear-only": {
+      "title": "Effacer un attachement sans dessiner",
+      "expectation": "Une passe sans draw conserve la valeur de clear qu'elle stocke."
+    },
+    "render.load-preserves": {
+      "title": "Préserver un attachement entre passes",
+      "expectation": "Une passe load conserve le contenu écrit par une passe store antérieure."
+    },
+    "render.color-write-mask": {
+      "title": "Masquer les canaux de couleur écrits",
+      "expectation": "writeMask n'écrit que les canaux sélectionnés et conserve le clear ailleurs."
+    },
+    "blend.source-alpha": {
+      "title": "Mélanger avec l'alpha de la source",
+      "expectation": "SrcAlpha/OneMinusSrcAlpha compose un fragment translucide sur la cible."
+    },
+    "blend.additive": {
+      "title": "Mélanger en additif",
+      "expectation": "L'addition One/One somme le fragment et la cible."
+    },
+    "blend.constant": {
+      "title": "Mélanger avec un facteur constant",
+      "expectation": "setBlendConstant fournit le facteur de mélange constant."
+    },
+    "render.multiple-targets": {
+      "title": "Écrire plusieurs cibles de couleur",
+      "expectation": "Un fragment écrit en location 0 et 1 dans deux attachements relus séparément."
+    },
+    "render.srgb-encode": {
+      "title": "Encoder un attachement sRGB",
+      "expectation": "Une cible rgba8unorm-srgb encode les fragments linéaires à l'écriture."
     }
   },
   "behaviours": {
@@ -236,11 +268,10 @@
     "texture.view-swizzle": "Un swizzle non identitaire produit la chaîne DOMString attendue et exige la feature texture-component-swizzle.",
     "sampler.comparison": "Un sampler de comparaison expose sa fonction de comparaison et son type de binding de comparaison.",
     "texture.usage-and-formats": "Les usages de texture se combinent et chaque format déclare ses capacités de binding et d'attachement.",
-    "render.color-load-store": "Les opérations de chargement et de stockage préservent, remplacent ou résolvent le contenu de l'attachement couleur.",
+    "render.color-resolve": "Un attachement couleur peut résoudre une vue multisample, et une vue 3D sélectionne une tranche de profondeur.",
     "render.depth.load-store": "Les opérations de chargement et de stockage préservent ou remplacent la profondeur selon le descripteur.",
-    "render.pass-descriptor": "Le descripteur de passe assemble les attachements et l'état de passe, et la passe écrit dans les attachements.",
+    "render.pass-state": "Le descripteur de passe expose son nombre de draw et la passe fixe la référence stencil.",
     "render.occlusion-queries": "Une requête d'occlusion encadre des draw calls et ses résultats sont écrits dans le query set.",
-    "render.pipeline.creation": "Un pipeline render compile les états vertex/fragment et décrit ses cibles de couleur et leurs blends.",
     "render.primitive-and-multisample": "La topologie, le culling et le multisampling sont validés par rapport aux attachements de la passe.",
     "render.depth-stencil-state": "L'état profondeur/stencil de la pipeline est compatible avec le format d'attachement de la passe.",
     "render.pipeline-async": "La création asynchrone résout une pipeline render prête ou échoue explicitement.",
