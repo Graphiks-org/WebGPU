@@ -3,10 +3,12 @@ package org.graphiks.webgpu.suite.acid
 import org.graphiks.webgpu.GPUColorTargetState
 import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.GPUDepthStencilState
+import org.graphiks.webgpu.GPULoadOp
 import org.graphiks.webgpu.GPUMultisampleState
 import org.graphiks.webgpu.GPUPrimitiveState
 import org.graphiks.webgpu.GPURenderPassEncoder
 import org.graphiks.webgpu.GPURenderPipeline
+import org.graphiks.webgpu.GPUStoreOp
 import org.graphiks.webgpu.GPUTexture
 import org.graphiks.webgpu.GPUTextureFormat
 import org.graphiks.webgpu.GPUTextureUsage
@@ -18,6 +20,7 @@ import org.graphiks.webgpu.descriptors.FragmentState
 import org.graphiks.webgpu.descriptors.MultisampleState
 import org.graphiks.webgpu.descriptors.PrimitiveState
 import org.graphiks.webgpu.descriptors.RenderPassColorAttachment
+import org.graphiks.webgpu.descriptors.RenderPassDepthStencilAttachment
 import org.graphiks.webgpu.descriptors.RenderPassDescriptor
 import org.graphiks.webgpu.descriptors.RenderPipelineDescriptor
 import org.graphiks.webgpu.descriptors.ShaderModuleDescriptor
@@ -109,6 +112,73 @@ internal suspend fun renderAndRead(
             draw(pass)
             pass.end()
             encoder.finish().use { device.queue.submit(listOf(it)) }
+        }
+    }
+    return readRgba8(device, target, width, height)
+}
+
+/** Creates a depth or depth-stencil attachment texture a case renders against. */
+internal fun createDepthStencilTarget(
+    device: GPUDevice,
+    width: Int,
+    height: Int,
+    format: GPUTextureFormat,
+): GPUTexture = device.createTexture(
+    TextureDescriptor(
+        size = Extent3D(width.toUInt(), height.toUInt(), 1u),
+        format = format,
+        usage = GPUTextureUsage.RenderAttachment,
+    ),
+)
+
+/**
+ * Runs one render pass on [target] with a colour clear and an explicit depth/stencil attachment,
+ * lets [draw] issue the draw calls, then reads the colour back as tightly packed RGBA8. Every depth
+ * and stencil load/store the case needs is named explicitly.
+ */
+internal suspend fun renderDepthAndRead(
+    device: GPUDevice,
+    target: GPUTexture,
+    width: Int,
+    height: Int,
+    colorClear: Color,
+    depthTexture: GPUTexture,
+    depthClearValue: Float? = null,
+    depthLoadOp: GPULoadOp? = null,
+    depthStoreOp: GPUStoreOp? = null,
+    stencilClearValue: UInt = 0u,
+    stencilLoadOp: GPULoadOp? = null,
+    stencilStoreOp: GPUStoreOp? = null,
+    draw: (GPURenderPassEncoder) -> Unit,
+): ByteArray {
+    target.createView().use { colorView ->
+        depthTexture.createView().use { depthView ->
+            device.createCommandEncoder().use { encoder ->
+                val pass = encoder.beginRenderPass(
+                    RenderPassDescriptor(
+                        colorAttachments = listOf(
+                            RenderPassColorAttachment(
+                                view = colorView,
+                                loadOp = GPULoadOp.Clear,
+                                storeOp = GPUStoreOp.Store,
+                                clearValue = colorClear,
+                            ),
+                        ),
+                        depthStencilAttachment = RenderPassDepthStencilAttachment(
+                            view = depthView,
+                            depthClearValue = depthClearValue,
+                            depthLoadOp = depthLoadOp,
+                            depthStoreOp = depthStoreOp,
+                            stencilClearValue = stencilClearValue,
+                            stencilLoadOp = stencilLoadOp,
+                            stencilStoreOp = stencilStoreOp,
+                        ),
+                    ),
+                )
+                draw(pass)
+                pass.end()
+                encoder.finish().use { device.queue.submit(listOf(it)) }
+            }
         }
     }
     return readRgba8(device, target, width, height)

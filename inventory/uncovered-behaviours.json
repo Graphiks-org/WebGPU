@@ -101,15 +101,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "compute.pass-descriptor",
-    "family": "compute",
-    "contract": [
-      "GPUComputePassDescriptor",
-      "GPUComputePassDescriptor.timestampWrites"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "texture.creation",
     "family": "textures/views/samplers",
     "contract": [
@@ -205,28 +196,10 @@
     "requiredFeatures": []
   },
   {
-    "id": "render.depth.load-store",
-    "family": "rendu/passes/attachments",
-    "contract": [
-      "GPURenderPassDepthStencilAttachment"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "render.pass-state",
     "family": "rendu/passes/attachments",
     "contract": [
-      "GPURenderPassDescriptor.maxDrawCount",
-      "GPURenderPassEncoder.setStencilReference"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "render.occlusion-queries",
-    "family": "rendu/passes/attachments",
-    "contract": [
-      "GPURenderPassEncoder.beginOcclusionQuery",
-      "GPURenderPassEncoder.endOcclusionQuery"
+      "GPURenderPassDescriptor.maxDrawCount"
     ],
     "requiredFeatures": []
   },
@@ -238,24 +211,19 @@
       "GPUPrimitiveTopology",
       "GPUFrontFace",
       "GPUCullMode",
-      "GPUMultisampleState",
-      "GPUSampleMask",
       "GPUColor",
       "GPURenderPassLayout"
     ],
     "requiredFeatures": []
   },
   {
-    "id": "render.depth-stencil-state",
+    "id": "render.depth-bias",
     "family": "pipelines/render state",
     "contract": [
-      "GPUDepthStencilState",
-      "GPUStencilFaceState",
-      "GPUStencilOperation",
-      "GPUStencilValue",
       "GPUDepthBias",
-      "GPUDepthStencilState.depthWriteEnabled",
-      "GPUDepthStencilState.depthCompare"
+      "GPUDepthStencilState.depthBias",
+      "GPUDepthStencilState.depthBiasSlopeScale",
+      "GPUDepthStencilState.depthBiasClamp"
     ],
     "requiredFeatures": []
   },
@@ -268,38 +236,9 @@
     "requiredFeatures": []
   },
   {
-    "id": "renderbundle.record-and-execute",
-    "family": "render bundles",
-    "contract": [
-      "GPUDevice.createRenderBundleEncoder",
-      "GPURenderBundleEncoder",
-      "GPURenderBundleEncoder.finish",
-      "GPURenderBundle",
-      "GPURenderBundleDescriptor",
-      "GPURenderBundleEncoderDescriptor",
-      "GPURenderPassEncoder.executeBundles"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "query.create-and-resolve",
+    "id": "query.render-timestamp-writes",
     "family": "queries/timestamps",
     "contract": [
-      "GPUDevice.createQuerySet",
-      "GPUQuerySet",
-      "GPUQuerySetDescriptor",
-      "GPUQuerySet.type",
-      "GPUQuerySet.count",
-      "GPUQueryType",
-      "GPUCommandEncoder.resolveQuerySet"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "query.timestamp-writes",
-    "family": "queries/timestamps",
-    "contract": [
-      "GPUComputePassTimestampWrites",
       "GPURenderPassTimestampWrites"
     ],
     "requiredFeatures": [

@@ -251,6 +251,102 @@
     "render.srgb-encode": {
       "title": "Encoder un attachement sRGB",
       "expectation": "Une cible rgba8unorm-srgb encode les fragments linéaires à l'écriture."
+    },
+    "depth.less": {
+      "title": "Comparer la profondeur avec Less",
+      "expectation": "Un fragment plus proche gagne le test de profondeur et bloque un fragment plus lointain."
+    },
+    "depth.greater": {
+      "title": "Comparer la profondeur avec Greater",
+      "expectation": "Un fragment plus lointain gagne lorsque le test est Greater."
+    },
+    "depth.write-disabled": {
+      "title": "Désactiver l'écriture de profondeur pour un draw",
+      "expectation": "Un draw sans écriture de profondeur ne bloque pas un fragment ultérieur."
+    },
+    "depth.load-preserves": {
+      "title": "Préserver la profondeur entre passes",
+      "expectation": "Une passe de chargement de profondeur conserve la profondeur écrite par une passe store antérieure."
+    },
+    "stencil.replace-equal": {
+      "title": "Remplacer puis comparer le stencil",
+      "expectation": "Un draw Replace pose une référence que le draw Equal suivant retrouve."
+    },
+    "stencil.read-mask": {
+      "title": "Masquer les bits de comparaison du stencil",
+      "expectation": "stencilReadMask limite les bits utilisés par la comparaison."
+    },
+    "stencil.write-mask": {
+      "title": "Masquer les bits écrits du stencil",
+      "expectation": "stencilWriteMask limite les bits qu'une opération stencil modifie."
+    },
+    "stencil.depth-fail": {
+      "title": "Déclencher l'opération depth-fail du stencil",
+      "expectation": "depthFailOp s'exécute quand le test de profondeur échoue mais que le test stencil passe."
+    },
+    "msaa.resolve": {
+      "title": "Résoudre un attachement multisample",
+      "expectation": "Un attachement sampleCount 4 rend et se résout dans une cible sampleCount 1."
+    },
+    "msaa.sample-mask-zero": {
+      "title": "Écarter tous les samples avec un masque nul",
+      "expectation": "Un masque d'échantillons de pipeline à 0 laisse le clear intact après résolution."
+    },
+    "bundles.draw": {
+      "title": "Dessiner depuis un render bundle",
+      "expectation": "Un bundle enregistré exécute sa pipeline et son draw dans une passe."
+    },
+    "bundles.reuse": {
+      "title": "Réutiliser un render bundle entre passes",
+      "expectation": "Un même bundle s'exécute à l'identique sur deux cibles aux fonds différents."
+    },
+    "render.draw-indirect": {
+      "title": "Dessiner avec des arguments indirects",
+      "expectation": "drawIndirect lit son nombre de sommets dans un buffer ; un compte nul ne dessine rien."
+    },
+    "render.draw-indexed-indirect": {
+      "title": "Dessiner en indexé avec des arguments indirects",
+      "expectation": "drawIndexedIndirect lit son nombre d'index dans un buffer."
+    },
+    "queries.occlusion": {
+      "title": "Compter les samples visibles avec des requêtes d'occlusion",
+      "expectation": "Une requête d'occlusion compte des samples pour un draw visible et aucun pour un draw rejeté par la profondeur."
+    },
+    "render.indirect-first-instance": {
+      "title": "Définir la première instance par arguments indirects",
+      "expectation": "Avec la feature IndirectFirstInstance, les arguments indirects sélectionnent l'instance de base."
+    },
+    "errors.texture-copy-row-alignment": {
+      "title": "Rejeter un pas de ligne non aligné",
+      "expectation": "copyBufferToTexture exige que bytesPerRow soit un multiple de 256."
+    },
+    "errors.texture-copy-bounds": {
+      "title": "Rejeter une copie hors de la texture",
+      "expectation": "Une copie dont l'origine et la taille dépassent la texture échoue la validation."
+    },
+    "errors.missing-copy-usage": {
+      "title": "Rejeter une copie depuis une texture sans usage de copie",
+      "expectation": "Une texture créée avec TextureBinding seul ne peut pas être source de copie."
+    },
+    "errors.dynamic-offset-alignment": {
+      "title": "Rejeter un offset dynamique non aligné",
+      "expectation": "Un offset dynamique uniforme doit être aligné sur la limite du device."
+    },
+    "errors.bindgroup-layout-mismatch": {
+      "title": "Rejeter un bind group incompatible avec la pipeline",
+      "expectation": "Définir un bind group dont le layout diffère de celui de la pipeline échoue la validation."
+    },
+    "errors.nested-scopes": {
+      "title": "Capturer l'erreur dans le scope le plus interne",
+      "expectation": "Seul le scope de validation interne rapporte l'erreur ; le scope externe résout à null."
+    },
+    "queries.timestamp-resolve": {
+      "title": "Résoudre les timestamps de passe",
+      "expectation": "Une passe compute écrit des timestamps de début et de fin, résolus dans une plage d'un buffer."
+    },
+    "compute.shader-f16": {
+      "title": "Calculer en demi-précision",
+      "expectation": "L'extension f16 calcule en demi-précision et élargit le résultat exact."
     }
   },
   "behaviours": {
@@ -262,22 +358,17 @@
     "transfers.texture-copy-aspect": "Une copie de texture peut sélectionner l'aspect profondeur ou stencil d'un format combiné.",
     "shader.compilation-info": "Les messages de compilation sont disponibles avec leur sévérité et leur position, sans imposer un texte exact.",
     "compute.pipeline-async": "La création asynchrone résout un pipeline prêt à l'emploi ou échoue explicitement.",
-    "compute.pass-descriptor": "Le descripteur de passe compute porte les écritures de timestamp optionnelles.",
     "texture.creation": "Une texture expose ses dimensions, son format et ses usages ; une combinaison invalide échoue la validation.",
     "texture.view-usage-aspect": "Une vue peut restreindre ses usages et sélectionner un aspect de texture.",
     "texture.view-swizzle": "Un swizzle non identitaire produit la chaîne DOMString attendue et exige la feature texture-component-swizzle.",
     "sampler.comparison": "Un sampler de comparaison expose sa fonction de comparaison et son type de binding de comparaison.",
     "texture.usage-and-formats": "Les usages de texture se combinent et chaque format déclare ses capacités de binding et d'attachement.",
     "render.color-resolve": "Un attachement couleur peut résoudre une vue multisample, et une vue 3D sélectionne une tranche de profondeur.",
-    "render.depth.load-store": "Les opérations de chargement et de stockage préservent ou remplacent la profondeur selon le descripteur.",
-    "render.pass-state": "Le descripteur de passe expose son nombre de draw et la passe fixe la référence stencil.",
-    "render.occlusion-queries": "Une requête d'occlusion encadre des draw calls et ses résultats sont écrits dans le query set.",
-    "render.primitive-and-multisample": "La topologie, le culling et le multisampling sont validés par rapport aux attachements de la passe.",
-    "render.depth-stencil-state": "L'état profondeur/stencil de la pipeline est compatible avec le format d'attachement de la passe.",
+    "render.pass-state": "Le descripteur de passe peut borner son nombre de draw.",
+    "render.primitive-and-multisample": "La topologie, le culling et le layout de passe sont validés par rapport aux attachements.",
+    "render.depth-bias": "Le biais de profondeur de la pipeline décale la profondeur des fragments.",
     "render.pipeline-async": "La création asynchrone résout une pipeline render prête ou échoue explicitement.",
-    "renderbundle.record-and-execute": "Un render bundle enregistre des commandes réutilisables et ne partage pas l'état de la passe qui l'exécute.",
-    "query.create-and-resolve": "Un query set expose son type et son nombre, et resolveQuerySet écrit les résultats dans un buffer.",
-    "query.timestamp-writes": "Les écritures de timestamp encadrent une passe compute ou render et exigent la feature timestamp-query.",
+    "query.render-timestamp-writes": "Les écritures de timestamp peuvent encadrer une passe render et exigent la feature timestamp-query.",
     "errors.uncaptured-error": "Une erreur non capturée est signalée au callback du device et ne peut pas se transformer en succès apparent.",
     "errors.device-lost": "Une perte de device expose une raison et un message exploitables par le runner.",
     "async.promise-results": "Les opérations asynchrones distinguent succès, rejet de validation et erreur d'implémentation.",

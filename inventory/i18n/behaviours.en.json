@@ -251,6 +251,102 @@
     "render.srgb-encode": {
       "title": "Encode an sRGB attachment",
       "expectation": "An rgba8unorm-srgb target encodes linear fragments on write."
+    },
+    "depth.less": {
+      "title": "Compare depth with Less",
+      "expectation": "A nearer fragment wins the depth test and blocks a later, farther one."
+    },
+    "depth.greater": {
+      "title": "Compare depth with Greater",
+      "expectation": "A farther fragment wins when the test is Greater."
+    },
+    "depth.write-disabled": {
+      "title": "Disable depth writes for one draw",
+      "expectation": "A draw with depth writes off does not block a later fragment."
+    },
+    "depth.load-preserves": {
+      "title": "Preserve depth across passes",
+      "expectation": "A depth load pass keeps the depth a prior store pass wrote."
+    },
+    "stencil.replace-equal": {
+      "title": "Replace then compare stencil",
+      "expectation": "A Replace draw stamps a reference the next Equal draw matches."
+    },
+    "stencil.read-mask": {
+      "title": "Mask the stencil comparison bits",
+      "expectation": "stencilReadMask limits which bits the comparison uses."
+    },
+    "stencil.write-mask": {
+      "title": "Mask the stencil written bits",
+      "expectation": "stencilWriteMask limits which bits a stencil operation changes."
+    },
+    "stencil.depth-fail": {
+      "title": "Run the stencil depth-fail operation",
+      "expectation": "depthFailOp runs when the depth test fails but the stencil test passes."
+    },
+    "msaa.resolve": {
+      "title": "Resolve a multisampled attachment",
+      "expectation": "A sample-count-4 attachment renders and resolves into a sample-count-1 target."
+    },
+    "msaa.sample-mask-zero": {
+      "title": "Discard every sample with a mask of zero",
+      "expectation": "A pipeline sample mask of 0 lets no draw sample write, so the resolve keeps the clear."
+    },
+    "bundles.draw": {
+      "title": "Draw from a render bundle",
+      "expectation": "A recorded bundle executes its pipeline and draw in a pass."
+    },
+    "bundles.reuse": {
+      "title": "Reuse a render bundle across passes",
+      "expectation": "One bundle runs unchanged over two differently cleared targets."
+    },
+    "render.draw-indirect": {
+      "title": "Draw with indirect arguments",
+      "expectation": "drawIndirect reads its vertex count from a buffer; a zero count draws nothing."
+    },
+    "render.draw-indexed-indirect": {
+      "title": "Draw indexed with indirect arguments",
+      "expectation": "drawIndexedIndirect reads its index count from a buffer."
+    },
+    "queries.occlusion": {
+      "title": "Count visible samples with occlusion queries",
+      "expectation": "An occlusion query contributes samples for a visible draw and none for a depth-rejected one."
+    },
+    "render.indirect-first-instance": {
+      "title": "Set the first instance with indirect arguments",
+      "expectation": "With the IndirectFirstInstance feature, the indirect arguments select the base instance."
+    },
+    "errors.texture-copy-row-alignment": {
+      "title": "Reject an unaligned copy row stride",
+      "expectation": "copyBufferToTexture requires bytesPerRow to be a multiple of 256."
+    },
+    "errors.texture-copy-bounds": {
+      "title": "Reject a copy outside the texture",
+      "expectation": "A copy whose origin and size exceed the texture fails validation."
+    },
+    "errors.missing-copy-usage": {
+      "title": "Reject a copy from a texture without copy usage",
+      "expectation": "A texture created with only TextureBinding cannot be a copy source."
+    },
+    "errors.dynamic-offset-alignment": {
+      "title": "Reject an unaligned dynamic offset",
+      "expectation": "A dynamic uniform offset must be aligned to the device limit."
+    },
+    "errors.bindgroup-layout-mismatch": {
+      "title": "Reject a bind group that does not match the pipeline",
+      "expectation": "Setting a bind group whose layout differs from the pipeline's layout fails validation."
+    },
+    "errors.nested-scopes": {
+      "title": "Capture an error in the innermost scope",
+      "expectation": "Only the inner validation scope reports the error; the outer resolves to null."
+    },
+    "queries.timestamp-resolve": {
+      "title": "Resolve pass timestamps",
+      "expectation": "A compute pass writes begin and end timestamps, resolved into a range of a buffer."
+    },
+    "compute.shader-f16": {
+      "title": "Compute with half precision",
+      "expectation": "The f16 extension computes in half precision and widens the exact result."
     }
   },
   "behaviours": {
@@ -262,22 +358,17 @@
     "transfers.texture-copy-aspect": "A texture copy can select the depth or stencil aspect of a combined format.",
     "shader.compilation-info": "Compilation messages are available with their severity and position, without requiring an exact text.",
     "compute.pipeline-async": "Asynchronous creation resolves a ready-to-use pipeline or fails explicitly.",
-    "compute.pass-descriptor": "The compute pass descriptor carries the optional timestamp writes.",
     "texture.creation": "A texture exposes its dimensions, format and usages; an invalid combination fails validation.",
     "texture.view-usage-aspect": "A view can restrict its usages and select a texture aspect.",
     "texture.view-swizzle": "A non-identity swizzle produces the expected DOMString and requires the texture-component-swizzle feature.",
     "sampler.comparison": "A comparison sampler reports its compare function and comparison binding type.",
     "texture.usage-and-formats": "Texture usages combine and each format declares its binding and attachment capabilities.",
     "render.color-resolve": "A colour attachment can resolve a multisampled view, and a 3D view selects a depth slice.",
-    "render.depth.load-store": "Load and store operations preserve or replace depth according to the descriptor.",
-    "render.pass-state": "The pass descriptor exposes its draw-count state and the pass sets the stencil reference.",
-    "render.occlusion-queries": "An occlusion query wraps draw calls and its results are written to the query set.",
-    "render.primitive-and-multisample": "Topology, culling and multisampling are validated against the pass attachments.",
-    "render.depth-stencil-state": "The pipeline depth/stencil state is compatible with the pass attachment format.",
+    "render.pass-state": "The pass descriptor can cap its draw count.",
+    "render.primitive-and-multisample": "Topology, culling and the pass layout are validated against the attachments.",
+    "render.depth-bias": "The pipeline depth bias offsets fragment depth.",
     "render.pipeline-async": "Asynchronous creation resolves a ready render pipeline or fails explicitly.",
-    "renderbundle.record-and-execute": "A render bundle records reusable commands and does not share the executing pass state.",
-    "query.create-and-resolve": "A query set exposes its type and count, and resolveQuerySet writes results into a buffer.",
-    "query.timestamp-writes": "Timestamp writes wrap a compute or render pass and require the timestamp-query feature.",
+    "query.render-timestamp-writes": "Timestamp writes can wrap a render pass and require the timestamp-query feature.",
     "errors.uncaptured-error": "An uncaptured error is delivered to the device callback and cannot become an apparent success.",
     "errors.device-lost": "A device loss exposes an actionable reason and message to the runner.",
     "async.promise-results": "Asynchronous operations distinguish success, validation rejection and implementation error.",
