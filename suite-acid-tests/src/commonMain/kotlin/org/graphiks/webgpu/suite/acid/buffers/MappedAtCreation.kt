@@ -1,4 +1,4 @@
-package org.graphiks.webgpu.suite.acid
+package org.graphiks.webgpu.suite.acid.buffers
 
 import org.graphiks.webgpu.GPUBufferMapState
 import org.graphiks.webgpu.GPUBufferUsage
@@ -7,6 +7,8 @@ import org.graphiks.webgpu.descriptors.BufferDescriptor
 import org.graphiks.webgpu.suite.AcidCaseId
 import org.graphiks.webgpu.suite.AcidFamily
 import org.graphiks.webgpu.suite.AcidTest
+import org.graphiks.webgpu.suite.acid.ApiSymbols
+import org.graphiks.webgpu.suite.acid.withValidationScope
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
