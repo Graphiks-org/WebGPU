@@ -116,3 +116,25 @@ internal fun assertPixel(
         )
     }
 }
+
+/**
+ * Asserts one channel of the RGBA8 pixel at ([x], [y]) exactly (or within [tolerance]). Used when a
+ * case's other channels carry a small tolerance but one or two must stay exact.
+ */
+internal fun assertChannel(
+    pixels: ByteArray,
+    width: Int,
+    x: Int,
+    y: Int,
+    channel: Int,
+    expected: Int,
+    label: String,
+    tolerance: Int = 0,
+) {
+    val offset = (y * width + x) * 4
+    val observed = pixels[offset + channel].toInt() and 255
+    assertTrue(
+        abs(observed - expected) <= tolerance,
+        "Pixel ($x, $y) $label: expected $expected (±$tolerance) but observed $observed",
+    )
+}

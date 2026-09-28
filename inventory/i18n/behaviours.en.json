@@ -155,6 +155,102 @@
     "textures.cube-faces": {
       "title": "Sample the six cube faces",
       "expectation": "A cube view maps each axis direction to its layer and a nearest sample returns that layer's colour."
+    },
+    "sampling.nearest": {
+      "title": "Sample with nearest filtering",
+      "expectation": "Nearest filtering picks the texel under the coordinate with no blending."
+    },
+    "sampling.linear": {
+      "title": "Sample with linear filtering",
+      "expectation": "Linear filtering blends the two texels around the coordinate."
+    },
+    "sampling.clamp": {
+      "title": "Clamp texture coordinates at the edge",
+      "expectation": "ClampToEdge uses the edge texel for coordinates outside 0..1."
+    },
+    "sampling.repeat": {
+      "title": "Wrap texture coordinates with repeat",
+      "expectation": "Repeat maps coordinates outside 0..1 to their fractional part."
+    },
+    "sampling.mirror-repeat": {
+      "title": "Mirror texture coordinates",
+      "expectation": "MirrorRepeat reflects each period, mapping the opposite way from repeat."
+    },
+    "sampling.explicit-mip": {
+      "title": "Select a mip level explicitly",
+      "expectation": "An explicit LOD selects the matching mip level."
+    },
+    "sampling.linear-mip": {
+      "title": "Blend adjacent mip levels",
+      "expectation": "A linear mipmap filter blends the two mip levels around the requested LOD."
+    },
+    "sampling.lod-clamp": {
+      "title": "Clamp the requested LOD",
+      "expectation": "lodMinClamp and lodMaxClamp bound the LOD a sample uses."
+    },
+    "render.vertex-buffer-offset": {
+      "title": "Offset a vertex buffer",
+      "expectation": "setVertexBuffer reads vertices from the given byte offset."
+    },
+    "render.indexed-u16": {
+      "title": "Draw with 16-bit indices",
+      "expectation": "A uint16 index buffer drives drawIndexed over the referenced vertices."
+    },
+    "render.indexed-u32-offset": {
+      "title": "Draw with 32-bit indices at an offset",
+      "expectation": "A uint32 index buffer read from a byte offset drives drawIndexed."
+    },
+    "render.first-vertex": {
+      "title": "Start drawing at a vertex offset",
+      "expectation": "draw(firstVertex) begins the vertex stream at the given index."
+    },
+    "render.base-vertex": {
+      "title": "Offset indexed vertices by a base vertex",
+      "expectation": "drawIndexed(baseVertex) adds a constant to every index."
+    },
+    "render.instanced-attributes": {
+      "title": "Supply per-instance attributes",
+      "expectation": "An Instance step-mode buffer varies the offset and colour per instance."
+    },
+    "render.viewport": {
+      "title": "Confine rendering to a viewport",
+      "expectation": "setViewport restricts rasterisation to the given rectangle."
+    },
+    "render.scissor": {
+      "title": "Clip rendering to a scissor rectangle",
+      "expectation": "setScissorRect discards fragments outside the rectangle."
+    },
+    "render.clear-only": {
+      "title": "Clear an attachment without drawing",
+      "expectation": "A pass with no draw keeps the clear value it stores."
+    },
+    "render.load-preserves": {
+      "title": "Preserve an attachment across passes",
+      "expectation": "A load pass keeps the content a prior store pass wrote."
+    },
+    "render.color-write-mask": {
+      "title": "Mask the colour channels written",
+      "expectation": "writeMask writes only the selected channels and keeps the clear elsewhere."
+    },
+    "blend.source-alpha": {
+      "title": "Blend with the source alpha",
+      "expectation": "SrcAlpha/OneMinusSrcAlpha composites a translucent fragment over the target."
+    },
+    "blend.additive": {
+      "title": "Blend additively",
+      "expectation": "One/One addition sums the fragment and the target."
+    },
+    "blend.constant": {
+      "title": "Blend with a constant factor",
+      "expectation": "setBlendConstant supplies the constant blend factor."
+    },
+    "render.multiple-targets": {
+      "title": "Write several colour targets",
+      "expectation": "A fragment writes location 0 and 1 into two attachments read back separately."
+    },
+    "render.srgb-encode": {
+      "title": "Encode an sRGB attachment",
+      "expectation": "An rgba8unorm-srgb target encodes linear fragments on write."
     }
   },
   "behaviours": {
@@ -172,12 +268,10 @@
     "texture.view-swizzle": "A non-identity swizzle produces the expected DOMString and requires the texture-component-swizzle feature.",
     "sampler.comparison": "A comparison sampler reports its compare function and comparison binding type.",
     "texture.usage-and-formats": "Texture usages combine and each format declares its binding and attachment capabilities.",
-    "render.color-load-store": "Load and store operations preserve, replace or resolve the colour attachment content.",
+    "render.color-resolve": "A colour attachment can resolve a multisampled view, and a 3D view selects a depth slice.",
     "render.depth.load-store": "Load and store operations preserve or replace depth according to the descriptor.",
-    "render.pass-descriptor": "The pass descriptor assembles the attachments and pass state, and the pass writes to the attachments.",
+    "render.pass-state": "The pass descriptor exposes its draw-count state and the pass sets the stencil reference.",
     "render.occlusion-queries": "An occlusion query wraps draw calls and its results are written to the query set.",
-    "render.pipeline.creation": "A render pipeline compiles the vertex/fragment state and describes its colour targets and blends.",
-    "render.vertex-state": "Vertex layouts link buffers and attributes to shader locations, and the draw commands consume them.",
     "render.primitive-and-multisample": "Topology, culling and multisampling are validated against the pass attachments.",
     "render.depth-stencil-state": "The pipeline depth/stencil state is compatible with the pass attachment format.",
     "render.pipeline-async": "Asynchronous creation resolves a ready render pipeline or fails explicitly.",

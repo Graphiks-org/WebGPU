@@ -155,6 +155,102 @@
     "textures.cube-faces": {
       "title": "Échantillonner les six faces d'un cube",
       "expectation": "Une vue cube associe chaque direction d'axe à sa couche et un échantillonnage nearest renvoie la couleur de cette couche."
+    },
+    "sampling.nearest": {
+      "title": "Échantillonner en nearest",
+      "expectation": "Le filtrage nearest choisit le texel sous la coordonnée sans mélange."
+    },
+    "sampling.linear": {
+      "title": "Échantillonner en linéaire",
+      "expectation": "Le filtrage linéaire mélange les deux texels autour de la coordonnée."
+    },
+    "sampling.clamp": {
+      "title": "Bloquer les coordonnées au bord",
+      "expectation": "ClampToEdge utilise le texel de bord pour les coordonnées hors de 0..1."
+    },
+    "sampling.repeat": {
+      "title": "Répéter les coordonnées de texture",
+      "expectation": "Repeat ramène les coordonnées hors de 0..1 à leur partie fractionnaire."
+    },
+    "sampling.mirror-repeat": {
+      "title": "Miroiter les coordonnées de texture",
+      "expectation": "MirrorRepeat réfléchit chaque période, à l'inverse de repeat."
+    },
+    "sampling.explicit-mip": {
+      "title": "Sélectionner explicitement un niveau de mip",
+      "expectation": "Un LOD explicite sélectionne le niveau de mip correspondant."
+    },
+    "sampling.linear-mip": {
+      "title": "Mélanger les niveaux de mip adjacents",
+      "expectation": "Un filtre de mipmap linéaire mélange les deux niveaux autour du LOD demandé."
+    },
+    "sampling.lod-clamp": {
+      "title": "Borner le LOD demandé",
+      "expectation": "lodMinClamp et lodMaxClamp bornent le LOD utilisé par un échantillonnage."
+    },
+    "render.vertex-buffer-offset": {
+      "title": "Décaler un vertex buffer",
+      "expectation": "setVertexBuffer lit les sommets depuis l'offset d'octets donné."
+    },
+    "render.indexed-u16": {
+      "title": "Dessiner avec des index 16 bits",
+      "expectation": "Un index buffer uint16 pilote drawIndexed sur les sommets référencés."
+    },
+    "render.indexed-u32-offset": {
+      "title": "Dessiner avec des index 32 bits à un offset",
+      "expectation": "Un index buffer uint32 lu depuis un offset d'octets pilote drawIndexed."
+    },
+    "render.first-vertex": {
+      "title": "Commencer le dessin à un offset de sommet",
+      "expectation": "draw(firstVertex) démarre le flux de sommets à l'index donné."
+    },
+    "render.base-vertex": {
+      "title": "Décaler les sommets indexés par un base vertex",
+      "expectation": "drawIndexed(baseVertex) ajoute une constante à chaque index."
+    },
+    "render.instanced-attributes": {
+      "title": "Fournir des attributs par instance",
+      "expectation": "Un buffer en step mode Instance fait varier l'offset et la couleur par instance."
+    },
+    "render.viewport": {
+      "title": "Limiter le rendu à un viewport",
+      "expectation": "setViewport restreint la rasterisation au rectangle donné."
+    },
+    "render.scissor": {
+      "title": "Découper le rendu à un rectangle de scissor",
+      "expectation": "setScissorRect écarte les fragments hors du rectangle."
+    },
+    "render.clear-only": {
+      "title": "Effacer un attachement sans dessiner",
+      "expectation": "Une passe sans draw conserve la valeur de clear qu'elle stocke."
+    },
+    "render.load-preserves": {
+      "title": "Préserver un attachement entre passes",
+      "expectation": "Une passe load conserve le contenu écrit par une passe store antérieure."
+    },
+    "render.color-write-mask": {
+      "title": "Masquer les canaux de couleur écrits",
+      "expectation": "writeMask n'écrit que les canaux sélectionnés et conserve le clear ailleurs."
+    },
+    "blend.source-alpha": {
+      "title": "Mélanger avec l'alpha de la source",
+      "expectation": "SrcAlpha/OneMinusSrcAlpha compose un fragment translucide sur la cible."
+    },
+    "blend.additive": {
+      "title": "Mélanger en additif",
+      "expectation": "L'addition One/One somme le fragment et la cible."
+    },
+    "blend.constant": {
+      "title": "Mélanger avec un facteur constant",
+      "expectation": "setBlendConstant fournit le facteur de mélange constant."
+    },
+    "render.multiple-targets": {
+      "title": "Écrire plusieurs cibles de couleur",
+      "expectation": "Un fragment écrit en location 0 et 1 dans deux attachements relus séparément."
+    },
+    "render.srgb-encode": {
+      "title": "Encoder un attachement sRGB",
+      "expectation": "Une cible rgba8unorm-srgb encode les fragments linéaires à l'écriture."
     }
   },
   "behaviours": {
@@ -172,12 +268,10 @@
     "texture.view-swizzle": "Un swizzle non identitaire produit la chaîne DOMString attendue et exige la feature texture-component-swizzle.",
     "sampler.comparison": "Un sampler de comparaison expose sa fonction de comparaison et son type de binding de comparaison.",
     "texture.usage-and-formats": "Les usages de texture se combinent et chaque format déclare ses capacités de binding et d'attachement.",
-    "render.color-load-store": "Les opérations de chargement et de stockage préservent, remplacent ou résolvent le contenu de l'attachement couleur.",
+    "render.color-resolve": "Un attachement couleur peut résoudre une vue multisample, et une vue 3D sélectionne une tranche de profondeur.",
     "render.depth.load-store": "Les opérations de chargement et de stockage préservent ou remplacent la profondeur selon le descripteur.",
-    "render.pass-descriptor": "Le descripteur de passe assemble les attachements et l'état de passe, et la passe écrit dans les attachements.",
+    "render.pass-state": "Le descripteur de passe expose son nombre de draw et la passe fixe la référence stencil.",
     "render.occlusion-queries": "Une requête d'occlusion encadre des draw calls et ses résultats sont écrits dans le query set.",
-    "render.pipeline.creation": "Un pipeline render compile les états vertex/fragment et décrit ses cibles de couleur et leurs blends.",
-    "render.vertex-state": "Les layouts vertex relient buffers et attributs aux locations du shader, et les commandes de draw les consomment.",
     "render.primitive-and-multisample": "La topologie, le culling et le multisampling sont validés par rapport aux attachements de la passe.",
     "render.depth-stencil-state": "L'état profondeur/stencil de la pipeline est compatible avec le format d'attachement de la passe.",
     "render.pipeline-async": "La création asynchrone résout une pipeline render prête ou échoue explicitement.",
