@@ -10,6 +10,7 @@ const TEXT = {
     subtitle: 'Interactive demonstrations of the public Graphiks WebGPU contract. Each demo runs in your browser against a real WebGPU implementation.',
     galleryTitle: 'Demos',
     validationLink: 'Validation',
+    benchmarksLink: 'Benchmarks',
     launch: (label) => `Open in your browser — ${label}`,
     sourcesTitle: 'Scene source code',
     noSourceCommit: 'No published report names a commit yet; these links point at the source directory, not at a specific build.',
@@ -21,6 +22,7 @@ const TEXT = {
     subtitle: 'Démonstrations interactives du contrat public Graphiks WebGPU. Chaque démo s’exécute dans votre navigateur sur une vraie implémentation WebGPU.',
     galleryTitle: 'Démos',
     validationLink: 'Validation',
+    benchmarksLink: 'Benchmarks',
     launch: (label) => `Ouvrir dans votre navigateur — ${label}`,
     sourcesTitle: 'Code source de la scène',
     noSourceCommit: 'Aucun rapport publié n’indique encore de commit ; ces liens pointent vers le dossier des sources, pas vers un build précis.',
@@ -80,6 +82,9 @@ function renderChrome() {
   const validation = el('a', t.validationLink);
   validation.href = '../index.html';
   nav.append(validation);
+  const benchmarks = el('a', t.benchmarksLink);
+  benchmarks.href = '../benchmarks/';
+  nav.append(benchmarks);
 }
 
 async function publishedCommit() {

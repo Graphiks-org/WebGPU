@@ -16,6 +16,7 @@ const TEXT = {
     runDescription: 'These links run the suite in your browser. Results stay local and do not modify the published reports.',
     runLabel: (label) => `Run in your browser — local results (${label})`,
     demosLink: 'Demos',
+    benchmarksLink: 'Benchmarks',
     refsTitle: 'References',
     refs: [['contract.md (generated inventory)', './inventory/contract.md'], ['symbols.tsv (declarations)', './inventory/symbols.tsv'], ['baseline.json (reference version)', './inventory/baseline.json']],
     caseSource: 'Case source code',
@@ -38,6 +39,7 @@ const TEXT = {
     runDescription: 'Ces liens exécutent la suite dans votre navigateur. Les résultats restent locaux et ne modifient pas les rapports publiés.',
     runLabel: (label) => `Exécuter dans votre navigateur — résultats locaux (${label})`,
     demosLink: 'Démos',
+    benchmarksLink: 'Benchmarks',
     refsTitle: 'Références',
     refs: [['contract.md (inventaire généré)', './inventory/contract.md'], ['symbols.tsv (déclarations)', './inventory/symbols.tsv'], ['baseline.json (version de référence)', './inventory/baseline.json']],
     caseSource: 'Code source des cas',
@@ -88,6 +90,9 @@ function renderChrome(baseline, behaviours, reports) {
   const demosLink = el('a', t.demosLink);
   demosLink.href = './demos/';
   nav.append(demosLink);
+  const benchmarksLink = el('a', t.benchmarksLink);
+  benchmarksLink.href = './benchmarks/';
+  nav.append(benchmarksLink);
 
   const switchBox = document.getElementById('locale-switch');
   switchBox.replaceChildren();
