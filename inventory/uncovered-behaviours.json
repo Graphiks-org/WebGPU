@@ -101,15 +101,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "compute.pass-descriptor",
-    "family": "compute",
-    "contract": [
-      "GPUComputePassDescriptor",
-      "GPUComputePassDescriptor.timestampWrites"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "texture.creation",
     "family": "textures/views/samplers",
     "contract": [
@@ -245,10 +236,9 @@
     "requiredFeatures": []
   },
   {
-    "id": "query.timestamp-writes",
+    "id": "query.render-timestamp-writes",
     "family": "queries/timestamps",
     "contract": [
-      "GPUComputePassTimestampWrites",
       "GPURenderPassTimestampWrites"
     ],
     "requiredFeatures": [

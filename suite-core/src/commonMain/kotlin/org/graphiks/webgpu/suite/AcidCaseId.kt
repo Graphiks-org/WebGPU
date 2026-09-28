@@ -77,4 +77,12 @@ enum class AcidCaseId(val id: String) {
     RenderDrawIndexedIndirect("render.draw-indexed-indirect"),
     QueriesOcclusion("queries.occlusion"),
     RenderIndirectFirstInstance("render.indirect-first-instance"),
+    ErrorsTextureCopyRowAlignment("errors.texture-copy-row-alignment"),
+    ErrorsTextureCopyBounds("errors.texture-copy-bounds"),
+    ErrorsMissingCopyUsage("errors.missing-copy-usage"),
+    ErrorsDynamicOffsetAlignment("errors.dynamic-offset-alignment"),
+    ErrorsBindGroupLayoutMismatch("errors.bindgroup-layout-mismatch"),
+    ErrorsNestedScopes("errors.nested-scopes"),
+    QueriesTimestampResolve("queries.timestamp-resolve"),
+    ComputeShaderF16("compute.shader-f16"),
 }
