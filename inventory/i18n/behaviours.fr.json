@@ -59,6 +59,38 @@
     "buffers.map-destroyed": {
       "title": "Mapper un buffer détruit rapporte une erreur de validation",
       "expectation": "Mapper un buffer détruit échoue et ne peut pas être rapporté comme un succès."
+    },
+    "buffers.zero-initialized": {
+      "title": "Lire un buffer fraîchement créé",
+      "expectation": "Un buffer se lit à zéro avant toute écriture."
+    },
+    "buffers.map-write-roundtrip": {
+      "title": "Écrire via un buffer mappé",
+      "expectation": "Les écritures CPU mappées sont visibles après démap et copie du buffer."
+    },
+    "transfers.clear-buffer-range": {
+      "title": "Effacer une plage d'octets d'un buffer",
+      "expectation": "clearBuffer met à zéro uniquement la plage d'octets demandée et laisse le reste inchangé."
+    },
+    "transfers.copy-remaining": {
+      "title": "Copier les octets restants de la source",
+      "expectation": "Omettre la taille copie depuis l'offset source jusqu'à la fin de la source."
+    },
+    "bindings.buffer-range": {
+      "title": "Lier une plage explicite d'un buffer",
+      "expectation": "L'offset et la taille du binding sélectionnent la plage alignée lue par le shader."
+    },
+    "bindings.dynamic-uniform-offsets": {
+      "title": "Déplacer un binding uniforme par offset dynamique",
+      "expectation": "Chaque offset dynamique sélectionne un bloc aligné différent du même buffer uniforme."
+    },
+    "compute.indirect-dispatch": {
+      "title": "Dispatcher des workgroups depuis un buffer indirect",
+      "expectation": "dispatchWorkgroupsIndirect prend ses comptes de workgroups dans le buffer indirect."
+    },
+    "compute.ordered-passes": {
+      "title": "Ordonner deux passes compute dans une soumission",
+      "expectation": "Une passe compute ultérieure voit la valeur écrite par la passe précédente dans la même soumission."
     }
   },
   "behaviours": {
@@ -68,7 +100,6 @@
     "command.encoder-recording": "Un encodeur enregistre des commandes puis produit un command buffer soumis une seule fois.",
     "command.debug-markers": "Les marqueurs de debug encadrent des commandes sans modifier les résultats observables.",
     "transfers.buffer-texture-copies": "Les copies buffer/texture respectent le layout de texels, les offsets et les sous-ressources.",
-    "transfers.clear-buffer": "clearBuffer remet à zéro la sous-plage demandée du buffer.",
     "shader.compilation-info": "Les messages de compilation sont disponibles avec leur sévérité et leur position, sans imposer un texte exact.",
     "compute.pipeline-async": "La création asynchrone résout un pipeline prêt à l'emploi ou échoue explicitement.",
     "compute.pass-descriptor": "Le descripteur de passe compute porte les écritures de timestamp optionnelles.",

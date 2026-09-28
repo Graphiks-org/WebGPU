@@ -88,14 +88,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "transfers.clear-buffer",
-    "family": "transferts buffers/textures",
-    "contract": [
-      "GPUCommandEncoder.clearBuffer"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "shader.compilation-info",
     "family": "shaders/compilation",
     "contract": [

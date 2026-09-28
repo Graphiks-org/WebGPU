@@ -27,6 +27,23 @@ passes on JS and Wasm. It lists no result that was not observed.
   and 0 unsupported of 11 acid cases"; `tools/build-site.mjs` still consumes only the full reports and
   no `selected-*` file reached `build/site/`. No case declares an optional feature yet, so the
   `unsupported` present→executed path is deferred to Lot I.
+- **Task 2 — readback and render helpers** (`Readback.kt`, `RenderSupport.kt`). `readBufferBytes`,
+  `readRgba8`, `assertPixel`, the fullscreen-triangle shader and `createColorTarget` are `internal`
+  helpers in `suite.acid`. They are committed with Lot A, their first consumer; `readBufferBytes` is
+  validated by reading real GPU data in the Lot A cases, while `readRgba8`, `assertPixel` and the
+  render helpers compile but are first exercised by their consuming lots (B and E).
+- **Lot A — buffers, bindings and compute commands** (8 cases: `buffers.zero-initialized`,
+  `buffers.map-write-roundtrip`, `transfers.clear-buffer-range`, `transfers.copy-remaining`,
+  `bindings.buffer-range`, `bindings.dynamic-uniform-offsets`, `compute.indirect-dispatch`,
+  `compute.ordered-passes`). Result: **8/8 passed on JS and 8/8 on Wasm** in targeted runs; the full
+  catalogue is **19/19 passed on JS and 19/19 on Wasm**. The bindings read the device's
+  `minUniformBufferOffsetAlignment` instead of assuming 256. Regression check: changing `clearBuffer`'s
+  offset from 8 to 4 without touching the expectation fails `transfers.clear-buffer-range`
+  (`Array elements differ at index 1 ... actual <[287454020, 0, 0, 0, ...]>`); restoring returns 8/8 and
+  19/19. Environment unchanged from the reference run: Chromium 140.0.7339.186 headless with
+  `--enable-unsafe-webgpu --enable-unsafe-swiftshader --use-angle=swiftshader` (software backend), JS
+  and Wasm run sequentially. Inventory: 49 behaviours, 19 with cases; `transfers.clear-buffer` moved
+  from the uncovered list into `transfers.clear-buffer-range`.
 
 ## Reference contract
 

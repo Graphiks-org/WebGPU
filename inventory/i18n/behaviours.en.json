@@ -59,6 +59,38 @@
     "buffers.map-destroyed": {
       "title": "Mapping a destroyed buffer reports a validation error",
       "expectation": "Mapping a destroyed buffer fails and cannot be reported as a success."
+    },
+    "buffers.zero-initialized": {
+      "title": "Read a freshly created buffer",
+      "expectation": "A buffer reads back as zeros before anything writes to it."
+    },
+    "buffers.map-write-roundtrip": {
+      "title": "Write through a mapped buffer",
+      "expectation": "Mapped CPU writes are visible after unmapping and staging the buffer."
+    },
+    "transfers.clear-buffer-range": {
+      "title": "Clear a byte range of a buffer",
+      "expectation": "clearBuffer zeroes only the requested byte range and leaves the rest unchanged."
+    },
+    "transfers.copy-remaining": {
+      "title": "Copy the remaining source bytes",
+      "expectation": "Omitting the size copies from the source offset to the end of the source."
+    },
+    "bindings.buffer-range": {
+      "title": "Bind an explicit buffer range",
+      "expectation": "A buffer binding offset and size select the aligned range the shader reads."
+    },
+    "bindings.dynamic-uniform-offsets": {
+      "title": "Move a uniform binding with a dynamic offset",
+      "expectation": "Each dynamic offset selects a different aligned block of the same uniform buffer."
+    },
+    "compute.indirect-dispatch": {
+      "title": "Dispatch workgroups from an indirect buffer",
+      "expectation": "dispatchWorkgroupsIndirect takes its workgroup counts from the indirect buffer."
+    },
+    "compute.ordered-passes": {
+      "title": "Order two compute passes in one submission",
+      "expectation": "A later compute pass sees the value written by the earlier pass in the same submission."
     }
   },
   "behaviours": {
@@ -68,7 +100,6 @@
     "command.encoder-recording": "An encoder records commands and produces a command buffer submitted once.",
     "command.debug-markers": "Debug markers wrap commands without changing observable results.",
     "transfers.buffer-texture-copies": "Buffer/texture copies respect the texel layout, offsets and subresources.",
-    "transfers.clear-buffer": "clearBuffer zeroes the requested sub-range of the buffer.",
     "shader.compilation-info": "Compilation messages are available with their severity and position, without requiring an exact text.",
     "compute.pipeline-async": "Asynchronous creation resolves a ready-to-use pipeline or fails explicitly.",
     "compute.pass-descriptor": "The compute pass descriptor carries the optional timestamp writes.",

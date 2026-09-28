@@ -13,4 +13,12 @@ enum class AcidCaseId(val id: String) {
     ErrorsInvalidBufferUsage("errors.invalid-buffer-usage"),
     ErrorsMapAlignment("errors.map-alignment"),
     BuffersMapDestroyed("buffers.map-destroyed"),
+    BuffersZeroInitialized("buffers.zero-initialized"),
+    BuffersMapWriteRoundTrip("buffers.map-write-roundtrip"),
+    TransfersClearBufferRange("transfers.clear-buffer-range"),
+    TransfersCopyRemaining("transfers.copy-remaining"),
+    BindingsBufferRange("bindings.buffer-range"),
+    BindingsDynamicUniformOffsets("bindings.dynamic-uniform-offsets"),
+    ComputeIndirectDispatch("compute.indirect-dispatch"),
+    ComputeOrderedPasses("compute.ordered-passes"),
 }
