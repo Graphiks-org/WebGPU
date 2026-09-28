@@ -1,0 +1,166 @@
+:root {
+  color-scheme: light dark;
+  --fg: #1c1c1e;
+  --muted: #5c5c66;
+  --bg: #ffffff;
+  --panel: #f4f4f6;
+  --border: #d4d4da;
+  --ok: #1a7f37;
+  --fail: #b42318;
+  --warn: #8a6100;
+  --info: #3a5ccc;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e8e8ea;
+    --muted: #a0a0aa;
+    --bg: #17171a;
+    --panel: #202024;
+    --border: #3a3a42;
+    --ok: #4ac26b;
+    --fail: #ff7b72;
+    --warn: #d4a72c;
+    --info: #8ea9ff;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 72rem;
+  padding: 1.5rem 1.25rem 4rem;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 0 0 0.5rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin: 2rem 0 0.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.25rem;
+}
+
+p {
+  max-width: 60ch;
+}
+
+a {
+  color: var(--info);
+}
+
+.versions {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.15rem 1rem;
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.versions dt {
+  color: var(--muted);
+}
+
+.versions dd {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.fatal {
+  color: var(--fail);
+  font-weight: 600;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+}
+
+.status {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-passed {
+  color: var(--ok);
+}
+
+.status-failed {
+  color: var(--fail);
+}
+
+.status-unsupported {
+  color: var(--warn);
+}
+
+.status-not-run {
+  color: var(--muted);
+}
+
+@media (max-width: 40rem) {
+  body {
+    padding: 1rem 0.75rem 3rem;
+  }
+
+  .versions {
+    grid-template-columns: 1fr;
+  }
+
+  .versions dt {
+    margin-top: 0.4rem;
+  }
+}
+
+.locale-switch {
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.locale-current {
+  font-weight: 700;
+  text-decoration: none;
+}

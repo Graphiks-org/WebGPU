@@ -1,0 +1,97 @@
+{
+  "families": {
+    "adapter/device/features/limits": "Adapter, device, features et limites",
+    "queue/commandes": "Queue et commandes",
+    "buffers/mapping": "Buffers et mapping",
+    "transferts buffers/textures": "Transferts buffers/textures",
+    "bind groups/layouts": "Bind groups et layouts",
+    "shaders/compilation": "Shaders et compilation",
+    "compute": "Compute",
+    "textures/views/samplers": "Textures, vues et samplers",
+    "rendu/passes/attachments": "Rendu, passes et attachements",
+    "pipelines/render state": "Pipelines et état de rendu",
+    "render bundles": "Render bundles",
+    "queries/timestamps": "Requêtes et timestamps",
+    "erreurs/asynchronisme": "Erreurs et asynchronisme",
+    "types de données/descripteurs/flags/swizzle": "Types de données, descripteurs, flags et swizzle"
+  },
+  "cases": {
+    "buffers.mapped-at-creation": {
+      "title": "Écrire le contenu initial d'un buffer",
+      "expectation": "Un buffer créé mappé expose immédiatement sa plage complète et redevient non mappé après unmap."
+    },
+    "transfers.copy-offsets": {
+      "title": "Copier une sous-plage d'octets entre buffers",
+      "expectation": "Une copie entre buffers respecte les offsets et tailles exprimés en octets et laisse intact le reste de la destination."
+    },
+    "transfers.write-offsets": {
+      "title": "Écrire une sous-plage de données via la queue",
+      "expectation": "writeBuffer écrit depuis un offset de données avec une taille explicite."
+    },
+    "transfers.write-remaining": {
+      "title": "Écrire depuis un offset jusqu'à la fin des données",
+      "expectation": "writeBuffer avec la taille omise écrit depuis l'offset jusqu'à la fin des données."
+    },
+    "buffers.partial-map-remap": {
+      "title": "Lire une plage mappée puis remapper le buffer entier",
+      "expectation": "Lire une plage alignée puis remapper le buffer entier sans conserver la vue invalidée."
+    },
+    "compute.auto-layout-constants": {
+      "title": "Dispatcher avec layout automatique et constante de spécialisation",
+      "expectation": "Un pipeline compute en layout automatique compile et la constante de spécialisation change le résultat du dispatch."
+    },
+    "compute.explicit-layout-entrypoint": {
+      "title": "Dispatcher avec layout explicite et entry point inféré",
+      "expectation": "Un pipeline compute accepte un layout explicite et infère l'entry point lorsque le shader n'en a qu'un."
+    },
+    "errors.empty-scope": {
+      "title": "Un scope de validation vide résout à null",
+      "expectation": "Un scope de validation sans opération résout à null et la pile de scopes reste équilibrée."
+    },
+    "errors.invalid-buffer-usage": {
+      "title": "Un buffer sans usage rapporte une erreur de validation",
+      "expectation": "Une création invalide est capturée par le scope de validation sous forme de GPUValidationError."
+    },
+    "errors.map-alignment": {
+      "title": "Un offset de mapping non aligné échoue la validation",
+      "expectation": "Un offset de mapping non aligné sur 8 octets échoue la validation et laisse le buffer non mappé."
+    },
+    "buffers.map-destroyed": {
+      "title": "Mapper un buffer détruit rapporte une erreur de validation",
+      "expectation": "Mapper un buffer détruit échoue et ne peut pas être rapporté comme un succès."
+    }
+  },
+  "behaviours": {
+    "adapter.request-and-capabilities": "Demander un adapter expose ses features, ses limites et sa description ; la demande peut échouer explicitement.",
+    "device.features-and-limits": "Un device expose les features et limites négociées, ainsi que la description de l'adapter qui l'a créé.",
+    "device.request-required-features": "Une feature ou limite obligatoire absente fait échouer la demande de device au lieu de produire un device dégradé.",
+    "command.encoder-recording": "Un encodeur enregistre des commandes puis produit un command buffer soumis une seule fois.",
+    "command.debug-markers": "Les marqueurs de debug encadrent des commandes sans modifier les résultats observables.",
+    "transfers.buffer-texture-copies": "Les copies buffer/texture respectent le layout de texels, les offsets et les sous-ressources.",
+    "transfers.clear-buffer": "clearBuffer remet à zéro la sous-plage demandée du buffer.",
+    "shader.compilation-info": "Les messages de compilation sont disponibles avec leur sévérité et leur position, sans imposer un texte exact.",
+    "compute.pipeline-async": "La création asynchrone résout un pipeline prêt à l'emploi ou échoue explicitement.",
+    "compute.pass-descriptor": "Le descripteur de passe compute porte les écritures de timestamp optionnelles.",
+    "texture.creation": "Une texture expose ses dimensions, son format et ses usages ; une combinaison invalide échoue la validation.",
+    "texture.view": "Une vue sélectionne une sous-ressource compatible avec le format et l'usage demandés.",
+    "texture.view-swizzle": "Un swizzle non identitaire produit la chaîne DOMString attendue et exige la feature texture-component-swizzle.",
+    "sampler.creation": "Un sampler expose ses modes d'adressage et de filtrage et un sampler de comparaison l'indique.",
+    "texture.usage-and-formats": "Les usages de texture se combinent et chaque format déclare ses capacités de binding et d'attachement.",
+    "render.color-load-store": "Les opérations de chargement et de stockage préservent, remplacent ou résolvent le contenu de l'attachement couleur.",
+    "render.depth.load-store": "Les opérations de chargement et de stockage préservent ou remplacent la profondeur selon le descripteur.",
+    "render.pass-descriptor": "Le descripteur de passe assemble les attachements et l'état de passe, et la passe écrit dans les attachements.",
+    "render.occlusion-queries": "Une requête d'occlusion encadre des draw calls et ses résultats sont écrits dans le query set.",
+    "render.pipeline.creation": "Un pipeline render compile les états vertex/fragment et décrit ses cibles de couleur et leurs blends.",
+    "render.vertex-state": "Les layouts vertex relient buffers et attributs aux locations du shader, et les commandes de draw les consomment.",
+    "render.primitive-and-multisample": "La topologie, le culling et le multisampling sont validés par rapport aux attachements de la passe.",
+    "render.depth-stencil-state": "L'état profondeur/stencil de la pipeline est compatible avec le format d'attachement de la passe.",
+    "render.pipeline-async": "La création asynchrone résout une pipeline render prête ou échoue explicitement.",
+    "renderbundle.record-and-execute": "Un render bundle enregistre des commandes réutilisables et ne partage pas l'état de la passe qui l'exécute.",
+    "query.create-and-resolve": "Un query set expose son type et son nombre, et resolveQuerySet écrit les résultats dans un buffer.",
+    "query.timestamp-writes": "Les écritures de timestamp encadrent une passe compute ou render et exigent la feature timestamp-query.",
+    "errors.uncaptured-error": "Une erreur non capturée est signalée au callback du device et ne peut pas se transformer en succès apparent.",
+    "errors.device-lost": "Une perte de device expose une raison et un message exploitables par le runner.",
+    "async.promise-results": "Les opérations asynchrones distinguent succès, rejet de validation et erreur d'implémentation.",
+    "data.identifiers-and-indices": "Les alias de tailles, d'index et de coordonnées portent les unités du contrat, et les descripteurs de base exposent un label."
+  }
+}

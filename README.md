@@ -16,6 +16,9 @@ Its Kotlin bindings are generated from versioned WebGPU specification inputs.
 | `webgpu-descriptors` | `org.graphiks:webgpu-descriptors` | Descriptor implementations on the portable API |
 | `webgpu-web-bindings` | `org.graphiks:webgpu-web-bindings` | WebGPU JavaScript bindings and Kotlin JS/Wasm interop |
 | `webgpu-browser` | `org.graphiks:webgpu-browser` | Browser implementation of the Graphiks WebGPU API |
+| `suite-core` | `org.graphiks:suite-core` | Execution contract for portable validation cases |
+| `suite-acid-tests` | `org.graphiks:suite-acid-tests` | Portable acid tests for the public API |
+| `suite-browser` | Not published | Browser runner that executes the suite and reports results |
 | `webgpu-specifications` | Not published | Versioned specification and documentation inputs |
 
 `webgpu-api` and `webgpu-descriptors` configure JVM, Android, JS, Wasm JS, and Kotlin/Native
@@ -55,6 +58,31 @@ val identity = GPUTextureSwizzle().toWebGpuString() // "rgba"
 
 This behavior is covered by `GPUTextureSwizzleTest`. See [Getting started](docs/docs/getting-started.md)
 for requirements and dependency notes.
+
+## Validate the contract with the suite
+
+Graphiks WebGPU Suite exercises the public contract with portable acid tests that run against a real
+browser WebGPU implementation. `suite-core` holds the execution contract, `suite-acid-tests` the
+cases, and `suite-browser` runs them on Kotlin/JS and Kotlin/Wasm JS and publishes a report. The
+site's Validation page presents the contract inventory, the behaviour coverage, and the published
+results, and links to both local launches.
+
+Run the browser suite locally with JDK 25 and Node 22:
+
+```sh
+npm install --prefix tools
+npm exec --prefix tools -- playwright install chromium
+./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+node tools/build-site.mjs
+```
+
+Each `run-browser.mjs` invocation writes `build/reports/<target>.json` and exits non-zero when the
+run is incomplete or failed. See [docs/running.md](docs/running.md) for the published matrix and
+consumption from a binding, and [docs/verification.md](docs/verification.md) for recorded evidence.
+Results published on the site come from identified runs and are never conflated with a local
+execution.
 
 ## Build, test, and read the docs
 

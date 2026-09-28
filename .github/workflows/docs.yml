@@ -11,7 +11,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  suite:
+    uses: ./.github/workflows/suite.yml
+
   build:
+    needs: suite
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,6 +38,11 @@ jobs:
         run: ./gradlew --no-daemon :docs:embedDokkaIntoMkDocs
       - name: Build site
         run: mkdocs build --strict -f docs/mkdocs.yml
+      - name: Add validation suite to the site
+        uses: actions/download-artifact@v4
+        with:
+          name: suite-site
+          path: _site/suite
       - name: Check Pages size
         run: |
           python3 - <<'PY'
