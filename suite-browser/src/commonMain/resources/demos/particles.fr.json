@@ -1,0 +1,12 @@
+{
+  "title": "Particules compute",
+  "description": "Le CPU écrit les particules une fois. Une passe compute met ensuite à jour ce même buffer GPU à chaque image, et la passe de rendu le dessine directement comme vertex buffer instancié, sans lecture CPU intermédiaire.",
+  "pause": "Pause",
+  "resume": "Reprendre",
+  "reset": "Réinitialiser",
+  "count": "Particules",
+  "source": "Voir le code de la scène",
+  "unavailable": "WebGPU n’est pas disponible dans ce navigateur.",
+  "failed": "La démo de particules s’est arrêtée sur une erreur.",
+  "loading": "Chargement de la démo de particules…"
+}

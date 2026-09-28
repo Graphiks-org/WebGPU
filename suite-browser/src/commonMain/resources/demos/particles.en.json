@@ -1,0 +1,12 @@
+{
+  "title": "Compute particles",
+  "description": "The CPU writes the particles once. A compute pass then updates that same GPU buffer every frame, and the render pass draws it directly as an instanced vertex buffer, with no CPU readback in between.",
+  "pause": "Pause",
+  "resume": "Resume",
+  "reset": "Reset",
+  "count": "Particles",
+  "source": "View the scene source code",
+  "unavailable": "WebGPU is not available in this browser.",
+  "failed": "The particle demo stopped after an error.",
+  "loading": "Loading the particle demo…"
+}
