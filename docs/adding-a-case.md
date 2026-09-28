@@ -5,10 +5,11 @@ WebGPU contract. It takes a `GPUDevice`, creates the resources it needs, asserts
 observable state, and closes what it created. The suite has no mock GPU and no framework of its own:
 the case is the deliverable, and a browser run is what validates it.
 
-## 1. Write the case
+## 1. Write the case and annotate it
 
-Add a `suspend fun` in `suite-acid-tests/src/commonMain/kotlin/org/graphiks/webgpu/suite/acid/`. A
-valid case uses `withValidationScope` so an unexpected validation error fails the case:
+Add a `suspend fun` in `suite-acid-tests/src/commonMain/kotlin/org/graphiks/webgpu/suite/acid/` and
+declare its inventory metadata with `@AcidTest`. Both the id and the family are enums, and the
+contract references the generated `ApiSymbols` constants, so a typo does not compile.
 
 ```kotlin
 package org.graphiks.webgpu.suite.acid
@@ -16,8 +17,16 @@ package org.graphiks.webgpu.suite.acid
 import org.graphiks.webgpu.GPUBufferUsage
 import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.descriptors.BufferDescriptor
+import org.graphiks.webgpu.suite.AcidCaseId
+import org.graphiks.webgpu.suite.AcidFamily
+import org.graphiks.webgpu.suite.AcidTest
 import kotlin.test.assertEquals
 
+@AcidTest(
+    id = AcidCaseId.BuffersSize,
+    family = AcidFamily.BuffersMapping,
+    contract = [ApiSymbols.GPUDevice_createBuffer, ApiSymbols.GPUBuffer_size],
+)
 suspend fun bufferSize(device: GPUDevice) = withValidationScope(device) {
     val buffer = device.createBuffer(BufferDescriptor(16uL, GPUBufferUsage.CopySrc))
     try {
@@ -30,55 +39,40 @@ suspend fun bufferSize(device: GPUDevice) = withValidationScope(device) {
 
 Rules of thumb:
 
-- Assert on data, error categories or contract states, never on an implementation's exact error
-  text or on values produced by the same code under test.
+- Assert on data, error categories or contract states, never on an implementation's exact error text
+  or on values produced by the same code under test.
 - Close every resource the case creates; do not destroy resources supplied by the runner.
-- Keep the GPU commands visible. A small private helper is fine when it improves reading; a generic
-  runner is not.
+- Use `withValidationScope` for a valid case so an unexpected validation error fails it.
 - A failure of the binding stays visible. Do not weaken an assertion to match an observed defect.
 - A capability required by the core contract is never hidden behind `requiredFeatures`; that set is
   only for optional features.
 
-## 2. Register the case
+## 2. Declare the identity and the texts
 
-Add an `AcidCase` to `foundationCases()` in `FoundationCases.kt` with a stable `id`, a readable
-title, and the contract members it exercises:
+If the case is new, add its entry to the `AcidCaseId` enum (and `AcidFamily` if needed) in
+`suite-core`. These enums carry the stable dotted ids of the report.
 
-```kotlin
-AcidCase(
-    id = "buffers.size",
-    title = "A buffer reports its requested size",
-    contract = listOf("GPUDevice.createBuffer", "GPUBuffer.size"),
-    run = ::bufferSize,
-),
-```
+Then add the localized texts in **every** locale file, keyed by the case id:
 
-Then list the id in `inventory/foundation-case-ids.json`; the browser runner cross-checks this file
-against `FoundationCases.kt` and fails the run when the two disagree. Duplicate ids are rejected.
-
-## 3. Update the inventory
-
-Describe the behaviour in `inventory/behaviors.json` and link the case:
+- `inventory/i18n/behaviours.en.json`
+- `inventory/i18n/behaviours.fr.json`
 
 ```json
-{
-  "id": "buffers.size-reported",
-  "family": "buffers/mapping",
-  "contract": ["GPUDevice.createBuffer", "GPUBuffer.size"],
-  "expectation": "Un buffer expose la taille demandée à la création.",
-  "requiredFeatures": [],
-  "caseIds": ["buffers.size"]
+"cases": {
+  "buffers.size": {
+    "title": "Report the requested buffer size",
+    "expectation": "A buffer exposes the size requested at creation."
+  }
 }
 ```
 
-Link a case only to the behaviours its assertions actually justify. A case that merely creates a
-device does not cover device acquisition just by running through it. Regenerate
-`inventory/contract.md` after editing behaviours so the coverage and the "to be tested" lists stay
-faithful.
+A behaviour without a case is listed in `inventory/uncovered-behaviours.json` (its metadata) and its
+expectation in each locale file under `behaviours`. Move it into a case when it becomes covered.
 
-## 4. Verify
+## 3. Generate and verify
 
-Run the case on both browser targets and read the real output:
+Do not edit the generated catalogue, `ApiSymbols`, the case-id manifest or the baseline: they are
+build outputs. Build and run the two browser targets and read the real output:
 
 ```sh
 ./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
@@ -86,6 +80,6 @@ node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
 node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
 ```
 
-The runner fails when a case does not pass, when the id set differs from
-`inventory/foundation-case-ids.json`, or when a page error is reported. Record the observed result
-in `docs/verification.md`.
+The runner fails when a case does not pass, when a generated case id is missing or duplicated, or
+when a page error is reported. Regenerate the site inventory with `node tools/build-site.mjs`, then
+record the observed result in `docs/verification.md`.

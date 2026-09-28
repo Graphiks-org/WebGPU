@@ -154,3 +154,13 @@ th {
     margin-top: 0.4rem;
   }
 }
+
+.locale-switch {
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.locale-current {
+  font-weight: 700;
+  text-decoration: none;
+}

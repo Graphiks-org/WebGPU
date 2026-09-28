@@ -14,8 +14,8 @@ are published as artifacts so native bindings can run them on their own targets.
 ## Version and published matrix
 
 The suite and the API share the repository version (`releaseVersion`, default `0.1.0-SNAPSHOT`).
-Each delivery documents the API version it is built against in
-[`inventory/baseline.json`](../inventory/baseline.json).
+Each delivery records the API version, the reference commit and the source hashes in the generated
+`baseline.json` (published at `suite/inventory/baseline.json`).
 
 The two shared artifacts, `org.graphiks:suite-core` and `org.graphiks:suite-acid-tests`, are
 published for:

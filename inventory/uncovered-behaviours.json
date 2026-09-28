@@ -1,0 +1,454 @@
+[
+  {
+    "id": "adapter.request-and-capabilities",
+    "family": "adapter/device/features/limits",
+    "contract": [
+      "GPUAdapter",
+      "GPUAdapter.features",
+      "GPUAdapter.limits",
+      "GPUAdapter.info",
+      "GPUAdapterInfo",
+      "GPURequestAdapterOptions",
+      "GPUPowerPreference",
+      "GPUSupportedFeatures"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "device.features-and-limits",
+    "family": "adapter/device/features/limits",
+    "contract": [
+      "GPUAdapter.requestDevice",
+      "GPUDevice",
+      "GPUDevice.features",
+      "GPUDevice.limits",
+      "GPUDevice.adapterInfo",
+      "GPUDevice.label",
+      "GPUObjectBase.label"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "device.request-required-features",
+    "family": "adapter/device/features/limits",
+    "contract": [
+      "GPUDeviceDescriptor",
+      "GPUDeviceDescriptor.requiredFeatures",
+      "GPUDeviceDescriptor.requiredLimits",
+      "GPUDeviceDescriptor.defaultQueue",
+      "GPUDeviceDescriptor.onUncapturedError",
+      "GPUFeatureName",
+      "GPUQueueDescriptor"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "command.encoder-recording",
+    "family": "queue/commandes",
+    "contract": [
+      "GPUDevice.createCommandEncoder",
+      "GPUCommandEncoder",
+      "GPUCommandEncoder.finish",
+      "GPUCommandEncoder.label",
+      "GPUCommandBuffer",
+      "GPUCommandsMixin",
+      "GPUCommandEncoderDescriptor",
+      "GPUCommandBufferDescriptor"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "command.debug-markers",
+    "family": "queue/commandes",
+    "contract": [
+      "GPUDebugCommandsMixin.pushDebugGroup",
+      "GPUDebugCommandsMixin.popDebugGroup",
+      "GPUDebugCommandsMixin.insertDebugMarker"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "transfers.buffer-texture-copies",
+    "family": "transferts buffers/textures",
+    "contract": [
+      "GPUCommandEncoder.copyBufferToTexture",
+      "GPUCommandEncoder.copyTextureToBuffer",
+      "GPUCommandEncoder.copyTextureToTexture",
+      "GPUQueue.writeTexture",
+      "GPUTexelCopyBufferInfo",
+      "GPUTexelCopyBufferLayout",
+      "GPUTexelCopyTextureInfo",
+      "GPUTexelCopyBufferLayout.offset",
+      "GPUTexelCopyBufferLayout.bytesPerRow",
+      "GPUTexelCopyBufferLayout.rowsPerImage",
+      "GPUTexelCopyTextureInfo.mipLevel",
+      "GPUTexelCopyTextureInfo.origin",
+      "GPUTexelCopyTextureInfo.aspect"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "transfers.clear-buffer",
+    "family": "transferts buffers/textures",
+    "contract": [
+      "GPUCommandEncoder.clearBuffer"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "shader.compilation-info",
+    "family": "shaders/compilation",
+    "contract": [
+      "GPUShaderModule.getCompilationInfo",
+      "GPUCompilationInfo",
+      "GPUCompilationMessage",
+      "GPUCompilationMessageType",
+      "GPUCompilationMessage.message",
+      "GPUCompilationMessage.type",
+      "GPUCompilationMessage.lineNum",
+      "GPUCompilationMessage.linePos",
+      "GPUCompilationMessage.offset",
+      "GPUCompilationMessage.length"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "compute.pipeline-async",
+    "family": "compute",
+    "contract": [
+      "GPUDevice.createComputePipelineAsync"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "compute.pass-descriptor",
+    "family": "compute",
+    "contract": [
+      "GPUComputePassDescriptor",
+      "GPUComputePassDescriptor.timestampWrites"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "texture.creation",
+    "family": "textures/views/samplers",
+    "contract": [
+      "GPUDevice.createTexture",
+      "GPUTexture",
+      "GPUTextureDescriptor",
+      "GPUTextureDescriptor.size",
+      "GPUTextureDescriptor.format",
+      "GPUTextureDescriptor.usage",
+      "GPUTextureDescriptor.mipLevelCount",
+      "GPUTextureDescriptor.sampleCount",
+      "GPUTextureDescriptor.dimension",
+      "GPUTextureDescriptor.viewFormats",
+      "GPUTextureDescriptor.textureBindingViewDimension",
+      "GPUTexture.width",
+      "GPUTexture.height",
+      "GPUTexture.depthOrArrayLayers",
+      "GPUTexture.mipLevelCount",
+      "GPUTexture.sampleCount",
+      "GPUTexture.dimension",
+      "GPUTexture.format",
+      "GPUTexture.usage"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "texture.view",
+    "family": "textures/views/samplers",
+    "contract": [
+      "GPUTexture.createView",
+      "GPUTextureView",
+      "GPUTextureViewDescriptor",
+      "GPUTextureViewDescriptor.format",
+      "GPUTextureViewDescriptor.dimension",
+      "GPUTextureViewDescriptor.usage",
+      "GPUTextureViewDescriptor.aspect",
+      "GPUTextureViewDescriptor.baseMipLevel",
+      "GPUTextureViewDescriptor.mipLevelCount",
+      "GPUTextureViewDescriptor.baseArrayLayer",
+      "GPUTextureViewDescriptor.arrayLayerCount"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "texture.view-swizzle",
+    "family": "textures/views/samplers",
+    "contract": [
+      "GPUTextureSwizzle",
+      "GPUTextureSwizzle.red",
+      "GPUTextureSwizzle.green",
+      "GPUTextureSwizzle.blue",
+      "GPUTextureSwizzle.alpha",
+      "GPUTextureSwizzle.toWebGpuString",
+      "GPUTextureSwizzleSource",
+      "GPUTextureViewDescriptor.swizzle"
+    ],
+    "requiredFeatures": [
+      "TextureComponentSwizzle"
+    ]
+  },
+  {
+    "id": "sampler.creation",
+    "family": "textures/views/samplers",
+    "contract": [
+      "GPUDevice.createSampler",
+      "GPUSampler",
+      "GPUSamplerDescriptor",
+      "GPUAddressMode",
+      "GPUFilterMode",
+      "GPUMipmapFilterMode",
+      "GPUCompareFunction",
+      "GPUSamplerBindingType"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "texture.usage-and-formats",
+    "family": "textures/views/samplers",
+    "contract": [
+      "GPUTextureUsage",
+      "GPUTextureUsage.None",
+      "GPUTextureUsage.CopySrc",
+      "GPUTextureUsage.CopyDst",
+      "GPUTextureUsage.TextureBinding",
+      "GPUTextureUsage.StorageBinding",
+      "GPUTextureUsage.RenderAttachment",
+      "GPUTextureUsage.TransientAttachment",
+      "GPUTextureUsage.entries",
+      "GPUTextureUsage.or",
+      "GPUTextureUsage.of",
+      "GPUTextureFormat",
+      "GPUTextureSampleType",
+      "GPUTextureViewDimension",
+      "GPUTextureAspect",
+      "GPUTextureDimension",
+      "GPUStorageTextureAccess"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "render.color-load-store",
+    "family": "rendu/passes/attachments",
+    "contract": [
+      "GPUCommandEncoder.beginRenderPass",
+      "GPURenderPassEncoder",
+      "GPURenderPassDescriptor",
+      "GPURenderPassColorAttachment",
+      "GPURenderPassColorAttachment.view",
+      "GPURenderPassColorAttachment.loadOp",
+      "GPURenderPassColorAttachment.storeOp",
+      "GPURenderPassColorAttachment.clearValue",
+      "GPURenderPassColorAttachment.resolveTarget",
+      "GPURenderPassColorAttachment.depthSlice",
+      "GPULoadOp",
+      "GPUStoreOp"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "render.depth.load-store",
+    "family": "rendu/passes/attachments",
+    "contract": [
+      "GPURenderPassDepthStencilAttachment"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "render.pass-descriptor",
+    "family": "rendu/passes/attachments",
+    "contract": [
+      "GPURenderPassDescriptor.colorAttachments",
+      "GPURenderPassDescriptor.depthStencilAttachment",
+      "GPURenderPassDescriptor.occlusionQuerySet",
+      "GPURenderPassDescriptor.timestampWrites",
+      "GPURenderPassDescriptor.maxDrawCount",
+      "GPURenderPassEncoder.setViewport",
+      "GPURenderPassEncoder.setScissorRect",
+      "GPURenderPassEncoder.setBlendConstant",
+      "GPURenderPassEncoder.setStencilReference",
+      "GPURenderPassEncoder.end"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "render.occlusion-queries",
+    "family": "rendu/passes/attachments",
+    "contract": [
+      "GPURenderPassEncoder.beginOcclusionQuery",
+      "GPURenderPassEncoder.endOcclusionQuery"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "render.pipeline.creation",
+    "family": "pipelines/render state",
+    "contract": [
+      "GPUDevice.createRenderPipeline",
+      "GPURenderPipeline",
+      "GPURenderPipelineDescriptor",
+      "GPUFragmentState",
+      "GPUFragmentState.targets",
+      "GPUColorTargetState",
+      "GPUColorTargetState.format",
+      "GPUColorTargetState.blend",
+      "GPUColorTargetState.writeMask",
+      "GPUBlendState",
+      "GPUBlendComponent",
+      "GPUBlendOperation",
+      "GPUBlendFactor",
+      "GPUColorWrite"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "render.vertex-state",
+    "family": "pipelines/render state",
+    "contract": [
+      "GPUVertexState",
+      "GPUVertexState.buffers",
+      "GPUVertexBufferLayout",
+      "GPUVertexAttribute",
+      "GPUVertexFormat",
+      "GPUVertexStepMode",
+      "GPURenderCommandsMixin.setVertexBuffer",
+      "GPURenderCommandsMixin.setIndexBuffer",
+      "GPURenderCommandsMixin.draw",
+      "GPURenderCommandsMixin.drawIndexed",
+      "GPUIndexFormat"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "render.primitive-and-multisample",
+    "family": "pipelines/render state",
+    "contract": [
+      "GPUPrimitiveState",
+      "GPUPrimitiveTopology",
+      "GPUFrontFace",
+      "GPUCullMode",
+      "GPUMultisampleState",
+      "GPUSampleMask",
+      "GPUColor",
+      "GPURenderPassLayout"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "render.depth-stencil-state",
+    "family": "pipelines/render state",
+    "contract": [
+      "GPUDepthStencilState",
+      "GPUStencilFaceState",
+      "GPUStencilOperation",
+      "GPUStencilValue",
+      "GPUDepthBias",
+      "GPUDepthStencilState.depthWriteEnabled",
+      "GPUDepthStencilState.depthCompare"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "render.pipeline-async",
+    "family": "pipelines/render state",
+    "contract": [
+      "GPUDevice.createRenderPipelineAsync"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "renderbundle.record-and-execute",
+    "family": "render bundles",
+    "contract": [
+      "GPUDevice.createRenderBundleEncoder",
+      "GPURenderBundleEncoder",
+      "GPURenderBundleEncoder.finish",
+      "GPURenderBundle",
+      "GPURenderBundleDescriptor",
+      "GPURenderBundleEncoderDescriptor",
+      "GPURenderPassEncoder.executeBundles"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "query.create-and-resolve",
+    "family": "queries/timestamps",
+    "contract": [
+      "GPUDevice.createQuerySet",
+      "GPUQuerySet",
+      "GPUQuerySetDescriptor",
+      "GPUQuerySet.type",
+      "GPUQuerySet.count",
+      "GPUQueryType",
+      "GPUCommandEncoder.resolveQuerySet"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "query.timestamp-writes",
+    "family": "queries/timestamps",
+    "contract": [
+      "GPUComputePassTimestampWrites",
+      "GPURenderPassTimestampWrites"
+    ],
+    "requiredFeatures": [
+      "TimestampQuery"
+    ]
+  },
+  {
+    "id": "errors.uncaptured-error",
+    "family": "erreurs/asynchronisme",
+    "contract": [
+      "GPUUncapturedErrorCallback",
+      "GPUUncapturedErrorCallback.onUncapturedError",
+      "GPUError",
+      "GPUError.message",
+      "GPUDeviceDescriptor.onUncapturedError"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "errors.device-lost",
+    "family": "erreurs/asynchronisme",
+    "contract": [
+      "GPUDeviceLostInfo",
+      "GPUDeviceLostReason"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "async.promise-results",
+    "family": "erreurs/asynchronisme",
+    "contract": [
+      "GPUOutOfMemoryError",
+      "GPUInternalError"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "data.identifiers-and-indices",
+    "family": "types de données/descripteurs/flags/swizzle",
+    "contract": [
+      "GPUSize64",
+      "GPUSize64Out",
+      "GPUSize32",
+      "GPUSize32Out",
+      "GPUIntegerCoordinate",
+      "GPUIntegerCoordinateOut",
+      "GPUIndex32",
+      "GPUSignedOffset32",
+      "GPUBufferDynamicOffset",
+      "GPUSupportedFeatures",
+      "GPUObjectBase",
+      "GPUObjectDescriptorBase",
+      "GPUOrigin2D",
+      "GPUOrigin3D",
+      "GPUExtent3D",
+      "GPUColor",
+      "GPUBufferDynamicOffset"
+    ],
+    "requiredFeatures": []
+  }
+]

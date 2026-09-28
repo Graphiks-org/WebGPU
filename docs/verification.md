@@ -7,33 +7,36 @@ run, not a conformance certificate.
 ## Reference contract
 
 - API and suite version: `0.1.0-SNAPSHOT`.
-- Reference commit and source hashes: [`inventory/baseline.json`](../inventory/baseline.json).
+- Reference commit and source hashes: generated at build time (published at
+  `suite/inventory/baseline.json`), from the commit and the SHA-256 of the seven API source files.
 - The inventory is extracted from the seven `commonMain` files of `webgpu-api` (not the JVM ABI
   snapshot alone), so it represents the shared signature surface.
 
 ## Inventory
 
-`inventory/symbols.tsv` lists **834 declarations** across 14 families. `inventory/behaviors.json`
-describes **54 observable behaviours**. The number of symbols is a measure of surface area only:
-it is not a conformance percentage, and a symbol being listed never means it is tested.
+The inventory is **generated at build time** from the case annotations and the API sources; it is not
+versioned. The generated `symbols.tsv` lists **884 declarations** across 14 families, and the
+localized behaviour files describe **42 behaviours** (11 covered by a case, 31 to be tested). The
+number of symbols is a measure of surface area only: it is not a conformance percentage, and a
+symbol being listed never means it is tested.
 
 | Family | Declarations |
 | --- | ---: |
-| textures/views/samplers | 220 |
-| pipelines/render state | 183 |
+| textures/views/samplers | 223 |
+| pipelines/render state | 185 |
 | types de données/descripteurs/flags/swizzle | 115 |
-| adapter/device/features/limits | 86 |
-| rendu/passes/attachments | 39 |
-| shaders/compilation | 35 |
-| buffers/mapping | 33 |
-| bind groups/layouts | 32 |
+| adapter/device/features/limits | 88 |
+| rendu/passes/attachments | 55 |
+| shaders/compilation | 36 |
+| bind groups/layouts | 35 |
+| buffers/mapping | 34 |
+| compute | 24 |
 | erreurs/asynchronisme | 22 |
+| render bundles | 21 |
 | transferts buffers/textures | 18 |
-| compute | 17 |
-| queries/timestamps | 15 |
-| queue/commandes | 11 |
-| render bundles | 8 |
-| **Total** | **834** |
+| queue/commandes | 16 |
+| queries/timestamps | 12 |
+| **Total** | **884** |
 
 Families with no executable case in this increment: adapter/device/features/limits,
 textures/views/samplers, rendu/passes/attachments, pipelines/render state, render bundles,
@@ -41,8 +44,8 @@ queries/timestamps. Their behavioural analysis remains to be deepened.
 
 ## Executable cases
 
-The browser runner executes eleven foundation cases. The mapping from case to behaviour is in
-[`inventory/contract.md`](../inventory/contract.md).
+The browser runner executes eleven foundation cases. The mapping from case to behaviour is in the
+generated `contract.md`, published at `suite/inventory/contract.md`.
 
 | Case | Exercised on |
 | --- | --- |
@@ -80,7 +83,8 @@ The browser runner executes eleven foundation cases. The mapping from case to be
 - Failure path: with WebGPU disabled the same runner reported every case as `failed` with
   `No WebGPU adapter is available.` — never `passed` and never `unsupported`. The completeness gate
   exits non-zero when a case id is missing, duplicated or not passed; this was checked by
-  temporarily adding an unknown id to `inventory/foundation-case-ids.json`, observing exit code 1,
+  temporarily adding an unknown id to
+  `suite-acid-tests/build/suite-inventory/foundation-case-ids.json`, observing exit code 1,
   and restoring the file.
 - The Validation page was served under a `/suite/` prefix and at a 375 px viewport: 54 behaviour
   rows rendered, passed and not-run statuses displayed with text labels, both reports and both run
