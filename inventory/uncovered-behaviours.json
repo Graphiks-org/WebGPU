@@ -68,30 +68,10 @@
     "requiredFeatures": []
   },
   {
-    "id": "transfers.buffer-texture-copies",
+    "id": "transfers.texture-copy-aspect",
     "family": "transferts buffers/textures",
     "contract": [
-      "GPUCommandEncoder.copyBufferToTexture",
-      "GPUCommandEncoder.copyTextureToBuffer",
-      "GPUCommandEncoder.copyTextureToTexture",
-      "GPUQueue.writeTexture",
-      "GPUTexelCopyBufferInfo",
-      "GPUTexelCopyBufferLayout",
-      "GPUTexelCopyTextureInfo",
-      "GPUTexelCopyBufferLayout.offset",
-      "GPUTexelCopyBufferLayout.bytesPerRow",
-      "GPUTexelCopyBufferLayout.rowsPerImage",
-      "GPUTexelCopyTextureInfo.mipLevel",
-      "GPUTexelCopyTextureInfo.origin",
       "GPUTexelCopyTextureInfo.aspect"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "transfers.clear-buffer",
-    "family": "transferts buffers/textures",
-    "contract": [
-      "GPUCommandEncoder.clearBuffer"
     ],
     "requiredFeatures": []
   },
@@ -156,20 +136,11 @@
     "requiredFeatures": []
   },
   {
-    "id": "texture.view",
+    "id": "texture.view-usage-aspect",
     "family": "textures/views/samplers",
     "contract": [
-      "GPUTexture.createView",
-      "GPUTextureView",
-      "GPUTextureViewDescriptor",
-      "GPUTextureViewDescriptor.format",
-      "GPUTextureViewDescriptor.dimension",
       "GPUTextureViewDescriptor.usage",
-      "GPUTextureViewDescriptor.aspect",
-      "GPUTextureViewDescriptor.baseMipLevel",
-      "GPUTextureViewDescriptor.mipLevelCount",
-      "GPUTextureViewDescriptor.baseArrayLayer",
-      "GPUTextureViewDescriptor.arrayLayerCount"
+      "GPUTextureViewDescriptor.aspect"
     ],
     "requiredFeatures": []
   },
@@ -191,17 +162,12 @@
     ]
   },
   {
-    "id": "sampler.creation",
+    "id": "sampler.comparison",
     "family": "textures/views/samplers",
     "contract": [
-      "GPUDevice.createSampler",
-      "GPUSampler",
-      "GPUSamplerDescriptor",
-      "GPUAddressMode",
-      "GPUFilterMode",
-      "GPUMipmapFilterMode",
       "GPUCompareFunction",
-      "GPUSamplerBindingType"
+      "GPUSamplerBindingType",
+      "GPUSamplerDescriptor.compare"
     ],
     "requiredFeatures": []
   },

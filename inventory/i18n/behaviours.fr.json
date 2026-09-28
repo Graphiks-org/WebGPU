@@ -59,6 +59,102 @@
     "buffers.map-destroyed": {
       "title": "Mapper un buffer détruit rapporte une erreur de validation",
       "expectation": "Mapper un buffer détruit échoue et ne peut pas être rapporté comme un succès."
+    },
+    "buffers.zero-initialized": {
+      "title": "Lire un buffer fraîchement créé",
+      "expectation": "Un buffer se lit à zéro avant toute écriture."
+    },
+    "buffers.map-write-roundtrip": {
+      "title": "Écrire via un buffer mappé",
+      "expectation": "Les écritures CPU mappées sont visibles après démap et copie du buffer."
+    },
+    "transfers.clear-buffer-range": {
+      "title": "Effacer une plage d'octets d'un buffer",
+      "expectation": "clearBuffer met à zéro uniquement la plage d'octets demandée et laisse le reste inchangé."
+    },
+    "transfers.copy-remaining": {
+      "title": "Copier les octets restants de la source",
+      "expectation": "Omettre la taille copie depuis l'offset source jusqu'à la fin de la source."
+    },
+    "bindings.buffer-range": {
+      "title": "Lier une plage explicite d'un buffer",
+      "expectation": "L'offset et la taille du binding sélectionnent la plage alignée lue par le shader."
+    },
+    "bindings.dynamic-uniform-offsets": {
+      "title": "Déplacer un binding uniforme par offset dynamique",
+      "expectation": "Chaque offset dynamique sélectionne un bloc aligné différent du même buffer uniforme."
+    },
+    "compute.indirect-dispatch": {
+      "title": "Dispatcher des workgroups depuis un buffer indirect",
+      "expectation": "dispatchWorkgroupsIndirect prend ses comptes de workgroups dans le buffer indirect."
+    },
+    "compute.ordered-passes": {
+      "title": "Ordonner deux passes compute dans une soumission",
+      "expectation": "Une passe compute ultérieure voit la valeur écrite par la passe précédente dans la même soumission."
+    },
+    "transfers.write-texture-tight-rows": {
+      "title": "Téléverser des lignes serrées avec writeTexture",
+      "expectation": "writeTexture accepte un pas de ligne non multiple de 256 et conserve l'ordre des lignes."
+    },
+    "transfers.upload-padded-rows": {
+      "title": "Ignorer le padding entre lignes lors d'une copie buffer vers texture",
+      "expectation": "copyBufferToTexture lit les lignes à bytesPerRow, donc les octets de padding n'atteignent jamais les texels."
+    },
+    "transfers.readback-offset-padding": {
+      "title": "Relire les texels à un offset et un pas donnés",
+      "expectation": "copyTextureToBuffer écrit à l'offset et au pas de destination et laisse les autres octets intacts."
+    },
+    "transfers.array-layer-stride": {
+      "title": "Pas entre couches d'un tableau",
+      "expectation": "rowsPerImage et bytesPerRow fixent le pas entre couches d'un téléversement de tableau."
+    },
+    "transfers.write-subrectangle": {
+      "title": "Écrire un sous-rectangle de texture",
+      "expectation": "writeTexture ne modifie que le rectangle adressé et conserve les texels alentour."
+    },
+    "transfers.texture-region-copy": {
+      "title": "Copier une région de texture",
+      "expectation": "copyTextureToTexture copie le rectangle adressé vers l'origine de destination et laisse le reste inchangé."
+    },
+    "transfers.mip-level-copy": {
+      "title": "Copier un seul niveau de mip",
+      "expectation": "copyTextureToTexture adresse un seul niveau de mip et ignore les autres."
+    },
+    "transfers.volume-slices": {
+      "title": "Copier les tranches de profondeur d'une texture 3D",
+      "expectation": "Une image de buffer alimente chaque tranche de profondeur d'une copie de texture 3D."
+    },
+    "textures.view-base-mip": {
+      "title": "Commencer une vue à un niveau de mip",
+      "expectation": "Le baseMipLevel d'une vue sélectionne le niveau lu par son niveau 0."
+    },
+    "textures.view-base-layer": {
+      "title": "Commencer une vue à une couche d'un tableau",
+      "expectation": "Le baseArrayLayer d'une vue sélectionne la première couche adressée par ses indices locaux."
+    },
+    "textures.view-dimensions": {
+      "title": "Rapporter les dimensions relatives à une vue",
+      "expectation": "textureDimensions et textureNumLevels sont relatifs au niveau de base et au nombre de niveaux de la vue."
+    },
+    "textures.uint-load": {
+      "title": "Charger des texels entiers exactement",
+      "expectation": "Un chargement texture_2d<u32> renvoie les mots stockés sans conversion float."
+    },
+    "textures.storage-write": {
+      "title": "Écrire une storage texture depuis un compute",
+      "expectation": "textureStore écrit chaque texel adressé par le dispatch et la relecture les renvoie exactement."
+    },
+    "textures.srgb-decode": {
+      "title": "Décoder un texel sRGB au chargement",
+      "expectation": "Charger une RGBA8UnormSrgb linéarise le RGB tandis que l'alpha est utilisé tel quel."
+    },
+    "textures.srgb-view-format": {
+      "title": "Lire les mêmes octets via une vue linéaire et une vue sRGB",
+      "expectation": "Une entrée viewFormats permet à deux vues d'une texture de lire les octets en linéaire ou décodés sRGB."
+    },
+    "textures.cube-faces": {
+      "title": "Échantillonner les six faces d'un cube",
+      "expectation": "Une vue cube associe chaque direction d'axe à sa couche et un échantillonnage nearest renvoie la couleur de cette couche."
     }
   },
   "behaviours": {
@@ -67,15 +163,14 @@
     "device.request-required-features": "Une feature ou limite obligatoire absente fait échouer la demande de device au lieu de produire un device dégradé.",
     "command.encoder-recording": "Un encodeur enregistre des commandes puis produit un command buffer soumis une seule fois.",
     "command.debug-markers": "Les marqueurs de debug encadrent des commandes sans modifier les résultats observables.",
-    "transfers.buffer-texture-copies": "Les copies buffer/texture respectent le layout de texels, les offsets et les sous-ressources.",
-    "transfers.clear-buffer": "clearBuffer remet à zéro la sous-plage demandée du buffer.",
+    "transfers.texture-copy-aspect": "Une copie de texture peut sélectionner l'aspect profondeur ou stencil d'un format combiné.",
     "shader.compilation-info": "Les messages de compilation sont disponibles avec leur sévérité et leur position, sans imposer un texte exact.",
     "compute.pipeline-async": "La création asynchrone résout un pipeline prêt à l'emploi ou échoue explicitement.",
     "compute.pass-descriptor": "Le descripteur de passe compute porte les écritures de timestamp optionnelles.",
     "texture.creation": "Une texture expose ses dimensions, son format et ses usages ; une combinaison invalide échoue la validation.",
-    "texture.view": "Une vue sélectionne une sous-ressource compatible avec le format et l'usage demandés.",
+    "texture.view-usage-aspect": "Une vue peut restreindre ses usages et sélectionner un aspect de texture.",
     "texture.view-swizzle": "Un swizzle non identitaire produit la chaîne DOMString attendue et exige la feature texture-component-swizzle.",
-    "sampler.creation": "Un sampler expose ses modes d'adressage et de filtrage et un sampler de comparaison l'indique.",
+    "sampler.comparison": "Un sampler de comparaison expose sa fonction de comparaison et son type de binding de comparaison.",
     "texture.usage-and-formats": "Les usages de texture se combinent et chaque format déclare ses capacités de binding et d'attachement.",
     "render.color-load-store": "Les opérations de chargement et de stockage préservent, remplacent ou résolvent le contenu de l'attachement couleur.",
     "render.depth.load-store": "Les opérations de chargement et de stockage préservent ou remplacent la profondeur selon le descripteur.",

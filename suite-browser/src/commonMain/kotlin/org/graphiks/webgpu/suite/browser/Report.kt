@@ -15,6 +15,7 @@ data class CaseResult(
     val status: String,
     val diagnostic: String? = null,
     val adapterDescription: String? = null,
+    val missingFeatures: List<String> = emptyList(),
 )
 
 /**

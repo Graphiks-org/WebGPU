@@ -2,6 +2,7 @@
 
 package org.graphiks.webgpu.browser.mapper
 
+import org.graphiks.webgpu.GPUTextureSwizzle
 import org.graphiks.webgpu.GPUTextureViewDescriptor
 import org.graphiks.webgpu.bindings.WGPUTextureViewDescriptor
 import org.graphiks.webgpu.bindings.asJsNumber
@@ -19,5 +20,7 @@ internal fun map(input: GPUTextureViewDescriptor): WGPUTextureViewDescriptor =
         baseArrayLayer = input.baseArrayLayer.asJsNumber()
         input.arrayLayerCount?.let { arrayLayerCount = it.asJsNumber() }
         usage = input.usage.value.asJsNumber()
-        swizzle = input.swizzle.toWebGpuString()
+        // Identity is the default and must be omitted: the swizzle encoding is version-dependent
+        // (a four-character string in the current spec, a dictionary in earlier implementations).
+        if (input.swizzle != GPUTextureSwizzle()) swizzle = input.swizzle.toWebGpuString()
     }
