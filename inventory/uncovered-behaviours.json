@@ -68,21 +68,9 @@
     "requiredFeatures": []
   },
   {
-    "id": "transfers.buffer-texture-copies",
+    "id": "transfers.texture-copy-aspect",
     "family": "transferts buffers/textures",
     "contract": [
-      "GPUCommandEncoder.copyBufferToTexture",
-      "GPUCommandEncoder.copyTextureToBuffer",
-      "GPUCommandEncoder.copyTextureToTexture",
-      "GPUQueue.writeTexture",
-      "GPUTexelCopyBufferInfo",
-      "GPUTexelCopyBufferLayout",
-      "GPUTexelCopyTextureInfo",
-      "GPUTexelCopyBufferLayout.offset",
-      "GPUTexelCopyBufferLayout.bytesPerRow",
-      "GPUTexelCopyBufferLayout.rowsPerImage",
-      "GPUTexelCopyTextureInfo.mipLevel",
-      "GPUTexelCopyTextureInfo.origin",
       "GPUTexelCopyTextureInfo.aspect"
     ],
     "requiredFeatures": []

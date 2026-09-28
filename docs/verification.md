@@ -44,6 +44,15 @@ passes on JS and Wasm. It lists no result that was not observed.
   `--enable-unsafe-webgpu --enable-unsafe-swiftshader --use-angle=swiftshader` (software backend), JS
   and Wasm run sequentially. Inventory: 49 behaviours, 19 with cases; `transfers.clear-buffer` moved
   from the uncovered list into `transfers.clear-buffer-range`.
+- **Lot B — texture transfers** (8 cases: `transfers.write-texture-tight-rows`,
+  `transfers.upload-padded-rows`, `transfers.readback-offset-padding`, `transfers.array-layer-stride`,
+  `transfers.write-subrectangle`, `transfers.texture-region-copy`, `transfers.mip-level-copy`,
+  `transfers.volume-slices`). Result: **8/8 passed on JS and 8/8 on Wasm** in targeted runs; the full
+  catalogue is **27/27 passed on JS and 27/27 on Wasm**. `transfers.readback-offset-padding` encodes
+  its own `copyTextureToBuffer` and checks every `0x5a` sentinel outside the two copied rows, so it
+  does not depend on the padding-stripping readback helper. Inventory: 57 behaviours; the broad
+  `transfers.buffer-texture-copies` uncovered entry is replaced by the narrower
+  `transfers.texture-copy-aspect`, whose aspect selection remains to be tested.
 
 ## Reference contract
 

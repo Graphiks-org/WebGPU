@@ -21,4 +21,12 @@ enum class AcidCaseId(val id: String) {
     BindingsDynamicUniformOffsets("bindings.dynamic-uniform-offsets"),
     ComputeIndirectDispatch("compute.indirect-dispatch"),
     ComputeOrderedPasses("compute.ordered-passes"),
+    TransfersWriteTextureTightRows("transfers.write-texture-tight-rows"),
+    TransfersUploadPaddedRows("transfers.upload-padded-rows"),
+    TransfersReadbackOffsetPadding("transfers.readback-offset-padding"),
+    TransfersArrayLayerStride("transfers.array-layer-stride"),
+    TransfersWriteSubrectangle("transfers.write-subrectangle"),
+    TransfersTextureRegionCopy("transfers.texture-region-copy"),
+    TransfersMipLevelCopy("transfers.mip-level-copy"),
+    TransfersVolumeSlices("transfers.volume-slices"),
 }

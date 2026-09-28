@@ -91,6 +91,38 @@
     "compute.ordered-passes": {
       "title": "Order two compute passes in one submission",
       "expectation": "A later compute pass sees the value written by the earlier pass in the same submission."
+    },
+    "transfers.write-texture-tight-rows": {
+      "title": "Upload tightly packed rows with writeTexture",
+      "expectation": "writeTexture accepts a row stride that is not a multiple of 256 and preserves the row order."
+    },
+    "transfers.upload-padded-rows": {
+      "title": "Skip inter-row padding in a buffer-to-texture copy",
+      "expectation": "copyBufferToTexture reads rows at bytesPerRow, so padding bytes never reach the texels."
+    },
+    "transfers.readback-offset-padding": {
+      "title": "Read texels back at an offset and stride",
+      "expectation": "copyTextureToBuffer writes at the destination offset and stride and leaves the other bytes untouched."
+    },
+    "transfers.array-layer-stride": {
+      "title": "Stride between array layers",
+      "expectation": "rowsPerImage and bytesPerRow set the layer stride of an array-texture upload."
+    },
+    "transfers.write-subrectangle": {
+      "title": "Write a texture sub-rectangle",
+      "expectation": "writeTexture changes only the addressed rectangle and keeps the surrounding texels."
+    },
+    "transfers.texture-region-copy": {
+      "title": "Copy a texture region",
+      "expectation": "copyTextureToTexture copies the addressed rectangle to the destination origin and leaves the rest unchanged."
+    },
+    "transfers.mip-level-copy": {
+      "title": "Copy one mip level",
+      "expectation": "copyTextureToTexture addresses a single mip level and ignores the others."
+    },
+    "transfers.volume-slices": {
+      "title": "Copy depth slices of a 3D texture",
+      "expectation": "One buffer image feeds each depth slice of a 3D texture copy."
     }
   },
   "behaviours": {
@@ -99,7 +131,7 @@
     "device.request-required-features": "A missing required feature or limit fails the device request instead of producing a degraded device.",
     "command.encoder-recording": "An encoder records commands and produces a command buffer submitted once.",
     "command.debug-markers": "Debug markers wrap commands without changing observable results.",
-    "transfers.buffer-texture-copies": "Buffer/texture copies respect the texel layout, offsets and subresources.",
+    "transfers.texture-copy-aspect": "A texture copy can select the depth or stencil aspect of a combined format.",
     "shader.compilation-info": "Compilation messages are available with their severity and position, without requiring an exact text.",
     "compute.pipeline-async": "Asynchronous creation resolves a ready-to-use pipeline or fails explicitly.",
     "compute.pass-descriptor": "The compute pass descriptor carries the optional timestamp writes.",
