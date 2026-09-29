@@ -435,6 +435,38 @@
     "texture.one-dimensional-load": {
       "title": "Load a one-dimensional texture",
       "expectation": "texture_1d loads the four texels exactly and reports its width."
+    },
+    "render.front-face-culling": {
+      "title": "Cull by declared front face",
+      "expectation": "The same triangle is kept with frontFace CCW and cullMode Back, and culled when the declared front face or the culled face changes."
+    },
+    "render.triangle-strip-restart": {
+      "title": "Restart an indexed triangle strip",
+      "expectation": "A Uint16 primitive-restart index breaks one strip into two rectangles with an untouched gap."
+    },
+    "render.first-index": {
+      "title": "Start indexed drawing at a first index",
+      "expectation": "drawIndexed with firstIndex selects the tail of the index buffer, while the firstIndex 0 control draws nothing."
+    },
+    "render.first-instance": {
+      "title": "Start instanced drawing at a first instance",
+      "expectation": "A direct draw with firstInstance 2 sees instance_index 2, while the firstInstance 0 control sees 0."
+    },
+    "render.negative-base-vertex": {
+      "title": "Offset indices by a negative base vertex",
+      "expectation": "A negative baseVertex resolves sentinel indices back onto the real vertices without an out-of-bounds access."
+    },
+    "depth.read-only-attachment": {
+      "title": "Keep a depth attachment read-only",
+      "expectation": "A depthReadOnly pass tests against the loaded depth without writing it."
+    },
+    "stencil.front-back-operations": {
+      "title": "Apply different stencil operations per face",
+      "expectation": "Replace on the front face and IncrementClamp on the back face leave distinct stencil values that two Equal passes paint separately."
+    },
+    "depth.bias-slope-clamp": {
+      "title": "Bias depth by slope and clamp it",
+      "expectation": "A slope-scaled depth bias rejects the nearer overlay and the clamp restores it."
     }
   },
   "behaviours": {

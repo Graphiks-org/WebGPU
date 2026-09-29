@@ -110,4 +110,13 @@ enum class AcidCaseId(val id: String) {
     RenderVolumeDepthSlice("render.volume-depth-slice"),
     TexturesViewSwizzle("texture.view-swizzle"),
     TexturesOneDimensionalLoad("texture.one-dimensional-load"),
+    // Lot D — primitive assembly, face culling, depth/stencil state and bias.
+    RenderFrontFaceCulling("render.front-face-culling"),
+    RenderTriangleStripRestart("render.triangle-strip-restart"),
+    RenderFirstIndex("render.first-index"),
+    RenderFirstInstance("render.first-instance"),
+    RenderNegativeBaseVertex("render.negative-base-vertex"),
+    DepthReadOnlyAttachment("depth.read-only-attachment"),
+    StencilFrontBackOperations("stencil.front-back-operations"),
+    DepthBiasSlopeClamp("depth.bias-slope-clamp"),
 }

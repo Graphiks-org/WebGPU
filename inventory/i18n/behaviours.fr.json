@@ -435,6 +435,38 @@
     "texture.one-dimensional-load": {
       "title": "Charger une texture unidimensionnelle",
       "expectation": "texture_1d charge exactement les quatre texels et annonce sa largeur."
+    },
+    "render.front-face-culling": {
+      "title": "Culler selon la face avant déclarée",
+      "expectation": "Le même triangle est conservé avec frontFace CCW et cullMode Back, et cullé quand la face avant déclarée ou la face cullée change."
+    },
+    "render.triangle-strip-restart": {
+      "title": "Redémarrer un triangle strip indexé",
+      "expectation": "Un index de redémarrage Uint16 sépare un strip en deux rectangles avec un écart intact."
+    },
+    "render.first-index": {
+      "title": "Commencer un dessin indexé à un first index",
+      "expectation": "drawIndexed avec firstIndex sélectionne la fin du buffer d'index, alors que le témoin firstIndex 0 ne dessine rien."
+    },
+    "render.first-instance": {
+      "title": "Commencer un dessin instancié à un first instance",
+      "expectation": "Un draw direct avec firstInstance 2 voit instance_index 2, alors que le témoin firstInstance 0 voit 0."
+    },
+    "render.negative-base-vertex": {
+      "title": "Décaler les index par un base vertex négatif",
+      "expectation": "Un baseVertex négatif ramène les index sentinelles sur les vrais sommets sans accès hors limites."
+    },
+    "depth.read-only-attachment": {
+      "title": "Garder un attachement de profondeur en lecture seule",
+      "expectation": "Une passe depthReadOnly teste la profondeur chargée sans l'écrire."
+    },
+    "stencil.front-back-operations": {
+      "title": "Appliquer des opérations stencil par face",
+      "expectation": "Replace sur la face avant et IncrementClamp sur la face arrière laissent des valeurs distinctes que deux passes Equal peignent séparément."
+    },
+    "depth.bias-slope-clamp": {
+      "title": "Biaiser la profondeur selon la pente et la clamper",
+      "expectation": "Un biais de profondeur proportionnel à la pente rejette l'overlay plus proche et le clamp le rétablit."
     }
   },
   "behaviours": {
