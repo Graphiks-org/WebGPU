@@ -19,10 +19,15 @@ import kotlin.toUInt
 /**
  * Maps the requested limits onto a `requiredLimits` record.
  *
- * A limit whose value is zero is omitted. The reader maps a limit the implementation does not
- * expose to zero, and a browser rejects a `requiredLimits` key it does not recognise (Chromium 140
- * does not expose `maxImmediateSize`, for example). A zero requirement is a no-op in any case, so
- * omitting it keeps the request valid on implementations older than the contract.
+ * A maximum-class limit whose value is zero is omitted. The reader maps a limit the implementation
+ * does not expose to zero, and a browser rejects a `requiredLimits` key it does not recognise
+ * (`maxImmediateSize`, for example, is absent on older Chromium). For a maximum, a zero requirement
+ * is always satisfiable, so omitting it keeps the request valid on implementations older than the
+ * contract.
+ *
+ * The two alignment-class limits are always sent. Zero is not a satisfiable alignment: it is an
+ * invalid requirement, and omitting it would silently replace a bad request with the default
+ * alignment instead of rejecting it.
  */
 internal fun map(input: GPUSupportedLimits): WebGpuRecord = createWebGpuRecord().also { record ->
     putLimit(record, "maxTextureDimension1D", input.maxTextureDimension1D)
@@ -41,8 +46,8 @@ internal fun map(input: GPUSupportedLimits): WebGpuRecord = createWebGpuRecord()
     putLimit(record, "maxUniformBuffersPerShaderStage", input.maxUniformBuffersPerShaderStage)
     putLimit(record, "maxUniformBufferBindingSize", input.maxUniformBufferBindingSize)
     putLimit(record, "maxStorageBufferBindingSize", input.maxStorageBufferBindingSize)
-    putLimit(record, "minUniformBufferOffsetAlignment", input.minUniformBufferOffsetAlignment)
-    putLimit(record, "minStorageBufferOffsetAlignment", input.minStorageBufferOffsetAlignment)
+    putRequiredLimit(record, "minUniformBufferOffsetAlignment", input.minUniformBufferOffsetAlignment)
+    putRequiredLimit(record, "minStorageBufferOffsetAlignment", input.minStorageBufferOffsetAlignment)
     putLimit(record, "maxVertexBuffers", input.maxVertexBuffers)
     putLimit(record, "maxBufferSize", input.maxBufferSize)
     putLimit(record, "maxVertexAttributes", input.maxVertexAttributes)
@@ -69,6 +74,11 @@ private fun putLimit(record: WebGpuRecord, name: String, value: UInt) {
 
 private fun putLimit(record: WebGpuRecord, name: String, value: ULong) {
     if (value != 0uL) setRecordValue(record, name, value.asJsNumber())
+}
+
+/** Sends a limit whose value is always meaningful, including an invalid zero. */
+private fun putRequiredLimit(record: WebGpuRecord, name: String, value: UInt) {
+    setRecordValue(record, name, value.asJsNumber())
 }
 
 /**
