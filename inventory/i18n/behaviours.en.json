@@ -347,10 +347,33 @@
     "compute.shader-f16": {
       "title": "Compute with half precision",
       "expectation": "The f16 extension computes in half precision and widens the exact result."
+    },
+    "adapter.request-and-capabilities": {
+      "title": "Request an adapter and read its capabilities",
+      "expectation": "A low-power hint still returns an adapter whose features, limits and identifying fields are observable, and a device requested without optional features cannot exceed the adapter."
+    },
+    "device.required-limits": {
+      "title": "Request a device at the adapter's workgroup limit",
+      "expectation": "A device request may pin maxComputeWorkgroupSizeX to the adapter's own value, the device reports at least that bound and the kernel still runs."
+    },
+    "device.reject-excess-limit": {
+      "title": "Reject a request above the adapter limit",
+      "expectation": "Requesting maxComputeWorkgroupSizeX one above the adapter's limit fails explicitly instead of returning a device that ignores it."
+    },
+    "device.queue-and-object-labels": {
+      "title": "Label buffers, encoders, command buffers and the queue",
+      "expectation": "Each label is readable and rewritable without stopping the objects from copying data; the queue label is restored."
+    },
+    "errors.uncaptured-error": {
+      "title": "Deliver an uncaptured validation error",
+      "expectation": "Outside any error scope, an invalid buffer reaches the device's uncaptured-error callback as a GPUValidationError."
+    },
+    "errors.scope-filter-routing": {
+      "title": "Route an error past a non-matching scope",
+      "expectation": "A validation error passes an inner OutOfMemory scope untouched and is captured by the outer Validation scope."
     }
   },
   "behaviours": {
-    "adapter.request-and-capabilities": "Requesting an adapter exposes its features, limits and description; the request may fail explicitly.",
     "device.features-and-limits": "A device exposes the negotiated features and limits, plus the description of the adapter that created it.",
     "device.request-required-features": "A missing required feature or limit fails the device request instead of producing a degraded device.",
     "command.encoder-recording": "An encoder records commands and produces a command buffer submitted once.",
@@ -369,7 +392,6 @@
     "render.depth-bias": "The pipeline depth bias offsets fragment depth.",
     "render.pipeline-async": "Asynchronous creation resolves a ready render pipeline or fails explicitly.",
     "query.render-timestamp-writes": "Timestamp writes can wrap a render pass and require the timestamp-query feature.",
-    "errors.uncaptured-error": "An uncaptured error is delivered to the device callback and cannot become an apparent success.",
     "errors.device-lost": "A device loss exposes an actionable reason and message to the runner.",
     "async.promise-results": "Asynchronous operations distinguish success, validation rejection and implementation error.",
     "data.identifiers-and-indices": "Size, index and coordinate aliases carry the contract units, and the base descriptors expose a label."

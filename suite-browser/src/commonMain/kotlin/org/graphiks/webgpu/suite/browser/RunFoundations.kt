@@ -9,6 +9,7 @@ import org.graphiks.webgpu.GPUUncapturedErrorCallback
 import org.graphiks.webgpu.browser.requestAdapter
 import org.graphiks.webgpu.descriptors.DeviceDescriptor
 import org.graphiks.webgpu.suite.AcidCase
+import org.graphiks.webgpu.suite.AcidContext
 import org.graphiks.webgpu.suite.acid.foundationCases
 
 /**
@@ -72,7 +73,20 @@ private suspend fun runCase(case: AcidCase): CaseResult {
             ),
         ).getOrThrow()
         try {
-            case.run(device)
+            // The adapter pre-check above already refused a missing requested feature; this guards
+            // against a binding that returns a device which silently dropped one of them.
+            val missingOnDevice = (case.requiredFeatures - device.features).map { it.name }.sorted()
+            check(missingOnDevice.isEmpty()) {
+                "Device is missing required features: ${missingOnDevice.joinToString(", ")}"
+            }
+
+            // A fresh adapter per call: a context case that needs its own device never has to share
+            // the runner's consumed adapter, and the borrowed device is never closed by the case.
+            val context = AcidContext(
+                device = device,
+                requestAdapter = { options -> requestAdapter(options).map { it } },
+            )
+            case.run(context)
             device.queue.onSubmittedWorkDone().getOrThrow()
             delay(50) // let the browser deliver pending uncaptured-error callbacks
             check(uncapturedErrors.isEmpty()) { uncapturedErrors.joinToString("\n") }

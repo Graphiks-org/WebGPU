@@ -347,10 +347,33 @@
     "compute.shader-f16": {
       "title": "Calculer en demi-précision",
       "expectation": "L'extension f16 calcule en demi-précision et élargit le résultat exact."
+    },
+    "adapter.request-and-capabilities": {
+      "title": "Demander un adapter et lire ses capabilities",
+      "expectation": "Un indice low-power renvoie tout de même un adapter dont les features, les limites et les champs d'identification sont observables, et un device demandé sans feature optionnelle ne peut pas les dépasser."
+    },
+    "device.required-limits": {
+      "title": "Demander un device à la limite de workgroup de l'adapter",
+      "expectation": "Une demande de device peut fixer maxComputeWorkgroupSizeX à la valeur de l'adapter, le device annonce au moins cette borne et le kernel s'exécute quand même."
+    },
+    "device.reject-excess-limit": {
+      "title": "Refuser une demande au-dessus de la limite de l'adapter",
+      "expectation": "Demander maxComputeWorkgroupSizeX à une unité au-dessus de la limite de l'adapter échoue explicitement au lieu de renvoyer un device qui l'ignore."
+    },
+    "device.queue-and-object-labels": {
+      "title": "Étiqueter buffers, encoders, command buffers et la queue",
+      "expectation": "Chaque étiquette se lit et se réécrit sans empêcher les objets de copier des données ; l'étiquette de la queue est restaurée."
+    },
+    "errors.uncaptured-error": {
+      "title": "Livrer une erreur de validation non capturée",
+      "expectation": "Hors de tout scope, un buffer invalide atteint le callback d'erreur non capturée du device sous forme de GPUValidationError."
+    },
+    "errors.scope-filter-routing": {
+      "title": "Router une erreur au-delà d'un scope non correspondant",
+      "expectation": "Une erreur de validation traverse un scope OutOfMemory interne sans y être capturée et est capturée par le scope Validation externe."
     }
   },
   "behaviours": {
-    "adapter.request-and-capabilities": "Demander un adapter expose ses features, ses limites et sa description ; la demande peut échouer explicitement.",
     "device.features-and-limits": "Un device expose les features et limites négociées, ainsi que la description de l'adapter qui l'a créé.",
     "device.request-required-features": "Une feature ou limite obligatoire absente fait échouer la demande de device au lieu de produire un device dégradé.",
     "command.encoder-recording": "Un encodeur enregistre des commandes puis produit un command buffer soumis une seule fois.",
@@ -369,7 +392,6 @@
     "render.depth-bias": "Le biais de profondeur de la pipeline décale la profondeur des fragments.",
     "render.pipeline-async": "La création asynchrone résout une pipeline render prête ou échoue explicitement.",
     "query.render-timestamp-writes": "Les écritures de timestamp peuvent encadrer une passe render et exigent la feature timestamp-query.",
-    "errors.uncaptured-error": "Une erreur non capturée est signalée au callback du device et ne peut pas se transformer en succès apparent.",
     "errors.device-lost": "Une perte de device expose une raison et un message exploitables par le runner.",
     "async.promise-results": "Les opérations asynchrones distinguent succès, rejet de validation et erreur d'implémentation.",
     "data.identifiers-and-indices": "Les alias de tailles, d'index et de coordonnées portent les unités du contrat, et les descripteurs de base exposent un label."

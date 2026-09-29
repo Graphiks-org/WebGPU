@@ -85,4 +85,11 @@ enum class AcidCaseId(val id: String) {
     ErrorsNestedScopes("errors.nested-scopes"),
     QueriesTimestampResolve("queries.timestamp-resolve"),
     ComputeShaderF16("compute.shader-f16"),
+    // Lot A — adapter/device creation, capabilities and error delivery.
+    AdapterCapabilities("adapter.request-and-capabilities"),
+    AdapterRequiredLimits("device.required-limits"),
+    AdapterRejectedLimits("device.reject-excess-limit"),
+    AdapterDeviceLabels("device.queue-and-object-labels"),
+    ErrorsUncapturedError("errors.uncaptured-error"),
+    ErrorsScopeFilterRouting("errors.scope-filter-routing"),
 }

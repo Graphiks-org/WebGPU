@@ -29,6 +29,9 @@ kotlin {
         api(project(":suite-core"))
         implementation(kotlin("test"))
         implementation(project(":webgpu-descriptors"))
+        // Context cases await their own uncaptured-error callback and bound that wait with a
+        // timeout instead of sleeping; the portable contract exposes suspend results only.
+        implementation(libs.coroutines)
     }
 }
 

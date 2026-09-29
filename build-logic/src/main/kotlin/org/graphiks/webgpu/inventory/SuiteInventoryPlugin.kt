@@ -149,7 +149,11 @@ abstract class GenerateSuiteInventoryTask : DefaultTask() {
                 } else {
                     appendLine("        requiredFeatures = setOf(${case.requiredFeatures.joinToString(", ") { "GPUFeatureName.$it" }}),")
                 }
-                appendLine("        run = ::${case.functionName},")
+                when (case.input) {
+                    "Context" -> appendLine("        run = ::${case.functionName},")
+                    "Device" -> appendLine("        run = { context -> ${case.functionName}(context.device) },")
+                    else -> error("Unknown AcidInput '${case.input}' on ${case.functionName}")
+                }
                 appendLine("    ),")
             }
             appendLine(")")
@@ -186,6 +190,8 @@ data class ParsedCase(
     val requiredFeatures: List<String>,
     val functionName: String,
     val packageName: String,
+    /** `Device` when the annotation omits `input`; otherwise the declared [AcidInput] entry. */
+    val input: String = "Device",
 )
 
 object EnumIds {
@@ -423,10 +429,14 @@ object AcidTestParser {
                 val contract = Regex("""ApiSymbols\.(\w+)""").findAll(contractBlock).map { it.groupValues[1] }.toList()
                 val featuresBlock = Regex("""requiredFeatures\s*=\s*\[(.*?)]""", RegexOption.DOT_MATCHES_ALL).find(annotation)?.groupValues?.get(1) ?: ""
                 val features = Regex("""GPUFeatureName\.(\w+)""").findAll(featuresBlock).map { it.groupValues[1] }.toList()
+                val input = Regex("""input\s*=\s*AcidInput\.(\w+)""").find(annotation)?.groupValues?.get(1) ?: "Device"
                 require(idEntry != null) { "Missing @AcidTest id in ${file.name}" }
                 require(familyEntry != null) { "Missing @AcidTest family in ${file.name}" }
+                require(input == "Device" || input == "Context") {
+                    "Unknown @AcidTest input '$input' in ${file.name}: expected AcidInput.Device or AcidInput.Context"
+                }
                 contract.forEach { require(symbolByName.containsKey(it)) { "Unknown ApiSymbols.$it in ${file.name}" } }
-                cases.add(ParsedCase(idEntry, familyEntry, contract, features, functionName, packageName))
+                cases.add(ParsedCase(idEntry, familyEntry, contract, features, functionName, packageName, input))
                 index = close + 1
             }
         }

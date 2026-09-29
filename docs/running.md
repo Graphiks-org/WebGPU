@@ -120,7 +120,11 @@ page at `site/benchmarks/` presents the two reports separately, with the raw sam
 
 ## Consume the artifacts from a binding
 
-A native binding depends on the published artifact and supplies the device it owns:
+A native binding depends on the published artifact and supplies the device it owns. `AcidCase.run`
+takes an `AcidContext`: the borrowed device plus an adapter factory the binding provides. That
+factory must return a **fresh** adapter on every call and must not be a stub, because context cases
+(`adapter.request-and-capabilities`, `device.required-limits`, `device.reject-excess-limit`,
+`errors.uncaptured-error`) request their own adapter and device from it:
 
 ```kotlin
 dependencies {
@@ -129,20 +133,38 @@ dependencies {
 ```
 
 ```kotlin
+import org.graphiks.webgpu.GPUAdapter
 import org.graphiks.webgpu.GPUDevice
+import org.graphiks.webgpu.GPURequestAdapterOptions
+import org.graphiks.webgpu.suite.AcidContext
 import org.graphiks.webgpu.suite.acid.foundationCases
 
-suspend fun validateSuppliedDevice(device: GPUDevice) {
+// Supplied by the binding; each call must return a fresh adapter.
+suspend fun validateSuppliedDevice(
+    device: GPUDevice,
+    requestAdapter: suspend (GPURequestAdapterOptions?) -> Result<GPUAdapter>,
+) {
+    val context = AcidContext(device = device, requestAdapter = requestAdapter)
     for (case in foundationCases()) {
         check(case.requiredFeatures.all { it in device.features })
-        case.run(device)
+        case.run(context)
     }
 }
 ```
 
+The individual case functions still take a `GPUDevice` and can be called directly, which is
+convenient for a binding that only wants the device cases:
+
+```kotlin
+import org.graphiks.webgpu.suite.acid.buffers.mappedAtCreation
+
+suspend fun checkOne(device: GPUDevice) = mappedAtCreation(device)
+```
+
 The runner decides its own isolation and manages the device lifecycle; the browser runner creates a
 fresh adapter and device per case. A case closes the resources it creates and never destroys
-resources supplied by the runner.
+resources supplied by the runner. A context case owns the extra adapter and device it asks for and
+closes them itself.
 
 A native binding can reuse the demo scene the same way. `ParticleScene` is portable and takes the
 device, the target format and the initial particle data:

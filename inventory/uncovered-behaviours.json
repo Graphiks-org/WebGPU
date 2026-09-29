@@ -1,20 +1,5 @@
 [
   {
-    "id": "adapter.request-and-capabilities",
-    "family": "adapter/device/features/limits",
-    "contract": [
-      "GPUAdapter",
-      "GPUAdapter.features",
-      "GPUAdapter.limits",
-      "GPUAdapter.info",
-      "GPUAdapterInfo",
-      "GPURequestAdapterOptions",
-      "GPUPowerPreference",
-      "GPUSupportedFeatures"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "device.features-and-limits",
     "family": "adapter/device/features/limits",
     "contract": [
@@ -244,18 +229,6 @@
     "requiredFeatures": [
       "TimestampQuery"
     ]
-  },
-  {
-    "id": "errors.uncaptured-error",
-    "family": "erreurs/asynchronisme",
-    "contract": [
-      "GPUUncapturedErrorCallback",
-      "GPUUncapturedErrorCallback.onUncapturedError",
-      "GPUError",
-      "GPUError.message",
-      "GPUDeviceDescriptor.onUncapturedError"
-    ],
-    "requiredFeatures": []
   },
   {
     "id": "errors.device-lost",

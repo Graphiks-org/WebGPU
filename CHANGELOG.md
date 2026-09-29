@@ -22,6 +22,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Changed
 
+- The suite execution contract passes an `AcidContext` (the borrowed device plus a binding-supplied adapter factory) to `AcidCase.run`, so a case can request its own adapter and device; the individual case functions still take a `GPUDevice`.
 - Require contribution pull requests from forks on `feat/`, `fix/`, or `chore/` branches based on the current `master` commit.
 - Drop the deprecated macOS x64 and watchOS x64 native targets.
 - Rename `webgpu-web` to `webgpu-web-bindings` and move generated descriptors and bindings to the `org.graphiks.webgpu.descriptors` and `org.graphiks.webgpu.bindings` packages.
