@@ -347,31 +347,186 @@
     "compute.shader-f16": {
       "title": "Compute with half precision",
       "expectation": "The f16 extension computes in half precision and widens the exact result."
+    },
+    "adapter.request-and-capabilities": {
+      "title": "Request an adapter and read its capabilities",
+      "expectation": "A low-power hint still returns an adapter whose features, limits and identifying fields are observable, and a device requested without optional features cannot exceed the adapter."
+    },
+    "device.required-limits": {
+      "title": "Request a device at the adapter's workgroup limit",
+      "expectation": "A device request may pin maxComputeWorkgroupSizeX to the adapter's own value, the device reports at least that bound and the kernel still runs."
+    },
+    "device.reject-excess-limit": {
+      "title": "Reject a request above the adapter limit",
+      "expectation": "Requesting maxComputeWorkgroupSizeX one above the adapter's limit fails explicitly instead of returning a device that ignores it."
+    },
+    "device.queue-and-object-labels": {
+      "title": "Label buffers, encoders, command buffers and the queue",
+      "expectation": "Each label is readable and rewritable without stopping the objects from copying data; the queue label is restored."
+    },
+    "errors.uncaptured-error": {
+      "title": "Deliver an uncaptured validation error",
+      "expectation": "Outside any error scope, an invalid buffer reaches the device's uncaptured-error callback as a GPUValidationError."
+    },
+    "errors.scope-filter-routing": {
+      "title": "Route an error past a non-matching scope",
+      "expectation": "A validation error passes an inner OutOfMemory scope untouched and is captured by the outer Validation scope."
+    },
+    "shader.compilation-valid": {
+      "title": "Compile a valid shader",
+      "expectation": "A valid shader module reports no error compilation message and still builds a pipeline that writes 37."
+    },
+    "shader.compilation-invalid": {
+      "title": "Report an invalid shader",
+      "expectation": "A syntax error yields at least one error compilation message and a validation error; text, count and positions are not asserted."
+    },
+    "compute.pipeline-async": {
+      "title": "Create a compute pipeline asynchronously",
+      "expectation": "createComputePipelineAsync resolves a pipeline that dispatches and writes [7, 10, 13, 16]."
+    },
+    "render.pipeline-async": {
+      "title": "Create a render pipeline asynchronously",
+      "expectation": "createRenderPipelineAsync resolves a pipeline that renders the red triangle over a blue clear."
+    },
+    "errors.async-compute-rejection": {
+      "title": "Reject an asynchronous compute pipeline",
+      "expectation": "A missing entry point makes createComputePipelineAsync fail without a captured validation error."
+    },
+    "errors.async-render-rejection": {
+      "title": "Reject an asynchronous render pipeline",
+      "expectation": "An invalid multisample count makes createRenderPipelineAsync fail without a captured validation error."
+    },
+    "command.ordered-command-buffers": {
+      "title": "Run two command buffers in order",
+      "expectation": "Two command buffers submitted together copy source to intermediate to output in list order."
+    },
+    "command.debug-markers": {
+      "title": "Wrap commands with debug markers",
+      "expectation": "Balanced debug groups and markers decorate the encoder, a compute pass and a render bundle without changing their results."
+    },
+    "texture.creation-metadata": {
+      "title": "Inspect texture creation metadata",
+      "expectation": "A texture exposes the exact dimensions, mip count, sample count, dimension, format and usage set it was created with, and mip 1 of an array layer reads back where it was written."
+    },
+    "texture.view-usage-restriction": {
+      "title": "Restrict a view's usages",
+      "expectation": "A view limited to TextureBinding samples correctly and is rejected as a render attachment."
+    },
+    "texture.depth-aspect-load": {
+      "title": "Load the depth aspect of a combined format",
+      "expectation": "A DepthOnly view of a Depth24PlusStencil8 texture loads the cleared depth value."
+    },
+    "transfers.texture-copy-aspect": {
+      "title": "Copy a depth aspect to a buffer",
+      "expectation": "A DepthOnly copy of Depth32Float writes the depth values and leaves every other byte of the staging buffer intact."
+    },
+    "sampler.comparison": {
+      "title": "Compare a depth reference",
+      "expectation": "A Less comparison sampler returns 1 below the depth and 0 above it, with the output sentinel proving both writes."
+    },
+    "render.volume-depth-slice": {
+      "title": "Render into one slice of a 3D texture",
+      "expectation": "A colour attachment with depthSlice 1 clears only that slice, leaving the neighbouring slice unchanged."
+    },
+    "texture.view-swizzle": {
+      "title": "Swizzle texture view channels",
+      "expectation": "b01r and argb views remap the four channels and exercise every swizzle source over an identity control."
+    },
+    "texture.one-dimensional-load": {
+      "title": "Load a one-dimensional texture",
+      "expectation": "texture_1d loads the four texels exactly and reports its width."
+    },
+    "render.front-face-culling": {
+      "title": "Cull by declared front face",
+      "expectation": "The same triangle is kept with frontFace CCW and cullMode Back, and culled when the declared front face or the culled face changes."
+    },
+    "render.triangle-strip-restart": {
+      "title": "Restart an indexed triangle strip",
+      "expectation": "A Uint16 primitive-restart index breaks one strip into two rectangles with an untouched gap."
+    },
+    "render.first-index": {
+      "title": "Start indexed drawing at a first index",
+      "expectation": "drawIndexed with firstIndex selects the tail of the index buffer, while the firstIndex 0 control draws nothing."
+    },
+    "render.first-instance": {
+      "title": "Start instanced drawing at a first instance",
+      "expectation": "A direct draw with firstInstance 2 sees instance_index 2, while the firstInstance 0 control sees 0."
+    },
+    "render.negative-base-vertex": {
+      "title": "Offset indices by a negative base vertex",
+      "expectation": "A negative baseVertex resolves sentinel indices back onto the real vertices without an out-of-bounds access."
+    },
+    "depth.read-only-attachment": {
+      "title": "Keep a depth attachment read-only",
+      "expectation": "A depthReadOnly pass tests against the loaded depth without writing it."
+    },
+    "stencil.front-back-operations": {
+      "title": "Apply different stencil operations per face",
+      "expectation": "Replace on the front face and IncrementClamp on the back face leave distinct stencil values that two Equal passes paint separately."
+    },
+    "depth.bias-slope-clamp": {
+      "title": "Bias depth by slope and clamp it",
+      "expectation": "A slope-scaled depth bias rejects the nearer overlay and the clamp restores it."
+    },
+    "queue.submitted-work-done": {
+      "title": "Await submitted queue work",
+      "expectation": "onSubmittedWorkDone resolves after a compute pass and its copy, and the staging reads the four written values."
+    },
+    "errors.encoder-finished-twice": {
+      "title": "Finish an encoder twice",
+      "expectation": "A second finish reports a validation error while the first command buffer still copies 7."
+    },
+    "errors.command-buffer-resubmission": {
+      "title": "Submit a command buffer twice",
+      "expectation": "Re-submitting the same command buffer reports a validation error."
+    },
+    "buffers.disjoint-mapped-writes": {
+      "title": "Write two disjoint mapped ranges",
+      "expectation": "Two non-overlapping mapped views reach the buffer and read back in order."
+    },
+    "errors.overlapping-mapped-ranges": {
+      "title": "Reject overlapping mapped ranges",
+      "expectation": "An overlapping CPU-visible range is rejected synchronously, and an adjacent view stays usable."
+    },
+    "errors.destroyed-texture-submission": {
+      "title": "Submit work over a destroyed texture",
+      "expectation": "Submitting a finished copy that reads a closed texture reports a validation error."
+    },
+    "query.render-timestamp-writes": {
+      "title": "Write and resolve render timestamps",
+      "expectation": "A render pass writes begin and end timestamps that resolve into the sentinel buffer without disturbing other ranges; temporal precision is not proven."
+    },
+    "depth.bias-constant": {
+      "title": "Bias depth by a constant",
+      "expectation": "A constant depth bias moves a coplanar overlay in front of or behind the reference."
+    },
+    "render.max-draw-count": {
+      "title": "Cap a pass's draw count",
+      "expectation": "A pass may not exceed maxDrawCount draws; the accepted cap renders and the exceeded cap reports a validation error."
+    },
+    "msaa.alpha-to-coverage-extremes": {
+      "title": "Drive coverage with fragment alpha",
+      "expectation": "Alpha-to-coverage resolves alpha 0 to the clear and alpha 1 to opaque red, while disabling it writes alpha 0 directly."
     }
   },
   "behaviours": {
-    "adapter.request-and-capabilities": "Requesting an adapter exposes its features, limits and description; the request may fail explicitly.",
-    "device.features-and-limits": "A device exposes the negotiated features and limits, plus the description of the adapter that created it.",
-    "device.request-required-features": "A missing required feature or limit fails the device request instead of producing a degraded device.",
-    "command.encoder-recording": "An encoder records commands and produces a command buffer submitted once.",
-    "command.debug-markers": "Debug markers wrap commands without changing observable results.",
-    "transfers.texture-copy-aspect": "A texture copy can select the depth or stencil aspect of a combined format.",
-    "shader.compilation-info": "Compilation messages are available with their severity and position, without requiring an exact text.",
-    "compute.pipeline-async": "Asynchronous creation resolves a ready-to-use pipeline or fails explicitly.",
-    "texture.creation": "A texture exposes its dimensions, format and usages; an invalid combination fails validation.",
-    "texture.view-usage-aspect": "A view can restrict its usages and select a texture aspect.",
-    "texture.view-swizzle": "A non-identity swizzle produces the expected DOMString and requires the texture-component-swizzle feature.",
-    "sampler.comparison": "A comparison sampler reports its compare function and comparison binding type.",
-    "texture.usage-and-formats": "Texture usages combine and each format declares its binding and attachment capabilities.",
-    "render.color-resolve": "A colour attachment can resolve a multisampled view, and a 3D view selects a depth slice.",
-    "render.pass-state": "The pass descriptor can cap its draw count.",
-    "render.primitive-and-multisample": "Topology, culling and the pass layout are validated against the attachments.",
-    "render.depth-bias": "The pipeline depth bias offsets fragment depth.",
-    "render.pipeline-async": "Asynchronous creation resolves a ready render pipeline or fails explicitly.",
-    "query.render-timestamp-writes": "Timestamp writes can wrap a render pass and require the timestamp-query feature.",
-    "errors.uncaptured-error": "An uncaptured error is delivered to the device callback and cannot become an apparent success.",
-    "errors.device-lost": "A device loss exposes an actionable reason and message to the runner.",
-    "async.promise-results": "Asynchronous operations distinguish success, validation rejection and implementation error.",
-    "data.identifiers-and-indices": "Size, index and coordinate aliases carry the contract units, and the base descriptors expose a label."
+    "device.features-and-limits": "The adapter and device cases check a pinned subset of limits and that a device cannot exceed its adapter; the full limit space is not enumerated.",
+    "device.request-required-features": "Refusing a genuinely absent optional feature has no deterministic portable case; the features present in the environment are requested and used by their cases.",
+    "features.compressed-and-tiered": "Compressed-texture and tiered optional features are declared in the contract but not exercised.",
+    "features.subgroups": "Subgroup features and the reported subgroup sizes are not exercised.",
+    "features.not-exposed-by-reference-browser": "Optional features the reference browser does not expose cannot be exercised here and are not counted as covered.",
+    "immediates.set-immediates": "setImmediates has a public signature but no dedicated optional feature in the catalogue; a zero limit or an older browser cannot be reported as a missing feature, so its extension needs a capabilities/contract work item.",
+    "texture.creation": "The creation case checks the getters and usability of one texture; textureBindingViewDimension and the remaining creation constraints are not exercised.",
+    "texture.view-usage-aspect": "Usage restriction and a DepthOnly view are exercised; a StencilOnly view is not.",
+    "texture.usage-and-formats": "The exercised usages and formats are tied to their cases; compressed, tiered and other formats, plus TransientAttachment, remain untested.",
+    "textures.storage-constraints": "Storage texture format and access constraints beyond the single exercised case are not covered.",
+    "formats.depth-and-packed": "Several depth and stencil formats, and packed formats, are not exercised.",
+    "sampling.limits": "Anisotropy and the sampler limits are not exercised.",
+    "render.primitive-and-multisample": "Triangle topologies, culling, strip restart and one multisample mask are exercised; points, lines and partial sample masks are not.",
+    "render.discard-reinit": "A render pass that discards then reinitialises an attachment is not exercised.",
+    "bundles.negative-validation": "Render bundle creation with mismatched attachments is not exercised negatively.",
+    "errors.device-lost": "Device loss has no common access path in the contract (no GPUDevice.lost and no loss callback), so no runner can observe it.",
+    "async.oom-and-internal-results": "Out-of-memory and internal errors cannot be provoked portably; only validation rejection and successful asynchronous results are exercised.",
+    "data.identifiers-and-indices": "Offset, region and index values, including a negative baseVertex, are exercised by their cases; the full 64-bit range of the aliases is not."
   }
 }

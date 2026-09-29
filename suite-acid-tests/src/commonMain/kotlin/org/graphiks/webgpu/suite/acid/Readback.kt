@@ -12,6 +12,7 @@ import org.graphiks.webgpu.descriptors.Origin3D
 import org.graphiks.webgpu.descriptors.TexelCopyBufferInfo
 import org.graphiks.webgpu.descriptors.TexelCopyTextureInfo
 import kotlin.math.abs
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
@@ -58,6 +59,11 @@ internal suspend fun readBufferBytes(device: GPUDevice, buffer: GPUBuffer, size:
  * The staging buffer uses the 256-byte row alignment that `copyTextureToBuffer` requires; the
  * padding is stripped on the CPU before returning. This is for one mip level, one layer and a
  * four-byte format: cases that assert the copy layout itself encode their own copy.
+ *
+ * The staging is prefilled with `0xa5` while it is still mapped at creation, so a silently dropped
+ * texture copy cannot masquerade as zeroed or unchanged data. The mapped range and the CPU array
+ * are required to expose exactly `stride * height` bytes, so a wrong-length mapping is reported
+ * rather than padded or truncated before the padding is stripped.
  */
 internal suspend fun readRgba8(
     device: GPUDevice,
@@ -70,13 +76,18 @@ internal suspend fun readRgba8(
     require(width > 0 && height > 0) { "readRgba8 needs positive dimensions, got ${width}x$height" }
     val rowBytes = width * 4
     val stride = (rowBytes + 255) / 256 * 256
+    val byteCount = (stride * height).toULong()
 
     device.createBuffer(
         BufferDescriptor(
-            size = (stride * height).toULong(),
+            size = byteCount,
             usage = GPUBufferUsage.CopyDst or GPUBufferUsage.MapRead,
+            mappedAtCreation = true,
         ),
     ).use { staging ->
+        staging.getMappedRange().setBytes(0uL, ByteArray(byteCount.toInt()) { 0xA5.toByte() })
+        staging.unmap()
+
         device.createCommandEncoder().use { encoder ->
             encoder.copyTextureToBuffer(
                 TexelCopyTextureInfo(texture = texture, mipLevel = mipLevel, origin = origin),
@@ -87,7 +98,10 @@ internal suspend fun readRgba8(
         }
         staging.mapAsync(GPUMapMode.Read).getOrThrow()
         try {
-            val padded = staging.getMappedRange().toByteArray()
+            val mapped = staging.getMappedRange()
+            val padded = mapped.toByteArray()
+            assertEquals(byteCount, mapped.size, "Mapped texture readback length")
+            assertEquals(byteCount.toInt(), padded.size, "Texture readback byte count")
             val tight = ByteArray(rowBytes * height)
             for (row in 0 until height) {
                 padded.copyInto(tight, row * rowBytes, row * stride, row * stride + rowBytes)

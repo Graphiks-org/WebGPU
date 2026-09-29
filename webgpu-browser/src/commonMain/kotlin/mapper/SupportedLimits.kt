@@ -16,43 +16,69 @@ import kotlin.js.js
 import kotlin.js.toInt
 import kotlin.toUInt
 
+/**
+ * Maps the requested limits onto a `requiredLimits` record.
+ *
+ * A maximum-class limit whose value is zero is omitted. The reader maps a limit the implementation
+ * does not expose to zero, and a browser rejects a `requiredLimits` key it does not recognise
+ * (`maxImmediateSize`, for example, is absent on older Chromium). For a maximum, a zero requirement
+ * is always satisfiable, so omitting it keeps the request valid on implementations older than the
+ * contract.
+ *
+ * The two alignment-class limits are always sent. Zero is not a satisfiable alignment: it is an
+ * invalid requirement, and omitting it would silently replace a bad request with the default
+ * alignment instead of rejecting it.
+ */
 internal fun map(input: GPUSupportedLimits): WebGpuRecord = createWebGpuRecord().also { record ->
-    setRecordValue(record, "maxTextureDimension1D", input.maxTextureDimension1D.asJsNumber())
-    setRecordValue(record, "maxTextureDimension2D", input.maxTextureDimension2D.asJsNumber())
-    setRecordValue(record, "maxTextureDimension3D", input.maxTextureDimension3D.asJsNumber())
-    setRecordValue(record, "maxTextureArrayLayers", input.maxTextureArrayLayers.asJsNumber())
-    setRecordValue(record, "maxBindGroups", input.maxBindGroups.asJsNumber())
-    setRecordValue(record, "maxBindGroupsPlusVertexBuffers", input.maxBindGroupsPlusVertexBuffers.asJsNumber())
-    setRecordValue(record, "maxBindingsPerBindGroup", input.maxBindingsPerBindGroup.asJsNumber())
-    setRecordValue(record, "maxDynamicUniformBuffersPerPipelineLayout", input.maxDynamicUniformBuffersPerPipelineLayout.asJsNumber())
-    setRecordValue(record, "maxDynamicStorageBuffersPerPipelineLayout", input.maxDynamicStorageBuffersPerPipelineLayout.asJsNumber())
-    setRecordValue(record, "maxSampledTexturesPerShaderStage", input.maxSampledTexturesPerShaderStage.asJsNumber())
-    setRecordValue(record, "maxSamplersPerShaderStage", input.maxSamplersPerShaderStage.asJsNumber())
-    setRecordValue(record, "maxStorageBuffersPerShaderStage", input.maxStorageBuffersPerShaderStage.asJsNumber())
-    setRecordValue(record, "maxStorageTexturesPerShaderStage", input.maxStorageTexturesPerShaderStage.asJsNumber())
-    setRecordValue(record, "maxUniformBuffersPerShaderStage", input.maxUniformBuffersPerShaderStage.asJsNumber())
-    setRecordValue(record, "maxUniformBufferBindingSize", input.maxUniformBufferBindingSize.asJsNumber())
-    setRecordValue(record, "maxStorageBufferBindingSize", input.maxStorageBufferBindingSize.asJsNumber())
-    setRecordValue(record, "minUniformBufferOffsetAlignment", input.minUniformBufferOffsetAlignment.asJsNumber())
-    setRecordValue(record, "minStorageBufferOffsetAlignment", input.minStorageBufferOffsetAlignment.asJsNumber())
-    setRecordValue(record, "maxVertexBuffers", input.maxVertexBuffers.asJsNumber())
-    setRecordValue(record, "maxBufferSize", input.maxBufferSize.asJsNumber())
-    setRecordValue(record, "maxVertexAttributes", input.maxVertexAttributes.asJsNumber())
-    setRecordValue(record, "maxVertexBufferArrayStride", input.maxVertexBufferArrayStride.asJsNumber())
-    setRecordValue(record, "maxInterStageShaderVariables", input.maxInterStageShaderVariables.asJsNumber())
-    setRecordValue(record, "maxColorAttachments", input.maxColorAttachments.asJsNumber())
-    setRecordValue(record, "maxColorAttachmentBytesPerSample", input.maxColorAttachmentBytesPerSample.asJsNumber())
-    setRecordValue(record, "maxComputeWorkgroupStorageSize", input.maxComputeWorkgroupStorageSize.asJsNumber())
-    setRecordValue(record, "maxComputeInvocationsPerWorkgroup", input.maxComputeInvocationsPerWorkgroup.asJsNumber())
-    setRecordValue(record, "maxComputeWorkgroupSizeX", input.maxComputeWorkgroupSizeX.asJsNumber())
-    setRecordValue(record, "maxComputeWorkgroupSizeY", input.maxComputeWorkgroupSizeY.asJsNumber())
-    setRecordValue(record, "maxComputeWorkgroupSizeZ", input.maxComputeWorkgroupSizeZ.asJsNumber())
-    setRecordValue(record, "maxComputeWorkgroupsPerDimension", input.maxComputeWorkgroupsPerDimension.asJsNumber())
-    setRecordValue(record, "maxImmediateSize", input.maxImmediateSize.asJsNumber())
-    setRecordValue(record, "maxStorageBuffersInVertexStage", input.maxStorageBuffersInVertexStage.asJsNumber())
-    setRecordValue(record, "maxStorageBuffersInFragmentStage", input.maxStorageBuffersInFragmentStage.asJsNumber())
-    setRecordValue(record, "maxStorageTexturesInVertexStage", input.maxStorageTexturesInVertexStage.asJsNumber())
-    setRecordValue(record, "maxStorageTexturesInFragmentStage", input.maxStorageTexturesInFragmentStage.asJsNumber())
+    putLimit(record, "maxTextureDimension1D", input.maxTextureDimension1D)
+    putLimit(record, "maxTextureDimension2D", input.maxTextureDimension2D)
+    putLimit(record, "maxTextureDimension3D", input.maxTextureDimension3D)
+    putLimit(record, "maxTextureArrayLayers", input.maxTextureArrayLayers)
+    putLimit(record, "maxBindGroups", input.maxBindGroups)
+    putLimit(record, "maxBindGroupsPlusVertexBuffers", input.maxBindGroupsPlusVertexBuffers)
+    putLimit(record, "maxBindingsPerBindGroup", input.maxBindingsPerBindGroup)
+    putLimit(record, "maxDynamicUniformBuffersPerPipelineLayout", input.maxDynamicUniformBuffersPerPipelineLayout)
+    putLimit(record, "maxDynamicStorageBuffersPerPipelineLayout", input.maxDynamicStorageBuffersPerPipelineLayout)
+    putLimit(record, "maxSampledTexturesPerShaderStage", input.maxSampledTexturesPerShaderStage)
+    putLimit(record, "maxSamplersPerShaderStage", input.maxSamplersPerShaderStage)
+    putLimit(record, "maxStorageBuffersPerShaderStage", input.maxStorageBuffersPerShaderStage)
+    putLimit(record, "maxStorageTexturesPerShaderStage", input.maxStorageTexturesPerShaderStage)
+    putLimit(record, "maxUniformBuffersPerShaderStage", input.maxUniformBuffersPerShaderStage)
+    putLimit(record, "maxUniformBufferBindingSize", input.maxUniformBufferBindingSize)
+    putLimit(record, "maxStorageBufferBindingSize", input.maxStorageBufferBindingSize)
+    putRequiredLimit(record, "minUniformBufferOffsetAlignment", input.minUniformBufferOffsetAlignment)
+    putRequiredLimit(record, "minStorageBufferOffsetAlignment", input.minStorageBufferOffsetAlignment)
+    putLimit(record, "maxVertexBuffers", input.maxVertexBuffers)
+    putLimit(record, "maxBufferSize", input.maxBufferSize)
+    putLimit(record, "maxVertexAttributes", input.maxVertexAttributes)
+    putLimit(record, "maxVertexBufferArrayStride", input.maxVertexBufferArrayStride)
+    putLimit(record, "maxInterStageShaderVariables", input.maxInterStageShaderVariables)
+    putLimit(record, "maxColorAttachments", input.maxColorAttachments)
+    putLimit(record, "maxColorAttachmentBytesPerSample", input.maxColorAttachmentBytesPerSample)
+    putLimit(record, "maxComputeWorkgroupStorageSize", input.maxComputeWorkgroupStorageSize)
+    putLimit(record, "maxComputeInvocationsPerWorkgroup", input.maxComputeInvocationsPerWorkgroup)
+    putLimit(record, "maxComputeWorkgroupSizeX", input.maxComputeWorkgroupSizeX)
+    putLimit(record, "maxComputeWorkgroupSizeY", input.maxComputeWorkgroupSizeY)
+    putLimit(record, "maxComputeWorkgroupSizeZ", input.maxComputeWorkgroupSizeZ)
+    putLimit(record, "maxComputeWorkgroupsPerDimension", input.maxComputeWorkgroupsPerDimension)
+    putLimit(record, "maxImmediateSize", input.maxImmediateSize)
+    putLimit(record, "maxStorageBuffersInVertexStage", input.maxStorageBuffersInVertexStage)
+    putLimit(record, "maxStorageBuffersInFragmentStage", input.maxStorageBuffersInFragmentStage)
+    putLimit(record, "maxStorageTexturesInVertexStage", input.maxStorageTexturesInVertexStage)
+    putLimit(record, "maxStorageTexturesInFragmentStage", input.maxStorageTexturesInFragmentStage)
+}
+
+private fun putLimit(record: WebGpuRecord, name: String, value: UInt) {
+    if (value != 0u) setRecordValue(record, name, value.asJsNumber())
+}
+
+private fun putLimit(record: WebGpuRecord, name: String, value: ULong) {
+    if (value != 0uL) setRecordValue(record, name, value.asJsNumber())
+}
+
+/** Sends a limit whose value is always meaningful, including an invalid zero. */
+private fun putRequiredLimit(record: WebGpuRecord, name: String, value: UInt) {
+    setRecordValue(record, name, value.asJsNumber())
 }
 
 /**

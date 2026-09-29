@@ -25,6 +25,12 @@ localized behaviour files describe **42 behaviours** (11 covered by a case, 31 t
 number of symbols is a measure of surface area only: it is not a conformance percentage, and a
 symbol being listed never means it is tested.
 
+> The figures in this section are the 2026-09-28 review of the first increment (884 symbols, 42
+> behaviours). As of 2026-09-29 the generated inventory describes **141 behaviours** across the same
+> 14 families, **123 linked to an executable case** and 18 kept as residual; see the finalized
+> campaign below and [acid-coverage.md](acid-coverage.md). The symbol count still measures surface
+> area only.
+
 | Family | Declarations |
 | --- | ---: |
 | textures/views/samplers | 223 |
@@ -97,6 +103,83 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   overflow. These are manual delivery checks, not HTML-structure tests.
   The 54-row observation predates the current 42-behaviour resources and should not be used as
   the expected row count for the merged inventory.
+
+## Readback hardening and 83-case baseline (2026-09-29)
+
+- Checkout: branch `feat/acid-suite-finalization` from `a429925` (PR #126). At the start of the run
+  three case files carried uncommitted local edits (`queries/Occlusion.kt`,
+  `textures/LinearMipSampling.kt`, `textures/SamplingSupport.kt`). The baseline below therefore
+  describes the working tree with those edits present, not the bare merge commit.
+- Baseline result (both targets): **82 passed and 1 unsupported of 83**. The only non-passing id is
+  `compute.shader-f16`, reported `unsupported` with `Missing optional features: ShaderF16`; it is a
+  declared optional feature absent from this environment, not a failure. No page errors, no fatal
+  error. Adapter description empty, `requestedBackend=swiftshader`, `Chromium 140.0.7339.186` on
+  `darwin`.
+- Reconciliation of the local edits: the occlusion edit had removed the guard that rejects an
+  unreplaced `0xffffffffffffffff` sentinel, and the sampling edit had widened the green invariant to
+  the alpha rounding tolerance. Both contradict the finalization intent (a sentinel must not satisfy
+  “visible > 0”; a justified alpha tolerance does not justify widening the green check). The three
+  files were restored to their `a429925` content, keeping the alpha allowance local and the green
+  check tight.
+- `readRgba8` hardening: the staging buffer is now `mappedAtCreation=true`, prefilled with `0xa5`,
+  unmapped before the copy, and the mapped range and CPU array are asserted to expose exactly
+  `stride * height` bytes before the padding is stripped. The CPU copy is still taken before unmap.
+- Targeted re-run of the affected ids (`render.clear-only`, `transfers.readback-offset-padding`,
+  `queries.occlusion`, all seven `sampling.*` ids): **11/11 passed on JS and 11/11 passed on Wasm**.
+- Observable-oracle control: with the `copyTextureToBuffer` call temporarily removed from
+  `readRgba8`, `render.clear-only` reported `failed` with
+  `Pixel (0, 0) channel R: expected 255 (±0) but observed 165` (165 = `0xa5`), proving the prefill
+  catches a silently dropped copy. Restoring the call returned **82 passed and 1 unsupported of 83**
+  on both targets. The mutation was not committed.
+
+## Finalized acid catalogue campaign (2026-09-29)
+
+- Implementation commits on `feat/acid-suite-finalization`: `90e05d4` (readback), `b68c906` (binding
+  limit fix), `dd1f78a` (lot A), `2488884` (lot B), `6b80c3e` (lot C), `b94df92` (lot D), `97c0839`
+  (lot E), `f6d29c2` (lot F). Base `a429925` (PR #126).
+- Commands:
+
+  ```sh
+  ./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+  node tools/build-site.mjs
+  ```
+
+- Result: the catalogue grew from 83 to **123 cases** (118 mandatory, 5 optional). On JS and Wasm
+  alike, **122 passed, 1 unsupported and 0 failed**: all **118 mandatory cases pass**. The only
+  non-passing case is the optional `compute.shader-f16` (`unsupported`, missing `ShaderF16`); the
+  optional `render.indirect-first-instance`, `queries.timestamp-resolve`,
+  `query.render-timestamp-writes` and `texture.view-swizzle` pass. See
+  [acid-coverage.md](acid-coverage.md) for the disposition and residuals.
+- New contract: `AcidCase.run` takes an `AcidContext` (borrowed device plus a fresh-adapter factory).
+  Context cases (`adapter.request-and-capabilities`, `device.required-limits`,
+  `device.reject-excess-limit`, `errors.uncaptured-error`) request their own adapter and device and
+  close them; the borrowed device is never closed by a case.
+- Binding correction: `webgpu-browser` omitted zero-valued limits from a `requiredLimits` record
+  (`b68c906`), so a device request no longer sends a limit the implementation does not expose
+  (Chromium 140 rejected the unrecognised `maxImmediateSize` key).
+- Mutations that were observed red and reverted, never committed:
+  `requiredLimits = null` made `device.reject-excess-limit` fail; two command buffers submitted in
+  reverse order made `command.ordered-command-buffers` read 99; setting the slope-clamp bias to 0
+  made `depth.bias-slope-clamp`'s clamped variant green. The `readRgba8` copy removal is recorded in
+  the previous section.
+- Limits revealed: removing `timestampWrites` leaves `query.render-timestamp-writes` green, so
+  resolution is proven but temporal precision is not; `errors.device-lost` has no common access path.
+- Review follow-up (see also the commit list): the pinned Playwright/Chromium was updated to 1.63.0 /
+  Chromium 153.0.8010.12, which implements the contract's `DOMString` swizzle, so
+  `texture.view-swizzle` is now executed and passes rather than being an environment gap. Four
+  review findings were fixed: `webgpu-browser` now always sends the two alignment limits (zero is an
+  invalid requirement, not an unexposed one); `depth.read-only-attachment` observes the read-only
+  pass's accept/reject before pass 3 overwrites them (removing those draws now fails the case);
+  `errors.encoder-finished-twice` and `render.max-draw-count` no longer swallow an unexpected
+  synchronous exception; and the `buffers.disjoint-mapped-writes` / `stencil.front-back-operations`
+  contract arrays were corrected.
+- Isolation: `errors.uncaptured-error` followed by `errors.empty-scope` in one campaign each reported
+  their own result, with the dedicated device's error not leaking into the next case.
+- Environment: `Chromium 153.0.8010.12` (Playwright 1.63.0) on `darwin`, headless with
+  `--enable-unsafe-webgpu --enable-unsafe-swiftshader --use-angle=swiftshader`. These are functional
+  software-backend results, not physical-GPU results.
 
 ## Compilation and publication evidence
 

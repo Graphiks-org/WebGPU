@@ -36,6 +36,7 @@ internal suspend fun computeTextureRead(
     textureLayout: TextureBindingLayout,
     outputBytes: ULong,
     sampler: GPUSampler? = null,
+    samplerBindingType: GPUSamplerBindingType = GPUSamplerBindingType.Filtering,
     workgroupsX: UInt = 1u,
     workgroupsY: UInt = 1u,
 ): ByteArray {
@@ -57,7 +58,7 @@ internal suspend fun computeTextureRead(
                         BindGroupLayoutEntry(
                             binding = 2u,
                             visibility = GPUShaderStage.Compute,
-                            sampler = SamplerBindingLayout(type = GPUSamplerBindingType.Filtering),
+                            sampler = SamplerBindingLayout(type = samplerBindingType),
                         ),
                     )
                 }

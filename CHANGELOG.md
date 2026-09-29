@@ -13,14 +13,18 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - `org.graphiks:suite-demos`, a portable compute particle scene, plus a bilingual Demos gallery and GPU readback checks (`--demo-check`) published under the suite site's `demos/` path.
 - `org.graphiks:suite-benchmarks`, two portable measurement workloads (`transfer.write-buffer`, `compute.encode-submit`) with the explicit `foundations-v1` protocol and GPU readback checks, a `--benchmark` collector mode, and a bilingual Benchmarks page published under the suite site's `benchmarks/` path.
 - Extend the browser acid tests: targeted runs (`--cases=id1,id2` / `?cases=id1,id2` into `selected-<target>.json`), declared optional-feature reporting (`CaseResult.missingFeatures`, accepted as `unsupported` only for declared features), and new buffer, binding, transfer, texture-copy, texture-view, format, storage, sampling, render-command, blending, depth/stencil, advanced-command, error and optional-feature cases (eighty-three in total).
+- Finalize the browser acid tests at 123 cases (118 mandatory, five optional) covering adapter/device requests and error delivery, shader compilation and asynchronous pipelines, texture aspects, views and comparison sampling, primitive/face/depth-stencil state, submission and mapped-range lifetime, render timestamps, draw limits and alpha-to-coverage. The coverage balance, optional-feature status and remaining contract gaps are published in `docs/acid-coverage.md`.
 
 ### Fixed
 
 - `webgpu-browser` no longer throws on Kotlin/Wasm when an implementation omits a `GPUSupportedLimits` property; an absent limit is read as zero.
+- `webgpu-browser` omits zero-valued maximum limits from a `requiredLimits` record, so a device request never sends a limit the implementation does not expose (older Chromium rejects an unknown `maxImmediateSize` key). The two alignment limits are always sent: zero is an invalid alignment, not an unexposed limit, so a bad request is rejected rather than silently replaced by the default.
+- The browser suite runner pins Playwright 1.63.0 / Chromium 153, which implements the contract's four-character `DOMString` texture-view swizzle; `texture.view-swizzle` is executed instead of reported as an environment gap.
 - `webgpu-browser` omits an identity `GPUTextureViewDescriptor.swizzle` when creating a view, so a view built from a descriptor no longer sends a swizzle value in the form rejected by Chromium 140's pre-release dictionary encoding.
 
 ### Changed
 
+- The suite execution contract passes an `AcidContext` (the borrowed device plus a binding-supplied adapter factory) to `AcidCase.run`, so a case can request its own adapter and device; the individual case functions still take a `GPUDevice`.
 - Require contribution pull requests from forks on `feat/`, `fix/`, or `chore/` branches based on the current `master` commit.
 - Drop the deprecated macOS x64 and watchOS x64 native targets.
 - Rename `webgpu-web` to `webgpu-web-bindings` and move generated descriptors and bindings to the `org.graphiks.webgpu.descriptors` and `org.graphiks.webgpu.bindings` packages.
