@@ -60,7 +60,14 @@ suspend fun linearSampling(device: GPUDevice) = withValidationScope(device) {
                     ),
                 ).toFloatArray()
 
-                assertColor(floats, 0, 0.5f, 0f, 0.5f, 1f, "u = 0.5 blends red and blue", tolerance = 1f / 255f)
+                assertFilteredRedBlue(
+                    floats,
+                    0,
+                    0.5f,
+                    0.5f,
+                    "u = 0.5 blends red and blue",
+                    tolerance = 1f / 255f,
+                )
             }
         }
     }

@@ -84,8 +84,13 @@ suspend fun reinterpretSrgbView(device: GPUDevice) = withValidationScope(device)
             ).toFloatArray()
         }
 
-        assertEquals(128f / 255f, linear[0], 1e-6f, "The linear view reads the raw byte/255")
-        assertEquals(0.2158605f, srgb[0], 0.001f, "The sRGB view decodes the same byte")
-        assertEquals(linear[3], srgb[3], 1e-6f, "Alpha is identical across the two views")
+        val raw = 128f / 255f
+        val decoded = 0.2158605f
+        for (channel in 0..2) {
+            assertEquals(raw, linear[channel], 1e-6f, "Linear view channel $channel is the raw byte/255")
+            assertEquals(decoded, srgb[channel], 0.001f, "sRGB view channel $channel decodes the same byte")
+        }
+        assertEquals(raw, linear[3], 1e-6f, "Linear view alpha is the raw byte/255")
+        assertEquals(raw, srgb[3], 1e-6f, "sRGB view alpha is the raw byte/255")
     }
 }

@@ -42,8 +42,9 @@ private const val GREEN_FAR_SHADER = """
 
 /**
  * Two occlusion queries in one pass: the near fragment passes the depth test and contributes
- * samples, the far fragment is rejected by depth and contributes none. The first query's 64-bit
- * result is non-zero and the second is zero.
+ * samples, the far fragment is rejected by depth and contributes none. The 16-byte destination is
+ * prefilled with `0xff`, so the first query's non-zero result and the second query's zero must each
+ * replace their sentinel rather than merely leaving it untouched.
  */
 @AcidTest(
     id = AcidCaseId.QueriesOcclusion,
@@ -60,8 +61,14 @@ suspend fun occlusion(device: GPUDevice) = withValidationScope(device) {
     val format = GPUTextureFormat.Depth32Float
     device.createQuerySet(QuerySetDescriptor(type = GPUQueryType.Occlusion, count = 2u)).use { queries ->
         device.createBuffer(
-            BufferDescriptor(16uL, org.graphiks.webgpu.GPUBufferUsage.QueryResolve or org.graphiks.webgpu.GPUBufferUsage.CopySrc),
+            BufferDescriptor(
+                size = 16uL,
+                usage = org.graphiks.webgpu.GPUBufferUsage.QueryResolve or org.graphiks.webgpu.GPUBufferUsage.CopySrc,
+                mappedAtCreation = true,
+            ),
         ).use { resolve ->
+            resolve.getMappedRange().setBytes(0uL, ByteArray(16) { 0xFF.toByte() })
+            resolve.unmap()
             device.createBuffer(
                 BufferDescriptor(16uL, org.graphiks.webgpu.GPUBufferUsage.CopyDst or org.graphiks.webgpu.GPUBufferUsage.MapRead),
             ).use { staging ->

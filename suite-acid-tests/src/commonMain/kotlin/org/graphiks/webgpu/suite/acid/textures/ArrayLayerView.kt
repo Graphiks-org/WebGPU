@@ -15,7 +15,6 @@ import org.graphiks.webgpu.suite.AcidFamily
 import org.graphiks.webgpu.suite.AcidTest
 import org.graphiks.webgpu.suite.acid.ApiSymbols
 import org.graphiks.webgpu.suite.acid.withValidationScope
-import kotlin.test.assertEquals
 
 private const val ARRAY_LOAD_SHADER = """
 @group(0) @binding(0) var tex: texture_2d_array<f32>;
@@ -74,10 +73,8 @@ suspend fun arrayLayerView(device: GPUDevice) = withValidationScope(device) {
                 ),
             ).toFloatArray()
 
-            assertEquals(0f, floats[0], 1e-6f, "Local layer 0 is the green layer")
-            assertEquals(1f, floats[1], 1e-6f, "Local layer 0 is the green layer")
-            assertEquals(0f, floats[4], 1e-6f, "Local layer 1 is the blue layer")
-            assertEquals(1f, floats[6], 1e-6f, "Local layer 1 is the blue layer")
+            assertColor(floats, 0, 0f, 1f, 0f, 1f, "Local layer 0 is the green layer")
+            assertColor(floats, 1, 0f, 0f, 1f, 1f, "Local layer 1 is the blue layer")
         }
     }
 }

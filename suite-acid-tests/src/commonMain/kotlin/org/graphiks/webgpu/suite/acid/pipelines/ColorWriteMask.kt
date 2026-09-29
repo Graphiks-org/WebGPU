@@ -26,8 +26,9 @@ private const val RED_ALPHA_ZERO_SHADER = """
 """
 
 /**
- * A `writeMask` of red writes only the red channel: over a green clear the result keeps the clear's
- * green, blue and alpha and takes only red from the fragment.
+ * A `writeMask` of red writes only the red channel: over a cyan clear the result keeps the clear's
+ * green, blue and alpha and takes only red from the fragment, so it becomes white. A mask that also
+ * wrote blue would drop the clear's blue to the fragment's zero.
  */
 @AcidTest(
     id = AcidCaseId.RenderColorWriteMask,
@@ -48,12 +49,12 @@ suspend fun colorWriteMask(device: GPUDevice) = withValidationScope(device) {
         ),
     ).use { pipeline ->
         createColorTarget(device, 16, 16).use { target ->
-            val pixels = renderAndRead(device, target, 16, 16, Color(0.0, 1.0, 0.0, 1.0)) { pass ->
+            val pixels = renderAndRead(device, target, 16, 16, Color(0.0, 1.0, 1.0, 1.0)) { pass ->
                 pass.setPipeline(pipeline)
                 pass.draw(3u)
             }
-            assertPixel(pixels, 16, 8, 8, 255, 255, 0, 255)
-            assertPixel(pixels, 16, 4, 4, 255, 255, 0, 255)
+            assertPixel(pixels, 16, 8, 8, 255, 255, 255, 255)
+            assertPixel(pixels, 16, 4, 4, 255, 255, 255, 255)
         }
     }
 }

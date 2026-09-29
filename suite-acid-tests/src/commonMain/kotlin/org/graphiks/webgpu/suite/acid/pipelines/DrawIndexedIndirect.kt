@@ -28,8 +28,9 @@ private const val SQUARE_SHADER = """
 """
 
 /**
- * `drawIndexedIndirect` takes `[6, 1, 0, 0, 0]` from a buffer and draws the indexed square: the
- * centre is red and the background black.
+ * `drawIndexedIndirect` takes `[6, 1, 0, 0, 0]` from a buffer and draws the indexed square: interior
+ * pixels on each side of the shared diagonal are red (so both triangles are drawn) and the
+ * background is black.
  */
 @AcidTest(
     id = AcidCaseId.RenderDrawIndexedIndirect,
@@ -67,6 +68,8 @@ suspend fun drawIndexedIndirect(device: GPUDevice) = withValidationScope(device)
                             pass.drawIndexedIndirect(args, 0uL)
                         }
                         assertPixel(pixels, 16, 8, 8, 255, 0, 0, 255)
+                        assertPixel(pixels, 16, 6, 9, 255, 0, 0, 255)
+                        assertPixel(pixels, 16, 9, 6, 255, 0, 0, 255)
                         assertPixel(pixels, 16, 1, 1, 0, 0, 0, 255)
                     }
                 }

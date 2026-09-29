@@ -73,15 +73,14 @@ suspend fun linearMipSampling(device: GPUDevice) = withValidationScope(device) {
                     ),
                 ).toFloatArray()
 
-                assertColor(
+                assertFilteredRedBlue(
                     floats,
                     0,
                     0.5f,
-                    0f,
                     0.5f,
-                    1f,
                     "LOD 0.5 blends the red mip 0 and the blue mip 1",
                     tolerance = 1f / 255f,
+                    invariantTolerance = 1e-3f,
                 )
             }
         }

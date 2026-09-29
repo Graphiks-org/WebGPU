@@ -28,8 +28,9 @@ private const val POSITION_SHADER = """
 """
 
 /**
- * A 16-bit index buffer draws the two triangles of a centred square: the four interior pixels are
- * red and the corners stay black.
+ * A 16-bit index buffer draws the two triangles of a centred square. The interior checks include
+ * pixels strictly on each side of the shared diagonal, so both triangles must be drawn; the corners
+ * stay black.
  */
 @AcidTest(
     id = AcidCaseId.RenderIndexedU16,
@@ -68,6 +69,8 @@ suspend fun indexedUint16(device: GPUDevice) = withValidationScope(device) {
                     }
                     assertPixel(pixels, 16, 6, 6, 255, 0, 0, 255)
                     assertPixel(pixels, 16, 9, 9, 255, 0, 0, 255)
+                    assertPixel(pixels, 16, 6, 9, 255, 0, 0, 255)
+                    assertPixel(pixels, 16, 9, 6, 255, 0, 0, 255)
                     assertPixel(pixels, 16, 0, 0, 0, 0, 0, 255)
                     assertPixel(pixels, 16, 15, 15, 0, 0, 0, 255)
                 }

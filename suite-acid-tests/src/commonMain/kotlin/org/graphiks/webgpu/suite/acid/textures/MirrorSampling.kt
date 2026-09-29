@@ -23,12 +23,14 @@ private const val MIRROR_SAMPLE_SHADER = """
 fn main() {
     out[0] = textureSampleLevel(tex, samp, vec2f(1.25, 0.5), 0.0);
     out[1] = textureSampleLevel(tex, samp, vec2f(-0.25, 0.5), 0.0);
+    out[2] = textureSampleLevel(tex, samp, vec2f(2.25, 0.5), 0.0);
 }
 """
 
 /**
  * `MirrorRepeat` reflects each 1..2 period: u = 1.25 mirrors to 0.75 (the blue texel) and
- * u = -0.25 mirrors to 0.25 (the red texel), the opposite of plain repeat.
+ * u = -0.25 mirrors to 0.25 (the red texel), the opposite of plain repeat. u = 2.25 mirrors to
+ * 0.25 (red), whereas `ClampToEdge` would pin it to the blue edge, so the two modes separate here.
  */
 @AcidTest(
     id = AcidCaseId.TexturesSamplingMirrorRepeat,
@@ -57,13 +59,14 @@ suspend fun mirrorSampling(device: GPUDevice) = withValidationScope(device) {
                         shaderCode = MIRROR_SAMPLE_SHADER,
                         textureView = view,
                         textureLayout = TextureBindingLayout(sampleType = GPUTextureSampleType.Float),
-                        outputBytes = 32uL,
+                        outputBytes = 48uL,
                         sampler = sampler,
                     ),
                 ).toFloatArray()
 
                 assertColor(floats, 0, 0f, 0f, 1f, 1f, "u = 1.25 mirrors to 0.75, the blue texel")
                 assertColor(floats, 1, 1f, 0f, 0f, 1f, "u = -0.25 mirrors to 0.25, the red texel")
+                assertColor(floats, 2, 1f, 0f, 0f, 1f, "u = 2.25 mirrors to 0.25, the red texel")
             }
         }
     }

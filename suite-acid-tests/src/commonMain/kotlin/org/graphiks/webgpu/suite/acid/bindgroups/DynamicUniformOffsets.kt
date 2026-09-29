@@ -38,8 +38,9 @@ fn main() {
 
 /**
  * With `hasDynamicOffset = true`, the dynamic offset selects which aligned block of the uniform
- * buffer the binding sees: two passes read 3 (offset 0) and 9 (offset = alignment) from the same
- * binding.
+ * buffer the binding sees. The same bind group is reused for both dispatches and its output is read
+ * back between them: with offset 0 the shader writes 3, and with offset = alignment the same group
+ * writes 9, so a changed offset on a reused group must take effect.
  */
 @AcidTest(
     id = AcidCaseId.BindingsDynamicUniformOffsets,
@@ -64,71 +65,58 @@ suspend fun dynamicUniformOffsets(device: GPUDevice) = withValidationScope(devic
     ).use { uniform ->
         device.createBuffer(
             BufferDescriptor(16uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),
-        ).use { outputA ->
-            device.createBuffer(
-                BufferDescriptor(16uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),
-            ).use { outputB ->
-                device.queue.writeBuffer(uniform, 0uL, ArrayBuffer.of(uintArrayOf(3u)))
-                device.queue.writeBuffer(uniform, alignmentBytes, ArrayBuffer.of(uintArrayOf(9u)))
+        ).use { output ->
+            device.queue.writeBuffer(uniform, 0uL, ArrayBuffer.of(uintArrayOf(3u)))
+            device.queue.writeBuffer(uniform, alignmentBytes, ArrayBuffer.of(uintArrayOf(9u)))
 
-                device.createShaderModule(ShaderModuleDescriptor(code = DYNAMIC_UNIFORM_SHADER)).use { shader ->
-                    device.createBindGroupLayout(
-                        BindGroupLayoutDescriptor(
-                            entries = listOf(
-                                BindGroupLayoutEntry(
-                                    binding = 0u,
-                                    visibility = GPUShaderStage.Compute,
-                                    buffer = BufferBindingLayout(
-                                        type = GPUBufferBindingType.Uniform,
-                                        hasDynamicOffset = true,
-                                        minBindingSize = 16uL,
-                                    ),
+            device.createShaderModule(ShaderModuleDescriptor(code = DYNAMIC_UNIFORM_SHADER)).use { shader ->
+                device.createBindGroupLayout(
+                    BindGroupLayoutDescriptor(
+                        entries = listOf(
+                            BindGroupLayoutEntry(
+                                binding = 0u,
+                                visibility = GPUShaderStage.Compute,
+                                buffer = BufferBindingLayout(
+                                    type = GPUBufferBindingType.Uniform,
+                                    hasDynamicOffset = true,
+                                    minBindingSize = 16uL,
                                 ),
-                                BindGroupLayoutEntry(
-                                    binding = 1u,
-                                    visibility = GPUShaderStage.Compute,
-                                    buffer = BufferBindingLayout(
-                                        type = GPUBufferBindingType.Storage,
-                                        minBindingSize = 4uL,
-                                    ),
+                            ),
+                            BindGroupLayoutEntry(
+                                binding = 1u,
+                                visibility = GPUShaderStage.Compute,
+                                buffer = BufferBindingLayout(
+                                    type = GPUBufferBindingType.Storage,
+                                    minBindingSize = 4uL,
                                 ),
                             ),
                         ),
-                    ).use { layout ->
-                        device.createPipelineLayout(PipelineLayoutDescriptor(listOf(layout))).use { pipelineLayout ->
-                            device.createComputePipeline(
-                                ComputePipelineDescriptor(
-                                    compute = ProgrammableStage(shader),
-                                    layout = pipelineLayout,
-                                ),
-                            ).use { pipeline ->
-                                device.createBindGroup(
-                                    BindGroupDescriptor(
-                                        layout = layout,
-                                        entries = listOf(
-                                            BindGroupEntry(0u, BufferBinding(uniform, size = 16uL)),
-                                            BindGroupEntry(1u, BufferBinding(outputA)),
-                                        ),
+                    ),
+                ).use { layout ->
+                    device.createPipelineLayout(PipelineLayoutDescriptor(listOf(layout))).use { pipelineLayout ->
+                        device.createComputePipeline(
+                            ComputePipelineDescriptor(
+                                compute = ProgrammableStage(shader),
+                                layout = pipelineLayout,
+                            ),
+                        ).use { pipeline ->
+                            device.createBindGroup(
+                                BindGroupDescriptor(
+                                    layout = layout,
+                                    entries = listOf(
+                                        BindGroupEntry(0u, BufferBinding(uniform, size = 16uL)),
+                                        BindGroupEntry(1u, BufferBinding(output)),
                                     ),
-                                ).use { groupA ->
-                                    device.createBindGroup(
-                                        BindGroupDescriptor(
-                                            layout = layout,
-                                            entries = listOf(
-                                                BindGroupEntry(0u, BufferBinding(uniform, size = 16uL)),
-                                                BindGroupEntry(1u, BufferBinding(outputB)),
-                                            ),
-                                        ),
-                                    ).use { groupB ->
-                                        dispatchWithDynamicOffset(device, pipeline, groupA, listOf(0u))
-                                        dispatchWithDynamicOffset(device, pipeline, groupB, listOf(alignment))
+                                ),
+                            ).use { group ->
+                                dispatchWithDynamicOffset(device, pipeline, group, listOf(0u))
+                                val wordsAtZero = ArrayBuffer.of(readBufferBytes(device, output, 16uL)).toUIntArray()
 
-                                        val wordsA = ArrayBuffer.of(readBufferBytes(device, outputA, 16uL)).toUIntArray()
-                                        val wordsB = ArrayBuffer.of(readBufferBytes(device, outputB, 16uL)).toUIntArray()
-                                        assertEquals(3u, wordsA[0], "The zero dynamic offset selects the value 3")
-                                        assertEquals(9u, wordsB[0], "The aligned dynamic offset selects the value 9")
-                                    }
-                                }
+                                dispatchWithDynamicOffset(device, pipeline, group, listOf(alignment))
+                                val wordsAtAlignment = ArrayBuffer.of(readBufferBytes(device, output, 16uL)).toUIntArray()
+
+                                assertEquals(3u, wordsAtZero[0], "The zero dynamic offset selects the value 3")
+                                assertEquals(9u, wordsAtAlignment[0], "The aligned dynamic offset selects the value 9")
                             }
                         }
                     }

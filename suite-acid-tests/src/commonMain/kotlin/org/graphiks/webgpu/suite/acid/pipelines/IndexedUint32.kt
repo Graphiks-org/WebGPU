@@ -29,7 +29,7 @@ private const val POSITION_SHADER = """
 
 /**
  * A 32-bit index buffer read from `offset = 12` skips three degenerate indices and draws the same
- * centred square as the 16-bit case.
+ * centred square as the 16-bit case, including interior pixels on each side of the shared diagonal.
  */
 @AcidTest(
     id = AcidCaseId.RenderIndexedU32Offset,
@@ -72,6 +72,8 @@ suspend fun indexedUint32(device: GPUDevice) = withValidationScope(device) {
                     }
                     assertPixel(pixels, 16, 6, 6, 255, 0, 0, 255)
                     assertPixel(pixels, 16, 9, 9, 255, 0, 0, 255)
+                    assertPixel(pixels, 16, 6, 9, 255, 0, 0, 255)
+                    assertPixel(pixels, 16, 9, 6, 255, 0, 0, 255)
                     assertPixel(pixels, 16, 0, 0, 0, 0, 0, 255)
                     assertPixel(pixels, 16, 15, 15, 0, 0, 0, 255)
                 }

@@ -15,7 +15,8 @@ import org.graphiks.webgpu.suite.acid.withValidationScope
 
 /**
  * `setScissorRect` discards fragments outside the rectangle: the fullscreen triangle paints only
- * the 8×4 band at (4, 6), and rows above and below stay black.
+ * the 8×4 band at (4, 6), while rows above and below and columns left and right of the band stay
+ * black.
  */
 @AcidTest(
     id = AcidCaseId.RenderScissor,
@@ -37,6 +38,8 @@ suspend fun scissor(device: GPUDevice) = withValidationScope(device) {
             }
             assertPixel(pixels, 16, 5, 7, 255, 0, 0, 255)
             assertPixel(pixels, 16, 10, 8, 255, 0, 0, 255)
+            assertPixel(pixels, 16, 1, 7, 0, 0, 0, 255)
+            assertPixel(pixels, 16, 14, 7, 0, 0, 0, 255)
             assertPixel(pixels, 16, 5, 4, 0, 0, 0, 255)
             assertPixel(pixels, 16, 5, 12, 0, 0, 0, 255)
         }
