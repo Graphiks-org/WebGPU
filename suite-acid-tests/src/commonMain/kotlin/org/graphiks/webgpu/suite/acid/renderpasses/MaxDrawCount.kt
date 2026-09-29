@@ -84,7 +84,9 @@ suspend fun maxDrawCount(device: GPUDevice) = withValidationScope(device) {
                             pass.setPipeline(green)
                             pass.draw(3u)
                             pass.end()
-                            runCatching { encoder.finish() }.getOrNull()?.use { device.queue.submit(listOf(it)) }
+                            // An unexpected synchronous exception during finish must propagate; the
+                            // scope assertion does not license swallowing it.
+                            encoder.finish().use { device.queue.submit(listOf(it)) }
                         }
                     }
                 }

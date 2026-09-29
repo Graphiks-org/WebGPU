@@ -21,7 +21,7 @@ hidden.
 | `render.indirect-first-instance` | `IndirectFirstInstance` | passed |
 | `queries.timestamp-resolve` | `TimestampQuery` | passed |
 | `query.render-timestamp-writes` | `TimestampQuery` | passed |
-| `texture.view-swizzle` | `TextureComponentSwizzle` | not validated here (environment gap, below) |
+| `texture.view-swizzle` | `TextureComponentSwizzle` | passed |
 
 The five optional cases cover four distinct features: `TimestampQuery` is used by two cases,
 `TextureComponentSwizzle` by one, `ShaderF16` by one and `IndirectFirstInstance` by one.
@@ -32,17 +32,20 @@ set must be a subset of `adapter.features`, and after `requestDevice` it must al
 
 ## Execution result
 
-On the two browser targets, with Chromium 140.0.7339.186 / SwiftShader on `darwin`:
+On the two browser targets, with Chromium 153.0.8010.12 / SwiftShader on `darwin`:
 
 | Target | Passed | Unsupported | Failed | Total |
 | --- | ---: | ---: | ---: | ---: |
-| JS | 121 | 1 | 1 | 123 |
-| Wasm JS | 121 | 1 | 1 | 123 |
+| JS | 122 | 1 | 0 | 123 |
+| Wasm JS | 122 | 1 | 0 | 123 |
 
-All **118 mandatory cases pass** on both targets. The two non-passing cases are optional:
-`compute.shader-f16` is `unsupported` because the environment lacks `ShaderF16`, and
-`texture.view-swizzle` fails because of the reference browser's swizzle encoding (below). Neither is
-presented as evidence of support.
+All **118 mandatory cases pass** on both targets. The only non-passing case is optional:
+`compute.shader-f16` is `unsupported` because the environment lacks `ShaderF16`. It is not presented
+as evidence of support.
+
+The pinned Playwright/Chromium was updated to a release that implements the contract's four-character
+`DOMString` swizzle, so the optional `texture.view-swizzle` case is now executed rather than reported
+as an environment gap.
 
 Full command list, environment metadata and the raw reports are recorded in
 [verification.md](verification.md).
@@ -104,11 +107,6 @@ Validation page. The count is a result of scoping, not a target to drive to zero
 
 ## Known limits of this evidence
 
-- **`texture.view-swizzle` is not validated here.** Chromium 140 advertises
-  `texture-component-swizzle` but reads `GPUTextureViewDescriptor.swizzle` as a pre-release
-  `GPUTextureComponentSwizzle` dictionary, while the contract and the binding encode it as the
-  four-character DOMString. The case keeps the contract encoding rather than normalising the
-  browser's pre-release form; it must be re-run on a browser that implements the string form.
 - **Timestamp observability.** Removing `timestampWrites` from the render pass leaves the
   `query.render-timestamp-writes` case green, because `resolveQuerySet` replaces the sentinel bytes
   even for a query the pass never wrote. The case proves valid query use, resolution and range

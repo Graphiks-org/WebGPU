@@ -37,6 +37,7 @@ suspend fun disjointMappedWrites(device: GPUDevice) = withValidationScope(device
             mappedAtCreation = true,
         ),
     ).use { buffer ->
+        assertEquals(32uL, buffer.size, "The buffer reports its full size")
         val first = buffer.getMappedRange(0uL, 16uL)
         assertEquals(16uL, first.size, "The first mapped view spans 16 bytes")
         first.setUInts(0uL, uintArrayOf(1u, 2u, 3u, 4u))

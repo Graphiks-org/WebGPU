@@ -147,11 +147,11 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   ```
 
 - Result: the catalogue grew from 83 to **123 cases** (118 mandatory, 5 optional). On JS and Wasm
-  alike, **121 passed, 1 unsupported and 1 failed**: all **118 mandatory cases pass**; the
-  non-passing pair is optional. `compute.shader-f16` is `unsupported` (missing `ShaderF16`); the
-  optional `render.indirect-first-instance`, `queries.timestamp-resolve` and
-  `query.render-timestamp-writes` pass. `texture.view-swizzle` is not validated in this environment.
-  See [acid-coverage.md](acid-coverage.md) for the disposition and residuals.
+  alike, **122 passed, 1 unsupported and 0 failed**: all **118 mandatory cases pass**. The only
+  non-passing case is the optional `compute.shader-f16` (`unsupported`, missing `ShaderF16`); the
+  optional `render.indirect-first-instance`, `queries.timestamp-resolve`,
+  `query.render-timestamp-writes` and `texture.view-swizzle` pass. See
+  [acid-coverage.md](acid-coverage.md) for the disposition and residuals.
 - New contract: `AcidCase.run` takes an `AcidContext` (borrowed device plus a fresh-adapter factory).
   Context cases (`adapter.request-and-capabilities`, `device.required-limits`,
   `device.reject-excess-limit`, `errors.uncaptured-error`) request their own adapter and device and
@@ -164,12 +164,20 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   reverse order made `command.ordered-command-buffers` read 99; setting the slope-clamp bias to 0
   made `depth.bias-slope-clamp`'s clamped variant green. The `readRgba8` copy removal is recorded in
   the previous section.
-- Limits revealed: `texture.view-swizzle` cannot be exercised on the reference Chromium (pre-release
-  swizzle dictionary); removing `timestampWrites` leaves `query.render-timestamp-writes` green, so
+- Limits revealed: removing `timestampWrites` leaves `query.render-timestamp-writes` green, so
   resolution is proven but temporal precision is not; `errors.device-lost` has no common access path.
+- Review follow-up (see also the commit list): the pinned Playwright/Chromium was updated to 1.63.0 /
+  Chromium 153.0.8010.12, which implements the contract's `DOMString` swizzle, so
+  `texture.view-swizzle` is now executed and passes rather than being an environment gap. Four
+  review findings were fixed: `webgpu-browser` now always sends the two alignment limits (zero is an
+  invalid requirement, not an unexposed one); `depth.read-only-attachment` observes the read-only
+  pass's accept/reject before pass 3 overwrites them (removing those draws now fails the case);
+  `errors.encoder-finished-twice` and `render.max-draw-count` no longer swallow an unexpected
+  synchronous exception; and the `buffers.disjoint-mapped-writes` / `stencil.front-back-operations`
+  contract arrays were corrected.
 - Isolation: `errors.uncaptured-error` followed by `errors.empty-scope` in one campaign each reported
   their own result, with the dedicated device's error not leaking into the next case.
-- Environment: `Chromium 140.0.7339.186` (Playwright 1.55.1) on `darwin`, headless with
+- Environment: `Chromium 153.0.8010.12` (Playwright 1.63.0) on `darwin`, headless with
   `--enable-unsafe-webgpu --enable-unsafe-swiftshader --use-angle=swiftshader`. These are functional
   software-backend results, not physical-GPU results.
 

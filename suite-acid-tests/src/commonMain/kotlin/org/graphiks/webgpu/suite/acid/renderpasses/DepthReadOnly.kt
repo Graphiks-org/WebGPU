@@ -21,6 +21,13 @@ import org.graphiks.webgpu.suite.acid.createRenderPipeline
 import org.graphiks.webgpu.suite.acid.readRgba8
 import org.graphiks.webgpu.suite.acid.withValidationScope
 
+private fun clearAttachment(view: org.graphiks.webgpu.GPUTextureView) = RenderPassColorAttachment(
+    view = view,
+    loadOp = GPULoadOp.Clear,
+    storeOp = GPUStoreOp.Store,
+    clearValue = Color(0.0, 0.0, 0.0, 1.0),
+)
+
 private fun fullscreenZShader(z: String, r: Int, g: Int, b: Int) = """
 @vertex fn vertexMain(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {
     let points = array<vec2f,3>(vec2f(-1,-1), vec2f(3,-1), vec2f(-1,3));
@@ -31,10 +38,11 @@ private fun fullscreenZShader(z: String, r: Int, g: Int, b: Int) = """
 """
 
 /**
- * Pass 1 writes depth 0.25 and red. Pass 2 is `depthReadOnly = true` with no depth load/store: its
- * green z = 0.75 fails `Less` and its blue z = 0.1 passes, but no depth is written. Pass 3 loads the
- * depth and draws green z = 0.2, which passes only because the stored depth is still 0.25; had pass
- * 2 written 0.1, the centre would stay blue.
+ * Pass 1 writes depth 0.25. Pass 2 is `depthReadOnly = true` with no depth load/store: its blue
+ * z = 0.1 passes `Less` and its green z = 0.75 fails, so the read-only target reads blue (green if
+ * the far fragment wrongly passed, black if the near one wrongly failed). Pass 3 loads the stored
+ * depth on a second target and draws green z = 0.2, which passes only because pass 2 did not write
+ * 0.1; had it, pass 3 would be rejected and the target would stay black.
  */
 @AcidTest(
     id = AcidCaseId.DepthReadOnlyAttachment,
@@ -56,83 +64,76 @@ suspend fun depthReadOnly(device: GPUDevice) = withValidationScope(device) {
         createRenderPipeline(device, fullscreenZShader("0.75", 0, 1, 0), depthStencil = testsOnly).use { green075 ->
             createRenderPipeline(device, fullscreenZShader("0.1", 0, 0, 1), depthStencil = testsOnly).use { blue010 ->
                 createRenderPipeline(device, fullscreenZShader("0.2", 0, 1, 0), depthStencil = testsOnly).use { green020 ->
-                    createColorTarget(device, 16, 16).use { target ->
-                        createDepthStencilTarget(device, 16, 16, format).use { depth ->
-                            target.createView().use { colorView ->
-                                depth.createView().use { depthView ->
-                                    device.createCommandEncoder().use { encoder ->
-                                        val first = encoder.beginRenderPass(
-                                            RenderPassDescriptor(
-                                                colorAttachments = listOf(
-                                                    RenderPassColorAttachment(
-                                                        view = colorView,
-                                                        loadOp = GPULoadOp.Clear,
-                                                        storeOp = GPUStoreOp.Store,
-                                                        clearValue = Color(0.0, 0.0, 0.0, 1.0),
+                    // `readOnlyTarget` observes the read-only pass itself; `preservedTarget` then
+                    // proves the depth it left behind. Pass 1 writes depth 0.25 on `readOnlyTarget`.
+                    createColorTarget(device, 16, 16).use { readOnlyTarget ->
+                        createColorTarget(device, 16, 16).use { preservedTarget ->
+                            createDepthStencilTarget(device, 16, 16, format).use { depth ->
+                                readOnlyTarget.createView().use { readOnlyView ->
+                                    preservedTarget.createView().use { preservedView ->
+                                        depth.createView().use { depthView ->
+                                            device.createCommandEncoder().use { encoder ->
+                                                val first = encoder.beginRenderPass(
+                                                    RenderPassDescriptor(
+                                                        colorAttachments = listOf(clearAttachment(readOnlyView)),
+                                                        depthStencilAttachment = RenderPassDepthStencilAttachment(
+                                                            view = depthView,
+                                                            depthClearValue = 1f,
+                                                            depthLoadOp = GPULoadOp.Clear,
+                                                            depthStoreOp = GPUStoreOp.Store,
+                                                        ),
                                                     ),
-                                                ),
-                                                depthStencilAttachment = RenderPassDepthStencilAttachment(
-                                                    view = depthView,
-                                                    depthClearValue = 1f,
-                                                    depthLoadOp = GPULoadOp.Clear,
-                                                    depthStoreOp = GPUStoreOp.Store,
-                                                ),
-                                            ),
-                                        )
-                                        first.setPipeline(red025)
-                                        first.draw(3u)
-                                        first.end()
+                                                )
+                                                first.setPipeline(red025)
+                                                first.draw(3u)
+                                                first.end()
 
-                                        val second = encoder.beginRenderPass(
-                                            RenderPassDescriptor(
-                                                colorAttachments = listOf(
-                                                    RenderPassColorAttachment(
-                                                        view = colorView,
-                                                        loadOp = GPULoadOp.Load,
-                                                        storeOp = GPUStoreOp.Store,
-                                                        clearValue = Color(0.0, 0.0, 0.0, 1.0),
+                                                // Read-only: the near blue z = 0.1 must pass and the
+                                                // far green z = 0.75 must fail, so blue is the last
+                                                // colour written. If 0.75 wrongly passed, green would
+                                                // be last; if 0.1 wrongly failed, the clear would stay.
+                                                val second = encoder.beginRenderPass(
+                                                    RenderPassDescriptor(
+                                                        colorAttachments = listOf(clearAttachment(readOnlyView)),
+                                                        depthStencilAttachment = RenderPassDepthStencilAttachment(
+                                                            view = depthView,
+                                                            depthReadOnly = true,
+                                                        ),
                                                     ),
-                                                ),
-                                                depthStencilAttachment = RenderPassDepthStencilAttachment(
-                                                    view = depthView,
-                                                    depthReadOnly = true,
-                                                ),
-                                            ),
-                                        )
-                                        second.setPipeline(green075)
-                                        second.draw(3u)
-                                        second.setPipeline(blue010)
-                                        second.draw(3u)
-                                        second.end()
+                                                )
+                                                second.setPipeline(blue010)
+                                                second.draw(3u)
+                                                second.setPipeline(green075)
+                                                second.draw(3u)
+                                                second.end()
 
-                                        val third = encoder.beginRenderPass(
-                                            RenderPassDescriptor(
-                                                colorAttachments = listOf(
-                                                    RenderPassColorAttachment(
-                                                        view = colorView,
-                                                        loadOp = GPULoadOp.Load,
-                                                        storeOp = GPUStoreOp.Store,
-                                                        clearValue = Color(0.0, 0.0, 0.0, 1.0),
+                                                // Loads the stored depth: green z = 0.2 passes only
+                                                // because the read-only pass did not write 0.1.
+                                                val third = encoder.beginRenderPass(
+                                                    RenderPassDescriptor(
+                                                        colorAttachments = listOf(clearAttachment(preservedView)),
+                                                        depthStencilAttachment = RenderPassDepthStencilAttachment(
+                                                            view = depthView,
+                                                            depthLoadOp = GPULoadOp.Load,
+                                                            depthStoreOp = GPUStoreOp.Store,
+                                                        ),
                                                     ),
-                                                ),
-                                                depthStencilAttachment = RenderPassDepthStencilAttachment(
-                                                    view = depthView,
-                                                    depthLoadOp = GPULoadOp.Load,
-                                                    depthStoreOp = GPUStoreOp.Store,
-                                                ),
-                                            ),
-                                        )
-                                        third.setPipeline(green020)
-                                        third.draw(3u)
-                                        third.end()
+                                                )
+                                                third.setPipeline(green020)
+                                                third.draw(3u)
+                                                third.end()
 
-                                        encoder.finish().use { device.queue.submit(listOf(it)) }
+                                                encoder.finish().use { device.queue.submit(listOf(it)) }
+                                            }
+                                        }
                                     }
                                 }
-                            }
 
-                            val pixels = readRgba8(device, target, 16, 16)
-                            assertPixel(pixels, 16, 8, 8, 0, 255, 0, 255)
+                                val readOnlyPixels = readRgba8(device, readOnlyTarget, 16, 16)
+                                val preservedPixels = readRgba8(device, preservedTarget, 16, 16)
+                                assertPixel(readOnlyPixels, 16, 8, 8, 0, 0, 255, 255)
+                                assertPixel(preservedPixels, 16, 8, 8, 0, 255, 0, 255)
+                            }
                         }
                     }
                 }

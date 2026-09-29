@@ -68,8 +68,6 @@ private const val GREEN_POSITION_SHADER = """
         ApiSymbols.GPUStencilOperation_IncrementClamp,
         ApiSymbols.GPUDepthStencilState_stencilFront,
         ApiSymbols.GPUDepthStencilState_stencilBack,
-        ApiSymbols.GPUColorTargetState_writeMask,
-        ApiSymbols.GPUColorWrite_None,
         ApiSymbols.GPURenderPassEncoder_setStencilReference,
     ],
 )

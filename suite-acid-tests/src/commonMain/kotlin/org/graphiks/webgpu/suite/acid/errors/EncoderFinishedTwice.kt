@@ -49,7 +49,9 @@ suspend fun encoderFinishedTwice(device: GPUDevice) {
                 device.pushErrorScope(GPUErrorFilter.Validation)
                 var second: GPUCommandBuffer? = null
                 try {
-                    second = runCatching { encoder.finish() }.getOrNull()
+                    // An unexpected synchronous exception must propagate: the scope assertion below
+                    // does not license swallowing it. Cleanup still runs.
+                    second = encoder.finish()
                 } finally {
                     second?.close()
                     assertIs<GPUValidationError>(
