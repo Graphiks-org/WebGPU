@@ -51,10 +51,9 @@ internal fun assertColorChannel(
 
 /**
  * Asserts a colour whose red and blue channels are filtered with [tolerance] while green must stay
- * zero and alpha must stay one. Any filtering of an opaque red/blue pair leaves those two channels
- * invariant, so they are held to [invariantTolerance], far tighter than the filtering tolerance,
- * instead of inheriting it. A backend whose mip blending quantises alpha slightly passes a small
- * [invariantTolerance] but a regression that actually changes the invariant channels fails.
+ * zero within the channel assertion's tight default tolerance. Alpha is compared to one with its
+ * own [alphaTolerance] to allow small mip-blending rounding errors without relaxing the green
+ * check. Neither channel inherits the red/blue filtering tolerance.
  */
 internal fun assertFilteredRedBlue(
     floats: FloatArray,
@@ -63,10 +62,10 @@ internal fun assertFilteredRedBlue(
     b: Float,
     message: String,
     tolerance: Float,
-    invariantTolerance: Float = 1e-6f,
+    alphaTolerance: Float = 1e-6f,
 ) {
     assertColorChannel(floats, index, 0, r, message, tolerance)
-    assertColorChannel(floats, index, 1, 0f, "$message (green stays zero)", invariantTolerance)
+    assertColorChannel(floats, index, 1, 0f, "$message (green stays zero)")
     assertColorChannel(floats, index, 2, b, message, tolerance)
-    assertColorChannel(floats, index, 3, 1f, "$message (alpha stays one)", invariantTolerance)
+    assertColorChannel(floats, index, 3, 1f, "$message (alpha stays one)", alphaTolerance)
 }

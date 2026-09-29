@@ -134,6 +134,10 @@ suspend fun occlusion(device: GPUDevice) = withValidationScope(device) {
                 } finally {
                     staging.unmap()
                 }
+                assertTrue(
+                    words[0] != UInt.MAX_VALUE || words[1] != UInt.MAX_VALUE,
+                    "The visible query must replace its 0xff sentinel",
+                )
                 assertTrue(words[0] != 0u || words[1] != 0u, "The visible draw must contribute samples")
                 assertTrue(words[2] == 0u && words[3] == 0u, "The depth-rejected draw must contribute none")
             }

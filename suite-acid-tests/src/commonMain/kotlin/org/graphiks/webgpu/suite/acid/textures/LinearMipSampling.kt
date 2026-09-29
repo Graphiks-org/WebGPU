@@ -80,7 +80,10 @@ suspend fun linearMipSampling(device: GPUDevice) = withValidationScope(device) {
                     0.5f,
                     "LOD 0.5 blends the red mip 0 and the blue mip 1",
                     tolerance = 1f / 255f,
-                    invariantTolerance = 1e-3f,
+                    // Chromium 140 / SwiftShader returns alpha 0.9999847412109375 for this
+                    // opaque pair. Keep the existing alpha rounding allowance local to A;
+                    // green remains checked against zero with the tighter default tolerance.
+                    alphaTolerance = 1e-3f,
                 )
             }
         }
