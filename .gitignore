@@ -43,3 +43,6 @@ kotlin-ide/
 /docs/docs/api/
 __pycache__/
 *.pyc
+
+# Superpowers plans/specs are local working documents, kept out of the repository.
+docs/superpowers/
