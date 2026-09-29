@@ -98,6 +98,34 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   The 54-row observation predates the current 42-behaviour resources and should not be used as
   the expected row count for the merged inventory.
 
+## Readback hardening and 83-case baseline (2026-09-29)
+
+- Checkout: branch `feat/acid-suite-finalization` from `a429925` (PR #126). At the start of the run
+  three case files carried uncommitted local edits (`queries/Occlusion.kt`,
+  `textures/LinearMipSampling.kt`, `textures/SamplingSupport.kt`). The baseline below therefore
+  describes the working tree with those edits present, not the bare merge commit.
+- Baseline result (both targets): **82 passed and 1 unsupported of 83**. The only non-passing id is
+  `compute.shader-f16`, reported `unsupported` with `Missing optional features: ShaderF16`; it is a
+  declared optional feature absent from this environment, not a failure. No page errors, no fatal
+  error. Adapter description empty, `requestedBackend=swiftshader`, `Chromium 140.0.7339.186` on
+  `darwin`.
+- Reconciliation of the local edits: the occlusion edit had removed the guard that rejects an
+  unreplaced `0xffffffffffffffff` sentinel, and the sampling edit had widened the green invariant to
+  the alpha rounding tolerance. Both contradict the finalization intent (a sentinel must not satisfy
+  “visible > 0”; a justified alpha tolerance does not justify widening the green check). The three
+  files were restored to their `a429925` content, keeping the alpha allowance local and the green
+  check tight.
+- `readRgba8` hardening: the staging buffer is now `mappedAtCreation=true`, prefilled with `0xa5`,
+  unmapped before the copy, and the mapped range and CPU array are asserted to expose exactly
+  `stride * height` bytes before the padding is stripped. The CPU copy is still taken before unmap.
+- Targeted re-run of the affected ids (`render.clear-only`, `transfers.readback-offset-padding`,
+  `queries.occlusion`, all seven `sampling.*` ids): **11/11 passed on JS and 11/11 passed on Wasm**.
+- Observable-oracle control: with the `copyTextureToBuffer` call temporarily removed from
+  `readRgba8`, `render.clear-only` reported `failed` with
+  `Pixel (0, 0) channel R: expected 255 (±0) but observed 165` (165 = `0xa5`), proving the prefill
+  catches a silently dropped copy. Restoring the call returned **82 passed and 1 unsupported of 83**
+  on both targets. The mutation was not committed.
+
 ## Compilation and publication evidence
 
 - Implementation notes record compilation for the five announced targets through their normal
