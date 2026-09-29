@@ -467,6 +467,30 @@
     "depth.bias-slope-clamp": {
       "title": "Biaiser la profondeur selon la pente et la clamper",
       "expectation": "Un biais de profondeur proportionnel à la pente rejette l'overlay plus proche et le clamp le rétablit."
+    },
+    "queue.submitted-work-done": {
+      "title": "Attendre le travail soumis à la queue",
+      "expectation": "onSubmittedWorkDone se résout après une passe compute et sa copie, et le staging lit les quatre valeurs écrites."
+    },
+    "errors.encoder-finished-twice": {
+      "title": "Terminer un encodeur deux fois",
+      "expectation": "Un second finish signale une erreur de validation tandis que le premier command buffer copie toujours 7."
+    },
+    "errors.command-buffer-resubmission": {
+      "title": "Soumettre deux fois un command buffer",
+      "expectation": "Resoumettre le même command buffer signale une erreur de validation."
+    },
+    "buffers.disjoint-mapped-writes": {
+      "title": "Écrire deux plages mappées disjointes",
+      "expectation": "Deux vues mappées non chevauchantes atteignent le buffer et se relisent dans l'ordre."
+    },
+    "errors.overlapping-mapped-ranges": {
+      "title": "Refuser des plages mappées chevauchantes",
+      "expectation": "Une plage CPU chevauchante est refusée de façon synchrone, et une vue adjacente reste utilisable."
+    },
+    "errors.destroyed-texture-submission": {
+      "title": "Soumettre du travail sur une texture détruite",
+      "expectation": "Soumettre une copie terminée qui lit une texture fermée signale une erreur de validation."
     }
   },
   "behaviours": {

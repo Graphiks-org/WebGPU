@@ -119,4 +119,11 @@ enum class AcidCaseId(val id: String) {
     DepthReadOnlyAttachment("depth.read-only-attachment"),
     StencilFrontBackOperations("stencil.front-back-operations"),
     DepthBiasSlopeClamp("depth.bias-slope-clamp"),
+    // Lot E — submission, encoder/command lifetime and mapped ranges.
+    QueueSubmittedWorkDone("queue.submitted-work-done"),
+    ErrorsEncoderFinishedTwice("errors.encoder-finished-twice"),
+    ErrorsCommandBufferResubmission("errors.command-buffer-resubmission"),
+    BuffersDisjointMappedWrites("buffers.disjoint-mapped-writes"),
+    ErrorsOverlappingMappedRanges("errors.overlapping-mapped-ranges"),
+    ErrorsDestroyedTextureSubmission("errors.destroyed-texture-submission"),
 }

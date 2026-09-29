@@ -467,6 +467,30 @@
     "depth.bias-slope-clamp": {
       "title": "Bias depth by slope and clamp it",
       "expectation": "A slope-scaled depth bias rejects the nearer overlay and the clamp restores it."
+    },
+    "queue.submitted-work-done": {
+      "title": "Await submitted queue work",
+      "expectation": "onSubmittedWorkDone resolves after a compute pass and its copy, and the staging reads the four written values."
+    },
+    "errors.encoder-finished-twice": {
+      "title": "Finish an encoder twice",
+      "expectation": "A second finish reports a validation error while the first command buffer still copies 7."
+    },
+    "errors.command-buffer-resubmission": {
+      "title": "Submit a command buffer twice",
+      "expectation": "Re-submitting the same command buffer reports a validation error."
+    },
+    "buffers.disjoint-mapped-writes": {
+      "title": "Write two disjoint mapped ranges",
+      "expectation": "Two non-overlapping mapped views reach the buffer and read back in order."
+    },
+    "errors.overlapping-mapped-ranges": {
+      "title": "Reject overlapping mapped ranges",
+      "expectation": "An overlapping CPU-visible range is rejected synchronously, and an adjacent view stays usable."
+    },
+    "errors.destroyed-texture-submission": {
+      "title": "Submit work over a destroyed texture",
+      "expectation": "Submitting a finished copy that reads a closed texture reports a validation error."
     }
   },
   "behaviours": {
