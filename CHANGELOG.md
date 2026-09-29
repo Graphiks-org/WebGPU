@@ -18,7 +18,8 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 ### Fixed
 
 - `webgpu-browser` no longer throws on Kotlin/Wasm when an implementation omits a `GPUSupportedLimits` property; an absent limit is read as zero.
-- `webgpu-browser` omits zero-valued limits from a `requiredLimits` record, so a device request never sends a limit the implementation does not expose (Chromium 140 rejects an unknown `maxImmediateSize` key).
+- `webgpu-browser` omits zero-valued maximum limits from a `requiredLimits` record, so a device request never sends a limit the implementation does not expose (older Chromium rejects an unknown `maxImmediateSize` key). The two alignment limits are always sent: zero is an invalid alignment, not an unexposed limit, so a bad request is rejected rather than silently replaced by the default.
+- The browser suite runner pins Playwright 1.63.0 / Chromium 153, which implements the contract's four-character `DOMString` texture-view swizzle; `texture.view-swizzle` is executed instead of reported as an environment gap.
 - `webgpu-browser` omits an identity `GPUTextureViewDescriptor.swizzle` when creating a view, so a view built from a descriptor no longer sends a swizzle value in the form rejected by Chromium 140's pre-release dictionary encoding.
 
 ### Changed
