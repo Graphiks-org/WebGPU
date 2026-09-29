@@ -85,14 +85,12 @@ enum class AcidCaseId(val id: String) {
     ErrorsNestedScopes("errors.nested-scopes"),
     QueriesTimestampResolve("queries.timestamp-resolve"),
     ComputeShaderF16("compute.shader-f16"),
-    // Lot A — adapter/device creation, capabilities and error delivery.
     AdapterCapabilities("adapter.request-and-capabilities"),
     AdapterRequiredLimits("device.required-limits"),
     AdapterRejectedLimits("device.reject-excess-limit"),
     AdapterDeviceLabels("device.queue-and-object-labels"),
     ErrorsUncapturedError("errors.uncaptured-error"),
     ErrorsScopeFilterRouting("errors.scope-filter-routing"),
-    // Lot B — shader compilation, asynchronous pipelines and command recording.
     ShadersCompilationValid("shader.compilation-valid"),
     ShadersCompilationInvalid("shader.compilation-invalid"),
     ComputePipelineAsync("compute.pipeline-async"),
@@ -101,7 +99,6 @@ enum class AcidCaseId(val id: String) {
     ErrorsAsyncRenderRejection("errors.async-render-rejection"),
     CommandOrderedCommandBuffers("command.ordered-command-buffers"),
     CommandDebugMarkers("command.debug-markers"),
-    // Lot C — textures, views, aspects and comparison sampling.
     TexturesCreationMetadata("texture.creation-metadata"),
     TexturesViewUsageRestriction("texture.view-usage-restriction"),
     TexturesDepthAspectLoad("texture.depth-aspect-load"),
@@ -110,7 +107,6 @@ enum class AcidCaseId(val id: String) {
     RenderVolumeDepthSlice("render.volume-depth-slice"),
     TexturesViewSwizzle("texture.view-swizzle"),
     TexturesOneDimensionalLoad("texture.one-dimensional-load"),
-    // Lot D — primitive assembly, face culling, depth/stencil state and bias.
     RenderFrontFaceCulling("render.front-face-culling"),
     RenderTriangleStripRestart("render.triangle-strip-restart"),
     RenderFirstIndex("render.first-index"),
@@ -119,14 +115,12 @@ enum class AcidCaseId(val id: String) {
     DepthReadOnlyAttachment("depth.read-only-attachment"),
     StencilFrontBackOperations("stencil.front-back-operations"),
     DepthBiasSlopeClamp("depth.bias-slope-clamp"),
-    // Lot E — submission, encoder/command lifetime and mapped ranges.
     QueueSubmittedWorkDone("queue.submitted-work-done"),
     ErrorsEncoderFinishedTwice("errors.encoder-finished-twice"),
     ErrorsCommandBufferResubmission("errors.command-buffer-resubmission"),
     BuffersDisjointMappedWrites("buffers.disjoint-mapped-writes"),
     ErrorsOverlappingMappedRanges("errors.overlapping-mapped-ranges"),
     ErrorsDestroyedTextureSubmission("errors.destroyed-texture-submission"),
-    // Lot F — render queries, draw limits and multisample coverage.
     QueriesRenderTimestampWrites("query.render-timestamp-writes"),
     DepthBiasConstant("depth.bias-constant"),
     RenderMaxDrawCount("render.max-draw-count"),
