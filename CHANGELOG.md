@@ -17,6 +17,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 ### Fixed
 
 - `webgpu-browser` no longer throws on Kotlin/Wasm when an implementation omits a `GPUSupportedLimits` property; an absent limit is read as zero.
+- `webgpu-browser` omits zero-valued limits from a `requiredLimits` record, so a device request never sends a limit the implementation does not expose (Chromium 140 rejects an unknown `maxImmediateSize` key).
 - `webgpu-browser` omits an identity `GPUTextureViewDescriptor.swizzle` when creating a view, so a view built from a descriptor no longer sends a swizzle value in the form rejected by Chromium 140's pre-release dictionary encoding.
 
 ### Changed
