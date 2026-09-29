@@ -24,6 +24,8 @@ import org.graphiks.webgpu.suite.acid.withValidationScope
 import kotlin.test.assertContentEquals
 import kotlin.test.assertTrue
 
+private const val SENTINEL_WORD = 0xFFFFFFFFu
+
 private const val TIMED_COMPUTE_SHADER = """
 @group(0) @binding(0) var<storage, read_write> output: array<u32>;
 
@@ -126,6 +128,14 @@ suspend fun timestamps(device: GPUDevice) = withValidationScope(device) {
                     val beginHigh = words[65]
                     val endLow = words[66]
                     val endHigh = words[67]
+                    assertTrue(
+                        !(beginLow == SENTINEL_WORD && beginHigh == SENTINEL_WORD),
+                        "The begin timestamp must replace its 0xff sentinel",
+                    )
+                    assertTrue(
+                        !(endLow == SENTINEL_WORD && endHigh == SENTINEL_WORD),
+                        "The end timestamp must replace its 0xff sentinel",
+                    )
                     assertTrue(
                         endHigh > beginHigh || (endHigh == beginHigh && endLow >= beginLow),
                         "The end timestamp must not be before the begin timestamp",

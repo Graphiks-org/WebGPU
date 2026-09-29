@@ -23,12 +23,14 @@ private const val CLAMP_SAMPLE_SHADER = """
 fn main() {
     out[0] = textureSampleLevel(tex, samp, vec2f(-0.25, 0.5), 0.0);
     out[1] = textureSampleLevel(tex, samp, vec2f(1.25, 0.5), 0.0);
+    out[2] = textureSampleLevel(tex, samp, vec2f(2.25, 0.5), 0.0);
 }
 """
 
 /**
- * `ClampToEdge` pins coordinates outside 0..1 to the edge texel: u = -0.25 is the red edge and
- * u = 1.25 the blue edge.
+ * `ClampToEdge` pins coordinates outside 0..1 to the edge texel: u = -0.25 is the red edge,
+ * u = 1.25 the blue edge and u = 2.25 stays pinned to the same blue edge. `MirrorRepeat` would
+ * instead wrap u = 2.25 back to the red texel, so the two modes separate here.
  */
 @AcidTest(
     id = AcidCaseId.TexturesSamplingClamp,
@@ -57,13 +59,14 @@ suspend fun clampSampling(device: GPUDevice) = withValidationScope(device) {
                         shaderCode = CLAMP_SAMPLE_SHADER,
                         textureView = view,
                         textureLayout = TextureBindingLayout(sampleType = GPUTextureSampleType.Float),
-                        outputBytes = 32uL,
+                        outputBytes = 48uL,
                         sampler = sampler,
                     ),
                 ).toFloatArray()
 
                 assertColor(floats, 0, 1f, 0f, 0f, 1f, "u = -0.25 clamps to the red edge")
                 assertColor(floats, 1, 0f, 0f, 1f, 1f, "u = 1.25 clamps to the blue edge")
+                assertColor(floats, 2, 0f, 0f, 1f, 1f, "u = 2.25 stays clamped to the blue edge")
             }
         }
     }

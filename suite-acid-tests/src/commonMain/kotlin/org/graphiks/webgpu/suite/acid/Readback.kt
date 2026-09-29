@@ -17,23 +17,35 @@ import kotlin.test.assertTrue
 /**
  * Copies [size] bytes out of [buffer] through a staging buffer and returns a fresh copy.
  *
- * The staging copy is explicit and the array is copied before `unmap`; [buffer] is borrowed and
- * never closed here.
+ * The staging copy is explicit and the array is read before `unmap`; [buffer] is borrowed and never
+ * closed here. The staging is prefilled with `0xff` before the copy so that a silently dropped copy
+ * cannot masquerade as zeroed data, and the returned array is required to be exactly [size] bytes:
+ * a mapped range of the wrong length is reported rather than padded or truncated.
  */
 internal suspend fun readBufferBytes(device: GPUDevice, buffer: GPUBuffer, size: ULong): ByteArray {
     device.createBuffer(
         BufferDescriptor(
             size = size,
             usage = GPUBufferUsage.CopyDst or GPUBufferUsage.MapRead,
+            mappedAtCreation = true,
         ),
     ).use { staging ->
+        staging.getMappedRange().setBytes(0uL, ByteArray(size.toInt()) { 0xFF.toByte() })
+        staging.unmap()
+
         device.createCommandEncoder().use { encoder ->
             encoder.copyBufferToBuffer(buffer, 0uL, staging, 0uL, size)
             encoder.finish().use { device.queue.submit(listOf(it)) }
         }
         staging.mapAsync(GPUMapMode.Read).getOrThrow()
         try {
-            return staging.getMappedRange().toByteArray().copyOf(size.toInt())
+            val mapped = staging.getMappedRange()
+            val bytes = mapped.toByteArray()
+            assertTrue(
+                mapped.size == size && bytes.size.toULong() == size,
+                "The mapped staging range must expose exactly $size bytes, observed ${mapped.size} in the range and ${bytes.size} in the array",
+            )
+            return bytes
         } finally {
             staging.unmap()
         }

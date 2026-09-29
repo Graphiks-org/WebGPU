@@ -13,7 +13,8 @@ import kotlin.test.assertContentEquals
 
 /**
  * A buffer is zero-initialised: a 64-byte `CopySrc` buffer read back through a staging copy holds
- * 64 zero bytes. Nothing writes to it before the read.
+ * 64 zero bytes. Nothing writes to it before the read, and the staging buffer is prefilled with
+ * `0xff`, so a copy that is silently dropped shows the sentinel instead of passing as zeros.
  */
 @AcidTest(
     id = AcidCaseId.BuffersZeroInitialized,

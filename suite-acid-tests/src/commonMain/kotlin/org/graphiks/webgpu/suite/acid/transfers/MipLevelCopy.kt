@@ -18,7 +18,9 @@ import kotlin.test.assertContentEquals
 
 /**
  * A texture copy addresses one mip level: copying the blue 2×2 mip level 2 of an 8×8 source into a
- * 2×2 destination gives blue everywhere, not the red of mip level 0.
+ * 2×2 destination gives blue everywhere, not the red of mip level 0. Mip 0 is uploaded last, so an
+ * address that ignores `mipLevel` on the upload or the copy lands on red and fails instead of
+ * coincidentally matching.
  */
 @AcidTest(
     id = AcidCaseId.TransfersMipLevelCopy,
@@ -40,9 +42,9 @@ suspend fun mipLevelCopy(device: GPUDevice) = withValidationScope(device) {
             mipLevelCount = 3u,
         ),
     ).use { source ->
-        writeMip(device, source, mipLevel = 0u, color = OPAQUE_RED, width = 8, height = 8)
-        writeMip(device, source, mipLevel = 1u, color = OPAQUE_GREEN, width = 4, height = 4)
         writeMip(device, source, mipLevel = 2u, color = OPAQUE_BLUE, width = 2, height = 2)
+        writeMip(device, source, mipLevel = 1u, color = OPAQUE_GREEN, width = 4, height = 4)
+        writeMip(device, source, mipLevel = 0u, color = OPAQUE_RED, width = 8, height = 8)
 
         device.createTexture(
             TextureDescriptor(

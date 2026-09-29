@@ -35,8 +35,10 @@ private const val GREEN_FAR_SHADER = """
 """
 
 /**
- * A first draw with depth writes disabled does not record its depth, so the later far green fragment
- * still compares against the clear depth 1 and passes: the centre is green.
+ * A first draw with depth writes disabled does not record its depth, so the far green fragment still
+ * compares against the clear depth 1 and passes. The green draw is scissored to the right half so
+ * the red first draw stays visible on the left: a broken implementation that did write depth would
+ * reject the far fragment and leave the right half red as well.
  */
 @AcidTest(
     id = AcidCaseId.DepthWriteDisabled,
@@ -82,10 +84,12 @@ suspend fun depthWriteDisabled(device: GPUDevice) = withValidationScope(device) 
                     ) { pass ->
                         pass.setPipeline(red)
                         pass.draw(3u)
+                        pass.setScissorRect(8u, 0u, 8u, 16u)
                         pass.setPipeline(green)
                         pass.draw(3u)
                     }
-                    assertPixel(pixels, 16, 8, 8, 0, 255, 0, 255)
+                    assertPixel(pixels, 16, 4, 8, 255, 0, 0, 255)
+                    assertPixel(pixels, 16, 12, 8, 0, 255, 0, 255)
                 }
             }
         }
