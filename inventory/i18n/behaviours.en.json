@@ -510,19 +510,23 @@
     }
   },
   "behaviours": {
-    "device.features-and-limits": "A device exposes the negotiated features and limits, plus the description of the adapter that created it.",
-    "device.request-required-features": "A missing required feature or limit fails the device request instead of producing a degraded device.",
-    "command.encoder-recording": "An encoder records commands and produces a command buffer submitted once.",
-    "shader.compilation-info": "Compilation messages are available with their severity and position, without requiring an exact text.",
-    "texture.creation": "A texture exposes its dimensions, format and usages; an invalid combination fails validation.",
-    "texture.view-usage-aspect": "A view can restrict its usages and select a texture aspect.",
-    "texture.usage-and-formats": "Texture usages combine and each format declares its binding and attachment capabilities.",
-    "render.color-resolve": "A colour attachment can resolve a multisampled view, and a 3D view selects a depth slice.",
-    "render.pass-state": "The pass descriptor can cap its draw count.",
-    "render.primitive-and-multisample": "Topology, culling and the pass layout are validated against the attachments.",
-    "render.depth-bias": "The pipeline depth bias offsets fragment depth.",
-    "errors.device-lost": "A device loss exposes an actionable reason and message to the runner.",
-    "async.promise-results": "Asynchronous operations distinguish success, validation rejection and implementation error.",
-    "data.identifiers-and-indices": "Size, index and coordinate aliases carry the contract units, and the base descriptors expose a label."
+    "device.features-and-limits": "The adapter and device cases check a pinned subset of limits and that a device cannot exceed its adapter; the full limit space is not enumerated.",
+    "device.request-required-features": "Refusing a genuinely absent optional feature has no deterministic portable case; the features present in the environment are requested and used by their cases.",
+    "features.compressed-and-tiered": "Compressed-texture and tiered optional features are declared in the contract but not exercised.",
+    "features.subgroups": "Subgroup features and the reported subgroup sizes are not exercised.",
+    "features.not-exposed-by-reference-browser": "Optional features the reference browser does not expose cannot be exercised here and are not counted as covered.",
+    "immediates.set-immediates": "setImmediates has a public signature but no dedicated optional feature in the catalogue; a zero limit or an older browser cannot be reported as a missing feature, so its extension needs a capabilities/contract work item.",
+    "texture.creation": "The creation case checks the getters and usability of one texture; textureBindingViewDimension and the remaining creation constraints are not exercised.",
+    "texture.view-usage-aspect": "Usage restriction and a DepthOnly view are exercised; a StencilOnly view is not.",
+    "texture.usage-and-formats": "The exercised usages and formats are tied to their cases; compressed, tiered and other formats, plus TransientAttachment, remain untested.",
+    "textures.storage-constraints": "Storage texture format and access constraints beyond the single exercised case are not covered.",
+    "formats.depth-and-packed": "Several depth and stencil formats, and packed formats, are not exercised.",
+    "sampling.limits": "Anisotropy and the sampler limits are not exercised.",
+    "render.primitive-and-multisample": "Triangle topologies, culling, strip restart and one multisample mask are exercised; points, lines and partial sample masks are not.",
+    "render.discard-reinit": "A render pass that discards then reinitialises an attachment is not exercised.",
+    "bundles.negative-validation": "Render bundle creation with mismatched attachments is not exercised negatively.",
+    "errors.device-lost": "Device loss has no common access path in the contract (no GPUDevice.lost and no loss callback), so no runner can observe it.",
+    "async.oom-and-internal-results": "Out-of-memory and internal errors cannot be provoked portably; only validation rejection and successful asynchronous results are exercised.",
+    "data.identifiers-and-indices": "Offset, region and index values, including a negative baseVertex, are exercised by their cases; the full 64-bit range of the aliases is not."
   }
 }

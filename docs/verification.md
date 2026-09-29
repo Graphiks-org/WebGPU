@@ -25,6 +25,12 @@ localized behaviour files describe **42 behaviours** (11 covered by a case, 31 t
 number of symbols is a measure of surface area only: it is not a conformance percentage, and a
 symbol being listed never means it is tested.
 
+> The figures in this section are the 2026-09-28 review of the first increment (884 symbols, 42
+> behaviours). As of 2026-09-29 the generated inventory describes **141 behaviours** across the same
+> 14 families, **123 linked to an executable case** and 18 kept as residual; see the finalized
+> campaign below and [acid-coverage.md](acid-coverage.md). The symbol count still measures surface
+> area only.
+
 | Family | Declarations |
 | --- | ---: |
 | textures/views/samplers | 223 |
@@ -125,6 +131,47 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   `Pixel (0, 0) channel R: expected 255 (±0) but observed 165` (165 = `0xa5`), proving the prefill
   catches a silently dropped copy. Restoring the call returned **82 passed and 1 unsupported of 83**
   on both targets. The mutation was not committed.
+
+## Finalized acid catalogue campaign (2026-09-29)
+
+- Implementation commits on `feat/acid-suite-finalization`: `90e05d4` (readback), `b68c906` (binding
+  limit fix), `dd1f78a` (lot A), `2488884` (lot B), `6b80c3e` (lot C), `b94df92` (lot D), `97c0839`
+  (lot E), `f6d29c2` (lot F). Base `a429925` (PR #126).
+- Commands:
+
+  ```sh
+  ./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+  node tools/build-site.mjs
+  ```
+
+- Result: the catalogue grew from 83 to **123 cases** (118 mandatory, 5 optional). On JS and Wasm
+  alike, **121 passed, 1 unsupported and 1 failed**: all **118 mandatory cases pass**; the
+  non-passing pair is optional. `compute.shader-f16` is `unsupported` (missing `ShaderF16`); the
+  optional `render.indirect-first-instance`, `queries.timestamp-resolve` and
+  `query.render-timestamp-writes` pass. `texture.view-swizzle` is not validated in this environment.
+  See [acid-coverage.md](acid-coverage.md) for the disposition and residuals.
+- New contract: `AcidCase.run` takes an `AcidContext` (borrowed device plus a fresh-adapter factory).
+  Context cases (`adapter.request-and-capabilities`, `device.required-limits`,
+  `device.reject-excess-limit`, `errors.uncaptured-error`) request their own adapter and device and
+  close them; the borrowed device is never closed by a case.
+- Binding correction: `webgpu-browser` omitted zero-valued limits from a `requiredLimits` record
+  (`b68c906`), so a device request no longer sends a limit the implementation does not expose
+  (Chromium 140 rejected the unrecognised `maxImmediateSize` key).
+- Mutations that were observed red and reverted, never committed:
+  `requiredLimits = null` made `device.reject-excess-limit` fail; two command buffers submitted in
+  reverse order made `command.ordered-command-buffers` read 99; setting the slope-clamp bias to 0
+  made `depth.bias-slope-clamp`'s clamped variant green. The `readRgba8` copy removal is recorded in
+  the previous section.
+- Limits revealed: `texture.view-swizzle` cannot be exercised on the reference Chromium (pre-release
+  swizzle dictionary); removing `timestampWrites` leaves `query.render-timestamp-writes` green, so
+  resolution is proven but temporal precision is not; `errors.device-lost` has no common access path.
+- Isolation: `errors.uncaptured-error` followed by `errors.empty-scope` in one campaign each reported
+  their own result, with the dedicated device's error not leaking into the next case.
+- Environment: `Chromium 140.0.7339.186` (Playwright 1.55.1) on `darwin`, headless with
+  `--enable-unsafe-webgpu --enable-unsafe-swiftshader --use-angle=swiftshader`. These are functional
+  software-backend results, not physical-GPU results.
 
 ## Compilation and publication evidence
 

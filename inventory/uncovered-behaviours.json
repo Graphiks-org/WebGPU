@@ -28,34 +28,37 @@
     "requiredFeatures": []
   },
   {
-    "id": "command.encoder-recording",
-    "family": "queue/commandes",
+    "id": "features.compressed-and-tiered",
+    "family": "adapter/device/features/limits",
     "contract": [
-      "GPUDevice.createCommandEncoder",
-      "GPUCommandEncoder",
-      "GPUCommandEncoder.finish",
-      "GPUCommandEncoder.label",
-      "GPUCommandBuffer",
-      "GPUCommandsMixin",
-      "GPUCommandEncoderDescriptor",
-      "GPUCommandBufferDescriptor"
+      "GPUFeatureName",
+      "GPUTextureFormat"
     ],
     "requiredFeatures": []
   },
   {
-    "id": "shader.compilation-info",
-    "family": "shaders/compilation",
+    "id": "features.subgroups",
+    "family": "adapter/device/features/limits",
     "contract": [
-      "GPUShaderModule.getCompilationInfo",
-      "GPUCompilationInfo",
-      "GPUCompilationMessage",
-      "GPUCompilationMessageType",
-      "GPUCompilationMessage.message",
-      "GPUCompilationMessage.type",
-      "GPUCompilationMessage.lineNum",
-      "GPUCompilationMessage.linePos",
-      "GPUCompilationMessage.offset",
-      "GPUCompilationMessage.length"
+      "GPUAdapterInfo.subgroupMinSize",
+      "GPUAdapterInfo.subgroupMaxSize"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "features.not-exposed-by-reference-browser",
+    "family": "adapter/device/features/limits",
+    "contract": [
+      "GPUFeatureName"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "immediates.set-immediates",
+    "family": "adapter/device/features/limits",
+    "contract": [
+      "GPUSupportedLimits.maxImmediateSize",
+      "GPUBindingCommandsMixin.setImmediates"
     ],
     "requiredFeatures": []
   },
@@ -65,23 +68,8 @@
     "contract": [
       "GPUDevice.createTexture",
       "GPUTexture",
-      "GPUTextureDescriptor",
-      "GPUTextureDescriptor.size",
-      "GPUTextureDescriptor.format",
-      "GPUTextureDescriptor.usage",
-      "GPUTextureDescriptor.mipLevelCount",
-      "GPUTextureDescriptor.sampleCount",
-      "GPUTextureDescriptor.dimension",
-      "GPUTextureDescriptor.viewFormats",
       "GPUTextureDescriptor.textureBindingViewDimension",
-      "GPUTexture.width",
-      "GPUTexture.height",
-      "GPUTexture.depthOrArrayLayers",
-      "GPUTexture.mipLevelCount",
-      "GPUTexture.sampleCount",
-      "GPUTexture.dimension",
-      "GPUTexture.format",
-      "GPUTexture.usage"
+      "GPUTextureDescriptor.viewFormats"
     ],
     "requiredFeatures": []
   },
@@ -89,8 +77,8 @@
     "id": "texture.view-usage-aspect",
     "family": "textures/views/samplers",
     "contract": [
-      "GPUTextureViewDescriptor.usage",
-      "GPUTextureViewDescriptor.aspect"
+      "GPUTextureViewDescriptor.aspect",
+      "GPUTextureAspect.StencilOnly"
     ],
     "requiredFeatures": []
   },
@@ -98,40 +86,36 @@
     "id": "texture.usage-and-formats",
     "family": "textures/views/samplers",
     "contract": [
-      "GPUTextureUsage",
-      "GPUTextureUsage.None",
-      "GPUTextureUsage.CopySrc",
-      "GPUTextureUsage.CopyDst",
-      "GPUTextureUsage.TextureBinding",
-      "GPUTextureUsage.StorageBinding",
-      "GPUTextureUsage.RenderAttachment",
-      "GPUTextureUsage.TransientAttachment",
-      "GPUTextureUsage.entries",
-      "GPUTextureUsage.or",
-      "GPUTextureUsage.of",
       "GPUTextureFormat",
-      "GPUTextureSampleType",
-      "GPUTextureViewDimension",
-      "GPUTextureAspect",
-      "GPUTextureDimension",
+      "GPUTextureUsage.TransientAttachment"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "textures.storage-constraints",
+    "family": "textures/views/samplers",
+    "contract": [
+      "GPUStorageTextureBindingLayout",
       "GPUStorageTextureAccess"
     ],
     "requiredFeatures": []
   },
   {
-    "id": "render.color-resolve",
-    "family": "rendu/passes/attachments",
+    "id": "formats.depth-and-packed",
+    "family": "textures/views/samplers",
     "contract": [
-      "GPURenderPassColorAttachment.resolveTarget",
-      "GPURenderPassColorAttachment.depthSlice"
+      "GPUTextureFormat.Depth16Unorm",
+      "GPUTextureFormat.Stencil8",
+      "GPUTextureFormat.Depth32FloatStencil8"
     ],
     "requiredFeatures": []
   },
   {
-    "id": "render.pass-state",
-    "family": "rendu/passes/attachments",
+    "id": "sampling.limits",
+    "family": "textures/views/samplers",
     "contract": [
-      "GPURenderPassDescriptor.maxDrawCount"
+      "GPUSamplerDescriptor.maxAnisotropy",
+      "GPUSupportedLimits.maxSamplersPerShaderStage"
     ],
     "requiredFeatures": []
   },
@@ -139,23 +123,27 @@
     "id": "render.primitive-and-multisample",
     "family": "pipelines/render state",
     "contract": [
-      "GPUPrimitiveState",
-      "GPUPrimitiveTopology",
-      "GPUFrontFace",
-      "GPUCullMode",
-      "GPUColor",
-      "GPURenderPassLayout"
+      "GPUPrimitiveTopology.PointList",
+      "GPUPrimitiveTopology.LineList",
+      "GPUPrimitiveTopology.LineStrip"
     ],
     "requiredFeatures": []
   },
   {
-    "id": "render.depth-bias",
-    "family": "pipelines/render state",
+    "id": "render.discard-reinit",
+    "family": "rendu/passes/attachments",
     "contract": [
-      "GPUDepthBias",
-      "GPUDepthStencilState.depthBias",
-      "GPUDepthStencilState.depthBiasSlopeScale",
-      "GPUDepthStencilState.depthBiasClamp"
+      "GPULoadOp",
+      "GPUStoreOp"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "bundles.negative-validation",
+    "family": "render bundles",
+    "contract": [
+      "GPURenderBundleEncoder",
+      "GPURenderBundleEncoderDescriptor"
     ],
     "requiredFeatures": []
   },
@@ -169,7 +157,7 @@
     "requiredFeatures": []
   },
   {
-    "id": "async.promise-results",
+    "id": "async.oom-and-internal-results",
     "family": "erreurs/asynchronisme",
     "contract": [
       "GPUOutOfMemoryError",
@@ -196,8 +184,7 @@
       "GPUOrigin2D",
       "GPUOrigin3D",
       "GPUExtent3D",
-      "GPUColor",
-      "GPUBufferDynamicOffset"
+      "GPUColor"
     ],
     "requiredFeatures": []
   }

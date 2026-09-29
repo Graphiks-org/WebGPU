@@ -47,7 +47,9 @@ manifest and baseline under `suite-acid-tests/build/suite-inventory/`.
 `tools/build-inventory.mjs`, invoked by `tools/build-site.mjs`, combines these outputs with the API
 sources, `inventory/uncovered-behaviours.json` and the EN/FR resources to produce
 `build/site/inventory/`. Edit annotations and authored resources, not generated outputs. See
-[adding-a-case.md](adding-a-case.md) for the case layout and localization keys.
+[adding-a-case.md](adding-a-case.md) for the case layout and localization keys, and
+[acid-coverage.md](acid-coverage.md) for the coverage balance, the optional-feature status and the
+remaining contract gaps.
 
 ## Run the browser suite
 

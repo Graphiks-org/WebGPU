@@ -43,6 +43,31 @@ suspend fun bufferSize(device: GPUDevice) = withValidationScope(device) {
 }
 ```
 
+Most cases take the runner's borrowed `GPUDevice`. A case that must observe adapter capabilities, a
+device request or its own uncaptured-error callback declares the full context instead:
+
+```kotlin
+@AcidTest(
+    id = AcidCaseId.SomeAdapterCase,
+    family = AcidFamily.AdapterDeviceFeaturesLimits,
+    contract = [ApiSymbols.GPUAdapter_requestDevice],
+    input = AcidInput.Context,
+)
+suspend fun someAdapterCase(context: AcidContext) {
+    val adapter = context.requestAdapter(RequestAdapterOptions()).getOrThrow()
+    try {
+        adapter.requestDevice(DeviceDescriptor(label = "acid-device")).getOrThrow().use { device ->
+            // The case owns and closes this extra device; context.device stays borrowed.
+        }
+    } finally {
+        adapter.close()
+    }
+}
+```
+
+`context.requestAdapter` returns a **fresh** adapter on every call. The individual case functions
+still take a `GPUDevice`, so a binding that only wants the device cases can call them directly.
+
 Rules of thumb:
 
 - Assert on data, error categories or contract states, never on an implementation's exact error text

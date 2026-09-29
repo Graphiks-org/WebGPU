@@ -22,8 +22,10 @@ régénération des bindings restent des opérations manuelles, hors des contrô
 
 ## Acid tests navigateur
 
-Les onze cas de fondations s’exécutent sur WebGPU réel via un workflow navigateur distinct ;
-`check` seul ne lance pas ce runner. Avec JDK 25 et Node.js 22 :
+Le catalogue d’acid tests (123 cas : 118 obligatoires, cinq optionnels) s’exécute sur WebGPU réel
+via un workflow navigateur distinct ; `check` seul ne lance pas ce runner. Le bilan de couverture et
+les résidus sont dans [`docs/acid-coverage.md`](https://github.com/Graphiks-org/WebGPU/blob/master/docs/acid-coverage.md).
+Avec JDK 25 et Node.js 22 :
 
 ```sh
 npm ci --prefix tools
