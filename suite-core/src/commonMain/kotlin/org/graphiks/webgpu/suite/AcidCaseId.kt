@@ -101,4 +101,13 @@ enum class AcidCaseId(val id: String) {
     ErrorsAsyncRenderRejection("errors.async-render-rejection"),
     CommandOrderedCommandBuffers("command.ordered-command-buffers"),
     CommandDebugMarkers("command.debug-markers"),
+    // Lot C — textures, views, aspects and comparison sampling.
+    TexturesCreationMetadata("texture.creation-metadata"),
+    TexturesViewUsageRestriction("texture.view-usage-restriction"),
+    TexturesDepthAspectLoad("texture.depth-aspect-load"),
+    TransfersTextureCopyAspect("transfers.texture-copy-aspect"),
+    SamplerComparison("sampler.comparison"),
+    RenderVolumeDepthSlice("render.volume-depth-slice"),
+    TexturesViewSwizzle("texture.view-swizzle"),
+    TexturesOneDimensionalLoad("texture.one-dimensional-load"),
 }

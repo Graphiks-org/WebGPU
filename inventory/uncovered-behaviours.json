@@ -43,14 +43,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "transfers.texture-copy-aspect",
-    "family": "transferts buffers/textures",
-    "contract": [
-      "GPUTexelCopyTextureInfo.aspect"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "shader.compilation-info",
     "family": "shaders/compilation",
     "contract": [
@@ -99,33 +91,6 @@
     "contract": [
       "GPUTextureViewDescriptor.usage",
       "GPUTextureViewDescriptor.aspect"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "texture.view-swizzle",
-    "family": "textures/views/samplers",
-    "contract": [
-      "GPUTextureSwizzle",
-      "GPUTextureSwizzle.red",
-      "GPUTextureSwizzle.green",
-      "GPUTextureSwizzle.blue",
-      "GPUTextureSwizzle.alpha",
-      "GPUTextureSwizzle.toWebGpuString",
-      "GPUTextureSwizzleSource",
-      "GPUTextureViewDescriptor.swizzle"
-    ],
-    "requiredFeatures": [
-      "TextureComponentSwizzle"
-    ]
-  },
-  {
-    "id": "sampler.comparison",
-    "family": "textures/views/samplers",
-    "contract": [
-      "GPUCompareFunction",
-      "GPUSamplerBindingType",
-      "GPUSamplerDescriptor.compare"
     ],
     "requiredFeatures": []
   },

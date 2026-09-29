@@ -403,18 +403,47 @@
     "command.debug-markers": {
       "title": "Encadrer des commandes par des marqueurs de debug",
       "expectation": "Des groupes de debug équilibrés et des marqueurs décorent l'encodeur, une passe compute et un render bundle sans modifier leurs résultats."
+    },
+    "texture.creation-metadata": {
+      "title": "Inspecter les métadonnées de création d'une texture",
+      "expectation": "Une texture expose exactement les dimensions, le nombre de mips, le nombre de samples, la dimension, le format et les usages de sa création, et le mip 1 d'une couche se relit là où il a été écrit."
+    },
+    "texture.view-usage-restriction": {
+      "title": "Restreindre les usages d'une vue",
+      "expectation": "Une vue limitée à TextureBinding échantillonne correctement et est refusée comme attachement de rendu."
+    },
+    "texture.depth-aspect-load": {
+      "title": "Charger l'aspect profondeur d'un format combiné",
+      "expectation": "Une vue DepthOnly d'une texture Depth24PlusStencil8 charge la valeur de profondeur effacée."
+    },
+    "transfers.texture-copy-aspect": {
+      "title": "Copier un aspect de profondeur vers un buffer",
+      "expectation": "Une copie DepthOnly de Depth32Float écrit les valeurs de profondeur et laisse intacts tous les autres octets du staging."
+    },
+    "sampler.comparison": {
+      "title": "Comparer une référence de profondeur",
+      "expectation": "Un sampler de comparaison Less renvoie 1 sous la profondeur et 0 au-dessus, la sentinelle de sortie prouvant les deux écritures."
+    },
+    "render.volume-depth-slice": {
+      "title": "Rendre dans une tranche d'une texture 3D",
+      "expectation": "Un attachement couleur avec depthSlice 1 n'efface que cette tranche et laisse la tranche voisine inchangée."
+    },
+    "texture.view-swizzle": {
+      "title": "Réorganiser les canaux d'une vue de texture",
+      "expectation": "Les vues b01r et argb remappent les quatre canaux et exercent toutes les sources de swizzle sur un témoin identité."
+    },
+    "texture.one-dimensional-load": {
+      "title": "Charger une texture unidimensionnelle",
+      "expectation": "texture_1d charge exactement les quatre texels et annonce sa largeur."
     }
   },
   "behaviours": {
     "device.features-and-limits": "Un device expose les features et limites négociées, ainsi que la description de l'adapter qui l'a créé.",
     "device.request-required-features": "Une feature ou limite obligatoire absente fait échouer la demande de device au lieu de produire un device dégradé.",
     "command.encoder-recording": "Un encodeur enregistre des commandes puis produit un command buffer soumis une seule fois.",
-    "transfers.texture-copy-aspect": "Une copie de texture peut sélectionner l'aspect profondeur ou stencil d'un format combiné.",
     "shader.compilation-info": "Les messages de compilation sont disponibles avec leur sévérité et leur position, sans imposer un texte exact.",
     "texture.creation": "Une texture expose ses dimensions, son format et ses usages ; une combinaison invalide échoue la validation.",
     "texture.view-usage-aspect": "Une vue peut restreindre ses usages et sélectionner un aspect de texture.",
-    "texture.view-swizzle": "Un swizzle non identitaire produit la chaîne DOMString attendue et exige la feature texture-component-swizzle.",
-    "sampler.comparison": "Un sampler de comparaison expose sa fonction de comparaison et son type de binding de comparaison.",
     "texture.usage-and-formats": "Les usages de texture se combinent et chaque format déclare ses capacités de binding et d'attachement.",
     "render.color-resolve": "Un attachement couleur peut résoudre une vue multisample, et une vue 3D sélectionne une tranche de profondeur.",
     "render.pass-state": "Le descripteur de passe peut borner son nombre de draw.",

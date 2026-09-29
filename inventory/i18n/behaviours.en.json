@@ -403,18 +403,47 @@
     "command.debug-markers": {
       "title": "Wrap commands with debug markers",
       "expectation": "Balanced debug groups and markers decorate the encoder, a compute pass and a render bundle without changing their results."
+    },
+    "texture.creation-metadata": {
+      "title": "Inspect texture creation metadata",
+      "expectation": "A texture exposes the exact dimensions, mip count, sample count, dimension, format and usage set it was created with, and mip 1 of an array layer reads back where it was written."
+    },
+    "texture.view-usage-restriction": {
+      "title": "Restrict a view's usages",
+      "expectation": "A view limited to TextureBinding samples correctly and is rejected as a render attachment."
+    },
+    "texture.depth-aspect-load": {
+      "title": "Load the depth aspect of a combined format",
+      "expectation": "A DepthOnly view of a Depth24PlusStencil8 texture loads the cleared depth value."
+    },
+    "transfers.texture-copy-aspect": {
+      "title": "Copy a depth aspect to a buffer",
+      "expectation": "A DepthOnly copy of Depth32Float writes the depth values and leaves every other byte of the staging buffer intact."
+    },
+    "sampler.comparison": {
+      "title": "Compare a depth reference",
+      "expectation": "A Less comparison sampler returns 1 below the depth and 0 above it, with the output sentinel proving both writes."
+    },
+    "render.volume-depth-slice": {
+      "title": "Render into one slice of a 3D texture",
+      "expectation": "A colour attachment with depthSlice 1 clears only that slice, leaving the neighbouring slice unchanged."
+    },
+    "texture.view-swizzle": {
+      "title": "Swizzle texture view channels",
+      "expectation": "b01r and argb views remap the four channels and exercise every swizzle source over an identity control."
+    },
+    "texture.one-dimensional-load": {
+      "title": "Load a one-dimensional texture",
+      "expectation": "texture_1d loads the four texels exactly and reports its width."
     }
   },
   "behaviours": {
     "device.features-and-limits": "A device exposes the negotiated features and limits, plus the description of the adapter that created it.",
     "device.request-required-features": "A missing required feature or limit fails the device request instead of producing a degraded device.",
     "command.encoder-recording": "An encoder records commands and produces a command buffer submitted once.",
-    "transfers.texture-copy-aspect": "A texture copy can select the depth or stencil aspect of a combined format.",
     "shader.compilation-info": "Compilation messages are available with their severity and position, without requiring an exact text.",
     "texture.creation": "A texture exposes its dimensions, format and usages; an invalid combination fails validation.",
     "texture.view-usage-aspect": "A view can restrict its usages and select a texture aspect.",
-    "texture.view-swizzle": "A non-identity swizzle produces the expected DOMString and requires the texture-component-swizzle feature.",
-    "sampler.comparison": "A comparison sampler reports its compare function and comparison binding type.",
     "texture.usage-and-formats": "Texture usages combine and each format declares its binding and attachment capabilities.",
     "render.color-resolve": "A colour attachment can resolve a multisampled view, and a 3D view selects a depth slice.",
     "render.pass-state": "The pass descriptor can cap its draw count.",
