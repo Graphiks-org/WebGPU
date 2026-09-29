@@ -126,4 +126,9 @@ enum class AcidCaseId(val id: String) {
     BuffersDisjointMappedWrites("buffers.disjoint-mapped-writes"),
     ErrorsOverlappingMappedRanges("errors.overlapping-mapped-ranges"),
     ErrorsDestroyedTextureSubmission("errors.destroyed-texture-submission"),
+    // Lot F — render queries, draw limits and multisample coverage.
+    QueriesRenderTimestampWrites("query.render-timestamp-writes"),
+    DepthBiasConstant("depth.bias-constant"),
+    RenderMaxDrawCount("render.max-draw-count"),
+    MsaaAlphaToCoverageExtremes("msaa.alpha-to-coverage-extremes"),
 }

@@ -491,6 +491,22 @@
     "errors.destroyed-texture-submission": {
       "title": "Soumettre du travail sur une texture détruite",
       "expectation": "Soumettre une copie terminée qui lit une texture fermée signale une erreur de validation."
+    },
+    "query.render-timestamp-writes": {
+      "title": "Écrire et résoudre des timestamps de rendu",
+      "expectation": "Une passe render écrit des timestamps de début et de fin qui se résolvent dans le buffer sentinelle sans toucher aux autres plages ; la précision temporelle n'est pas prouvée."
+    },
+    "depth.bias-constant": {
+      "title": "Biaiser la profondeur par une constante",
+      "expectation": "Un biais de profondeur constant place un overlay coplanaire devant ou derrière la référence."
+    },
+    "render.max-draw-count": {
+      "title": "Borner le nombre de draw d'une passe",
+      "expectation": "Une passe ne peut pas dépasser maxDrawCount draws ; la borne acceptée rend et la borne dépassée signale une erreur de validation."
+    },
+    "msaa.alpha-to-coverage-extremes": {
+      "title": "Piloter la couverture par l'alpha du fragment",
+      "expectation": "L'alpha-to-coverage résout alpha 0 vers le clear et alpha 1 vers du rouge opaque, tandis que sa désactivation écrit alpha 0 directement."
     }
   },
   "behaviours": {
@@ -505,7 +521,6 @@
     "render.pass-state": "Le descripteur de passe peut borner son nombre de draw.",
     "render.primitive-and-multisample": "La topologie, le culling et le layout de passe sont validés par rapport aux attachements.",
     "render.depth-bias": "Le biais de profondeur de la pipeline décale la profondeur des fragments.",
-    "query.render-timestamp-writes": "Les écritures de timestamp peuvent encadrer une passe render et exigent la feature timestamp-query.",
     "errors.device-lost": "Une perte de device expose une raison et un message exploitables par le runner.",
     "async.promise-results": "Les opérations asynchrones distinguent succès, rejet de validation et erreur d'implémentation.",
     "data.identifiers-and-indices": "Les alias de tailles, d'index et de coordonnées portent les unités du contrat, et les descripteurs de base exposent un label."

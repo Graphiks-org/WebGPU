@@ -491,6 +491,22 @@
     "errors.destroyed-texture-submission": {
       "title": "Submit work over a destroyed texture",
       "expectation": "Submitting a finished copy that reads a closed texture reports a validation error."
+    },
+    "query.render-timestamp-writes": {
+      "title": "Write and resolve render timestamps",
+      "expectation": "A render pass writes begin and end timestamps that resolve into the sentinel buffer without disturbing other ranges; temporal precision is not proven."
+    },
+    "depth.bias-constant": {
+      "title": "Bias depth by a constant",
+      "expectation": "A constant depth bias moves a coplanar overlay in front of or behind the reference."
+    },
+    "render.max-draw-count": {
+      "title": "Cap a pass's draw count",
+      "expectation": "A pass may not exceed maxDrawCount draws; the accepted cap renders and the exceeded cap reports a validation error."
+    },
+    "msaa.alpha-to-coverage-extremes": {
+      "title": "Drive coverage with fragment alpha",
+      "expectation": "Alpha-to-coverage resolves alpha 0 to the clear and alpha 1 to opaque red, while disabling it writes alpha 0 directly."
     }
   },
   "behaviours": {
@@ -505,7 +521,6 @@
     "render.pass-state": "The pass descriptor can cap its draw count.",
     "render.primitive-and-multisample": "Topology, culling and the pass layout are validated against the attachments.",
     "render.depth-bias": "The pipeline depth bias offsets fragment depth.",
-    "query.render-timestamp-writes": "Timestamp writes can wrap a render pass and require the timestamp-query feature.",
     "errors.device-lost": "A device loss exposes an actionable reason and message to the runner.",
     "async.promise-results": "Asynchronous operations distinguish success, validation rejection and implementation error.",
     "data.identifiers-and-indices": "Size, index and coordinate aliases carry the contract units, and the base descriptors expose a label."

@@ -160,16 +160,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "query.render-timestamp-writes",
-    "family": "queries/timestamps",
-    "contract": [
-      "GPURenderPassTimestampWrites"
-    ],
-    "requiredFeatures": [
-      "TimestampQuery"
-    ]
-  },
-  {
     "id": "errors.device-lost",
     "family": "erreurs/asynchronisme",
     "contract": [
