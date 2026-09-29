@@ -371,16 +371,46 @@
     "errors.scope-filter-routing": {
       "title": "Router une erreur au-delà d'un scope non correspondant",
       "expectation": "Une erreur de validation traverse un scope OutOfMemory interne sans y être capturée et est capturée par le scope Validation externe."
+    },
+    "shader.compilation-valid": {
+      "title": "Compiler un shader valide",
+      "expectation": "Un module de shader valide ne signale aucun message de compilation de niveau Error et construit quand même une pipeline qui écrit 37."
+    },
+    "shader.compilation-invalid": {
+      "title": "Signaler un shader invalide",
+      "expectation": "Une erreur de syntaxe produit au moins un message de compilation Error et une erreur de validation ; le texte, le nombre et les positions ne sont pas assertés."
+    },
+    "compute.pipeline-async": {
+      "title": "Créer une pipeline compute de façon asynchrone",
+      "expectation": "createComputePipelineAsync résout une pipeline qui s'exécute et écrit [7, 10, 13, 16]."
+    },
+    "render.pipeline-async": {
+      "title": "Créer une pipeline render de façon asynchrone",
+      "expectation": "createRenderPipelineAsync résout une pipeline qui rend le triangle rouge sur un clear bleu."
+    },
+    "errors.async-compute-rejection": {
+      "title": "Refuser une pipeline compute asynchrone",
+      "expectation": "Un entryPoint absent fait échouer createComputePipelineAsync sans erreur de validation capturée."
+    },
+    "errors.async-render-rejection": {
+      "title": "Refuser une pipeline render asynchrone",
+      "expectation": "Un nombre de samples invalide fait échouer createRenderPipelineAsync sans erreur de validation capturée."
+    },
+    "command.ordered-command-buffers": {
+      "title": "Exécuter deux command buffers dans l'ordre",
+      "expectation": "Deux command buffers soumis ensemble copient source vers intermédiaire vers sortie dans l'ordre de la liste."
+    },
+    "command.debug-markers": {
+      "title": "Encadrer des commandes par des marqueurs de debug",
+      "expectation": "Des groupes de debug équilibrés et des marqueurs décorent l'encodeur, une passe compute et un render bundle sans modifier leurs résultats."
     }
   },
   "behaviours": {
     "device.features-and-limits": "Un device expose les features et limites négociées, ainsi que la description de l'adapter qui l'a créé.",
     "device.request-required-features": "Une feature ou limite obligatoire absente fait échouer la demande de device au lieu de produire un device dégradé.",
     "command.encoder-recording": "Un encodeur enregistre des commandes puis produit un command buffer soumis une seule fois.",
-    "command.debug-markers": "Les marqueurs de debug encadrent des commandes sans modifier les résultats observables.",
     "transfers.texture-copy-aspect": "Une copie de texture peut sélectionner l'aspect profondeur ou stencil d'un format combiné.",
     "shader.compilation-info": "Les messages de compilation sont disponibles avec leur sévérité et leur position, sans imposer un texte exact.",
-    "compute.pipeline-async": "La création asynchrone résout un pipeline prêt à l'emploi ou échoue explicitement.",
     "texture.creation": "Une texture expose ses dimensions, son format et ses usages ; une combinaison invalide échoue la validation.",
     "texture.view-usage-aspect": "Une vue peut restreindre ses usages et sélectionner un aspect de texture.",
     "texture.view-swizzle": "Un swizzle non identitaire produit la chaîne DOMString attendue et exige la feature texture-component-swizzle.",
@@ -390,7 +420,6 @@
     "render.pass-state": "Le descripteur de passe peut borner son nombre de draw.",
     "render.primitive-and-multisample": "La topologie, le culling et le layout de passe sont validés par rapport aux attachements.",
     "render.depth-bias": "Le biais de profondeur de la pipeline décale la profondeur des fragments.",
-    "render.pipeline-async": "La création asynchrone résout une pipeline render prête ou échoue explicitement.",
     "query.render-timestamp-writes": "Les écritures de timestamp peuvent encadrer une passe render et exigent la feature timestamp-query.",
     "errors.device-lost": "Une perte de device expose une raison et un message exploitables par le runner.",
     "async.promise-results": "Les opérations asynchrones distinguent succès, rejet de validation et erreur d'implémentation.",

@@ -43,16 +43,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "command.debug-markers",
-    "family": "queue/commandes",
-    "contract": [
-      "GPUDebugCommandsMixin.pushDebugGroup",
-      "GPUDebugCommandsMixin.popDebugGroup",
-      "GPUDebugCommandsMixin.insertDebugMarker"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "transfers.texture-copy-aspect",
     "family": "transferts buffers/textures",
     "contract": [
@@ -74,14 +64,6 @@
       "GPUCompilationMessage.linePos",
       "GPUCompilationMessage.offset",
       "GPUCompilationMessage.length"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "compute.pipeline-async",
-    "family": "compute",
-    "contract": [
-      "GPUDevice.createComputePipelineAsync"
     ],
     "requiredFeatures": []
   },
@@ -209,14 +191,6 @@
       "GPUDepthStencilState.depthBias",
       "GPUDepthStencilState.depthBiasSlopeScale",
       "GPUDepthStencilState.depthBiasClamp"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "render.pipeline-async",
-    "family": "pipelines/render state",
-    "contract": [
-      "GPUDevice.createRenderPipelineAsync"
     ],
     "requiredFeatures": []
   },

@@ -371,16 +371,46 @@
     "errors.scope-filter-routing": {
       "title": "Route an error past a non-matching scope",
       "expectation": "A validation error passes an inner OutOfMemory scope untouched and is captured by the outer Validation scope."
+    },
+    "shader.compilation-valid": {
+      "title": "Compile a valid shader",
+      "expectation": "A valid shader module reports no error compilation message and still builds a pipeline that writes 37."
+    },
+    "shader.compilation-invalid": {
+      "title": "Report an invalid shader",
+      "expectation": "A syntax error yields at least one error compilation message and a validation error; text, count and positions are not asserted."
+    },
+    "compute.pipeline-async": {
+      "title": "Create a compute pipeline asynchronously",
+      "expectation": "createComputePipelineAsync resolves a pipeline that dispatches and writes [7, 10, 13, 16]."
+    },
+    "render.pipeline-async": {
+      "title": "Create a render pipeline asynchronously",
+      "expectation": "createRenderPipelineAsync resolves a pipeline that renders the red triangle over a blue clear."
+    },
+    "errors.async-compute-rejection": {
+      "title": "Reject an asynchronous compute pipeline",
+      "expectation": "A missing entry point makes createComputePipelineAsync fail without a captured validation error."
+    },
+    "errors.async-render-rejection": {
+      "title": "Reject an asynchronous render pipeline",
+      "expectation": "An invalid multisample count makes createRenderPipelineAsync fail without a captured validation error."
+    },
+    "command.ordered-command-buffers": {
+      "title": "Run two command buffers in order",
+      "expectation": "Two command buffers submitted together copy source to intermediate to output in list order."
+    },
+    "command.debug-markers": {
+      "title": "Wrap commands with debug markers",
+      "expectation": "Balanced debug groups and markers decorate the encoder, a compute pass and a render bundle without changing their results."
     }
   },
   "behaviours": {
     "device.features-and-limits": "A device exposes the negotiated features and limits, plus the description of the adapter that created it.",
     "device.request-required-features": "A missing required feature or limit fails the device request instead of producing a degraded device.",
     "command.encoder-recording": "An encoder records commands and produces a command buffer submitted once.",
-    "command.debug-markers": "Debug markers wrap commands without changing observable results.",
     "transfers.texture-copy-aspect": "A texture copy can select the depth or stencil aspect of a combined format.",
     "shader.compilation-info": "Compilation messages are available with their severity and position, without requiring an exact text.",
-    "compute.pipeline-async": "Asynchronous creation resolves a ready-to-use pipeline or fails explicitly.",
     "texture.creation": "A texture exposes its dimensions, format and usages; an invalid combination fails validation.",
     "texture.view-usage-aspect": "A view can restrict its usages and select a texture aspect.",
     "texture.view-swizzle": "A non-identity swizzle produces the expected DOMString and requires the texture-component-swizzle feature.",
@@ -390,7 +420,6 @@
     "render.pass-state": "The pass descriptor can cap its draw count.",
     "render.primitive-and-multisample": "Topology, culling and the pass layout are validated against the attachments.",
     "render.depth-bias": "The pipeline depth bias offsets fragment depth.",
-    "render.pipeline-async": "Asynchronous creation resolves a ready render pipeline or fails explicitly.",
     "query.render-timestamp-writes": "Timestamp writes can wrap a render pass and require the timestamp-query feature.",
     "errors.device-lost": "A device loss exposes an actionable reason and message to the runner.",
     "async.promise-results": "Asynchronous operations distinguish success, validation rejection and implementation error.",

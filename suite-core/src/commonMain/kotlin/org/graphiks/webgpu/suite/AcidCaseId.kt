@@ -92,4 +92,13 @@ enum class AcidCaseId(val id: String) {
     AdapterDeviceLabels("device.queue-and-object-labels"),
     ErrorsUncapturedError("errors.uncaptured-error"),
     ErrorsScopeFilterRouting("errors.scope-filter-routing"),
+    // Lot B — shader compilation, asynchronous pipelines and command recording.
+    ShadersCompilationValid("shader.compilation-valid"),
+    ShadersCompilationInvalid("shader.compilation-invalid"),
+    ComputePipelineAsync("compute.pipeline-async"),
+    RenderPipelineAsync("render.pipeline-async"),
+    ErrorsAsyncComputeRejection("errors.async-compute-rejection"),
+    ErrorsAsyncRenderRejection("errors.async-render-rejection"),
+    CommandOrderedCommandBuffers("command.ordered-command-buffers"),
+    CommandDebugMarkers("command.debug-markers"),
 }
