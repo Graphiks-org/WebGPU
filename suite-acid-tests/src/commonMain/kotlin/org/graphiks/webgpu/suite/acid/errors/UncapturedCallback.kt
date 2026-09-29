@@ -59,7 +59,7 @@ suspend fun uncapturedCallback(context: AcidContext) {
             val error = withTimeout(5.seconds) { received.await() }
             assertIs<GPUValidationError>(
                 error,
-                "An invalid buffer outside any scope must deliver a validation error to the callback",
+                "An invalid buffer outside any scope must deliver a validation error to the callback (message: ${error.message})",
             )
         }
     } finally {

@@ -52,9 +52,14 @@ suspend fun compilationInvalid(device: GPUDevice) {
     try {
         device.createShaderModule(ShaderModuleDescriptor(code = INVALID_WGSL)).use { shader ->
             val messages = shader.getCompilationInfo().getOrThrow().messages
+            // The position and text fields are read only to build the diagnostic; they are
+            // implementation-dependent and are not compared.
+            val diagnostic = messages.joinToString("; ") {
+                "${it.type} ${it.lineNum}:${it.linePos} offset ${it.offset}+${it.length}: ${it.message}"
+            }
             assertTrue(
                 messages.any { it.type == GPUCompilationMessageType.Error },
-                "An invalid shader must report at least one error message, observed $messages",
+                "An invalid shader must report at least one error message, observed: $diagnostic",
             )
         }
         val error = device.popErrorScope().getOrThrow()

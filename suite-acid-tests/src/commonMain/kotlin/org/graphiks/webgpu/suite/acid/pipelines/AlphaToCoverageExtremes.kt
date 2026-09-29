@@ -44,7 +44,6 @@ private fun coverageShader(alpha: Int) = """
         ApiSymbols.GPUMultisampleState_count,
         ApiSymbols.GPUTextureDescriptor_sampleCount,
         ApiSymbols.GPURenderPassColorAttachment_resolveTarget,
-        ApiSymbols.GPUColorTargetState_blend,
     ],
 )
 suspend fun alphaToCoverageExtremes(device: GPUDevice) = withValidationScope(device) {

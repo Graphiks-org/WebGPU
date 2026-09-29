@@ -43,6 +43,7 @@ fn main() {
         ApiSymbols.GPUCompilationInfo_messages,
         ApiSymbols.GPUCompilationMessage,
         ApiSymbols.GPUCompilationMessage_type,
+        ApiSymbols.GPUCompilationMessage_message,
         ApiSymbols.GPUCompilationMessageType,
         ApiSymbols.GPUCompilationMessageType_Error,
         ApiSymbols.GPUDevice_createComputePipeline,
