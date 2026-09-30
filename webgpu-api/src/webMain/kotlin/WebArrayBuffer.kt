@@ -17,14 +17,45 @@ value class WebArrayBuffer internal constructor(val buffer: js.buffer.ArrayBuffe
         get() = buffer.byteLength.toULong()
 
     // Read methods - convert entire buffer to typed arrays
-    override fun toByteArray(): ByteArray = buffer.readByteArray()
-    override fun toShortArray(): ShortArray = buffer.readShortArray()
-    override fun toIntArray(): IntArray = buffer.readIntArray()
-    override fun toFloatArray(): FloatArray = buffer.readFloatArray()
-    override fun toDoubleArray(): DoubleArray = buffer.readDoubleArray()
-    override fun toUByteArray(): UByteArray = buffer.readUByteArray()
-    override fun toUShortArray(): UShortArray = buffer.readUShortArray()
-    override fun toUIntArray(): UIntArray = buffer.readUIntArray()
+    override fun toByteArray(): ByteArray {
+        checkedArrayLength(size, Byte.SIZE_BYTES)
+        return buffer.readByteArray()
+    }
+
+    override fun toShortArray(): ShortArray {
+        checkedArrayLength(size, Short.SIZE_BYTES)
+        return buffer.readShortArray()
+    }
+
+    override fun toIntArray(): IntArray {
+        checkedArrayLength(size, Int.SIZE_BYTES)
+        return buffer.readIntArray()
+    }
+
+    override fun toFloatArray(): FloatArray {
+        checkedArrayLength(size, Float.SIZE_BYTES)
+        return buffer.readFloatArray()
+    }
+
+    override fun toDoubleArray(): DoubleArray {
+        checkedArrayLength(size, Double.SIZE_BYTES)
+        return buffer.readDoubleArray()
+    }
+
+    override fun toUByteArray(): UByteArray {
+        checkedArrayLength(size, Byte.SIZE_BYTES)
+        return buffer.readUByteArray()
+    }
+
+    override fun toUShortArray(): UShortArray {
+        checkedArrayLength(size, Short.SIZE_BYTES)
+        return buffer.readUShortArray()
+    }
+
+    override fun toUIntArray(): UIntArray {
+        checkedArrayLength(size, Int.SIZE_BYTES)
+        return buffer.readUIntArray()
+    }
 
     // Indexed read methods
 
@@ -97,12 +128,44 @@ value class WebArrayBuffer internal constructor(val buffer: js.buffer.ArrayBuffe
     override fun setUInt(offset: ULong, value: UInt) = setInt(offset, value.toInt())
 
     // Array write methods
-    override fun setBytes(offset: ULong, array: ByteArray) = buffer.writeByteArray(offset.toInt(), array)
-    override fun setShorts(offset: ULong, array: ShortArray) = buffer.writeShortArray(offset.toInt(), array)
-    override fun setInts(offset: ULong, array: IntArray) = buffer.writeIntArray(offset.toInt(), array)
-    override fun setFloats(offset: ULong, array: FloatArray) = buffer.writeFloatArray(offset.toInt(), array)
-    override fun setDoubles(offset: ULong, array: DoubleArray) = buffer.writeDoubleArray(offset.toInt(), array)
-    override fun setUBytes(offset: ULong, array: UByteArray) = buffer.writeUByteArray(offset.toInt(), array)
-    override fun setUShorts(offset: ULong, array: UShortArray) = buffer.writeUShortArray(offset.toInt(), array)
-    override fun setUInts(offset: ULong, array: UIntArray) = buffer.writeUIntArray(offset.toInt(), array)
+
+    override fun setBytes(offset: ULong, array: ByteArray) {
+        if (checkedBulkBytes(size, offset, array.size, Byte.SIZE_BYTES) == 0uL) return
+        buffer.writeByteArray(offset.toInt(), array)
+    }
+
+    override fun setShorts(offset: ULong, array: ShortArray) {
+        if (checkedBulkBytes(size, offset, array.size, Short.SIZE_BYTES) == 0uL) return
+        buffer.writeShortArray(offset.toInt(), array)
+    }
+
+    override fun setInts(offset: ULong, array: IntArray) {
+        if (checkedBulkBytes(size, offset, array.size, Int.SIZE_BYTES) == 0uL) return
+        buffer.writeIntArray(offset.toInt(), array)
+    }
+
+    override fun setFloats(offset: ULong, array: FloatArray) {
+        if (checkedBulkBytes(size, offset, array.size, Float.SIZE_BYTES) == 0uL) return
+        buffer.writeFloatArray(offset.toInt(), array)
+    }
+
+    override fun setDoubles(offset: ULong, array: DoubleArray) {
+        if (checkedBulkBytes(size, offset, array.size, Double.SIZE_BYTES) == 0uL) return
+        buffer.writeDoubleArray(offset.toInt(), array)
+    }
+
+    override fun setUBytes(offset: ULong, array: UByteArray) {
+        if (checkedBulkBytes(size, offset, array.size, UByte.SIZE_BYTES) == 0uL) return
+        buffer.writeUByteArray(offset.toInt(), array)
+    }
+
+    override fun setUShorts(offset: ULong, array: UShortArray) {
+        if (checkedBulkBytes(size, offset, array.size, UShort.SIZE_BYTES) == 0uL) return
+        buffer.writeUShortArray(offset.toInt(), array)
+    }
+
+    override fun setUInts(offset: ULong, array: UIntArray) {
+        if (checkedBulkBytes(size, offset, array.size, UInt.SIZE_BYTES) == 0uL) return
+        buffer.writeUIntArray(offset.toInt(), array)
+    }
 }

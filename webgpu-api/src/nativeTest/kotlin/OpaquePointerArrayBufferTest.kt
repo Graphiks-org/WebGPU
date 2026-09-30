@@ -259,6 +259,27 @@ class OpaquePointerArrayBufferTest : FreeSpec({
         }
     }
 
+    "a wrapped sub-range leaves its sentinels untouched" {
+        val size = 24
+        val pointer = nativeHeap.allocArray<ByteVar>(size)
+        try {
+            for (i in 0 until size) pointer[i] = 0x11
+            // Wrap only the central 16 bytes; the four-byte margins stay outside the contract.
+            val central = interpretCPointer<ByteVar>(pointer.rawValue + 4L)!!
+            val buffer = ArrayBuffer.wrap(central.reinterpret(), 16u)
+
+            buffer.setInts(0u, intArrayOf(1, 2, 3, 4))
+            buffer.getInt(12u) shouldBe 4
+            shouldThrow<IndexOutOfBoundsException> { buffer.setInts(13u, intArrayOf(1)) }
+            shouldThrow<IllegalArgumentException> { buffer.setInts(1u, intArrayOf(1)) }
+
+            for (i in 0 until 4) pointer[i] shouldBe 0x11.toByte()
+            for (i in 20 until 24) pointer[i] shouldBe 0x11.toByte()
+        } finally {
+            nativeHeap.free(pointer)
+        }
+    }
+
     "ArrayBuffer.allocate() zero-initializes the owned memory" {
         val buffer = ArrayBuffer.allocate(32u)
         buffer.toByteArray() shouldBe ByteArray(32) { 0 }

@@ -48,6 +48,18 @@ internal fun checkBufferAlignment(offset: ULong, width: Int) {
 }
 
 /**
+ * Validates a bulk range once and returns the touched byte count. Alignment is required only for a
+ * non-empty operation, so a zero-length copy exactly at the end of the buffer is accepted. The
+ * multiplication is safe: `count` is a Kotlin array length and `width` is at most eight.
+ */
+internal fun checkedBulkBytes(size: ULong, offset: ULong, count: Int, width: Int): ULong {
+    val bytes = count.toULong() * width.toULong()
+    checkBufferRange(size, offset, bytes)
+    if (bytes != 0uL) checkBufferAlignment(offset, width)
+    return bytes
+}
+
+/**
  * Number of elements of [width] bytes that fit in [size], refusing a non-divisible size and an
  * element count a Kotlin array cannot hold.
  */

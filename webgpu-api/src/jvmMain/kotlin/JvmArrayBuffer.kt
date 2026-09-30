@@ -25,22 +25,36 @@ value class JvmArrayBuffer internal constructor(val buffer: MemorySegment): Arra
 
     // Read methods - convert entire buffer to typed arrays
 
-    override fun toByteArray(): ByteArray = buffer.toArray(ValueLayout.JAVA_BYTE)
+    override fun toByteArray(): ByteArray {
+        checkedArrayLength(size, Byte.SIZE_BYTES)
+        return buffer.toArray(ValueLayout.JAVA_BYTE)
+    }
 
-    override fun toShortArray(): ShortArray = buffer.toArray(ValueLayout.JAVA_SHORT_UNALIGNED)
+    override fun toShortArray(): ShortArray {
+        checkedArrayLength(size, Short.SIZE_BYTES)
+        return buffer.toArray(ValueLayout.JAVA_SHORT_UNALIGNED)
+    }
 
-    override fun toIntArray(): IntArray = buffer.toArray(ValueLayout.JAVA_INT_UNALIGNED)
+    override fun toIntArray(): IntArray {
+        checkedArrayLength(size, Int.SIZE_BYTES)
+        return buffer.toArray(ValueLayout.JAVA_INT_UNALIGNED)
+    }
 
+    override fun toFloatArray(): FloatArray {
+        checkedArrayLength(size, Float.SIZE_BYTES)
+        return buffer.toArray(ValueLayout.JAVA_FLOAT_UNALIGNED)
+    }
 
-    override fun toFloatArray(): FloatArray = buffer.toArray(ValueLayout.JAVA_FLOAT_UNALIGNED)
+    override fun toDoubleArray(): DoubleArray {
+        checkedArrayLength(size, Double.SIZE_BYTES)
+        return buffer.toArray(ValueLayout.JAVA_DOUBLE_UNALIGNED)
+    }
 
-    override fun toDoubleArray(): DoubleArray = buffer.toArray(ValueLayout.JAVA_DOUBLE_UNALIGNED)
+    override fun toUByteArray(): UByteArray = toByteArray().asUByteArray()
 
-    override fun toUByteArray(): UByteArray = buffer.toArray(ValueLayout.JAVA_BYTE).asUByteArray()
+    override fun toUShortArray(): UShortArray = toShortArray().asUShortArray()
 
-    override fun toUShortArray(): UShortArray = buffer.toArray(ValueLayout.JAVA_SHORT_UNALIGNED).asUShortArray()
-
-    override fun toUIntArray(): UIntArray = buffer.toArray(ValueLayout.JAVA_INT_UNALIGNED).asUIntArray()
+    override fun toUIntArray(): UIntArray = toIntArray().asUIntArray()
 
 
     // Indexed read methods
@@ -127,22 +141,27 @@ value class JvmArrayBuffer internal constructor(val buffer: MemorySegment): Arra
     // Array write methods
 
     override fun setBytes(offset: ULong, array: ByteArray) {
+        if (checkedBulkBytes(size, offset, array.size, Byte.SIZE_BYTES) == 0uL) return
         MemorySegment.copy(array, 0, buffer, ValueLayout.JAVA_BYTE, offset.toLong(), array.size)
     }
 
     override fun setShorts(offset: ULong, array: ShortArray) {
+        if (checkedBulkBytes(size, offset, array.size, Short.SIZE_BYTES) == 0uL) return
         MemorySegment.copy(array, 0, buffer, ValueLayout.JAVA_SHORT_UNALIGNED, offset.toLong(), array.size)
     }
 
     override fun setInts(offset: ULong, array: IntArray) {
+        if (checkedBulkBytes(size, offset, array.size, Int.SIZE_BYTES) == 0uL) return
         MemorySegment.copy(array, 0, buffer, ValueLayout.JAVA_INT_UNALIGNED, offset.toLong(), array.size)
     }
 
     override fun setFloats(offset: ULong, array: FloatArray) {
+        if (checkedBulkBytes(size, offset, array.size, Float.SIZE_BYTES) == 0uL) return
         MemorySegment.copy(array, 0, buffer, ValueLayout.JAVA_FLOAT_UNALIGNED, offset.toLong(), array.size)
     }
 
     override fun setDoubles(offset: ULong, array: DoubleArray) {
+        if (checkedBulkBytes(size, offset, array.size, Double.SIZE_BYTES) == 0uL) return
         MemorySegment.copy(array, 0, buffer, ValueLayout.JAVA_DOUBLE_UNALIGNED, offset.toLong(), array.size)
     }
 

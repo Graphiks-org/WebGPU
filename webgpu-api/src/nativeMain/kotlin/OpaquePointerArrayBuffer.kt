@@ -101,7 +101,9 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun toByteArray(): ByteArray {
-        val array = ByteArray(size.toInt())
+        val length = checkedArrayLength(size, Byte.SIZE_BYTES)
+        val array = ByteArray(length)
+        if (length == 0) return array
         array.usePinned { pinned ->
             memcpy(pinned.addressOf(0), bytePtr, size.convert())
         }
@@ -110,8 +112,9 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun toShortArray(): ShortArray {
-        require(size % Short.SIZE_BYTES.toUInt() == 0uL) { "Buffer size must be multiple of ${Short.SIZE_BYTES}" }
-        val array = ShortArray((size / Short.SIZE_BYTES.toUInt()).toInt())
+        val length = checkedArrayLength(size, Short.SIZE_BYTES)
+        val array = ShortArray(length)
+        if (length == 0) return array
         array.usePinned { pinned ->
             memcpy(pinned.addressOf(0), bytePtr, size.convert())
         }
@@ -120,8 +123,9 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun toIntArray(): IntArray {
-        require(size % Int.SIZE_BYTES.toUInt() == 0uL) { "Buffer size must be multiple of ${Int.SIZE_BYTES}" }
-        val array = IntArray((size / Int.SIZE_BYTES.toUInt()).toInt())
+        val length = checkedArrayLength(size, Int.SIZE_BYTES)
+        val array = IntArray(length)
+        if (length == 0) return array
         array.usePinned { pinned ->
             memcpy(pinned.addressOf(0), bytePtr, size.convert())
         }
@@ -130,8 +134,9 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun toFloatArray(): FloatArray {
-        require(size % Float.SIZE_BYTES.toUInt() == 0uL) { "Buffer size must be multiple of ${Float.SIZE_BYTES}" }
-        val array = FloatArray((size / Float.SIZE_BYTES.toUInt()).toInt())
+        val length = checkedArrayLength(size, Float.SIZE_BYTES)
+        val array = FloatArray(length)
+        if (length == 0) return array
         array.usePinned { pinned ->
             memcpy(pinned.addressOf(0), bytePtr, size.convert())
         }
@@ -140,8 +145,9 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun toDoubleArray(): DoubleArray {
-        require(size % Double.SIZE_BYTES.toUInt() == 0uL) { "Buffer size must be multiple of ${Double.SIZE_BYTES}" }
-        val array = DoubleArray((size / Double.SIZE_BYTES.toUInt()).toInt())
+        val length = checkedArrayLength(size, Double.SIZE_BYTES)
+        val array = DoubleArray(length)
+        if (length == 0) return array
         array.usePinned { pinned ->
             memcpy(pinned.addressOf(0), bytePtr, size.convert())
         }
@@ -250,6 +256,7 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun setBytes(offset: ULong, array: ByteArray) {
+        if (checkedBulkBytes(size, offset, array.size, Byte.SIZE_BYTES) == 0uL) return
         array.usePinned { pinned ->
             val destPtr = interpretCPointer<ByteVar>(bytePtr.rawValue + offset.toLong())
             memcpy(destPtr, pinned.addressOf(0), array.size.convert())
@@ -258,6 +265,7 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun setShorts(offset: ULong, array: ShortArray) {
+        if (checkedBulkBytes(size, offset, array.size, Short.SIZE_BYTES) == 0uL) return
         array.usePinned { pinned ->
             val destPtr = interpretCPointer<ByteVar>(bytePtr.rawValue + offset.toLong())
             memcpy(destPtr, pinned.addressOf(0), (array.size * Short.SIZE_BYTES).convert())
@@ -266,6 +274,7 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun setInts(offset: ULong, array: IntArray) {
+        if (checkedBulkBytes(size, offset, array.size, Int.SIZE_BYTES) == 0uL) return
         array.usePinned { pinned ->
             val destPtr = interpretCPointer<ByteVar>(bytePtr.rawValue + offset.toLong())
             memcpy(destPtr, pinned.addressOf(0), (array.size * Int.SIZE_BYTES).convert())
@@ -274,6 +283,7 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun setFloats(offset: ULong, array: FloatArray) {
+        if (checkedBulkBytes(size, offset, array.size, Float.SIZE_BYTES) == 0uL) return
         array.usePinned { pinned ->
             val destPtr = interpretCPointer<ByteVar>(bytePtr.rawValue + offset.toLong())
             memcpy(destPtr, pinned.addressOf(0), (array.size * Float.SIZE_BYTES).convert())
@@ -282,6 +292,7 @@ class OpaquePointerArrayBuffer private constructor(
 
     @OptIn(UnsafeNumber::class)
     override fun setDoubles(offset: ULong, array: DoubleArray) {
+        if (checkedBulkBytes(size, offset, array.size, Double.SIZE_BYTES) == 0uL) return
         array.usePinned { pinned ->
             val destPtr = interpretCPointer<ByteVar>(bytePtr.rawValue + offset.toLong())
             memcpy(destPtr, pinned.addressOf(0), (array.size * Double.SIZE_BYTES).convert())
