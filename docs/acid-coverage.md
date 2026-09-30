@@ -63,13 +63,13 @@ behaviour; it does not mean every possible input is tested.
 | `device.request-required-features` | Related optional cases request and use their features; residual kept (refusal of an absent feature). |
 | `command.encoder-recording` | Covered by the B/E cases: order, finish, invalid reuse and labels. |
 | `command.debug-markers` | Case `command.debug-markers`; debugger display is not observable through the common API. |
-| `transfers.texture-copy-aspect` | Case `transfers.texture-copy-aspect` (Depth32Float DepthOnly); StencilOnly copy remains in `texture.view-usage-aspect`. |
+| `transfers.texture-copy-aspect` | Case `transfers.texture-copy-aspect` (Depth32Float DepthOnly); StencilOnly copy remains residual in `transfers.stencil-copy-aspect`. |
 | `shader.compilation-info` | Cases `shader.compilation-valid` / `shader.compilation-invalid`; exact positions/texts are not portable. |
 | `compute.pipeline-async` | Case `compute.pipeline-async`; ran and rejected without a captured scope error. |
 | `texture.creation` | Case `texture.creation-metadata`; residual `textureBindingViewDimension` and creation constraints kept. |
-| `texture.view-usage-aspect` | Case `texture.view-usage-restriction` and `texture.depth-aspect-load`; StencilOnly kept as residual. |
-| `texture.view-swizzle` | Case `texture.view-swizzle` (optional); not validated in the reference environment. |
-| `sampler.comparison` | Case `sampler.comparison` (Less at a uniform depth); PCF and other compare functions remain residual. |
+| `texture.view-usage-aspect` | Case `texture.view-usage-restriction` and `texture.depth-aspect-load`; a StencilOnly *view* is kept as residual in `texture.view-usage-aspect`. |
+| `texture.view-swizzle` | Case `texture.view-swizzle` (optional); executed and passing in the reference environment. |
+| `sampler.comparison` | Case `sampler.comparison` (Less at a uniform depth); PCF and other compare functions remain residual in `sampling.comparison-pcf`. |
 | `texture.usage-and-formats` | Split: exercised usages/formats are tied to their cases; other formats and `TransientAttachment` remain residual. No enum-entry or flag-operator test was added. |
 | `render.color-resolve` | Covered by the existing MSAA case and `render.volume-depth-slice`. |
 | `render.pass-state` | Case `render.max-draw-count`, with an accepted witness. |
@@ -99,8 +99,10 @@ Validation page. The count is a result of scoping, not a target to drive to zero
   `textures.storage-constraints`, `formats.depth-and-packed`, `sampling.limits` — texture creation
   constraints, StencilOnly views, compressed/tiered/packed/depth formats, storage-texture
   constraints and sampler limits.
-- `render.primitive-and-multisample`, `render.discard-reinit`, `bundles.negative-validation` —
-  points/lines and partial masks, discard-then-reinitialise, render-bundle negative validation.
+- `sampling.comparison-pcf`, `transfers.stencil-copy-aspect` — PCF and comparison functions beyond
+  the uniform-depth case, and a StencilOnly texture copy aspect.
+- `render.primitive-and-multisample`, `bundles.negative-validation` — points/lines and partial
+  masks, render-bundle negative validation.
 - `errors.device-lost` — contract gap, not a missing test.
 - `async.oom-and-internal-results` — not portably provokable.
 - `data.identifiers-and-indices` — the full 64-bit range of the size/index/coordinate aliases.
@@ -112,6 +114,9 @@ Validation page. The count is a result of scoping, not a target to drive to zero
   even for a query the pass never wrote. The case proves valid query use, resolution and range
   preservation, not that a measurable time was recorded; no `end > begin` or `> 0` threshold is
   imposed.
+- **Discarded attachments.** A render attachment stored with `GPUStoreOp.Discard` then attached with
+  `Load` is asserted to read as transparent black `(0,0,0,0)`: the pinned specification guarantees
+  the discarded subregion is cleared to zero, including for later `Load` attachments.
 - **Software backend.** All results above are functional SwiftShader results. They are not physical
   GPU results and not performance measurements.
 - **`--backend=default`** only means "no SwiftShader flags"; it is never reported as hardware.

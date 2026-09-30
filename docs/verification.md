@@ -74,7 +74,7 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
 
 ## Browser execution evidence
 
-- Execution commit: the `suiteCommit` recorded in both browser reports; reference contract commit
+- Execution commit: the `buildCommit` embedded in each browser report; reference contract commit
   `918de19`.
 - Commands:
 
@@ -240,7 +240,7 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   HTML-structure tests.
 - Gallery: served under a `/suite/` prefix, the Demos page loads the localized card from the demo
   resource shared with the runner, links to `../run/js|wasm/?demo=particles&lang=…`, and builds the
-  source links from the published demo report's `suiteCommit`. With the reports removed, the source
+  source links from the published demo report's `buildCommit`. With the reports removed, the source
   links fall back to the source directory on `master` and say so. The page has no horizontal overflow
   at 375 px, and the launch link opens the running demo.
 - Fix exercised by the demo: reading `device.limits` on Kotlin/Wasm used to throw when the
@@ -312,10 +312,10 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
 
 ## Known limitations
 
-- The pinned Playwright Chromium installer stalled during extraction on this machine. The matching
-  `chromium-headless-shell` build was installed directly and marked complete; `tools/package.json`
-  still pins Playwright 1.55.1 and CI runs `playwright install --with-deps chromium` normally. The
-  local run therefore exercised the pinned revision but a hand-assembled cache layout.
+- The pinned Playwright Chromium installer can stall during extraction on some machines; when that
+  happens the matching `chromium-headless-shell` build is installed directly and marked complete.
+  `tools/package.json` pins Playwright 1.63.0 and CI runs `playwright install --with-deps chromium`
+  normally. A hand-assembled cache in that situation still exercises the pinned revision.
 - The full `mkdocs build --strict` (Dokka embed plus `mkdocs-static-i18n`) was not run locally
   because that Python plugin is not installed here. The navigation entry and the relative suite link
   were validated statically; the assembled documentation site is exercised by the Documentation

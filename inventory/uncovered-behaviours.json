@@ -120,21 +120,30 @@
     "requiredFeatures": []
   },
   {
+    "id": "sampling.comparison-pcf",
+    "family": "textures/views/samplers",
+    "contract": [
+      "GPUSamplerDescriptor.compare",
+      "GPUCompareFunction"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "transfers.stencil-copy-aspect",
+    "family": "transferts buffers/textures",
+    "contract": [
+      "GPUTexelCopyTextureInfo.aspect",
+      "GPUTextureAspect.StencilOnly"
+    ],
+    "requiredFeatures": []
+  },
+  {
     "id": "render.primitive-and-multisample",
     "family": "pipelines/render state",
     "contract": [
       "GPUPrimitiveTopology.PointList",
       "GPUPrimitiveTopology.LineList",
       "GPUPrimitiveTopology.LineStrip"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "render.discard-reinit",
-    "family": "rendu/passes/attachments",
-    "contract": [
-      "GPULoadOp",
-      "GPUStoreOp"
     ],
     "requiredFeatures": []
   },
