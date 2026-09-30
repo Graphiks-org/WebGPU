@@ -90,7 +90,7 @@ function renderChrome() {
 async function publishedCommit() {
   for (const target of ['js', 'wasm']) {
     const report = await loadOptionalJson(`../reports/demos-${target}.json`);
-    const commit = report?.suiteCommit;
+    const commit = report?.buildCommit;
     if (commit && commit !== 'unknown') return commit;
   }
   return null;

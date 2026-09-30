@@ -109,7 +109,7 @@ function renderChrome(baseline, behaviours, reports) {
     [t.apiVersion, baseline.apiVersion],
     [t.suiteVersion, baseline.suiteVersion],
     [t.referenceCommit, baseline.commit],
-    [t.reportCommit, report?.suiteCommit ?? '—'],
+    [t.reportCommit, report?.buildCommit ?? '—'],
     [t.reportDate, report?.generatedAt ?? '—'],
   ]) {
     versions.append(el('dt', label), el('dd', value ?? '—'));
@@ -131,6 +131,7 @@ function renderChrome(baseline, behaviours, reports) {
     const item = document.createElement('li');
     const link = el('a', label);
     link.href = href;
+    item.append(link);
     refs.append(item);
   }
   const sourceItem = document.createElement('li');
@@ -150,7 +151,7 @@ function statusFor(envelope, caseIds) {
   return 'passed';
 }
 
-function renderCoverage(behaviours, reports) {
+function renderCoverage(behaviours, reports, baseline) {
   const head = document.querySelector('#coverage thead');
   const headRow = document.createElement('tr');
   for (const label of t.headers) headRow.append(el('th', label));
@@ -160,8 +161,16 @@ function renderCoverage(behaviours, reports) {
   body.replaceChildren();
   for (const behaviour of behaviours) {
     const row = document.createElement('tr');
+    const idCell = el('td', null, 'mono');
+    if (behaviour.caseIds.length > 0 && behaviour.sourcePath) {
+      const link = el('a', behaviour.id);
+      link.href = `https://github.com/Graphiks-org/WebGPU/blob/${baseline.commit}/${behaviour.sourcePath}`;
+      idCell.append(link);
+    } else {
+      idCell.textContent = behaviour.id;
+    }
     row.append(
-      el('td', behaviour.id, 'mono'),
+      idCell,
       el('td', behaviour.familyLabel),
       el('td', behaviour.expectation),
       el('td', behaviour.caseIds.length > 0 ? behaviour.caseIds.join(', ') : t.toTest),
@@ -213,7 +222,7 @@ async function main() {
   ]);
   const reports = { js, wasm };
   renderChrome(baseline, behaviours, reports);
-  renderCoverage(behaviours, reports);
+  renderCoverage(behaviours, reports, baseline);
   renderTarget('js', js);
   renderTarget('wasm', wasm);
 }

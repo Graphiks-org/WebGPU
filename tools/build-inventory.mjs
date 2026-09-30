@@ -5,6 +5,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { assertDisjointIds } from './inventory-ids.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outputDir = resolve(process.argv[2] ?? join(root, 'build', 'site', 'inventory'));
@@ -172,6 +173,7 @@ function buildBehaviours(locale, cases, uncovered, i18n) {
       requiredFeatures: entry.requiredFeatures,
       expectation: text.expectation,
       caseIds: [entry.id],
+      sourcePath: entry.sourcePath ?? null,
     });
   }
   for (const entry of uncovered) {
@@ -186,6 +188,7 @@ function buildBehaviours(locale, cases, uncovered, i18n) {
       requiredFeatures: entry.requiredFeatures,
       expectation,
       caseIds: [],
+      sourcePath: null,
     });
   }
   return behaviours;
@@ -228,6 +231,7 @@ const [cases, caseIds, baseline, uncovered, ...i18ns] = await Promise.all([
   ...locales.map((locale) => readJson(join(root, 'inventory', 'i18n', `behaviours.${locale}.json`))),
 ]);
 
+assertDisjointIds(cases, uncovered);
 const symbols = await parseSymbols();
 await mkdir(outputDir, { recursive: true });
 

@@ -104,6 +104,8 @@ internal data class BenchmarkScenarioResult(
 @Serializable
 internal data class BenchmarkReport(
     val schemaVersion: Int = 1,
+    val buildCommit: String,
+    val buildVersion: String,
     val protocol: String = "foundations-v1",
     val profile: String,
     val clock: String = "kotlin.time.TimeSource.Monotonic",

@@ -167,7 +167,7 @@ function renderChrome() {
 function renderReferences(envelope) {
   const refs = document.getElementById('reference-links');
   refs.replaceChildren();
-  const commit = envelope?.suiteCommit && envelope.suiteCommit !== 'unknown' ? envelope.suiteCommit : 'master';
+  const commit = envelope?.buildCommit && envelope.buildCommit !== 'unknown' ? envelope.buildCommit : 'master';
   const entries = [
     [t.refsProtocol, `${REPO}/blob/${commit}/docs/benchmarks.md`],
     [t.refsSources, `${REPO}/tree/${commit}/suite-benchmarks/src/commonMain/kotlin/org/graphiks/webgpu/suite/benchmarks`],
@@ -224,7 +224,7 @@ function renderTarget(target, envelope) {
     [t.platformLabel, env.platform],
     [t.backendLabel, backend],
     [t.headlessLabel, env.headless === true ? t.yes : t.no],
-    [t.commitLabel, envelope.suiteCommit],
+    [t.commitLabel, envelope.buildCommit],
     [t.dateLabel, envelope.generatedAt],
   ].map(([label, value]) => `${label}: ${value ?? t.unknown}`).join(' · ');
   container.append(el('p', meta, 'meta'));
