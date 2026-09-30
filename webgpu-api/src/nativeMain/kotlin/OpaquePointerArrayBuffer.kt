@@ -163,23 +163,32 @@ class OpaquePointerArrayBuffer private constructor(
     // Indexed read methods
 
     override fun getByte(offset: ULong): Byte {
+        checkBufferRange(size, offset, Byte.SIZE_BYTES.toULong())
         return bytePtr[offset.toInt()]
     }
 
     override fun getShort(offset: ULong): Short {
-        return pointer.reinterpret<ShortVar>()[(offset / Short.SIZE_BYTES.toUInt()).toInt()]
+        checkBufferRange(size, offset, Short.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Short.SIZE_BYTES)
+        return pointer.reinterpret<ShortVar>()[(offset / Short.SIZE_BYTES.toULong()).toInt()]
     }
 
     override fun getInt(offset: ULong): Int {
-        return pointer.reinterpret<IntVar>()[(offset / Int.SIZE_BYTES.toUInt()).toInt()]
+        checkBufferRange(size, offset, Int.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Int.SIZE_BYTES)
+        return pointer.reinterpret<IntVar>()[(offset / Int.SIZE_BYTES.toULong()).toInt()]
     }
 
     override fun getFloat(offset: ULong): Float {
-        return pointer.reinterpret<FloatVar>()[(offset / Float.SIZE_BYTES.toUInt()).toInt()]
+        checkBufferRange(size, offset, Float.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Float.SIZE_BYTES)
+        return pointer.reinterpret<FloatVar>()[(offset / Float.SIZE_BYTES.toULong()).toInt()]
     }
 
     override fun getDouble(offset: ULong): Double {
-        return pointer.reinterpret<DoubleVar>()[(offset / Double.SIZE_BYTES.toUInt()).toInt()]
+        checkBufferRange(size, offset, Double.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Double.SIZE_BYTES)
+        return pointer.reinterpret<DoubleVar>()[(offset / Double.SIZE_BYTES.toULong()).toInt()]
     }
 
     override fun getUByte(offset: ULong): UByte {
@@ -197,23 +206,32 @@ class OpaquePointerArrayBuffer private constructor(
     // Indexed write methods
 
     override fun setByte(offset: ULong, value: Byte) {
+        checkBufferRange(size, offset, Byte.SIZE_BYTES.toULong())
         bytePtr[offset.toInt()] = value
     }
 
     override fun setShort(offset: ULong, value: Short) {
-        pointer.reinterpret<ShortVar>()[(offset / Short.SIZE_BYTES.toUInt()).toInt()] = value
+        checkBufferRange(size, offset, Short.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Short.SIZE_BYTES)
+        pointer.reinterpret<ShortVar>()[(offset / Short.SIZE_BYTES.toULong()).toInt()] = value
     }
 
     override fun setInt(offset: ULong, value: Int) {
-        pointer.reinterpret<IntVar>()[(offset / Int.SIZE_BYTES.toUInt()).toInt()] = value
+        checkBufferRange(size, offset, Int.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Int.SIZE_BYTES)
+        pointer.reinterpret<IntVar>()[(offset / Int.SIZE_BYTES.toULong()).toInt()] = value
     }
 
     override fun setFloat(offset: ULong, value: Float) {
-        pointer.reinterpret<FloatVar>()[(offset / Float.SIZE_BYTES.toUInt()).toInt()] = value
+        checkBufferRange(size, offset, Float.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Float.SIZE_BYTES)
+        pointer.reinterpret<FloatVar>()[(offset / Float.SIZE_BYTES.toULong()).toInt()] = value
     }
 
     override fun setDouble(offset: ULong, value: Double) {
-        pointer.reinterpret<DoubleVar>()[(offset / Double.SIZE_BYTES.toUInt()).toInt()] = value
+        checkBufferRange(size, offset, Double.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Double.SIZE_BYTES)
+        pointer.reinterpret<DoubleVar>()[(offset / Double.SIZE_BYTES.toULong()).toInt()] = value
     }
 
     override fun setUByte(offset: ULong, value: UByte) {

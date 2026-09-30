@@ -244,6 +244,21 @@ class OpaquePointerArrayBufferTest : FreeSpec({
         }
     }
 
+    "ArrayBuffer.wrap() does not widen the accessible range" {
+        val size = 16
+        val pointer = nativeHeap.allocArray<ByteVar>(size)
+        try {
+            val buffer = ArrayBuffer.wrap(pointer.reinterpret(), size.toULong())
+            buffer.setInt(12u, 1)
+            buffer.getInt(12u) shouldBe 1
+            shouldThrow<IndexOutOfBoundsException> { buffer.setInt(13u, 1) }
+            shouldThrow<IndexOutOfBoundsException> { buffer.getInt(16u) }
+            shouldThrow<IllegalArgumentException> { buffer.getInt(1u) }
+        } finally {
+            nativeHeap.free(pointer)
+        }
+    }
+
     "ArrayBuffer.allocate() zero-initializes the owned memory" {
         val buffer = ArrayBuffer.allocate(32u)
         buffer.toByteArray() shouldBe ByteArray(32) { 0 }

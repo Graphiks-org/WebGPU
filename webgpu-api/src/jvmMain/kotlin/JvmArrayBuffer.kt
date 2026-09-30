@@ -45,16 +45,34 @@ value class JvmArrayBuffer internal constructor(val buffer: MemorySegment): Arra
 
     // Indexed read methods
 
-    override fun getByte(offset: ULong): Byte = buffer.get(ValueLayout.JAVA_BYTE, offset.toLong())
+    override fun getByte(offset: ULong): Byte {
+        checkBufferRange(size, offset, Byte.SIZE_BYTES.toULong())
+        return buffer.get(ValueLayout.JAVA_BYTE, offset.toLong())
+    }
 
-    override fun getShort(offset: ULong): Short = buffer.get(ValueLayout.JAVA_SHORT_UNALIGNED, offset.toLong())
+    override fun getShort(offset: ULong): Short {
+        checkBufferRange(size, offset, Short.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Short.SIZE_BYTES)
+        return buffer.get(ValueLayout.JAVA_SHORT_UNALIGNED, offset.toLong())
+    }
 
-    override fun getInt(offset: ULong): Int = buffer.get(ValueLayout.JAVA_INT_UNALIGNED, offset.toLong())
+    override fun getInt(offset: ULong): Int {
+        checkBufferRange(size, offset, Int.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Int.SIZE_BYTES)
+        return buffer.get(ValueLayout.JAVA_INT_UNALIGNED, offset.toLong())
+    }
 
+    override fun getFloat(offset: ULong): Float {
+        checkBufferRange(size, offset, Float.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Float.SIZE_BYTES)
+        return buffer.get(ValueLayout.JAVA_FLOAT_UNALIGNED, offset.toLong())
+    }
 
-    override fun getFloat(offset: ULong): Float = buffer.get(ValueLayout.JAVA_FLOAT_UNALIGNED, offset.toLong())
-
-    override fun getDouble(offset: ULong): Double = buffer.get(ValueLayout.JAVA_DOUBLE_UNALIGNED, offset.toLong())
+    override fun getDouble(offset: ULong): Double {
+        checkBufferRange(size, offset, Double.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Double.SIZE_BYTES)
+        return buffer.get(ValueLayout.JAVA_DOUBLE_UNALIGNED, offset.toLong())
+    }
 
     override fun getUByte(offset: ULong): UByte = getByte(offset).toUByte()
 
@@ -66,23 +84,31 @@ value class JvmArrayBuffer internal constructor(val buffer: MemorySegment): Arra
     // Indexed write methods
 
     override fun setByte(offset: ULong, value: Byte) {
+        checkBufferRange(size, offset, Byte.SIZE_BYTES.toULong())
         buffer.set(ValueLayout.JAVA_BYTE, offset.toLong(), value)
     }
 
     override fun setShort(offset: ULong, value: Short) {
+        checkBufferRange(size, offset, Short.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Short.SIZE_BYTES)
         buffer.set(ValueLayout.JAVA_SHORT_UNALIGNED, offset.toLong(), value)
     }
 
     override fun setInt(offset: ULong, value: Int) {
+        checkBufferRange(size, offset, Int.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Int.SIZE_BYTES)
         buffer.set(ValueLayout.JAVA_INT_UNALIGNED, offset.toLong(), value)
     }
 
-
     override fun setFloat(offset: ULong, value: Float) {
+        checkBufferRange(size, offset, Float.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Float.SIZE_BYTES)
         buffer.set(ValueLayout.JAVA_FLOAT_UNALIGNED, offset.toLong(), value)
     }
 
     override fun setDouble(offset: ULong, value: Double) {
+        checkBufferRange(size, offset, Double.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Double.SIZE_BYTES)
         buffer.set(ValueLayout.JAVA_DOUBLE_UNALIGNED, offset.toLong(), value)
     }
 

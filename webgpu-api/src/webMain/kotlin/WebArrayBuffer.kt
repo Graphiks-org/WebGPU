@@ -27,24 +27,74 @@ value class WebArrayBuffer internal constructor(val buffer: js.buffer.ArrayBuffe
     override fun toUIntArray(): UIntArray = buffer.readUIntArray()
 
     // Indexed read methods
-    override fun getByte(offset: ULong): Byte = buffer.readByte(offset.toInt())
-    override fun getShort(offset: ULong): Short = buffer.readShort(offset.toInt())
-    override fun getInt(offset: ULong): Int = buffer.readInt(offset.toInt())
-    override fun getFloat(offset: ULong): Float = buffer.readFloat(offset.toInt())
-    override fun getDouble(offset: ULong): Double = buffer.readDouble(offset.toInt())
-    override fun getUByte(offset: ULong): UByte = buffer.readUByte(offset.toInt())
-    override fun getUShort(offset: ULong): UShort = buffer.readUShort(offset.toInt())
-    override fun getUInt(offset: ULong): UInt = buffer.readUInt(offset.toInt())
+
+    override fun getByte(offset: ULong): Byte {
+        checkBufferRange(size, offset, Byte.SIZE_BYTES.toULong())
+        return buffer.readByte(offset.toInt())
+    }
+
+    override fun getShort(offset: ULong): Short {
+        checkBufferRange(size, offset, Short.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Short.SIZE_BYTES)
+        return buffer.readShort(offset.toInt())
+    }
+
+    override fun getInt(offset: ULong): Int {
+        checkBufferRange(size, offset, Int.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Int.SIZE_BYTES)
+        return buffer.readInt(offset.toInt())
+    }
+
+    override fun getFloat(offset: ULong): Float {
+        checkBufferRange(size, offset, Float.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Float.SIZE_BYTES)
+        return buffer.readFloat(offset.toInt())
+    }
+
+    override fun getDouble(offset: ULong): Double {
+        checkBufferRange(size, offset, Double.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Double.SIZE_BYTES)
+        return buffer.readDouble(offset.toInt())
+    }
+
+    override fun getUByte(offset: ULong): UByte = getByte(offset).toUByte()
+    override fun getUShort(offset: ULong): UShort = getShort(offset).toUShort()
+    override fun getUInt(offset: ULong): UInt = getInt(offset).toUInt()
 
     // Indexed write methods
-    override fun setByte(offset: ULong, value: Byte) = buffer.writeByte(offset.toInt(), value)
-    override fun setShort(offset: ULong, value: Short) = buffer.writeShort(offset.toInt(), value)
-    override fun setInt(offset: ULong, value: Int) = buffer.writeInt(offset.toInt(), value)
-    override fun setFloat(offset: ULong, value: Float) = buffer.writeFloat(offset.toInt(), value)
-    override fun setDouble(offset: ULong, value: Double) = buffer.writeDouble(offset.toInt(), value)
-    override fun setUByte(offset: ULong, value: UByte) = buffer.writeUByte(offset.toInt(), value)
-    override fun setUShort(offset: ULong, value: UShort) = buffer.writeUShort(offset.toInt(), value)
-    override fun setUInt(offset: ULong, value: UInt) = buffer.writeUInt(offset.toInt(), value)
+
+    override fun setByte(offset: ULong, value: Byte) {
+        checkBufferRange(size, offset, Byte.SIZE_BYTES.toULong())
+        buffer.writeByte(offset.toInt(), value)
+    }
+
+    override fun setShort(offset: ULong, value: Short) {
+        checkBufferRange(size, offset, Short.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Short.SIZE_BYTES)
+        buffer.writeShort(offset.toInt(), value)
+    }
+
+    override fun setInt(offset: ULong, value: Int) {
+        checkBufferRange(size, offset, Int.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Int.SIZE_BYTES)
+        buffer.writeInt(offset.toInt(), value)
+    }
+
+    override fun setFloat(offset: ULong, value: Float) {
+        checkBufferRange(size, offset, Float.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Float.SIZE_BYTES)
+        buffer.writeFloat(offset.toInt(), value)
+    }
+
+    override fun setDouble(offset: ULong, value: Double) {
+        checkBufferRange(size, offset, Double.SIZE_BYTES.toULong())
+        checkBufferAlignment(offset, Double.SIZE_BYTES)
+        buffer.writeDouble(offset.toInt(), value)
+    }
+
+    override fun setUByte(offset: ULong, value: UByte) = setByte(offset, value.toByte())
+    override fun setUShort(offset: ULong, value: UShort) = setShort(offset, value.toShort())
+    override fun setUInt(offset: ULong, value: UInt) = setInt(offset, value.toInt())
 
     // Array write methods
     override fun setBytes(offset: ULong, array: ByteArray) = buffer.writeByteArray(offset.toInt(), array)
