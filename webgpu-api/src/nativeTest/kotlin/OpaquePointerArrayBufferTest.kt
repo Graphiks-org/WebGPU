@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import org.graphiks.webgpu.ArrayBuffer
@@ -225,5 +226,28 @@ class OpaquePointerArrayBufferTest : FreeSpec({
             buffer.getByte(0u) shouldBe it.toByte()
         }
         // Then - no memory leaks should occur (this is verified by not crashing)
+    }
+
+    "ArrayBuffer.allocate() rejects a size this target cannot address" {
+        shouldThrow<IllegalArgumentException> { ArrayBuffer.allocate(4_294_967_296uL) }
+        shouldThrow<IllegalArgumentException> { ArrayBuffer.allocate(ULong.MAX_VALUE) }
+    }
+
+    "ArrayBuffer.wrap() rejects a borrowed size without reading it" {
+        val pointer = nativeHeap.allocArray<ByteVar>(4)
+        try {
+            shouldThrow<IllegalArgumentException> {
+                ArrayBuffer.wrap(pointer.reinterpret(), 4_294_967_296uL)
+            }
+        } finally {
+            nativeHeap.free(pointer)
+        }
+    }
+
+    "ArrayBuffer.allocate() zero-initializes the owned memory" {
+        val buffer = ArrayBuffer.allocate(32u)
+        buffer.toByteArray() shouldBe ByteArray(32) { 0 }
+        buffer.getInt(0u) shouldBe 0
+        buffer.getDouble(0u) shouldBe 0.0
     }
 })

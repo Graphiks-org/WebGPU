@@ -34,6 +34,8 @@ class ArrayBufferChecksTest : FreeSpec({
         checkedIntSize(Int.MAX_VALUE.toULong()) shouldBe Int.MAX_VALUE
         shouldThrow<IllegalArgumentException> { checkedIntSize(4_294_967_296uL) }
         checkedLongSize(Long.MAX_VALUE.toULong()) shouldBe Long.MAX_VALUE
+        // A JVM segment may exceed Int.MAX_VALUE; only the Long boundary is checked there.
+        checkedLongSize(4_294_967_296uL) shouldBe 4_294_967_296L
         shouldThrow<IllegalArgumentException> { checkedLongSize(Long.MAX_VALUE.toULong() + 1uL) }
         shouldThrow<IllegalArgumentException> { checkedLongSize(ULong.MAX_VALUE) }
         checkedArrayLength(0uL, 4) shouldBe 0

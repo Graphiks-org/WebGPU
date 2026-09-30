@@ -252,7 +252,7 @@ actual sealed interface ArrayBuffer {
          * @return a new ArrayBuffer with the specified size
          */
         actual fun allocate(sizeInBytes: ULong): ArrayBuffer {
-            return WebArrayBuffer(js.buffer.ArrayBuffer(sizeInBytes.toInt()))
+            return WebArrayBuffer(js.buffer.ArrayBuffer(checkedIntSize(sizeInBytes)))
         }
 
         /**
@@ -268,64 +268,87 @@ actual sealed interface ArrayBuffer {
          * @param array the byte array to convert
          * @return an ArrayBuffer containing the data from the byte array
          */
-        actual fun of(array: ByteArray): ArrayBuffer
-            = array.toArrayBuffer()
+        actual fun of(array: ByteArray): ArrayBuffer {
+            checkWebArrayCapacity(array.size, Byte.SIZE_BYTES)
+            return array.toArrayBuffer()
+        }
 
         /**
          * Creates an ArrayBuffer from a ShortArray.
          * @param array the short array to convert
          * @return an ArrayBuffer containing the data from the short array
          */
-        actual fun of(array: ShortArray): ArrayBuffer
-            = array.toArrayBuffer()
+        actual fun of(array: ShortArray): ArrayBuffer {
+            checkWebArrayCapacity(array.size, Short.SIZE_BYTES)
+            return array.toArrayBuffer()
+        }
 
         /**
          * Creates an ArrayBuffer from an IntArray.
          * @param array the int array to convert
          * @return an ArrayBuffer containing the data from the int array
          */
-        actual fun of(array: IntArray): ArrayBuffer
-            = array.toArrayBuffer()
+        actual fun of(array: IntArray): ArrayBuffer {
+            checkWebArrayCapacity(array.size, Int.SIZE_BYTES)
+            return array.toArrayBuffer()
+        }
 
         /**
          * Creates an ArrayBuffer from a FloatArray.
          * @param array the float array to convert
          * @return an ArrayBuffer containing the data from the float array
          */
-        actual fun of(array: FloatArray): ArrayBuffer
-            = array.toArrayBuffer()
+        actual fun of(array: FloatArray): ArrayBuffer {
+            checkWebArrayCapacity(array.size, Float.SIZE_BYTES)
+            return array.toArrayBuffer()
+        }
 
         /**
          * Creates an ArrayBuffer from a DoubleArray.
          * @param array the double array to convert
          * @return an ArrayBuffer containing the data from the double array
          */
-        actual fun of(array: DoubleArray): ArrayBuffer
-            = array.toArrayBuffer()
+        actual fun of(array: DoubleArray): ArrayBuffer {
+            checkWebArrayCapacity(array.size, Double.SIZE_BYTES)
+            return array.toArrayBuffer()
+        }
 
         /**
          * Creates an ArrayBuffer from a UByteArray.
          * @param array the unsigned byte array to convert
          * @return an ArrayBuffer containing the data from the unsigned byte array
          */
-        actual fun of(array: UByteArray): ArrayBuffer
-            = array.toArrayBuffer()
+        actual fun of(array: UByteArray): ArrayBuffer {
+            checkWebArrayCapacity(array.size, UByte.SIZE_BYTES)
+            return array.toArrayBuffer()
+        }
 
         /**
          * Creates an ArrayBuffer from a UShortArray.
          * @param array the unsigned short array to convert
          * @return an ArrayBuffer containing the data from the unsigned short array
          */
-        actual fun of(array: UShortArray): ArrayBuffer
-            = array.toArrayBuffer()
+        actual fun of(array: UShortArray): ArrayBuffer {
+            checkWebArrayCapacity(array.size, UShort.SIZE_BYTES)
+            return array.toArrayBuffer()
+        }
 
         /**
          * Creates an ArrayBuffer from a UIntArray.
          * @param array the unsigned int array to convert
          * @return an ArrayBuffer containing the data from the unsigned int array
          */
-        actual fun of(array: UIntArray): ArrayBuffer
-            = array.toArrayBuffer()
+        actual fun of(array: UIntArray): ArrayBuffer {
+            checkWebArrayCapacity(array.size, UInt.SIZE_BYTES)
+            return array.toArrayBuffer()
+        }
+    }
+}
+
+/** Refuses a Kotlin array whose byte size a Web ArrayBuffer cannot address. */
+private fun checkWebArrayCapacity(elements: Int, width: Int) {
+    require(elements <= Int.MAX_VALUE / width) {
+        "Array of $elements elements is too large for a Web ArrayBuffer"
     }
 }
 

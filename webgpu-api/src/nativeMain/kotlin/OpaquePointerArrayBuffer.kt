@@ -22,6 +22,27 @@ import kotlinx.cinterop.usePinned
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.createCleaner
 import platform.posix.memcpy
+import platform.posix.memset
+
+/**
+ * Refuses a borrowed size this implementation cannot address. It is intentionally explicit: large
+ * external pointers would need a different addressing scheme and their own campaign.
+ */
+private fun checkedNativeSize(sizeInBytes: ULong): ULong {
+    checkedIntSize(sizeInBytes)
+    return sizeInBytes
+}
+
+/** Allocates a zero-initialized owned buffer; a zero-length buffer gets a one-byte sentinel. */
+@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
+private fun allocateZeroed(sizeInBytes: ULong): COpaquePointer {
+    val bytes = checkedIntSize(sizeInBytes)
+    val allocationSize = if (bytes == 0) 1 else bytes
+    val pointer = nativeHeap.allocArray<ByteVar>(allocationSize)
+    val raw: COpaquePointer = pointer.reinterpret()
+    memset(raw, 0, allocationSize.convert())
+    return raw
+}
 
 /**
  * Represents a native array buffer backed by an opaque C pointer, providing direct access
@@ -57,7 +78,7 @@ class OpaquePointerArrayBuffer private constructor(
     } else null
 
     internal constructor(sizeInBytes: ULong) : this(
-        pointer = nativeHeap.allocArray<ByteVar>(sizeInBytes.toInt()).reinterpret(),
+        pointer = allocateZeroed(sizeInBytes),
         size = sizeInBytes,
         ownsMemory = true
     )
@@ -69,7 +90,7 @@ class OpaquePointerArrayBuffer private constructor(
      */
     internal constructor(pointer: COpaquePointer, sizeInBytes: ULong) : this(
         pointer = pointer,
-        size = sizeInBytes,
+        size = checkedNativeSize(sizeInBytes),
         ownsMemory = false
     )
 
