@@ -21,6 +21,7 @@ import org.graphiks.webgpu.suite.AcidTest
 import org.graphiks.webgpu.suite.acid.ApiSymbols
 import org.graphiks.webgpu.suite.acid.withValidationScope
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * A Depth32Float texture cleared to 0.25 is copied with `aspect = DepthOnly` into a staging buffer
@@ -94,7 +95,12 @@ suspend fun depthAspectCopy(device: GPUDevice) = withValidationScope(device) {
 
             staging.mapAsync(org.graphiks.webgpu.GPUMapMode.Read).getOrThrow()
             try {
-                val bytes = staging.getMappedRange().toByteArray()
+                val mapped = staging.getMappedRange()
+                val bytes = mapped.toByteArray()
+                assertTrue(
+                    mapped.size == 1024uL && bytes.size == 1024,
+                    "Depth readback must expose exactly 1024 bytes, observed ${mapped.size} in the range and ${bytes.size} in the array",
+                )
                 val row0 = 256 until 264
                 val row1 = 512 until 520
                 val copied = row0 + row1

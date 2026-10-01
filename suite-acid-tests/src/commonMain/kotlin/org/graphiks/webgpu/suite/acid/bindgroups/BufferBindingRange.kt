@@ -37,9 +37,10 @@ fn main() {
 """
 
 /**
- * A buffer binding exposes the range named by its explicit offset and size, not the buffer start:
- * a uniform buffer holding 7 at byte 0 and 29 at the aligned offset reads back 29 when the binding
- * starts at that alignment.
+ * A buffer binding starts at its explicit offset, not at the buffer start: a uniform buffer holding 7
+ * at byte 0 and 29 at the aligned offset reads back 29 when the binding starts at that alignment.
+ * The allocation is exactly `alignment + 16`, so omitting the binding size would expose the same 16
+ * bytes and this case does not witness `size`; that witness lives in `bindings.storage-range-length`.
  */
 @AcidTest(
     id = AcidCaseId.BindingsBufferRange,

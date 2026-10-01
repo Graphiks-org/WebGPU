@@ -78,7 +78,7 @@
     },
     "bindings.buffer-range": {
       "title": "Lier une plage explicite d'un buffer",
-      "expectation": "L'offset et la taille du binding sélectionnent la plage alignée lue par le shader."
+      "expectation": "Un binding de buffer démarre à son offset explicite, pas au début du buffer ; la taille explicite est vérifiée par le cas storage range-length."
     },
     "bindings.dynamic-uniform-offsets": {
       "title": "Déplacer un binding uniforme par offset dynamique",
@@ -342,7 +342,7 @@
     },
     "queries.timestamp-resolve": {
       "title": "Résoudre les timestamps de passe",
-      "expectation": "Une passe compute écrit des timestamps de début et de fin, résolus dans une plage d'un buffer."
+      "expectation": "Une passe compute résout des timestamps de début et de fin dans une plage préremplie de sentinelles sans toucher aux autres plages, et la sortie du kernel est relue ; aucun temps mesurable n'est revendiqué."
     },
     "compute.shader-f16": {
       "title": "Calculer en demi-précision",
@@ -470,7 +470,7 @@
     },
     "queue.submitted-work-done": {
       "title": "Attendre le travail soumis à la queue",
-      "expectation": "onSubmittedWorkDone se résout après une passe compute et sa copie, et le staging lit les quatre valeurs écrites."
+      "expectation": "onSubmittedWorkDone se résout et le staging mappé lit les quatre valeurs écrites, prouvant que l'appel est utilisable et que la soumission est terminée ; l'attente elle-même n'est pas prouvée."
     },
     "errors.encoder-finished-twice": {
       "title": "Terminer un encodeur deux fois",
@@ -494,7 +494,7 @@
     },
     "query.render-timestamp-writes": {
       "title": "Écrire et résoudre des timestamps de rendu",
-      "expectation": "Une passe render écrit des timestamps de début et de fin qui se résolvent dans le buffer sentinelle sans toucher aux autres plages ; la précision temporelle n'est pas prouvée."
+      "expectation": "Une passe render résout des timestamps de début et de fin dans le buffer sentinelle sans toucher aux autres plages, et le rouge dessiné est vérifié ; aucun temps mesurable n'est revendiqué."
     },
     "depth.bias-constant": {
       "title": "Biaiser la profondeur par une constante",

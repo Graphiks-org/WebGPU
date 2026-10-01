@@ -78,7 +78,7 @@
     },
     "bindings.buffer-range": {
       "title": "Bind an explicit buffer range",
-      "expectation": "A buffer binding offset and size select the aligned range the shader reads."
+      "expectation": "A buffer binding starts at its explicit offset, not at the buffer start; the explicit size is witnessed by the storage range-length case."
     },
     "bindings.dynamic-uniform-offsets": {
       "title": "Move a uniform binding with a dynamic offset",
@@ -342,7 +342,7 @@
     },
     "queries.timestamp-resolve": {
       "title": "Resolve pass timestamps",
-      "expectation": "A compute pass writes begin and end timestamps, resolved into a range of a buffer."
+      "expectation": "A compute pass resolves begin and end timestamps into a sentinel-prefilled range without disturbing other ranges, and the dispatched kernel's output is read back; no claim is made that a measurable time was written."
     },
     "compute.shader-f16": {
       "title": "Compute with half precision",
@@ -470,7 +470,7 @@
     },
     "queue.submitted-work-done": {
       "title": "Await submitted queue work",
-      "expectation": "onSubmittedWorkDone resolves after a compute pass and its copy, and the staging reads the four written values."
+      "expectation": "onSubmittedWorkDone resolves and the mapped staging reads the four written values, proving the call is usable and the submission completed; the wait itself is not proven."
     },
     "errors.encoder-finished-twice": {
       "title": "Finish an encoder twice",
@@ -494,7 +494,7 @@
     },
     "query.render-timestamp-writes": {
       "title": "Write and resolve render timestamps",
-      "expectation": "A render pass writes begin and end timestamps that resolve into the sentinel buffer without disturbing other ranges; temporal precision is not proven."
+      "expectation": "A render pass resolves begin and end timestamps into the sentinel buffer without disturbing other ranges, and the drawn red is checked; no claim is made that a measurable time was written."
     },
     "depth.bias-constant": {
       "title": "Bias depth by a constant",
