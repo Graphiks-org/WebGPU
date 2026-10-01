@@ -55,7 +55,8 @@ Full command list, environment metadata and the raw reports are recorded in
 ## Disposition of the original uncovered behaviours
 
 The inventory started this increment with 23 uncovered entries. Each is now either covered by cases,
-kept as a precise residual, or split. "Covered" means the case's assertions exercise the detailed
+kept as a precise residual, split, or removed as never testable (see Known limits). "Covered" means
+the case's assertions exercise the detailed
 behaviour; it does not mean every possible input is tested.
 
 | Original entry | Disposition |
@@ -80,8 +81,8 @@ behaviour; it does not mean every possible input is tested.
 | `render.pipeline-async` | Case `render.pipeline-async`; rendered and rejected. |
 | `query.render-timestamp-writes` | Case `query.render-timestamp-writes`; temporal precision is not proven. |
 | `errors.uncaptured-error` | Case `errors.uncaptured-error` on an isolated device, Validation category. |
-| `errors.device-lost` | Blocked by the contract: no `GPUDevice.lost` and no common loss callback. |
-| `async.promise-results` | Renamed to `async.oom-and-internal-results`: OOM/Internal errors are not portable; the pipeline `Result` paths are tested. |
+| `errors.device-lost` | Blocked by the contract: no `GPUDevice.lost` and no common loss callback; removed from the residual inventory as never testable (see Known limits). |
+| `async.promise-results` | Renamed to `async.oom-and-internal-results` (later removed as never testable): OOM/Internal errors are not portable; the pipeline `Result` paths are tested. |
 | `data.identifiers-and-indices` | References vented into the offset/region/index cases, including a negative `baseVertex`; 64-bit range remains residual. |
 
 ## Remaining residual inventory
