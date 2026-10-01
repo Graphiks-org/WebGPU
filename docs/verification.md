@@ -181,6 +181,31 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   `--enable-unsafe-webgpu --enable-unsafe-swiftshader --use-angle=swiftshader`. These are functional
   software-backend results, not physical-GPU results.
 
+## Follow-up increment mutation replay (2026-10-01)
+
+The follow-up increment (`feat/acid-suite-followup`) repairs oracles the finalized catalogue could
+pass with the behaviour removed, adds nine cases, enforces catalogue completeness at generation and
+binds reports to the built revision. Before the canonical runs, each repaired oracle was replayed
+against its mutation on the JS target; every mutated case was then restored and the working tree was
+clean before the canonical rebuild.
+
+| Mutation | Case(s) | Result |
+| --- | --- | --- |
+| Mapper drops the forwarded binding `size` (`mapper/BindGroupDescriptor.kt`) | `bindings.storage-range-length` | `failed` |
+| `minBindingSize` lowered so the 12-byte probe binds | `errors.min-binding-size` | `failed` |
+| `setViewport` replaced by `setScissorRect(4,4,8,8)` | `render.viewport` | `failed` |
+| Bundle draws one triangle (`draw(3)`) | `bundles.draw`, `bundles.reuse`, `command.debug-markers` | `failed` |
+| Out-of-range timestamp descriptor omitted in the probe | `errors.compute-timestamp-indices` | `failed` |
+| Out-of-range timestamp descriptor omitted in the probe | `errors.render-timestamp-indices` | `failed` |
+| Pass state rebound before the post-bundle draw (state-retention surrogate, not a deleted browser reset) | `errors.bundle-post-execute-state` | `failed` |
+| Depth readback mapping shortened to 520 bytes | `transfers.texture-copy-aspect` | `failed` |
+
+All ten targeted cases reported `failed` in the single mutated run, and none of the mutations was
+committed. Accepted survivors, unchanged by design: omitting `size` only in `bindings.buffer-range`,
+dropping `timestampWrites` only from the positive timestamp cases, and an immediate
+`onSubmittedWorkDone` — the first is a narrowed claim, the others are covered by the new
+deterministic index cases and the narrowed expectations.
+
 ## Compilation and publication evidence
 
 - Implementation notes record compilation for the five announced targets through their normal
