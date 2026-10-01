@@ -507,6 +507,42 @@
     "msaa.alpha-to-coverage-extremes": {
       "title": "Drive coverage with fragment alpha",
       "expectation": "Alpha-to-coverage resolves alpha 0 to the clear and alpha 1 to opaque red, while disabling it writes alpha 0 directly."
+    },
+    "bindings.storage-range-length": {
+      "title": "Bound a storage binding by its explicit size",
+      "expectation": "A storage binding's explicit size bounds its runtime array length and its offset selects the first word, even when the backing buffer is larger than either bound range."
+    },
+    "errors.min-binding-size": {
+      "title": "Reject a binding below minBindingSize",
+      "expectation": "A bind group entry smaller than its layout's minBindingSize is rejected at creation with a validation error, while an entry of exactly that size executes a known write."
+    },
+    "errors.bundle-post-execute-state": {
+      "title": "Reset pass state after executing bundles",
+      "expectation": "After executeBundles a draw without rebinding is a validation error even though valid state was bound before the bundle; rebinding a distinct pipeline draws and only that draw can paint the corners."
+    },
+    "textures.partial-initialization": {
+      "title": "Read a fresh and a partially written texture",
+      "expectation": "A fresh texture reads as transparent black — alpha included — and a partial write changes exactly the addressed texels, with both checks on separate fresh textures."
+    },
+    "render.discard-reinit": {
+      "title": "Clear a discarded attachment to zero",
+      "expectation": "An attachment stored with Discard is cleared to zero by the pass and a following Load pass reads it as transparent black, while its stored sibling keeps its clear colour."
+    },
+    "sampling.min-mag-selection": {
+      "title": "Select min and mag filters independently",
+      "expectation": "With opposite filters on one sampler, level 0 follows magFilter and level 1 follows minFilter; the exactly representable blend weights make the linear results computed, not approximated."
+    },
+    "errors.compute-timestamp-indices": {
+      "title": "Validate compute timestamp indices",
+      "expectation": "A compute pass timestamp descriptor with indices inside the query set is accepted and its work runs, while an out-of-range index is a validation error."
+    },
+    "errors.render-timestamp-indices": {
+      "title": "Validate render timestamp indices",
+      "expectation": "A render pass timestamp descriptor with indices inside the query set is accepted and its pass draws, while an out-of-range index is a validation error."
+    },
+    "errors.unenabled-timestamp-feature": {
+      "title": "Refuse a timestamp query set without the feature",
+      "expectation": "A device requested without TimestampQuery does not report the feature and refuses a timestamp query set synchronously, while an occlusion query set is created normally."
     }
   },
   "behaviours": {

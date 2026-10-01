@@ -507,6 +507,42 @@
     "msaa.alpha-to-coverage-extremes": {
       "title": "Piloter la couverture par l'alpha du fragment",
       "expectation": "L'alpha-to-coverage résout alpha 0 vers le clear et alpha 1 vers du rouge opaque, tandis que sa désactivation écrit alpha 0 directement."
+    },
+    "bindings.storage-range-length": {
+      "title": "Borner un binding storage par sa taille explicite",
+      "expectation": "La taille explicite d'un binding storage borne la longueur de son runtime array et son offset sélectionne le premier mot, même quand le buffer sous-jacent est plus grand que chacune des plages liées."
+    },
+    "errors.min-binding-size": {
+      "title": "Rejeter un binding sous minBindingSize",
+      "expectation": "Une entrée de bind group plus petite que le minBindingSize de son layout est rejetée à la création avec une erreur de validation, tandis qu'une entrée de exactement cette taille exécute une écriture connue."
+    },
+    "errors.bundle-post-execute-state": {
+      "title": "Réinitialiser l'état de passe après l'exécution de bundles",
+      "expectation": "Après executeBundles, un draw sans re-liage est une erreur de validation même si un état valide était lié avant le bundle ; re-lier un pipeline distinct dessine, et seul ce draw peut peindre les coins."
+    },
+    "textures.partial-initialization": {
+      "title": "Lire une texture fraîche et partiellement écrite",
+      "expectation": "Une texture fraîche se lit comme du noir transparent — alpha compris — et une écriture partielle change exactement les texels adressés, les deux vérifications se faisant sur deux textures fraîches séparées."
+    },
+    "render.discard-reinit": {
+      "title": "Mettre à zéro un attachement abandonné",
+      "expectation": "Un attachement stocké avec Discard est mis à zéro par la passe et une passe Load suivante le lit comme du noir transparent, tandis que son frère stocké normalement garde sa couleur de clear."
+    },
+    "sampling.min-mag-selection": {
+      "title": "Sélectionner les filtres min et mag indépendamment",
+      "expectation": "Avec des filtres opposés sur un même sampler, le niveau 0 suit magFilter et le niveau 1 suit minFilter ; les poids de blend exactement représentables font que les résultats linéaires sont calculés, pas approximés."
+    },
+    "errors.compute-timestamp-indices": {
+      "title": "Valider les index de timestamps compute",
+      "expectation": "Un descripteur de timestamps de passe compute dont les indices sont dans le query set est accepté et son travail s'exécute, tandis qu'un index hors bornes est une erreur de validation."
+    },
+    "errors.render-timestamp-indices": {
+      "title": "Valider les index de timestamps de rendu",
+      "expectation": "Un descripteur de timestamps de passe render dont les indices sont dans le query set est accepté et sa passe dessine, tandis qu'un index hors bornes est une erreur de validation."
+    },
+    "errors.unenabled-timestamp-feature": {
+      "title": "Refuser un query set de timestamps sans la feature",
+      "expectation": "Un device demandé sans TimestampQuery ne rapporte pas la feature et refuse un query set de timestamps de façon synchrone, tandis qu'un query set d'occlusion se crée normalement."
     }
   },
   "behaviours": {

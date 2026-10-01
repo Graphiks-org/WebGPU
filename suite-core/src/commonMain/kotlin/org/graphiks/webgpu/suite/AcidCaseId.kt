@@ -125,4 +125,13 @@ enum class AcidCaseId(val id: String) {
     DepthBiasConstant("depth.bias-constant"),
     RenderMaxDrawCount("render.max-draw-count"),
     MsaaAlphaToCoverageExtremes("msaa.alpha-to-coverage-extremes"),
+    BindingsStorageRangeLength("bindings.storage-range-length"),
+    ErrorsMinBindingSize("errors.min-binding-size"),
+    ErrorsBundlePostExecuteState("errors.bundle-post-execute-state"),
+    TexturesPartialInitialization("textures.partial-initialization"),
+    RenderDiscardReinit("render.discard-reinit"),
+    SamplingMinMagSelection("sampling.min-mag-selection"),
+    ErrorsComputeTimestampIndices("errors.compute-timestamp-indices"),
+    ErrorsRenderTimestampIndices("errors.render-timestamp-indices"),
+    ErrorsUnenabledTimestampFeature("errors.unenabled-timestamp-feature"),
 }
