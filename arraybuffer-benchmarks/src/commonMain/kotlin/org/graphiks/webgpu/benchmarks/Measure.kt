@@ -113,8 +113,8 @@ internal fun measure(
 }
 
 /** Scenarios in execution order; within each layout group the variant order flips on odd launches. */
-internal fun orderedScenarios(runIndex: Int): List<Scenario> {
-    val groups = scenarios().groupBy { listOf(it.workload, it.bytes, it.width, it.height, it.count) }
+internal fun orderedScenarios(runIndex: Int, all: List<Scenario> = scenarios()): List<Scenario> {
+    val groups = all.groupBy { listOf(it.workload, it.bytes, it.width, it.height, it.count) }
     val result = ArrayList<Scenario>()
     for (group in groups.values) {
         result += if (runIndex % 2 == 0) group else group.reversed()
@@ -133,8 +133,10 @@ internal fun runCampaign(
     harnessHash: String,
     libraryHash: String,
     operationsOverride: Map<String, Int>? = null,
+    protocol: String = PROTOCOL,
+    inventory: List<Scenario> = scenarios(),
 ): CampaignReport {
-    val order = orderedScenarios(runIndex)
+    val order = orderedScenarios(runIndex, inventory)
     val reports = ArrayList<ScenarioReport>(order.size)
     var fatalError: String? = null
 
@@ -183,6 +185,7 @@ internal fun runCampaign(
     }
 
     return CampaignReport(
+        protocol = protocol,
         target = target,
         buildMode = environment.compileMode,
         suiteCommit = suiteCommit,

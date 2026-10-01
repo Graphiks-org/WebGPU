@@ -53,6 +53,28 @@ private fun bulkProduceVariant(): List<Variant> =
 internal fun scenarioId(workload: String, bytes: Int, variant: Variant): String =
     "$workload.bytes-$bytes.${variant.name}"
 
+/**
+ * Companion inventory for the prevalidated writer prototypes. It re-measures its own controls
+ * (`Checked`, `BulkPrepared`, `PrepareAndBulk`) alongside `RgbaWriter`/`VertexWriter`, because a
+ * comparison with the base protocol is not automatic.
+ */
+internal fun writerScenarios(): List<Scenario> {
+    val result = mutableListOf<Scenario>()
+    for ((width, height) in IMAGE_DIMENSIONS) {
+        val bytes = width * height * 4
+        for (variant in listOf(Variant.Checked, Variant.BulkPrepared, Variant.PrepareAndBulk, Variant.RgbaWriter)) {
+            result += Scenario(scenarioId(IMAGE_RGBA8, bytes, variant), IMAGE_RGBA8, bytes, variant, width = width, height = height)
+        }
+    }
+    for (count in VERTEX_COUNTS) {
+        val bytes = count * VERTEX_BYTES
+        for (variant in listOf(Variant.Checked, Variant.BulkPrepared, Variant.PrepareAndBulk, Variant.VertexWriter)) {
+            result += Scenario(scenarioId(VERTICES_P3N3UV2, bytes, variant), VERTICES_P3N3UV2, bytes, variant, count = count)
+        }
+    }
+    return result
+}
+
 internal fun scenarios(): List<Scenario> {
     val result = mutableListOf<Scenario>()
 

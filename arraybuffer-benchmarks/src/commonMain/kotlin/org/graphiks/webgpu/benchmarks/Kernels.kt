@@ -175,6 +175,15 @@ private fun produceImage(scenario: Scenario, memory: BenchmarkMemory, input: Pre
 
         Variant.BulkPrepared -> buffer.setBytes(0u, input.bytes ?: error("image input must be prepared"))
         Variant.PrepareAndBulk -> buffer.setBytes(0u, rgbaBytes(scenario.width, scenario.height, seed))
+        Variant.RgbaWriter -> fillRgbaPrototype(
+            memory = memory,
+            base = 0,
+            width = scenario.width,
+            height = scenario.height,
+            rowStride = scenario.width * 4,
+            seed = seed,
+        )
+
         else -> error("variant ${scenario.variant} is not part of the base inventory")
     }
 }
@@ -195,6 +204,7 @@ private fun produceVertices(scenario: Scenario, memory: BenchmarkMemory, input: 
 
         Variant.BulkPrepared -> buffer.setFloats(0u, input.floats ?: error("vertex input must be prepared"))
         Variant.PrepareAndBulk -> buffer.setFloats(0u, vertexFloats(scenario.count, seed))
+        Variant.VertexWriter -> fillVerticesPrototype(memory, base = 0, count = scenario.count, seed = seed)
         else -> error("variant ${scenario.variant} is not part of the base inventory")
     }
 }

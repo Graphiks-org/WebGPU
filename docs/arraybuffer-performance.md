@@ -112,6 +112,48 @@ Median change of the per-sample duration, by workload (positive = the checked ve
 - `of` shares the backing store in JS and copies on the other targets; no cross-target conclusion
   about "a faster runtime" follows.
 
+## Prevalidated writers (`arraybuffer-cpu-writers-v1`)
+
+The internal prototypes `RgbaWriterPrototype`/`VertexWriterPrototype` validate a whole layout once
+(rows, stride, range, base alignment), then perform the pixel or vertex stores with the platform
+primitive. They expose no handle and no callback. Their companion campaign re-measures its own
+controls:
+
+```sh
+./gradlew :arraybuffer-benchmarks:runJvmBenchmarks \
+  --args="--writers --profile=ci --output=build/reports/arraybuffer/writers-jvm.json --run-index=0"
+node tools/run-arraybuffer-benchmarks.mjs js <dist> --writers --profile=ci
+node tools/run-arraybuffer-android.mjs --writers --profile=ci
+```
+
+Comparison is **per operation** (`median / operationsPerSample`), because each variant calibrates
+its own repetition count inside the campaign. `writer/bulk` below is the writer median divided by
+the `BulkPrepared` median; below 1 means the writer wins.
+
+| Target | image 256² | image 1024² | image 4096² | 1 K vertices | 64 K vertices | 1 M vertices |
+| --- | --- | --- | --- | --- | --- | --- |
+| jvm | 17.2 | 15.4 | 14.2 | 3.5 | 5.3 | 2.8 |
+| native | 21.3 | 19.8 | 17.3 | 5.7 | 6.4 | 6.4 |
+| js | 0.67 | 0.67 | 0.68 | 1.11 | 1.09 | 1.15 |
+| wasm | 1.05 | 1.05 | 1.05 | 1.10 | 1.12 | 1.10 |
+| android (emulator) | 131 | 143 | 130 | 29 | 35 | 23 |
+
+Against the **scalar** checked path the writers are faster everywhere (`writer/checked` ranges from
+0.49 on JVM down to ~0.00 on JS: the JS checked path is dominated by unsigned arithmetic). Against
+**`BulkPrepared`**, however, the writers are 14–21× slower on the JVM and Native, ~5× slower for
+vertices on Android, and only competitive on JavaScript images (0.67) and roughly equal on Wasm.
+
+### Decision
+
+**Keep the writers as internal prototypes; do not expose a public writer API on this evidence.**
+
+- Everywhere the checked scalar path is slow, a prepared CPU array plus `setBytes`/`setFloats`
+  (`BulkPrepared`/`PrepareAndBulk`) already matches or beats the writer, with no new public surface.
+- The only clear writer win is JavaScript images, where the checked scalar path is an order of
+  magnitude slower; a public API justified by one CI launch on one target is not warranted.
+- The per-target dispersion is of the same order as several of the differences, so a decision needs
+  five `standard` launches on a stable host, not a single `ci` run.
+
 ## Campaigns not executed in this increment
 
 - The `arraybuffer-cpu-lifecycle-v1` companion (allocation + fill, `of` + consumption) is not

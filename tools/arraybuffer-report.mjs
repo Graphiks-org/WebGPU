@@ -8,6 +8,8 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 export const PROTOCOL = 'arraybuffer-cpu-v1';
+export const WRITERS_PROTOCOL = 'arraybuffer-cpu-writers-v1';
+export const PROTOCOLS = [PROTOCOL, WRITERS_PROTOCOL];
 export const SCHEMA_VERSION = 1;
 export const PROFILE_SAMPLES = { ci: 5, standard: 30 };
 
@@ -58,6 +60,28 @@ export function inventory() {
   return out;
 }
 
+/** Companion inventory: the writer prototypes re-measure their own controls. */
+export function writersInventory() {
+  const out = [];
+  for (const [width, height] of IMAGE_DIMENSIONS) {
+    const bytes = width * height * 4;
+    for (const variant of ['Checked', 'BulkPrepared', 'PrepareAndBulk', 'RgbaWriter']) {
+      out.push({ id: scenarioId('image.rgba8', bytes, variant), workload: 'image.rgba8', variant, bytes, width, height, count: 0 });
+    }
+  }
+  for (const count of VERTEX_COUNTS) {
+    const bytes = count * VERTEX_BYTES;
+    for (const variant of ['Checked', 'BulkPrepared', 'PrepareAndBulk', 'VertexWriter']) {
+      out.push({ id: scenarioId('vertices.p3n3uv2', bytes, variant), workload: 'vertices.p3n3uv2', variant, bytes, width: 0, height: 0, count });
+    }
+  }
+  return out;
+}
+
+export function inventoryFor(protocol) {
+  return protocol === WRITERS_PROTOCOL ? writersInventory() : inventory();
+}
+
 function duplicates(values) {
   return values.filter((value, index) => values.indexOf(value) !== index);
 }
@@ -84,10 +108,12 @@ export function validateReport(report, { profile = null } = {}) {
   if (report == null || typeof report !== 'object') {
     return { ok: false, problems: ['report is not an object'] };
   }
-  const expected = inventory();
+  if (!PROTOCOLS.includes(report.protocol)) {
+    problems.push(`unexpected protocol: ${report.protocol}`);
+  }
+  const expected = inventoryFor(report.protocol);
   const expectedById = new Map(expected.map((entry) => [entry.id, entry]));
 
-  if (report.protocol !== PROTOCOL) problems.push(`unexpected protocol: ${report.protocol}`);
   if (report.schemaVersion !== SCHEMA_VERSION) problems.push(`unexpected schemaVersion: ${report.schemaVersion}`);
   if (profile != null && report.profile !== profile) {
     problems.push(`unexpected profile: ${report.profile} (expected ${profile})`);

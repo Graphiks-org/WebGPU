@@ -22,8 +22,9 @@ public class AndroidBenchmarkTest {
         String profile = arguments.getString("profile", "ci");
         int runIndex = Integer.parseInt(arguments.getString("runIndex", "0"));
         String calibration = arguments.getString("calibration", null);
+        boolean writers = "1".equals(arguments.getString("writers"));
 
-        String report = AndroidCampaign.run(profile, runIndex, calibration);
+        String report = AndroidCampaign.run(profile, runIndex, calibration, writers);
 
         Bundle status = new Bundle();
         status.putString("arraybufferReport", report);

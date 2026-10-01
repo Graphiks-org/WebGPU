@@ -72,6 +72,7 @@ const instrumentArgs = [
 if (calibrationPath) {
   instrumentArgs.push('-e', 'calibration', calibrationSpec(JSON.parse(await readFile(resolve(calibrationPath), 'utf8'))));
 }
+if (process.argv.includes('--writers')) instrumentArgs.push('-e', 'writers', '1');
 instrumentArgs.push(component);
 const instrumentation = adbOutput(...instrumentArgs);
 

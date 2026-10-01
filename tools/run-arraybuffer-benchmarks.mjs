@@ -117,6 +117,7 @@ const query = new URLSearchParams({
   os: process.platform,
   arch: process.arch,
 });
+if (process.argv.includes('--writers')) query.set('writers', '1');
 // Reuse a baseline's repetition counts when asked, so a before/after comparison is not confounded
 // by a fresh calibration.
 const calibrationPath = optionValue('--calibration');

@@ -46,6 +46,7 @@ fun main() {
     val harnessHash = queryParameter("harnessHash") ?: "unknown"
     val libraryHash = queryParameter("libraryHash") ?: "unknown"
     val calibration = parseCalibrationSpec(queryParameter("calibration"))
+    val writers = queryParameter("writers") == "1"
 
     if (documentHidden()) {
         publish(errorReport(target, profileId, runIndex, "document is hidden; campaign interrupted"))
@@ -72,6 +73,8 @@ fun main() {
             harnessHash = harnessHash,
             libraryHash = libraryHash,
             operationsOverride = calibration,
+            protocol = if (writers) WRITERS_PROTOCOL else PROTOCOL,
+            inventory = if (writers) writerScenarios() else scenarios(),
         )
         publish(encodeReport(report))
     } catch (failure: Throwable) {

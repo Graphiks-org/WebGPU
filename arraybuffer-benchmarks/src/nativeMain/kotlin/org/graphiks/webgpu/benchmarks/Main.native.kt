@@ -19,22 +19,30 @@ import platform.posix.fseek
 import platform.posix.ftell
 import platform.posix.rewind
 
-private data class Options(val profile: String, val output: String?, val runIndex: Int, val calibration: String?)
+private data class Options(
+    val profile: String,
+    val output: String?,
+    val runIndex: Int,
+    val calibration: String?,
+    val writers: Boolean,
+)
 
 private fun parseOptions(args: Array<String>): Options {
     var profile = "ci"
     var output: String? = null
     var runIndex = 0
     var calibration: String? = null
+    var writers = false
     for (argument in args) {
         when {
             argument.startsWith("--profile=") -> profile = argument.substringAfter('=')
             argument.startsWith("--output=") -> output = argument.substringAfter('=')
             argument.startsWith("--run-index=") -> runIndex = argument.substringAfter('=').toInt()
             argument.startsWith("--calibration=") -> calibration = argument.substringAfter('=')
+            argument == "--writers" -> writers = true
         }
     }
-    return Options(profile, output, runIndex, calibration)
+    return Options(profile, output, runIndex, calibration, writers)
 }
 
 private fun readTextFile(path: String): String? {
@@ -72,6 +80,8 @@ fun main(args: Array<String>) {
         harnessHash = "unknown",
         libraryHash = "unknown",
         operationsOverride = options.calibration?.let { path -> readTextFile(path)?.let(::calibrationFromReport) },
+        protocol = if (options.writers) WRITERS_PROTOCOL else PROTOCOL,
+        inventory = if (options.writers) writerScenarios() else scenarios(),
     )
     val json = encodeReport(report)
     val output = options.output
