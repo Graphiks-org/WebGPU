@@ -11,7 +11,9 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { validateAllocationClaim, validateReport } from './arraybuffer-report.mjs';
+import { readFile } from 'node:fs/promises';
+
+import { calibrationSpec, validateAllocationClaim, validateReport } from './arraybuffer-report.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const profile = optionValue('--profile') ?? 'ci';
@@ -61,12 +63,17 @@ for (const name of ['ro.product.model', 'ro.build.version.sdk', 'ro.build.versio
 const emulator = adbOutput('shell', 'getprop', 'ro.kernel.qemu').trim() === '1';
 
 const component = 'org.graphiks.webgpu.benchmarks.runner.test/androidx.test.runner.AndroidJUnitRunner';
-const instrumentation = adbOutput(
+const calibrationPath = optionValue('--calibration');
+const instrumentArgs = [
   'shell', 'am', 'instrument', '-w', '-r',
   '-e', 'profile', profile,
   '-e', 'runIndex', String(runIndex),
-  component,
-);
+];
+if (calibrationPath) {
+  instrumentArgs.push('-e', 'calibration', calibrationSpec(JSON.parse(await readFile(resolve(calibrationPath), 'utf8'))));
+}
+instrumentArgs.push(component);
+const instrumentation = adbOutput(...instrumentArgs);
 
 const problems = [];
 const match = instrumentation.match(/^INSTRUMENTATION_STATUS: arraybufferReport=(.*)$/m);

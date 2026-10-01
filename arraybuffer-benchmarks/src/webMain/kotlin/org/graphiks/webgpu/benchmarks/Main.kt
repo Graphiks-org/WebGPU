@@ -45,6 +45,7 @@ fun main() {
     val dirty = queryParameter("dirty") == "true"
     val harnessHash = queryParameter("harnessHash") ?: "unknown"
     val libraryHash = queryParameter("libraryHash") ?: "unknown"
+    val calibration = parseCalibrationSpec(queryParameter("calibration"))
 
     if (documentHidden()) {
         publish(errorReport(target, profileId, runIndex, "document is hidden; campaign interrupted"))
@@ -70,6 +71,7 @@ fun main() {
             dirty = dirty,
             harnessHash = harnessHash,
             libraryHash = libraryHash,
+            operationsOverride = calibration,
         )
         publish(encodeReport(report))
     } catch (failure: Throwable) {

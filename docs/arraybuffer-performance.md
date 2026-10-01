@@ -1,0 +1,123 @@
+# ArrayBuffer CPU performance
+
+This guide records the `arraybuffer-cpu-v1` protocol, the commands that produce its reports, and the
+first before/after reading of the Graphiks bounds checks. Durations are informative: the CI never
+fails on a duration, only on a wrong result, a crash or an incomplete report.
+
+## Protocol
+
+- Schema `arraybuffer-cpu-v1`, implemented in `arraybuffer-benchmarks`. It is distinct from the GPU
+  `foundations-v1` protocol.
+- Scenario id format: `<workload>.bytes-<bytes>.<variant>`.
+- Workloads: `scalar.write.i32`, `scalar.read.i32`, `scalar.write.f32`, `scatter.write.i32`,
+  `bulk.bytes`, `bulk.floats`, `image.rgba8`, `vertices.p3n3uv2`.
+- Variants: `Checked` uses the public `ArrayBuffer` methods; `Reference` uses the platform
+  primitive the library uses today, without the new Graphiks checks; `BulkPrepared` copies a source
+  array produced outside the timed window; `PrepareAndBulk` builds and copies that array inside the
+  window.
+- Profiles: `ci` (3 warm-ups, 5 samples, 1 launch) and `standard` (5 warm-ups and at least 2 s of
+  warm-up, 30 samples, 5 launches).
+- The runner reports the samples, seeds, calibration, environment and checksum. A zero duration is
+  kept; it never becomes an infinite throughput.
+
+## Commands
+
+```sh
+# Build the harness and run its unit tests
+./gradlew :arraybuffer-benchmarks:jvmTest :arraybuffer-benchmarks:jsNodeTest \
+  :arraybuffer-benchmarks:wasmJsNodeTest :arraybuffer-benchmarks:macosArm64Test
+./gradlew :arraybuffer-benchmarks:jsBrowserDistribution \
+  :arraybuffer-benchmarks:wasmJsBrowserDistribution :arraybuffer-benchmarks:linkReleaseExecutableMacosArm64
+
+# JVM
+./gradlew :arraybuffer-benchmarks:runJvmBenchmarks \
+  --args="--profile=standard --output=build/reports/arraybuffer/baseline-jvm-run0.json --run-index=0"
+
+# Native (macOS arm64; use linuxX64 on Linux)
+arraybuffer-benchmarks/build/bin/macosArm64/releaseExecutable/arraybuffer-benchmarks.kexe \
+  --profile=standard --run-index=0 --output=build/reports/arraybuffer/baseline-native-run0.json
+
+# Browser (no GPU device is created)
+node tools/run-arraybuffer-benchmarks.mjs js \
+  arraybuffer-benchmarks/build/dist/js/productionExecutable \
+  --profile=standard --run-index=0 --output=build/reports/arraybuffer/baseline-js-run0.json
+node tools/run-arraybuffer-benchmarks.mjs wasm \
+  arraybuffer-benchmarks/build/dist/wasmJs/productionExecutable \
+  --profile=standard --run-index=0 --output=build/reports/arraybuffer/baseline-wasm-run0.json
+
+# Android (emulator or device already connected)
+./gradlew :arraybuffer-benchmarks-android:installRelease \
+  :arraybuffer-benchmarks-android:installReleaseAndroidTest
+node tools/run-arraybuffer-android.mjs \
+  --profile=standard --run-index=0 --output=build/reports/arraybuffer/baseline-android-run0.json
+
+# Compare a before/after pair. The candidate must reuse the baseline's repetition counts:
+#   --calibration=<baseline report> works for every runner.
+node tools/compare-arraybuffer-benchmarks.mjs \
+  build/reports/arraybuffer/baseline-jvm-run0.json \
+  build/reports/arraybuffer/post-jvm-run0.json \
+  --output=build/reports/arraybuffer/compare-jvm.json
+```
+
+Validate or compare reports:
+
+```sh
+node tools/arraybuffer-report.mjs <report.json> --profile=standard
+node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs
+```
+
+## First reading
+
+Environment: macOS (arm64), JDK 25, Chromium 153, Android emulator API 35 (`bench35`). One
+`standard` launch per target was captured before the checks (`baseline-*`) and one after
+(`post2-*`), with the baseline repetition count reused so the two runs share
+`operationsPerSample`. The comparison is strict: a different environment or a different repetition
+count is refused rather than silently normalised. A single launch on a workstation is **not** a
+stable hardware benchmark reference; treat the numbers as directional.
+
+Median change of the per-sample duration, by workload (positive = the checked version is slower):
+
+| Target | scalar.write.i32 | scalar.read.i32 | scalar.write.f32 | scatter.write.i32 | bulk.bytes | bulk.floats | image.rgba8 | vertices.p3n3uv2 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| jvm | +61% | +0.3% | -0.6% | +0.2% | +3.7% | +2.7% | -2.3% | +2.6% |
+| native | +266% | +277% | +74% | +279% | +7.1% | -3.6% | -3.0% | -3.7% |
+| js | +1768% | +1607% | +2099% | +2262% | 0.0% | -1.3% | 0.0% | +1.8% |
+| wasm | +14% | +15% | +17% | +17% | -2.0% | -0.9% | -0.5% | +2.2% |
+| android (emulator) | +72% | +95% | +58% | +78% | +3.4% | +2.6% | -0.3% | -1.0% |
+
+### Interpretation
+
+- **Bulk copies, images and vertices are essentially flat.** Their checks run once per operation and
+  the primitive itself dominates, so the extra validation is amortised. This is the intended shape:
+  validate a range once, then copy or produce.
+- **Scalar access pays the whole control cost per element.** On Native the check roughly triples the
+  time of a raw store; on the JVM it is around +60% for the int write loop; the Android emulator is
+  in the same range. The `Reference` variant of the same run stays near its baseline (for example,
+  JS `scalar.read.i32` reference moves from ~9.1 ms to ~9.9 ms for the same repetition count), so the
+  delta is the added controls, not a change of environment.
+- **Kotlin/JS is by far the most affected.** The unsigned arithmetic in the checks is emulated in
+  JavaScript, which is far more expensive than a typed-array element access; a per-element scalar
+  access becomes an order of magnitude slower. This is a design signal, not a measurement artefact:
+  the `Reference` variant in the same run is unchanged. The prevalidated writers prototyped in the
+  `arraybuffer-cpu-writers-v1` companion protocol exist precisely to move the checks out of the
+  per-element loop on this target.
+- The JVM `scalar.read.i32` and `scalar.write.f32` medians moved by less than 1%; the write loop is
+  the clearest regression, consistent with two non-inlined checks per store.
+
+### What this does not say
+
+- The scalar deltas are **not** attributions of a precise instruction cost; the checks are not
+  inlined and no profiler was attached to this reading. `allocationMeasurement` is `unavailable`.
+- The logical throughput of a bulk copy is not the DRAM traffic of the copy.
+- `of` shares the backing store in JS and copies on the other targets; no cross-target conclusion
+  about "a faster runtime" follows.
+
+## Campaigns not executed in this increment
+
+- The `arraybuffer-cpu-lifecycle-v1` companion (allocation + fill, `of` + consumption) is not
+  implemented yet.
+- Allocation profiling (JFR on the JVM, Perfetto on Android, DevTools sampling in Chromium, an
+  allocation profiler on the host for Native) was not run; every report keeps
+  `allocationMeasurement: "unavailable"`.
+- Only one `standard` launch per target was captured; the five-launch medians remain to be produced
+  on a stable host. The `arraybuffer-cpu-writers-v1` companion is defined in the next task.

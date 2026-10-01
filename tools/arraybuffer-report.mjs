@@ -62,6 +62,18 @@ function duplicates(values) {
   return values.filter((value, index) => values.indexOf(value) !== index);
 }
 
+/**
+ * Compact `scenarioId:operations;...` calibration extracted from a report so a later run can reuse
+ * the exact repetition counts instead of recalibrating.
+ */
+export function calibrationSpec(document) {
+  const report = document?.report ?? document;
+  // Comma-separated: a semicolon would be parsed as a command separator by `adb shell`.
+  return (report?.scenarios ?? [])
+    .map((entry) => `${entry.scenarioId}:${entry.operationsPerSample}`)
+    .join(',');
+}
+
 /** A duration is acceptable when it is a finite, non-negative number. Zero is kept, not rejected. */
 export function validSample(sample) {
   return typeof sample === 'number' && Number.isFinite(sample) && sample >= 0;

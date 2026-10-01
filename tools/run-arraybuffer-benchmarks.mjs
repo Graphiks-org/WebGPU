@@ -14,7 +14,7 @@ import { dirname, extname, isAbsolute, join, normalize, relative, resolve } from
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
-import { validateAllocationClaim, validateReport } from './arraybuffer-report.mjs';
+import { calibrationSpec, validateAllocationClaim, validateReport } from './arraybuffer-report.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const target = process.argv[2];
@@ -117,6 +117,12 @@ const query = new URLSearchParams({
   os: process.platform,
   arch: process.arch,
 });
+// Reuse a baseline's repetition counts when asked, so a before/after comparison is not confounded
+// by a fresh calibration.
+const calibrationPath = optionValue('--calibration');
+if (calibrationPath) {
+  query.set('calibration', calibrationSpec(JSON.parse(await readFile(resolve(calibrationPath), 'utf8'))));
+}
 const url = `http://127.0.0.1:${port}/?${query.toString()}`;
 
 let browser = null;

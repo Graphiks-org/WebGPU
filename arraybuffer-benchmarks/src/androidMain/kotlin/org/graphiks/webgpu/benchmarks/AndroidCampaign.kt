@@ -8,7 +8,10 @@ import android.os.Build
  */
 object AndroidCampaign {
     @JvmStatic
-    fun run(profile: String, runIndex: Int): String {
+    fun run(profile: String, runIndex: Int): String = run(profile, runIndex, null)
+
+    @JvmStatic
+    fun run(profile: String, runIndex: Int, calibration: String?): String {
         val profileConfig = ProfileConfig.of(profile)
         val environment = Environment(
             os = "android-${Build.VERSION.SDK_INT}",
@@ -27,6 +30,7 @@ object AndroidCampaign {
             dirty = false,
             harnessHash = "unknown",
             libraryHash = "unknown",
+            operationsOverride = parseCalibrationSpec(calibration),
         )
         return encodeReport(report)
     }

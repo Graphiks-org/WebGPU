@@ -51,19 +51,31 @@ private fun runRepeats(
     return elapsedMs(mark)
 }
 
-internal fun measure(
+private fun calibrate(
     scenario: Scenario,
     memory: BenchmarkMemory,
     input: PreparedInput,
-    profile: ProfileConfig,
     baseSeed: Int,
-): Measurement {
+): Int {
     var operations = 1
     var elapsed = runRepeats(scenario, memory, input, baseSeed, operations)
     while (elapsed < MIN_SAMPLE_MS && operations < MAX_REPETITIONS) {
         operations *= 2
         elapsed = runRepeats(scenario, memory, input, baseSeed, operations)
     }
+    return operations
+}
+
+internal fun measure(
+    scenario: Scenario,
+    memory: BenchmarkMemory,
+    input: PreparedInput,
+    profile: ProfileConfig,
+    baseSeed: Int,
+    overrideOperations: Int? = null,
+): Measurement {
+    // A before/after comparison reuses the baseline's repetition count instead of recalibrating.
+    val operations = overrideOperations?.takeIf { it > 0 } ?: calibrate(scenario, memory, input, baseSeed)
 
     val warmupMark = TimeSource.Monotonic.markNow()
     var warmups = 0
@@ -120,6 +132,7 @@ internal fun runCampaign(
     dirty: Boolean,
     harnessHash: String,
     libraryHash: String,
+    operationsOverride: Map<String, Int>? = null,
 ): CampaignReport {
     val order = orderedScenarios(runIndex)
     val reports = ArrayList<ScenarioReport>(order.size)
@@ -130,7 +143,7 @@ internal fun runCampaign(
         try {
             val seed = 1 + (scenario.id.hashCode() and 0x0FFF)
             val input = prepare(scenario, memory, seed)
-            val measurement = measure(scenario, memory, input, profile, seed)
+            val measurement = measure(scenario, memory, input, profile, seed, operationsOverride?.get(scenario.id))
             verify(scenario, memory, measurement.verifySeed)
             reports += ScenarioReport(
                 scenarioId = scenario.id,
