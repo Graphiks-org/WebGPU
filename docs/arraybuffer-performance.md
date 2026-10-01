@@ -160,11 +160,13 @@ Native and Android, only competitive on JavaScript images (≈0.5–0.67) and ro
 ## CI
 
 `.github/workflows/arraybuffer.yml` is reusable (`workflow_call`), triggers on pull requests touching
-the API or the harness, and can be dispatched manually. Correctness and report validity are blocking;
-durations never are. It runs the correctness suites and `checkKotlinAbi`, the report tooling tests, a
-`ci` smoke campaign on JVM, JS, Wasm (Ubuntu) and Native (macOS), the Android instrumented checks and
-Android smoke on an emulator, and archives `build/reports/arraybuffer/` with `if: always()`. The
-`standard-campaign` job is manual and captures five launches on a stable host.
+the API or the harness, and can be dispatched manually. **Pull requests run correctness only**: the
+`webgpu-api` and `arraybuffer-benchmarks` suites (JVM, JS, Wasm, Native Linux/macOS), `checkKotlinAbi`,
+the Node report-tooling tests, and the Android instrumented business matrix
+(`ArrayBufferAndroidBusinessCases`) on an emulator. No benchmark campaign runs on a pull request: a
+shared runner is not a performance reference, so campaigns are dispatched manually
+(`standard-campaign`, five launches) or run locally with the commands above. Durations are never a
+CI gate.
 
 ## Campaigns not executed in this increment
 

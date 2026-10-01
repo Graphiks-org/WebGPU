@@ -1,7 +1,8 @@
 name: ArrayBuffer CPU
 
-# Correctness and report validity are blocking; durations are informative. Standard campaigns are
-# manual (workflow_dispatch) and run on stable hosts outside the shared runners.
+# Correctness is blocking; benchmark campaigns never run on pull requests — they are manual
+# (workflow_dispatch) and belong on a stable host, since a shared runner is not a performance
+# reference. The Android job runs the ArrayBuffer business matrix on an emulator.
 on:
   pull_request:
     paths:
@@ -38,38 +39,20 @@ jobs:
         with:
           node-version: 22
       - uses: gradle/actions/setup-gradle@v6
-      - name: Install browser tooling
-        run: |
-          npm ci --prefix tools
-          npm exec --prefix tools -- playwright install --with-deps chromium
       - name: Correctness tests and ABI
         run: |
           ./gradlew --no-daemon \
             :webgpu-api:jvmTest :webgpu-api:jsNodeTest :webgpu-api:wasmJsNodeTest \
             :webgpu-api:linuxX64Test :webgpu-api:checkKotlinAbi \
-            :arraybuffer-benchmarks:jvmTest :arraybuffer-benchmarks:jsNodeTest :arraybuffer-benchmarks:wasmJsNodeTest \
-            :arraybuffer-benchmarks:jsBrowserDistribution :arraybuffer-benchmarks:wasmJsBrowserDistribution
+            :arraybuffer-benchmarks:jvmTest :arraybuffer-benchmarks:jsNodeTest :arraybuffer-benchmarks:wasmJsNodeTest
       - name: Report tooling tests
         run: node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs
-      - name: Smoke campaign (JVM)
-        run: |
-          ./gradlew --no-daemon :arraybuffer-benchmarks:runJvmBenchmarks \
-            --args="--profile=ci --output=build/reports/arraybuffer/ci-jvm.json --run-index=0"
-          node tools/arraybuffer-report.mjs build/reports/arraybuffer/ci-jvm.json --profile=ci
-      - name: Smoke campaign (JS and Wasm)
-        run: |
-          node tools/run-arraybuffer-benchmarks.mjs js \
-            arraybuffer-benchmarks/build/dist/js/productionExecutable \
-            --profile=ci --run-index=0 --output=build/reports/arraybuffer/ci-js.json
-          node tools/run-arraybuffer-benchmarks.mjs wasm \
-            arraybuffer-benchmarks/build/dist/wasmJs/productionExecutable \
-            --profile=ci --run-index=0 --output=build/reports/arraybuffer/ci-wasm.json
       - name: Upload reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: arraybuffer-reports-ubuntu
-          path: build/reports/arraybuffer/
+          path: build/reports/
 
   native:
     runs-on: macos-latest
@@ -81,21 +64,11 @@ jobs:
           distribution: temurin
           java-version: 25
       - uses: gradle/actions/setup-gradle@v6
-      - name: Native tests and smoke campaign
+      - name: Native tests
         run: |
           ./gradlew --no-daemon \
             :webgpu-api:macosArm64Test \
-            :arraybuffer-benchmarks:macosArm64Test :arraybuffer-benchmarks:linkReleaseExecutableMacosArm64
-          mkdir -p build/reports/arraybuffer
-          arraybuffer-benchmarks/build/bin/macosArm64/releaseExecutable/arraybuffer-benchmarks.kexe \
-            --profile=ci --run-index=0 --output=build/reports/arraybuffer/ci-native.json
-          node tools/arraybuffer-report.mjs build/reports/arraybuffer/ci-native.json --profile=ci
-      - name: Upload reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: arraybuffer-reports-macos
-          path: build/reports/arraybuffer/
+            :arraybuffer-benchmarks:macosArm64Test
 
   android:
     runs-on: ubuntu-latest
@@ -106,9 +79,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - uses: gradle/actions/setup-gradle@v6
       - name: Enable KVM
         run: |
@@ -116,24 +86,21 @@ jobs:
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Instrumented safety checks and smoke campaign
+      - name: Instrumented business tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
           arch: x86_64
           target: google_apis
-          script: |
-            ./gradlew --no-daemon :arraybuffer-benchmarks-android:connectedReleaseAndroidTest
-            ./gradlew --no-daemon :arraybuffer-benchmarks-android:installRelease :arraybuffer-benchmarks-android:installReleaseAndroidTest
-            npm ci --prefix tools
-            node tools/run-arraybuffer-android.mjs --profile=ci --run-index=0 --output=build/reports/arraybuffer/ci-android.json
-            node tools/arraybuffer-report.mjs build/reports/arraybuffer/ci-android.json --profile=ci
-      - name: Upload reports
+          # Only the business matrix runs on pull requests; the campaign test stays available to
+          # the manual Android runner (tools/run-arraybuffer-android.mjs).
+          script: ./gradlew --no-daemon :arraybuffer-benchmarks-android:connectedReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.graphiks.webgpu.benchmarks.runner.AndroidBenchmarkTest#arrayBufferSafetyChecks
+      - name: Upload test reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: arraybuffer-reports-android
-          path: build/reports/arraybuffer/
+          name: arraybuffer-android-tests
+          path: arraybuffer-benchmarks-android/build/reports/androidTests/
 
   standard-campaign:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.profile == 'standard' }}

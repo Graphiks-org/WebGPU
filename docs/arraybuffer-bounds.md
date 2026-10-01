@@ -55,8 +55,11 @@ bytes rather than an implicit-order `Int` because Android's byte order differs.
 
 The contract is covered by the common tests in `webgpu-api` (arithmetic helpers, allocation,
 scalar and bulk bounds, empty conversions) plus the platform tests for the JVM `MemorySegment` and
-the Native pointer, and by the Android instrumented checks in `arraybuffer-benchmarks-android`
-(`ArrayBufferAndroidTest`/`runSafetyChecks`). Run them with:
+the Native pointer. The KMP Android library plugin exposes no unit-test task, so `commonTest` never
+executes on the Android target: the Android instrumented matrix in `arraybuffer-benchmarks-android`
+(`ArrayBufferAndroidBusinessCases`, called by `runSafetyChecks`) mirrors those cases against the real
+direct `ByteBuffer` on ART and runs on every pull request. Any case added to `commonTest` must be
+mirrored there. Run them with:
 
 ```sh
 ./gradlew :webgpu-api:jvmTest :webgpu-api:jsNodeTest :webgpu-api:wasmJsNodeTest :webgpu-api:macosArm64Test
