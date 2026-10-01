@@ -124,7 +124,10 @@ jobs:
           target: google_apis
           script: |
             ./gradlew --no-daemon :arraybuffer-benchmarks-android:connectedReleaseAndroidTest
-            ./gradlew --no-daemon :arraybuffer-benchmarks-android:installRelease
+            # connectedReleaseAndroidTest uninstalls both APKs when it finishes; reinstall the
+            # instrumentation test APK before driving `am instrument` from the Node runner.
+            ./gradlew --no-daemon :arraybuffer-benchmarks-android:installRelease \
+              :arraybuffer-benchmarks-android:installReleaseAndroidTest
             npm ci --prefix tools
             node tools/run-arraybuffer-android.mjs --profile=ci --run-index=0 \
               --output=build/reports/arraybuffer/ci-android.json
