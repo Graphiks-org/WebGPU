@@ -1,5 +1,5 @@
 [versions]
-jsoup = "1.22.2"
+jsoup = "1.23.2"
 kotlinx-serialization-json = "1.11.0"
 ktor = "3.5.0"
 webidl-util = "0.10.5"
