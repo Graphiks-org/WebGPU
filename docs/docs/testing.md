@@ -22,7 +22,7 @@ manual maintenance steps; they are not PR test gates.
 
 ## Browser acid cases
 
-The acid-test catalogue (123 cases: 118 mandatory, five optional) runs on real WebGPU through a
+The acid-test catalogue (132 cases: 125 mandatory, seven optional) runs on real WebGPU through a
 separate browser workflow; `check` alone does not execute this runner. The coverage balance and
 residuals are in [`docs/acid-coverage.md`](https://github.com/Graphiks-org/WebGPU/blob/master/docs/acid-coverage.md).
 With JDK 25 and Node.js 22:
