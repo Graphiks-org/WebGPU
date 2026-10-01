@@ -96,6 +96,19 @@ class KernelTest {
     }
 
     @Test
+    fun variantsOfALayoutShareOneRepetitionCount() {
+        val checked = Scenario("w.a.Checked", SCALAR_WRITE_I32, 64, Variant.Checked)
+        val reference = Scenario("w.b.Reference", SCALAR_WRITE_I32, 64, Variant.Reference)
+        var calibrations = 0
+        val counts = commonRepetitions(listOf(checked, reference), null) {
+            calibrations++
+            calibrations * 7
+        }
+        assertEquals(counts[checked.id], counts[reference.id])
+        assertEquals(1, calibrations, "the layout group must be calibrated once")
+    }
+
+    @Test
     fun readsReturnAChecksumOfEveryValue() {
         val scenario = Scenario("scalar.read.i32.t.16.Checked", SCALAR_READ_I32, 64, Variant.Checked)
         val reference = Scenario("scalar.read.i32.t.16.Reference", SCALAR_READ_I32, 64, Variant.Reference)

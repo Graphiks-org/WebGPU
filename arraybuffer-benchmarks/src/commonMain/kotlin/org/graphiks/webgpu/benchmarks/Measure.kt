@@ -112,6 +112,31 @@ internal fun measure(
     return Measurement(operations, warmups, samples, seeds, checksum, verifySeed)
 }
 
+internal fun layoutGroupKey(scenario: Scenario): String =
+    "${scenario.workload}|${scenario.bytes}|${scenario.width}|${scenario.height}|${scenario.count}"
+
+internal fun seedFor(scenario: Scenario): Int = 1 + (scenario.id.hashCode() and 0x0FFF)
+
+/**
+ * One repetition count per scenario. A before/after run supplies [operationsOverride] and reuses it
+ * exactly; otherwise every variant of the same layout group shares the count calibrated from the
+ * first variant, so the variants of a scenario are directly comparable.
+ */
+internal fun commonRepetitions(
+    order: List<Scenario>,
+    operationsOverride: Map<String, Int>?,
+    calibrate: (Scenario) -> Int,
+): Map<String, Int> {
+    val byGroup = LinkedHashMap<String, Int>()
+    val result = HashMap<String, Int>()
+    for (scenario in order) {
+        val count = operationsOverride?.get(scenario.id)
+            ?: byGroup.getOrPut(layoutGroupKey(scenario)) { calibrate(scenario) }
+        result[scenario.id] = count
+    }
+    return result
+}
+
 /** Scenarios in execution order; within each layout group the variant order flips on odd launches. */
 internal fun orderedScenarios(runIndex: Int, all: List<Scenario> = scenarios()): List<Scenario> {
     val groups = all.groupBy { listOf(it.workload, it.bytes, it.width, it.height, it.count) }
@@ -137,15 +162,24 @@ internal fun runCampaign(
     inventory: List<Scenario> = scenarios(),
 ): CampaignReport {
     val order = orderedScenarios(runIndex, inventory)
+    val repetitions = commonRepetitions(order, operationsOverride) { scenario ->
+        val memory = BenchmarkMemory(scenario.bytes)
+        try {
+            val seed = seedFor(scenario)
+            calibrate(scenario, memory, prepare(scenario, memory, seed), seed)
+        } finally {
+            memory.close()
+        }
+    }
     val reports = ArrayList<ScenarioReport>(order.size)
     var fatalError: String? = null
 
     for (scenario in order) {
         val memory = BenchmarkMemory(scenario.bytes)
         try {
-            val seed = 1 + (scenario.id.hashCode() and 0x0FFF)
+            val seed = seedFor(scenario)
             val input = prepare(scenario, memory, seed)
-            val measurement = measure(scenario, memory, input, profile, seed, operationsOverride?.get(scenario.id))
+            val measurement = measure(scenario, memory, input, profile, seed, repetitions[scenario.id])
             verify(scenario, memory, measurement.verifySeed)
             reports += ScenarioReport(
                 scenarioId = scenario.id,

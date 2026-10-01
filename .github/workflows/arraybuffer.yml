@@ -46,7 +46,7 @@ jobs:
         run: |
           ./gradlew --no-daemon \
             :webgpu-api:jvmTest :webgpu-api:jsNodeTest :webgpu-api:wasmJsNodeTest \
-            :webgpu-api:checkKotlinAbi \
+            :webgpu-api:linuxX64Test :webgpu-api:checkKotlinAbi \
             :arraybuffer-benchmarks:jvmTest :arraybuffer-benchmarks:jsNodeTest :arraybuffer-benchmarks:wasmJsNodeTest \
             :arraybuffer-benchmarks:jsBrowserDistribution :arraybuffer-benchmarks:wasmJsBrowserDistribution
       - name: Report tooling tests
@@ -84,6 +84,7 @@ jobs:
       - name: Native tests and smoke campaign
         run: |
           ./gradlew --no-daemon \
+            :webgpu-api:macosArm64Test \
             :arraybuffer-benchmarks:macosArm64Test :arraybuffer-benchmarks:linkReleaseExecutableMacosArm64
           mkdir -p build/reports/arraybuffer
           arraybuffer-benchmarks/build/bin/macosArm64/releaseExecutable/arraybuffer-benchmarks.kexe \
