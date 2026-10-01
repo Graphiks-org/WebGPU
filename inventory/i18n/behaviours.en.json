@@ -550,8 +550,6 @@
     "device.request-required-features": "Refusing a genuinely absent optional feature has no deterministic portable case; the features present in the environment are requested and used by their cases.",
     "features.compressed-and-tiered": "Compressed-texture and tiered optional features are declared in the contract but not exercised.",
     "features.subgroups": "Subgroup features and the reported subgroup sizes are not exercised.",
-    "features.not-exposed-by-reference-browser": "Optional features the reference browser does not expose cannot be exercised here and are not counted as covered.",
-    "immediates.set-immediates": "setImmediates has a public signature but no dedicated optional feature in the catalogue; a zero limit or an older browser cannot be reported as a missing feature, so its extension needs a capabilities/contract work item.",
     "texture.creation": "The creation case checks the getters and usability of one texture; textureBindingViewDimension and the remaining creation constraints are not exercised.",
     "texture.view-usage-aspect": "Usage restriction and a DepthOnly view are exercised; a StencilOnly view is not.",
     "texture.usage-and-formats": "The exercised usages and formats are tied to their cases; compressed, tiered and other formats, plus TransientAttachment, remain untested.",
@@ -562,8 +560,6 @@
     "transfers.stencil-copy-aspect": "A StencilOnly texture copy aspect is not exercised.",
     "render.primitive-and-multisample": "Triangle topologies, culling, strip restart and one multisample mask are exercised; points, lines and partial sample masks are not.",
     "bundles.negative-validation": "Render bundle creation with mismatched attachments is not exercised negatively.",
-    "errors.device-lost": "Device loss has no common access path in the contract (no GPUDevice.lost and no loss callback), so no runner can observe it.",
-    "async.oom-and-internal-results": "Out-of-memory and internal errors cannot be provoked portably; only validation rejection and successful asynchronous results are exercised.",
     "data.identifiers-and-indices": "Offset, region and index values, including a negative baseVertex, are exercised by their cases; the full 64-bit range of the aliases is not."
   }
 }

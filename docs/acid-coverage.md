@@ -91,12 +91,8 @@ Validation page. The count is a result of scoping, not a target to drive to zero
 
 - `device.features-and-limits`, `device.request-required-features` — the full limit space and the
   deterministic refusal of an absent feature.
-- `features.compressed-and-tiered`, `features.subgroups`,
-  `features.not-exposed-by-reference-browser` — optional features declared in the contract but not
-  exercised, including any the reference browser does not expose.
-- `immediates.set-immediates` — `setImmediates` has a public signature and `maxImmediateSize` a
-  limit, but no dedicated optional feature; a zero limit or an older browser cannot be reported as a
-  missing feature. Extending it needs a capabilities/contract work item and is out of this catalogue.
+- `features.compressed-and-tiered`, `features.subgroups` — optional features declared in the
+  contract but not exercised.
 - `texture.creation`, `texture.view-usage-aspect`, `texture.usage-and-formats`,
   `textures.storage-constraints`, `formats.depth-and-packed`, `sampling.limits` — texture creation
   constraints, StencilOnly views, compressed/tiered/packed/depth formats, storage-texture
@@ -105,8 +101,6 @@ Validation page. The count is a result of scoping, not a target to drive to zero
   the uniform-depth case, and a StencilOnly texture copy aspect.
 - `render.primitive-and-multisample`, `bundles.negative-validation` — points/lines and partial
   masks, render-bundle negative validation.
-- `errors.device-lost` — contract gap, not a missing test.
-- `async.oom-and-internal-results` — not portably provokable.
 - `data.identifiers-and-indices` — the full 64-bit range of the size/index/coordinate aliases.
 
 ## Known limits of this evidence
@@ -125,3 +119,7 @@ Validation page. The count is a result of scoping, not a target to drive to zero
 - **Native targets.** Native GPU execution belongs to the binding repositories. This repository
   compiles the shared modules for JVM, JS, Wasm JS, Linux x64 and macOS ARM64 and runs the browser
   cases only.
+- **Never-testable behaviours.** Device loss, `setImmediates`, out-of-memory/internal errors and
+  features the reference browser does not expose have no portable case in this contract — no loss
+  access path, no dedicated optional feature, not provokable portably. They are not tracked as
+  residuals; they are permanent limits of the catalogue.

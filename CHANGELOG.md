@@ -30,9 +30,10 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Drop the deprecated macOS x64 and watchOS x64 native targets.
 - Rename `webgpu-web` to `webgpu-web-bindings` and move generated descriptors and bindings to the `org.graphiks.webgpu.descriptors` and `org.graphiks.webgpu.bindings` packages.
 - Move the type mapping into the documentation site as a dedicated bilingual section (`docs/docs/type-mapping/`) and remove the root `TYPE_MAPPING.md`.
-- Suite reports (acid, demo, benchmark) carry the exact commit and version they were built from, and the runner fails closed on a missing or mismatched identity instead of attributing a report to the current checkout; inventory generation validates catalogue completeness and links every case entry to its source file on the Validation page.
+- Suite reports (acid, demo, benchmark) carry the exact commit and version they were built from, and the runner fails closed on a missing or mismatched identity instead of attributing a report to the current checkout; inventory generation links every case entry to its source file on the Validation page.
 
 ### Removed
 
 - Remove the deprecated descriptor type aliases (`Size3D`, `ImageCopyTexture`, `ImageCopyBuffer`, `ColorAttachment`, `DepthStencilAttachment`).
+- Remove the four never-testable acid residuals (`errors.device-lost`, `immediates.set-immediates`, `features.not-exposed-by-reference-browser`, `async.oom-and-internal-results`) from the residual inventory: they have no portable case in this contract and stay documented as known limits in `docs/acid-coverage.md`.
 - Remove the redundant browser-target and public-ABI CI steps; `./gradlew check` already runs those tasks on every platform.

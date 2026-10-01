@@ -550,8 +550,6 @@
     "device.request-required-features": "Refuser une feature optionnelle réellement absente n'a pas de cas portable déterministe ; les features présentes dans l'environnement sont demandées et utilisées par leurs cas.",
     "features.compressed-and-tiered": "Les features optionnelles de textures compressées et tiered sont déclarées dans le contrat mais pas exercées.",
     "features.subgroups": "Les features de subgroups et les tailles de subgroup rapportées ne sont pas exercées.",
-    "features.not-exposed-by-reference-browser": "Les features optionnelles que le navigateur de référence n'expose pas ne peuvent pas être exercées ici et ne sont pas comptées comme couvertes.",
-    "immediates.set-immediates": "setImmediates a une signature publique mais aucune feature optionnelle dédiée dans le catalogue ; une limite nulle ou un navigateur plus ancien ne peut pas être signalé comme feature absente, donc son extension demande un chantier capabilities/contrat.",
     "texture.creation": "Le cas de création vérifie les getters et l'utilisation d'une texture ; textureBindingViewDimension et les autres contraintes de création ne sont pas exercés.",
     "texture.view-usage-aspect": "La restriction d'usage et une vue DepthOnly sont exercées ; une vue StencilOnly ne l'est pas.",
     "texture.usage-and-formats": "Les usages et formats exercés sont reliés à leurs cas ; les formats compressés, tiers et autres, ainsi que TransientAttachment, restent non testés.",
@@ -562,8 +560,6 @@
     "transfers.stencil-copy-aspect": "L'aspect de copie StencilOnly n'est pas exercé.",
     "render.primitive-and-multisample": "Les topologies triangle, le culling, le redémarrage de strip et un masque multisample sont exercés ; les points, les lignes et les masques partiels ne le sont pas.",
     "bundles.negative-validation": "La création de render bundles avec des attachements incompatibles n'est pas exercée négativement.",
-    "errors.device-lost": "La perte de device n'a pas de chemin d'accès commun dans le contrat (ni GPUDevice.lost ni callback de perte), donc aucun runner ne peut l'observer.",
-    "async.oom-and-internal-results": "Les erreurs out-of-memory et internes ne se provoquent pas de façon portable ; seuls le rejet de validation et les résultats asynchrones réussis sont exercés.",
     "data.identifiers-and-indices": "Les valeurs d'offset, de région et d'index, dont un baseVertex négatif, sont exercées par leurs cas ; l'étendue 64 bits complète des alias ne l'est pas."
   }
 }
