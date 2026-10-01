@@ -184,8 +184,8 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
 ## Follow-up increment mutation replay (2026-10-01)
 
 The follow-up increment (`feat/acid-suite-followup`) repairs oracles the finalized catalogue could
-pass with the behaviour removed, adds nine cases, enforces catalogue completeness at generation and
-binds reports to the built revision. Before the canonical runs, each repaired oracle was replayed
+pass with the behaviour removed, adds nine cases and binds reports to the built revision. Before
+the canonical runs, each repaired oracle was replayed
 against its mutation on the JS target; every mutated case was then restored and the working tree was
 clean before the canonical rebuild.
 
@@ -211,7 +211,8 @@ deterministic index cases and the narrowed expectations.
 - Implementation commits on `feat/acid-suite-followup`: `93084ed` (completeness guards),
   `d55f87a` (coverage/residual reconciliation), `d0d1e86` (build identity, source links, inventory
   guard), `fd32807`/`46120c5`/`0d7e4e5`/`2c5181d` (oracle repairs), `ac17f52` (nine new cases),
-  `c78ad50` (mutation evidence). Base `2608e3f` (`origin/master`).
+  `c78ad50` (mutation evidence), `1bbe244` (generation-guard removal),
+  `a2d858d` (never-testable residual removal). Base `2608e3f` (`origin/master`).
 - Commands:
 
   ```sh
@@ -233,17 +234,21 @@ deterministic index cases and the narrowed expectations.
   new timestamp-index cases join `TimestampQuery`). On JS and Wasm alike, **131 passed, 1
   unsupported and 0 failed**; all **125 mandatory cases pass** and the only `unsupported` remains
   optional `compute.shader-f16` (the environment lacks `ShaderF16`). The demo checks passed 2/2 and
-  the benchmark scenarios 10/10 on both targets, and the site assembled with **884 symbols and 151
-  behaviours per locale** (132 cases each linked to its source file, 19 residuals).
+  the benchmark scenarios 10/10 on both targets, and the site assembled with **884 symbols and 147
+  behaviours per locale** (132 cases each linked to its source file, 15 residuals).
 - Report attribution: each envelope's `buildCommit` equals `git rev-parse HEAD` at build time and
   matches the inventory `baseline.commit`, and `buildVersion` matches `baseline.suiteVersion`; the
   collector fails closed on a missing or mismatched identity (verified by tampering the inventory
   commit, which the collector rejected with exit 1 before being restored).
-- Residual inventory: **19 entries**. `render.discard-reinit` is now covered by its case;
-  `sampling.comparison-pcf` and `transfers.stencil-copy-aspect` are the two new precise residuals.
-- Unit evidence: `:build-logic:test` passes (11 catalogue-guard tests including the manifest
-  fixture), `tools/build-inventory.test.mjs` passes 2/2 (residual/executable id disjointness), and
-  `./gradlew check` passes.
+- Residual inventory: **15 entries**. `render.discard-reinit` is now covered by its case;
+  `sampling.comparison-pcf` and `transfers.stencil-copy-aspect` are the two new precise residuals;
+  four never-testable entries (`errors.device-lost`, `immediates.set-immediates`,
+  `features.not-exposed-by-reference-browser`, `async.oom-and-internal-results`) were removed and
+  are documented as permanent limits in `docs/acid-coverage.md`.
+- Unit evidence: `tools/build-inventory.test.mjs` passes 2/2 (residual/executable id disjointness)
+  and `./gradlew check` passes. The generation-time completeness guards and their eleven unit tests
+  were removed in this increment (`1bbe244`); the regenerated manifests were byte-identical before
+  and after the removal, and the run-time id gate in the collector is unchanged.
 
 ## Compilation and publication evidence
 
