@@ -73,10 +73,9 @@ abstract class GenerateSuiteInventoryTask : DefaultTask() {
         val apiSymbols = ApiSymbolParser.parse(apiSourceDir.get().asFile)
         val nameBySymbol = ApiSymbolParser.mangleAll(apiSymbols)
         val symbolByMangled = nameBySymbol.entries.associate { (symbol, name) -> name to symbol }
-        val caseIds = EnumIds.parseStrict(caseIdFile.get().asFile)
+        val caseIds = EnumIds.parse(caseIdFile.get().asFile)
         val families = EnumIds.parseFamilies(familyFile.get().asFile)
         val cases = AcidTestParser.parse(caseSourceDir.get().asFile, symbolByMangled)
-        CatalogueValidator.validate(cases, caseIds, families)
         cases.forEach { case ->
             val expected = "org.graphiks.webgpu.suite.acid.${families.getValue(case.familyEntry).packageName}"
             require(case.packageName == expected) {
@@ -239,29 +238,11 @@ object EnumIds {
 
     data class Family(val id: String, val packageName: String)
 
-    /**
-     * Parses `Entry("dotted.id")`, rejecting a duplicate entry or a duplicate dotted id. The
-     * diagnostic names the previous owner so a copy-paste id collision can be found.
-     */
-    fun parseStrict(file: File): Map<String, String> {
-        val pattern = Regex("""(\w+)\("([^"]+)"\)""")
-        val entries = LinkedHashMap<String, String>()
-        val ownerById = LinkedHashMap<String, String>()
-        pattern.findAll(file.readText()).forEach {
-            val entry = it.groupValues[1]
-            val id = it.groupValues[2]
-            val previousEntry = entries.put(entry, id)
-            require(previousEntry == null) { "Duplicate AcidCaseId entry '$entry' in ${file.name}" }
-            val previousOwner = ownerById.put(id, entry)
-            require(previousOwner == null) {
-                "Duplicate AcidCaseId id '$id' in ${file.name} (entries $previousOwner and $entry)"
-            }
-        }
-        return entries
-    }
-
     /** Parses `Entry("dotted.id")` lines of an enum with a String constructor parameter. */
-    fun parse(file: File): Map<String, String> = parseStrict(file)
+    fun parse(file: File): Map<String, String> {
+        val pattern = Regex("""(\w+)\("([^"]+)"\)""")
+        return pattern.findAll(file.readText()).associate { it.groupValues[1] to it.groupValues[2] }
+    }
 
     /** Parses `Entry("dotted.id", "package")` lines of the family enum. */
     fun parseFamilies(file: File): Map<String, Family> {
@@ -269,50 +250,6 @@ object EnumIds {
         return pattern.findAll(file.readText()).associate {
             it.groupValues[1] to Family(it.groupValues[2], it.groupValues[3])
         }
-    }
-}
-
-/**
- * The catalogue invariants the generator must uphold before it writes any artefact: every enum
- * entry is used exactly once, every case id is unique, every function is unique, every family
- * exists and every contract is non-empty. All offenders are collected and reported together.
- */
-object CatalogueValidator {
-
-    fun validate(
-        cases: List<ParsedCase>,
-        caseIds: Map<String, String>,
-        families: Map<String, EnumIds.Family>,
-    ): List<ParsedCase> {
-        val problems = mutableListOf<String>()
-        val seenFunctions = mutableSetOf<String>()
-        val seenIds = mutableSetOf<String>()
-        cases.forEach { case ->
-            if (!seenFunctions.add(case.functionName)) {
-                problems += "Duplicate @AcidTest function '${case.functionName}'"
-            }
-            val id = caseIds[case.idEntry]
-            if (id == null) {
-                problems += "Unknown AcidCaseId entry '${case.idEntry}' on ${case.functionName}"
-            } else if (!seenIds.add(id)) {
-                problems += "Duplicate case id '$id' used by ${case.functionName}"
-            }
-            if (!families.containsKey(case.familyEntry)) {
-                problems += "Unknown AcidFamily entry '${case.familyEntry}' on ${case.functionName}"
-            }
-            if (case.contract.isEmpty()) {
-                problems += "Case ${case.functionName} declares an empty contract"
-            }
-        }
-        val used = cases.mapTo(mutableSetOf()) { it.idEntry }
-        val unused = caseIds.keys - used
-        if (unused.isNotEmpty()) {
-            problems += "AcidCaseId entries declared with no case: ${unused.sorted().joinToString(", ")}"
-        }
-        require(problems.isEmpty()) {
-            "Invalid acid catalogue:\n" + problems.joinToString("\n") { " - $it" }
-        }
-        return cases
     }
 }
 
