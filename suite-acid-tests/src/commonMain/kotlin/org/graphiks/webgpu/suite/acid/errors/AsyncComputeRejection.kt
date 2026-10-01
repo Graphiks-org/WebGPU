@@ -47,6 +47,8 @@ suspend fun asyncComputeRejection(device: GPUDevice) {
                     compute = ProgrammableStage(module = module, entryPoint = "missing"),
                 ),
             )
+            // A conforming request fails; a pipeline that slips through is closed before the assertion.
+            result.getOrNull()?.close()
             assertTrue(result.isFailure, "A missing entry point must reject async creation")
         } finally {
             assertNull(device.popErrorScope().getOrThrow(), "Async pipeline failure is not a scope error")
