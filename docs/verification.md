@@ -206,6 +206,45 @@ dropping `timestampWrites` only from the positive timestamp cases, and an immedi
 `onSubmittedWorkDone` — the first is a narrowed claim, the others are covered by the new
 deterministic index cases and the narrowed expectations.
 
+### Follow-up canonical campaign
+
+- Implementation commits on `feat/acid-suite-followup`: `93084ed` (completeness guards),
+  `d55f87a` (coverage/residual reconciliation), `d0d1e86` (build identity, source links, inventory
+  guard), `fd32807`/`46120c5`/`0d7e4e5`/`2c5181d` (oracle repairs), `ac17f52` (nine new cases),
+  `c78ad50` (mutation evidence). Base `2608e3f` (`origin/master`).
+- Commands:
+
+  ```sh
+  ./gradlew :suite-acid-tests:generateSuiteInventory \
+    :suite-core:compileKotlinJvm :suite-acid-tests:compileKotlinJvm :suite-benchmarks:compileKotlinJvm \
+    :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --benchmark --profile=ci --backend=swiftshader
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --benchmark --profile=ci --backend=swiftshader
+  node tools/build-site.mjs
+  ./gradlew :build-logic:test check
+  node --test tools/build-inventory.test.mjs
+  ```
+
+- Result: the catalogue grew from 123 to **132 cases** (**125 mandatory**, **7 optional** — the two
+  new timestamp-index cases join `TimestampQuery`). On JS and Wasm alike, **131 passed, 1
+  unsupported and 0 failed**; all **125 mandatory cases pass** and the only `unsupported` remains
+  optional `compute.shader-f16` (the environment lacks `ShaderF16`). The demo checks passed 2/2 and
+  the benchmark scenarios 10/10 on both targets, and the site assembled with **884 symbols and 151
+  behaviours per locale** (132 cases each linked to its source file, 19 residuals).
+- Report attribution: each envelope's `buildCommit` equals `git rev-parse HEAD` at build time and
+  matches the inventory `baseline.commit`, and `buildVersion` matches `baseline.suiteVersion`; the
+  collector fails closed on a missing or mismatched identity (verified by tampering the inventory
+  commit, which the collector rejected with exit 1 before being restored).
+- Residual inventory: **19 entries**. `render.discard-reinit` is now covered by its case;
+  `sampling.comparison-pcf` and `transfers.stencil-copy-aspect` are the two new precise residuals.
+- Unit evidence: `:build-logic:test` passes (11 catalogue-guard tests including the manifest
+  fixture), `tools/build-inventory.test.mjs` passes 2/2 (residual/executable id disjointness), and
+  `./gradlew check` passes.
+
 ## Compilation and publication evidence
 
 - Implementation notes record compilation for the five announced targets through their normal

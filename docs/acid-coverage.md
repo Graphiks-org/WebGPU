@@ -1,6 +1,6 @@
 # Acid coverage and remaining contract gaps
 
-This document is the balance of the portable acid-test catalogue after the finalization increment. It
+This document is the balance of the portable acid-test catalogue after the follow-up increment. It
 records what is validated, what is optional, what could not be exercised in the reference environment
 and what remains uncovered. It is a coverage statement for a defined catalogue, not a WebGPU
 conformance certificate.
@@ -11,7 +11,7 @@ the published site are build outputs, never edited by hand.
 
 ## Catalogue
 
-There are **123 cases**: **118 mandatory** and **5 optional**. A case is optional only when the
+There are **132 cases**: **125 mandatory** and **7 optional**. A case is optional only when the
 contract feature it needs is itself optional; the feature is declared in `requiredFeatures`, never
 hidden.
 
@@ -21,9 +21,11 @@ hidden.
 | `render.indirect-first-instance` | `IndirectFirstInstance` | passed |
 | `queries.timestamp-resolve` | `TimestampQuery` | passed |
 | `query.render-timestamp-writes` | `TimestampQuery` | passed |
+| `errors.compute-timestamp-indices` | `TimestampQuery` | passed |
+| `errors.render-timestamp-indices` | `TimestampQuery` | passed |
 | `texture.view-swizzle` | `TextureComponentSwizzle` | passed |
 
-The five optional cases cover four distinct features: `TimestampQuery` is used by two cases,
+The seven optional cases cover four distinct features: `TimestampQuery` is used by four cases,
 `TextureComponentSwizzle` by one, `ShaderF16` by one and `IndirectFirstInstance` by one.
 
 The runner guards every device against a feature it was asked for but did not receive: the requested
@@ -36,10 +38,10 @@ On the two browser targets, with Chromium 153.0.8010.12 / SwiftShader on `darwin
 
 | Target | Passed | Unsupported | Failed | Total |
 | --- | ---: | ---: | ---: | ---: |
-| JS | 122 | 1 | 0 | 123 |
-| Wasm JS | 122 | 1 | 0 | 123 |
+| JS | 131 | 1 | 0 | 132 |
+| Wasm JS | 131 | 1 | 0 | 132 |
 
-All **118 mandatory cases pass** on both targets. The only non-passing case is optional:
+All **125 mandatory cases pass** on both targets. The only non-passing case is optional:
 `compute.shader-f16` is `unsupported` because the environment lacks `ShaderF16`. It is not presented
 as evidence of support.
 
