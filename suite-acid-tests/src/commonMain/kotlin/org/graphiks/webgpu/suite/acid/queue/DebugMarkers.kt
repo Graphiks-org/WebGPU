@@ -152,7 +152,9 @@ suspend fun debugMarkers(device: GPUDevice) = withValidationScope(device) {
                                     }
 
                                     val pixels = readRgba8(device, target, 16, 16)
-                                    assertPixel(pixels, 16, 8, 8, 255, 0, 0, 255)
+                                    // Both triangles of the decorated bundle's square must be painted.
+                                    assertPixel(pixels, 16, 6, 6, 255, 0, 0, 255)
+                                    assertPixel(pixels, 16, 10, 10, 255, 0, 0, 255)
                                     assertPixel(pixels, 16, 1, 1, 0, 0, 0, 255)
                                 }
                             }
