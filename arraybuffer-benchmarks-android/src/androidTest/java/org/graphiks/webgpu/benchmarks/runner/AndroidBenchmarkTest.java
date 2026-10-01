@@ -30,4 +30,9 @@ public class AndroidBenchmarkTest {
         status.putString("arraybufferReport", report);
         InstrumentationRegistry.getInstrumentation().sendStatus(0, status);
     }
+
+    @Test
+    public void arrayBufferSafetyChecks() {
+        AndroidCampaign.runSafetyChecks();
+    }
 }

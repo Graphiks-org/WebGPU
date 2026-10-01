@@ -154,6 +154,15 @@ vertices on Android, and only competitive on JavaScript images (0.67) and roughl
 - The per-target dispersion is of the same order as several of the differences, so a decision needs
   five `standard` launches on a stable host, not a single `ci` run.
 
+## CI
+
+`.github/workflows/arraybuffer.yml` is reusable (`workflow_call`), triggers on pull requests touching
+the API or the harness, and can be dispatched manually. Correctness and report validity are blocking;
+durations never are. It runs the correctness suites and `checkKotlinAbi`, the report tooling tests, a
+`ci` smoke campaign on JVM, JS, Wasm (Ubuntu) and Native (macOS), the Android instrumented checks and
+Android smoke on an emulator, and archives `build/reports/arraybuffer/` with `if: always()`. The
+`standard-campaign` job is manual and captures five launches on a stable host.
+
 ## Campaigns not executed in this increment
 
 - The `arraybuffer-cpu-lifecycle-v1` companion (allocation + fill, `of` + consumption) is not

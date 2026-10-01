@@ -325,3 +325,8 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   device. This repository compiles the shared modules and runs the browser cases.
 - The results above are functional software-backend results. They are not performance measurements
   and do not represent a physical GPU.
+- The ArrayBuffer bounds work adds correctness tests only: the common, JVM and Native suites in
+  `webgpu-api`, and the Android instrumented checks in `arraybuffer-benchmarks-android`. Its duration
+  measurements are informative and reported separately, never as a pass/fail threshold; see
+  [ArrayBuffer CPU performance](arraybuffer-performance.md) and
+  [ArrayBuffer bounds and capacities](arraybuffer-bounds.md).

@@ -221,3 +221,10 @@ A report uses four statuses and never conflates them:
 
 Coverage (does a case exist?) and execution (what happened in one environment?) are separate. A
 behaviour with no case is reported as *to be tested*, never as passing.
+
+## CPU ArrayBuffer campaigns
+
+The `arraybuffer-benchmarks` module runs its own CPU-only campaigns (no GPU device) on JVM, JS, Wasm,
+Native and Android. The runner commands are in
+[ArrayBuffer CPU performance](arraybuffer-performance.md); the bounds contract is in
+[ArrayBuffer bounds and capacities](arraybuffer-bounds.md).
