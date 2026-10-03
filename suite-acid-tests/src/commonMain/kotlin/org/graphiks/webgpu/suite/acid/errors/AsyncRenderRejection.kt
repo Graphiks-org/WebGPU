@@ -53,6 +53,8 @@ suspend fun asyncRenderRejection(device: GPUDevice) {
                     multisample = MultisampleState(count = 3u),
                 ),
             )
+            // A conforming request fails; a pipeline that slips through is closed before the assertion.
+            result.getOrNull()?.close()
             assertTrue(result.isFailure, "A multisample count of 3 must reject async creation")
         } finally {
             assertNull(device.popErrorScope().getOrThrow(), "Async pipeline failure is not a scope error")

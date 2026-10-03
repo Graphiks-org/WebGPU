@@ -87,9 +87,12 @@ suspend fun bundleReuse(device: GPUDevice) = withValidationScope(device) {
 
                     val bluePixels = readRgba8(device, blueTarget, 16, 16)
                     val greenPixels = readRgba8(device, greenTarget, 16, 16)
-                    assertPixel(bluePixels, 16, 8, 8, 255, 0, 0, 255)
+                    // Both triangles of the square must be painted in each pass.
+                    assertPixel(bluePixels, 16, 6, 6, 255, 0, 0, 255)
+                    assertPixel(bluePixels, 16, 10, 10, 255, 0, 0, 255)
                     assertPixel(bluePixels, 16, 1, 1, 0, 0, 255, 255)
-                    assertPixel(greenPixels, 16, 8, 8, 255, 0, 0, 255)
+                    assertPixel(greenPixels, 16, 6, 6, 255, 0, 0, 255)
+                    assertPixel(greenPixels, 16, 10, 10, 255, 0, 0, 255)
                     assertPixel(greenPixels, 16, 1, 1, 0, 255, 0, 255)
                 }
             }

@@ -25,4 +25,4 @@ Le protocole et ses limites d'interprétation sont documentés dans
 
 Les résultats publiés proviennent d'exécutions identifiées et restent distincts d'un lancement
 local. Les preuves enregistrées se trouvent dans
-[`docs/verification.md`](https://github.com/Graphiks-org/WebGPU/blob/master/docs/verification.md).
+[`docs/verification.fr.md`](https://github.com/Graphiks-org/WebGPU/blob/master/docs/verification.fr.md).

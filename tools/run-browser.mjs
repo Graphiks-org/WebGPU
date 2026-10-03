@@ -14,7 +14,6 @@
 // --backend=swiftshader (the default) forces the software backend with explicit flags and is what
 // CI uses; --backend=default lets Chromium choose without the SwiftShader flags and the report says
 // `default`, never `hardware`.
-import { execFileSync } from 'node:child_process';
 import { createServer } from 'node:http';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, extname, isAbsolute, join, normalize, relative, resolve } from 'node:path';
@@ -118,14 +117,6 @@ const expectedIds = mode === 'benchmark'
       ? allCaseIds
       : allCaseIds.filter((id) => selectedCaseIds.includes(id));
 const baseline = JSON.parse(await readFile(join(generatedInventory, 'baseline.json'), 'utf8'));
-
-const suiteCommit = (() => {
-  try {
-    return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
-  } catch {
-    return 'unknown';
-  }
-})();
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -233,7 +224,8 @@ try {
 const envelope = {
   schemaVersion: 1,
   baseline,
-  suiteCommit,
+  buildCommit: report?.buildCommit ?? null,
+  buildVersion: report?.buildVersion ?? null,
   generatedAt: new Date().toISOString(),
   selectedCaseIds,
   environment,
@@ -249,6 +241,23 @@ const problems = [];
 if (fatalError) problems.push(`fatal error: ${fatalError.split('\n')[0]}`);
 if (pageErrors.length > 0) problems.push(`${pageErrors.length} page error(s)`);
 if (report?.fatalError) problems.push('the runner reported a fatal error');
+
+// The distribution must carry the revision it was built from, and that revision must match the
+// inventory its expectations come from. A missing identity is a failure, never a checkout HEAD.
+const buildCommit = report?.buildCommit;
+const buildVersion = report?.buildVersion;
+if (typeof buildCommit !== 'string' || buildCommit.length === 0) {
+  problems.push('report is missing buildCommit (distribution identity not embedded)');
+}
+if (typeof buildVersion !== 'string' || buildVersion.length === 0) {
+  problems.push('report is missing buildVersion (distribution identity not embedded)');
+}
+if (buildCommit !== baseline.commit) {
+  problems.push(`distribution commit ${buildCommit} does not match inventory commit ${baseline.commit}`);
+}
+if (buildVersion !== baseline.suiteVersion) {
+  problems.push(`distribution version ${buildVersion} does not match inventory version ${baseline.suiteVersion}`);
+}
 
 if (mode === 'benchmark') {
   const scenarios = report?.scenarios ?? [];

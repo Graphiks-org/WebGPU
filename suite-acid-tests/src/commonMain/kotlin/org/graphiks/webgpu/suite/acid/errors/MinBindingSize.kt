@@ -1,10 +1,12 @@
-package org.graphiks.webgpu.suite.acid.bindgroups
+package org.graphiks.webgpu.suite.acid.errors
 
 import org.graphiks.webgpu.ArrayBuffer
 import org.graphiks.webgpu.GPUBufferBindingType
 import org.graphiks.webgpu.GPUBufferUsage
 import org.graphiks.webgpu.GPUDevice
+import org.graphiks.webgpu.GPUErrorFilter
 import org.graphiks.webgpu.GPUShaderStage
+import org.graphiks.webgpu.GPUValidationError
 import org.graphiks.webgpu.descriptors.BindGroupDescriptor
 import org.graphiks.webgpu.descriptors.BindGroupEntry
 import org.graphiks.webgpu.descriptors.BindGroupLayoutDescriptor
@@ -23,8 +25,9 @@ import org.graphiks.webgpu.suite.acid.ApiSymbols
 import org.graphiks.webgpu.suite.acid.readBufferBytes
 import org.graphiks.webgpu.suite.acid.withValidationScope
 import kotlin.test.assertContentEquals
+import kotlin.test.assertIs
 
-private const val UNIFORM_RANGE_SHADER = """
+private const val COPY_VALUE_SHADER = """
 struct Input { value: u32, pad0: u32, pad1: u32, pad2: u32 }
 
 @group(0) @binding(0) var<uniform> input: Input;
@@ -37,72 +40,84 @@ fn main() {
 """
 
 /**
- * A buffer binding starts at its explicit offset, not at the buffer start: a uniform buffer holding 7
- * at byte 0 and 29 at the aligned offset reads back 29 when the binding starts at that alignment.
- * The allocation is exactly `alignment + 16`, so omitting the binding size would expose the same 16
- * bytes and this case does not witness `size`; that witness lives in `bindings.storage-range-length`.
+ * A bind group entry smaller than its layout's `minBindingSize` is rejected at creation with a
+ * validation error, while an entry of exactly that size is accepted and executes a known write. The
+ * rejection is creation-only: a dispatch error would not distinguish a dropped minimum-size
+ * requirement.
  */
 @AcidTest(
-    id = AcidCaseId.BindingsBufferRange,
-    family = AcidFamily.BindGroupsLayouts,
+    id = AcidCaseId.ErrorsMinBindingSize,
+    family = AcidFamily.ErrorsAsync,
     contract = [
         ApiSymbols.GPUDevice_createBindGroupLayout,
         ApiSymbols.GPUDevice_createPipelineLayout,
         ApiSymbols.GPUDevice_createComputePipeline,
         ApiSymbols.GPUDevice_createBindGroup,
         ApiSymbols.GPUBufferBindingLayout_minBindingSize,
-        ApiSymbols.GPUBufferBinding_offset,
         ApiSymbols.GPUBufferBinding_size,
         ApiSymbols.GPUComputePassEncoder_dispatchWorkgroups,
+        ApiSymbols.GPUDevice_pushErrorScope,
+        ApiSymbols.GPUDevice_popErrorScope,
+        ApiSymbols.GPUErrorFilter_Validation,
+        ApiSymbols.GPUValidationError,
     ],
 )
-suspend fun bufferBindingRange(device: GPUDevice) = withValidationScope(device) {
-    val alignment = device.limits.minUniformBufferOffsetAlignment.toULong()
-
+suspend fun minBindingSize(device: GPUDevice) = withValidationScope(device) {
     device.createBuffer(
-        BufferDescriptor(alignment + 16uL, GPUBufferUsage.Uniform or GPUBufferUsage.CopyDst),
+        BufferDescriptor(16uL, GPUBufferUsage.Uniform or GPUBufferUsage.CopyDst),
     ).use { uniform ->
-        device.createBuffer(
-            BufferDescriptor(16uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),
-        ).use { output ->
-            device.queue.writeBuffer(uniform, 0uL, ArrayBuffer.of(uintArrayOf(7u)))
-            device.queue.writeBuffer(uniform, alignment, ArrayBuffer.of(uintArrayOf(29u)))
-
-            device.createShaderModule(ShaderModuleDescriptor(code = UNIFORM_RANGE_SHADER)).use { shader ->
+        device.createBuffer(BufferDescriptor(4uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc)).use { output ->
+            device.queue.writeBuffer(uniform, 0uL, ArrayBuffer.of(uintArrayOf(0xABCDu)))
+            device.createShaderModule(ShaderModuleDescriptor(code = COPY_VALUE_SHADER)).use { shader ->
                 device.createBindGroupLayout(
                     BindGroupLayoutDescriptor(
                         entries = listOf(
                             BindGroupLayoutEntry(
                                 binding = 0u,
                                 visibility = GPUShaderStage.Compute,
-                                buffer = BufferBindingLayout(
-                                    type = GPUBufferBindingType.Uniform,
-                                    minBindingSize = 16uL,
-                                ),
+                                buffer = BufferBindingLayout(type = GPUBufferBindingType.Uniform, minBindingSize = 16uL),
                             ),
                             BindGroupLayoutEntry(
                                 binding = 1u,
                                 visibility = GPUShaderStage.Compute,
-                                buffer = BufferBindingLayout(
-                                    type = GPUBufferBindingType.Storage,
-                                    minBindingSize = 4uL,
-                                ),
+                                buffer = BufferBindingLayout(type = GPUBufferBindingType.Storage, minBindingSize = 4uL),
                             ),
                         ),
                     ),
                 ).use { layout ->
                     device.createPipelineLayout(PipelineLayoutDescriptor(listOf(layout))).use { pipelineLayout ->
                         device.createComputePipeline(
-                            ComputePipelineDescriptor(
-                                compute = ProgrammableStage(shader),
-                                layout = pipelineLayout,
-                            ),
+                            ComputePipelineDescriptor(compute = ProgrammableStage(shader), layout = pipelineLayout),
                         ).use { pipeline ->
+                            // Probe: a 12-byte binding against minBindingSize 16 is a creation-time
+                            // validation error. The returned object, if any, is closed outside the
+                            // probe so a cleanup failure cannot masquerade as the rejection.
+                            device.pushErrorScope(GPUErrorFilter.Validation)
+                            var invalid: org.graphiks.webgpu.GPUBindGroup? = null
+                            try {
+                                invalid = device.createBindGroup(
+                                    BindGroupDescriptor(
+                                        layout = layout,
+                                        entries = listOf(
+                                            BindGroupEntry(0u, BufferBinding(uniform, size = 12uL)),
+                                            BindGroupEntry(1u, BufferBinding(output)),
+                                        ),
+                                    ),
+                                )
+                            } finally {
+                                invalid?.close()
+                                assertIs<GPUValidationError>(
+                                    device.popErrorScope().getOrThrow(),
+                                    "A binding smaller than minBindingSize must be a validation error at creation",
+                                )
+                            }
+
+                            // Control: the exact minimum size is accepted and the kernel writes the value.
                             device.createBindGroup(
                                 BindGroupDescriptor(
                                     layout = layout,
                                     entries = listOf(
-                                        BindGroupEntry(0u, BufferBinding(uniform, offset = alignment, size = 16uL)),
+                                        BindGroupEntry(0u, BufferBinding(uniform, size = 16uL)),
                                         BindGroupEntry(1u, BufferBinding(output)),
                                     ),
                                 ),
@@ -115,17 +130,16 @@ suspend fun bufferBindingRange(device: GPUDevice) = withValidationScope(device) 
                                     pass.end()
                                     encoder.finish().use { device.queue.submit(listOf(it)) }
                                 }
-                                val words = ArrayBuffer.of(readBufferBytes(device, output, 16uL)).toUIntArray()
-                                assertContentEquals(
-                                    uintArrayOf(29u, 0u, 0u, 0u),
-                                    words,
-                                    "The bound range starts at the aligned offset, so it reads 29 and not 7",
-                                )
                             }
                         }
                     }
                 }
             }
+            assertContentEquals(
+                uintArrayOf(0xABCDu),
+                ArrayBuffer.of(readBufferBytes(device, output, 4uL)).toUIntArray(),
+                "The adequately sized binding must execute the known write",
+            )
         }
     }
 }

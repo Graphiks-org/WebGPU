@@ -13,6 +13,7 @@ import org.graphiks.webgpu.GPUErrorFilter
 import org.graphiks.webgpu.GPUUncapturedErrorCallback
 import org.graphiks.webgpu.browser.requestAdapter
 import org.graphiks.webgpu.descriptors.DeviceDescriptor
+import org.graphiks.webgpu.suite.acid.SuiteBuildIdentity
 import org.graphiks.webgpu.suite.benchmarks.BenchmarkProfile
 import org.graphiks.webgpu.suite.benchmarks.BenchmarkResult
 import org.graphiks.webgpu.suite.benchmarks.TimingSample
@@ -76,7 +77,12 @@ internal suspend fun runBenchmarks(
             else -> scenarioResult(scenario, profile, status = "not-run")
         }
     }
-    return BenchmarkReport(profile = profile.id(), scenarios = reported)
+    return BenchmarkReport(
+        buildCommit = SuiteBuildIdentity.COMMIT,
+        buildVersion = SuiteBuildIdentity.VERSION,
+        profile = profile.id(),
+        scenarios = reported,
+    )
 }
 
 /** Bounds one scenario by the real timeout; records the failure and never rethrows it. */

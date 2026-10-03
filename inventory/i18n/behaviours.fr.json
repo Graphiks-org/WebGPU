@@ -78,7 +78,7 @@
     },
     "bindings.buffer-range": {
       "title": "Lier une plage explicite d'un buffer",
-      "expectation": "L'offset et la taille du binding sélectionnent la plage alignée lue par le shader."
+      "expectation": "Un binding de buffer démarre à son offset explicite, pas au début du buffer ; la taille explicite est vérifiée par le cas storage range-length."
     },
     "bindings.dynamic-uniform-offsets": {
       "title": "Déplacer un binding uniforme par offset dynamique",
@@ -342,7 +342,7 @@
     },
     "queries.timestamp-resolve": {
       "title": "Résoudre les timestamps de passe",
-      "expectation": "Une passe compute écrit des timestamps de début et de fin, résolus dans une plage d'un buffer."
+      "expectation": "Une passe compute résout des timestamps de début et de fin dans une plage préremplie de sentinelles sans toucher aux autres plages, et la sortie du kernel est relue ; aucun temps mesurable n'est revendiqué."
     },
     "compute.shader-f16": {
       "title": "Calculer en demi-précision",
@@ -470,7 +470,7 @@
     },
     "queue.submitted-work-done": {
       "title": "Attendre le travail soumis à la queue",
-      "expectation": "onSubmittedWorkDone se résout après une passe compute et sa copie, et le staging lit les quatre valeurs écrites."
+      "expectation": "onSubmittedWorkDone se résout et le staging mappé lit les quatre valeurs écrites, prouvant que l'appel est utilisable et que la soumission est terminée ; l'attente elle-même n'est pas prouvée."
     },
     "errors.encoder-finished-twice": {
       "title": "Terminer un encodeur deux fois",
@@ -494,7 +494,7 @@
     },
     "query.render-timestamp-writes": {
       "title": "Écrire et résoudre des timestamps de rendu",
-      "expectation": "Une passe render écrit des timestamps de début et de fin qui se résolvent dans le buffer sentinelle sans toucher aux autres plages ; la précision temporelle n'est pas prouvée."
+      "expectation": "Une passe render résout des timestamps de début et de fin dans le buffer sentinelle sans toucher aux autres plages, et le rouge dessiné est vérifié ; aucun temps mesurable n'est revendiqué."
     },
     "depth.bias-constant": {
       "title": "Biaiser la profondeur par une constante",
@@ -507,6 +507,42 @@
     "msaa.alpha-to-coverage-extremes": {
       "title": "Piloter la couverture par l'alpha du fragment",
       "expectation": "L'alpha-to-coverage résout alpha 0 vers le clear et alpha 1 vers du rouge opaque, tandis que sa désactivation écrit alpha 0 directement."
+    },
+    "bindings.storage-range-length": {
+      "title": "Borner un binding storage par sa taille explicite",
+      "expectation": "La taille explicite d'un binding storage borne la longueur de son runtime array et son offset sélectionne le premier mot, même quand le buffer sous-jacent est plus grand que chacune des plages liées."
+    },
+    "errors.min-binding-size": {
+      "title": "Rejeter un binding sous minBindingSize",
+      "expectation": "Une entrée de bind group plus petite que le minBindingSize de son layout est rejetée à la création avec une erreur de validation, tandis qu'une entrée de exactement cette taille exécute une écriture connue."
+    },
+    "errors.bundle-post-execute-state": {
+      "title": "Réinitialiser l'état de passe après l'exécution de bundles",
+      "expectation": "Après executeBundles, un draw sans re-liage est une erreur de validation même si un état valide était lié avant le bundle ; re-lier un pipeline distinct dessine, et seul ce draw peut peindre les coins."
+    },
+    "textures.partial-initialization": {
+      "title": "Lire une texture fraîche et partiellement écrite",
+      "expectation": "Une texture fraîche se lit comme du noir transparent — alpha compris — et une écriture partielle change exactement les texels adressés, les deux vérifications se faisant sur deux textures fraîches séparées."
+    },
+    "render.discard-reinit": {
+      "title": "Mettre à zéro un attachement abandonné",
+      "expectation": "Un attachement stocké avec Discard est mis à zéro par la passe et une passe Load suivante le lit comme du noir transparent, tandis que son frère stocké normalement garde sa couleur de clear."
+    },
+    "sampling.min-mag-selection": {
+      "title": "Sélectionner les filtres min et mag indépendamment",
+      "expectation": "Avec des filtres opposés sur un même sampler, le niveau 0 suit magFilter et le niveau 1 suit minFilter ; les poids de blend exactement représentables font que les résultats linéaires sont calculés, pas approximés."
+    },
+    "errors.compute-timestamp-indices": {
+      "title": "Valider les index de timestamps compute",
+      "expectation": "Un descripteur de timestamps de passe compute dont les indices sont dans le query set est accepté et son travail s'exécute, tandis qu'un index hors bornes est une erreur de validation."
+    },
+    "errors.render-timestamp-indices": {
+      "title": "Valider les index de timestamps de rendu",
+      "expectation": "Un descripteur de timestamps de passe render dont les indices sont dans le query set est accepté et sa passe dessine, tandis qu'un index hors bornes est une erreur de validation."
+    },
+    "errors.unenabled-timestamp-feature": {
+      "title": "Refuser un query set de timestamps sans la feature",
+      "expectation": "Un device demandé sans TimestampQuery ne rapporte pas la feature et refuse un query set de timestamps de façon synchrone, tandis qu'un query set d'occlusion se crée normalement."
     }
   },
   "behaviours": {
@@ -514,19 +550,16 @@
     "device.request-required-features": "Refuser une feature optionnelle réellement absente n'a pas de cas portable déterministe ; les features présentes dans l'environnement sont demandées et utilisées par leurs cas.",
     "features.compressed-and-tiered": "Les features optionnelles de textures compressées et tiered sont déclarées dans le contrat mais pas exercées.",
     "features.subgroups": "Les features de subgroups et les tailles de subgroup rapportées ne sont pas exercées.",
-    "features.not-exposed-by-reference-browser": "Les features optionnelles que le navigateur de référence n'expose pas ne peuvent pas être exercées ici et ne sont pas comptées comme couvertes.",
-    "immediates.set-immediates": "setImmediates a une signature publique mais aucune feature optionnelle dédiée dans le catalogue ; une limite nulle ou un navigateur plus ancien ne peut pas être signalé comme feature absente, donc son extension demande un chantier capabilities/contrat.",
     "texture.creation": "Le cas de création vérifie les getters et l'utilisation d'une texture ; textureBindingViewDimension et les autres contraintes de création ne sont pas exercés.",
     "texture.view-usage-aspect": "La restriction d'usage et une vue DepthOnly sont exercées ; une vue StencilOnly ne l'est pas.",
     "texture.usage-and-formats": "Les usages et formats exercés sont reliés à leurs cas ; les formats compressés, tiers et autres, ainsi que TransientAttachment, restent non testés.",
     "textures.storage-constraints": "Les contraintes de format et d'accès des storage textures au-delà du cas exercé ne sont pas couvertes.",
     "formats.depth-and-packed": "Plusieurs formats de profondeur et de stencil, et les formats empaquetés, ne sont pas exercés.",
     "sampling.limits": "L'anisotropie et les limites de samplers ne sont pas exercées.",
+    "sampling.comparison-pcf": "Le filtrage pourcentage-plus-proche (percentage-closer filtering : un sampler de comparaison filtre des résultats de comparaison de profondeur plutôt que des valeurs, ce qui adoucit les bords d'ombre) et les fonctions de comparaison autres que le cas sampler.comparison à profondeur uniforme ne sont pas exercés.",
+    "transfers.stencil-copy-aspect": "L'aspect de copie StencilOnly n'est pas exercé.",
     "render.primitive-and-multisample": "Les topologies triangle, le culling, le redémarrage de strip et un masque multisample sont exercés ; les points, les lignes et les masques partiels ne le sont pas.",
-    "render.discard-reinit": "Une passe render qui abandonne puis réinitialise un attachement n'est pas exercée.",
     "bundles.negative-validation": "La création de render bundles avec des attachements incompatibles n'est pas exercée négativement.",
-    "errors.device-lost": "La perte de device n'a pas de chemin d'accès commun dans le contrat (ni GPUDevice.lost ni callback de perte), donc aucun runner ne peut l'observer.",
-    "async.oom-and-internal-results": "Les erreurs out-of-memory et internes ne se provoquent pas de façon portable ; seuls le rejet de validation et les résultats asynchrones réussis sont exercés.",
     "data.identifiers-and-indices": "Les valeurs d'offset, de région et d'index, dont un baseVertex négatif, sont exercées par leurs cas ; l'étendue 64 bits complète des alias ne l'est pas."
   }
 }

@@ -46,22 +46,26 @@ suspend fun encoderFinishedTwice(device: GPUDevice) {
                 encoder.copyBufferToBuffer(source, 0uL, destination, 0uL, 4uL)
                 val first = encoder.finish()
 
-                device.pushErrorScope(GPUErrorFilter.Validation)
-                var second: GPUCommandBuffer? = null
-                try {
-                    // An unexpected synchronous exception must propagate: the scope assertion below
-                    // does not license swallowing it. Cleanup still runs.
-                    second = encoder.finish()
-                } finally {
-                    second?.close()
-                    assertIs<GPUValidationError>(
-                        device.popErrorScope().getOrThrow(),
-                        "Finishing a finished encoder must report a validation error",
-                    )
-                }
+                // `use` owns `first` for the whole second attempt: a synchronous throw from the
+                // second finish or the scope assertion closes it exactly once.
+                first.use {
+                    device.pushErrorScope(GPUErrorFilter.Validation)
+                    var second: GPUCommandBuffer? = null
+                    try {
+                        // An unexpected synchronous exception must propagate: the scope assertion
+                        // below does not license swallowing it. Cleanup still runs.
+                        second = encoder.finish()
+                    } finally {
+                        second?.close()
+                        assertIs<GPUValidationError>(
+                            device.popErrorScope().getOrThrow(),
+                            "Finishing a finished encoder must report a validation error",
+                        )
+                    }
 
-                // The first command buffer is still the valid one.
-                first.use { device.queue.submit(listOf(first)) }
+                    // The first command buffer is still the valid one.
+                    device.queue.submit(listOf(first))
+                }
             }
 
             val bytes = readBufferBytes(device, destination, 4uL)

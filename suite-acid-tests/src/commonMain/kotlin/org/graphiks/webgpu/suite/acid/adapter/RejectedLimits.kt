@@ -43,6 +43,8 @@ suspend fun rejectedLimits(context: AcidContext) {
         val result = adapter.requestDevice(
             DeviceDescriptor(requiredLimits = requested),
         )
+        // A conforming request fails; a device that slips through is closed before the assertion.
+        result.getOrNull()?.close()
         assertTrue(
             result.isFailure,
             "Requesting maxComputeWorkgroupSizeX=$excess above the adapter limit $base must fail",

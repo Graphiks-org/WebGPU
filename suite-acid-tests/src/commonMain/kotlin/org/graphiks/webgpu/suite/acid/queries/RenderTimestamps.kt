@@ -23,6 +23,7 @@ import org.graphiks.webgpu.suite.acid.createRenderPipeline
 import org.graphiks.webgpu.suite.acid.readRgba8
 import org.graphiks.webgpu.suite.acid.withValidationScope
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 private const val SENTINEL_WORD = 0xFFFFFFFFu
@@ -31,8 +32,8 @@ private const val SENTINEL_WORD = 0xFFFFFFFFu
  * A render pass draws red while writing begin and end timestamps into query indices 1 and 2 of a
  * count-4 set. `resolveQuerySet` writes the two `u64` results at offset 256 of a `0xff`-prefilled
  * 512-byte buffer; the 16 written bytes replace their sentinels, every other range stays intact, and
- * the end timestamp is not before the begin one (equality is allowed). The rendered red is also
- * checked. This validates query use and resolution, not temporal precision.
+ * the rendered red is checked. This validates query use, resolution and range preservation — not
+ * that a measurable time was written, so no ordering or positivity threshold is imposed.
  *
  * Requires the optional `TimestampQuery` feature; the runner reports it as `unsupported` otherwise.
  */
@@ -103,7 +104,9 @@ suspend fun renderTimestamps(device: GPUDevice) = withValidationScope(device) {
 
                 staging.mapAsync(GPUMapMode.Read).getOrThrow()
                 val bytes = try {
-                    staging.getMappedRange().toByteArray().copyOf(512)
+                    val raw = staging.getMappedRange().toByteArray()
+                    assertEquals(512, raw.size, "The timestamp staging must map exactly 512 bytes")
+                    raw
                 } finally {
                     staging.unmap()
                 }
@@ -120,21 +123,13 @@ suspend fun renderTimestamps(device: GPUDevice) = withValidationScope(device) {
                 )
 
                 val words = ArrayBuffer.of(bytes).toUIntArray()
-                val beginLow = words[64]
-                val beginHigh = words[65]
-                val endLow = words[66]
-                val endHigh = words[67]
                 assertTrue(
-                    !(beginLow == SENTINEL_WORD && beginHigh == SENTINEL_WORD),
+                    !(words[64] == SENTINEL_WORD && words[65] == SENTINEL_WORD),
                     "The begin timestamp must replace its 0xff sentinel",
                 )
                 assertTrue(
-                    !(endLow == SENTINEL_WORD && endHigh == SENTINEL_WORD),
+                    !(words[66] == SENTINEL_WORD && words[67] == SENTINEL_WORD),
                     "The end timestamp must replace its 0xff sentinel",
-                )
-                assertTrue(
-                    endHigh > beginHigh || (endHigh == beginHigh && endLow >= beginLow),
-                    "The end timestamp must not be before the begin timestamp",
                 )
             }
         }

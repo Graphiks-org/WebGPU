@@ -29,8 +29,9 @@ fn main(@builtin(global_invocation_id) id: vec3<u32>) {
 
 /**
  * A compute pass and the copy of its result into a staging buffer are encoded in one submission;
- * `onSubmittedWorkDone` then resolves and the mapped staging reads the four values, proving the wait
- * is usable. This does not claim a timing guarantee, only that the awaited work completed.
+ * `onSubmittedWorkDone` then resolves and the mapped staging reads the four values, proving the call
+ * is usable and the awaited submission completed. It does not prove that the call itself waited: the
+ * later `mapAsync` independently synchronizes on the readable data.
  */
 @AcidTest(
     id = AcidCaseId.QueueSubmittedWorkDone,
