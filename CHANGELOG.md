@@ -33,6 +33,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Drop the deprecated macOS x64 and watchOS x64 native targets.
 - Rename `webgpu-web` to `webgpu-web-bindings` and move generated descriptors and bindings to the `org.graphiks.webgpu.descriptors` and `org.graphiks.webgpu.bindings` packages.
 - Move the type mapping into the documentation site as a dedicated bilingual section (`docs/docs/type-mapping/`) and remove the root `TYPE_MAPPING.md`.
+- Benchmark campaigns no longer run on CI runners, which are not a reliable performance reference: the GPU `foundations-v1` steps are gone from the suite workflow, the validation site is assembled without benchmark reports when absent (the Benchmarks page shows "No published measurements"), and campaigns are run by hand on chosen machines.
 - Suite reports (acid, demo, benchmark) carry the exact commit and version they were built from, and the runner fails closed on a missing or mismatched identity instead of attributing a report to the current checkout; inventory generation links every case entry to its source file on the Validation page.
 
 ### Removed

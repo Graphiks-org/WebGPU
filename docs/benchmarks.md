@@ -99,14 +99,15 @@ factor and no regression threshold in this increment.
 
 - A duration is not pure GPU time and depends on the runtime, the browser and the machine. Results
   from different environments are not a controlled comparison.
-- The CI collector runs Chromium with the SwiftShader flags; those results are software-backend
+- Benchmark campaigns are run by hand on chosen machines, never on shared CI runners, which are not
+  a reliable performance reference. Chromium with the SwiftShader flags produces software-backend
   functional observations, not physical-GPU performances. The `--backend=default` collector mode
   lets Chromium choose and records `default`, never `hardware`.
 - The compute workload is deliberately simple: the dispatches write the same values. It is not a
   model of a general GPU application.
 - No GPU timestamp query and no particle benchmark are part of this protocol.
 
-## Run the benchmarks locally
+## Run the benchmarks
 
 ```sh
 ./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
