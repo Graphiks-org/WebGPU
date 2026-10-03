@@ -1,6 +1,6 @@
 # Acid coverage and remaining contract gaps
 
-This document is the balance of the portable acid-test catalogue after the follow-up increment. It
+This document is the balance of the portable acid-test catalogue. It
 records what is validated, what is optional, what could not be exercised in the reference environment
 and what remains uncovered. It is a coverage statement for a defined catalogue, not a WebGPU
 conformance certificate.
@@ -45,45 +45,8 @@ All **125 mandatory cases pass** on both targets. The only non-passing case is o
 `compute.shader-f16` is `unsupported` because the environment lacks `ShaderF16`. It is not presented
 as evidence of support.
 
-The pinned Playwright/Chromium was updated to a release that implements the contract's four-character
-`DOMString` swizzle, so the optional `texture.view-swizzle` case is now executed rather than reported
-as an environment gap.
-
 Full command list, environment metadata and the raw reports are recorded in
 [verification.md](verification.md).
-
-## Disposition of the original uncovered behaviours
-
-The inventory started this increment with 23 uncovered entries. Each is now either covered by cases,
-kept as a precise residual, split, or removed as never testable (see Known limits). "Covered" means
-the case's assertions exercise the detailed
-behaviour; it does not mean every possible input is tested.
-
-| Original entry | Disposition |
-| --- | --- |
-| `adapter.request-and-capabilities` | Case `adapter.request-and-capabilities`; low-power hint and observable capabilities. |
-| `device.features-and-limits` | Cases A plus the per-device feature guard; residual kept (limits pinned, not enumerated). |
-| `device.request-required-features` | Related optional cases request and use their features; residual kept (refusal of an absent feature). |
-| `command.encoder-recording` | Covered by the B/E cases: order, finish, invalid reuse and labels. |
-| `command.debug-markers` | Case `command.debug-markers`; debugger display is not observable through the common API. |
-| `transfers.texture-copy-aspect` | Case `transfers.texture-copy-aspect` (Depth32Float DepthOnly); StencilOnly copy remains residual in `transfers.stencil-copy-aspect`. |
-| `shader.compilation-info` | Cases `shader.compilation-valid` / `shader.compilation-invalid`; exact positions/texts are not portable. |
-| `compute.pipeline-async` | Case `compute.pipeline-async`; ran and rejected without a captured scope error. |
-| `texture.creation` | Case `texture.creation-metadata`; residual `textureBindingViewDimension` and creation constraints kept. |
-| `texture.view-usage-aspect` | Case `texture.view-usage-restriction` and `texture.depth-aspect-load`; a StencilOnly *view* is kept as residual in `texture.view-usage-aspect`. |
-| `texture.view-swizzle` | Case `texture.view-swizzle` (optional); executed and passing in the reference environment. |
-| `sampler.comparison` | Case `sampler.comparison` (Less at a uniform depth); PCF and other compare functions remain residual in `sampling.comparison-pcf`. |
-| `texture.usage-and-formats` | Split: exercised usages/formats are tied to their cases; other formats and `TransientAttachment` remain residual. No enum-entry or flag-operator test was added. |
-| `render.color-resolve` | Covered by the existing MSAA case and `render.volume-depth-slice`. |
-| `render.pass-state` | Case `render.max-draw-count`, with an accepted witness. |
-| `render.primitive-and-multisample` | Covered by the D/F and existing cases; points, lines and partial masks remain residual. |
-| `render.depth-bias` | Cases `depth.bias-slope-clamp` and `depth.bias-constant`, with colour oracles. |
-| `render.pipeline-async` | Case `render.pipeline-async`; rendered and rejected. |
-| `query.render-timestamp-writes` | Case `query.render-timestamp-writes`; temporal precision is not proven. |
-| `errors.uncaptured-error` | Case `errors.uncaptured-error` on an isolated device, Validation category. |
-| `errors.device-lost` | Blocked by the contract: no `GPUDevice.lost` and no common loss callback; removed from the residual inventory as never testable (see Known limits). |
-| `async.promise-results` | Renamed to `async.oom-and-internal-results` (later removed as never testable): OOM/Internal errors are not portable; the pipeline `Result` paths are tested. |
-| `data.identifiers-and-indices` | References vented into the offset/region/index cases, including a negative `baseVertex`; 64-bit range remains residual. |
 
 ## Remaining residual inventory
 

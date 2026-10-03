@@ -151,7 +151,7 @@ generated `contract.md`, published at `suite/inventory/contract.md`.
   non-passing case is the optional `compute.shader-f16` (`unsupported`, missing `ShaderF16`); the
   optional `render.indirect-first-instance`, `queries.timestamp-resolve`,
   `query.render-timestamp-writes` and `texture.view-swizzle` pass. See
-  [acid-coverage.md](acid-coverage.md) for the disposition and residuals.
+  [acid-coverage.md](acid-coverage.md) for the coverage balance and residuals.
 - New contract: `AcidCase.run` takes an `AcidContext` (borrowed device plus a fresh-adapter factory).
   Context cases (`adapter.request-and-capabilities`, `device.required-limits`,
   `device.reject-excess-limit`, `errors.uncaptured-error`) request their own adapter and device and
