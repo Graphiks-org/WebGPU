@@ -66,7 +66,6 @@ The coverage balance, the residuals and the known limits of the evidence are in
   node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --benchmark --profile=ci --backend=swiftshader
   node tools/build-site.mjs
   ./gradlew check
-  node --test tools/build-inventory.test.mjs
   ```
 
 - Environment: `Chromium 153.0.8010.12` (Playwright 1.63.0) on `darwin`, headless with
@@ -88,8 +87,7 @@ The coverage balance, the residuals and the known limits of the evidence are in
   collector fails closed on a missing or mismatched identity.
 - Site: assembled with **884 symbols and 147 behaviours per locale**; each of the 132 case entries
   links to its source file.
-- Unit evidence: `node --test tools/build-inventory.test.mjs` passes 2/2 (residual/executable id
-  disjointness) and `./gradlew check` passes.
+- Unit evidence: `./gradlew check` passes.
 - Observed 2026-10-02.
 
 ## Oracle mutation evidence

@@ -67,7 +67,6 @@ Le bilan de couverture, les résidus et les limites connues de la preuve sont da
   node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --benchmark --profile=ci --backend=swiftshader
   node tools/build-site.mjs
   ./gradlew check
-  node --test tools/build-inventory.test.mjs
   ```
 
 - Environnement : `Chromium 153.0.8010.12` (Playwright 1.63.0) sur `darwin`, headless avec
@@ -89,8 +88,7 @@ Le bilan de couverture, les résidus et les limites connues de la preuve sont da
   `baseline.suiteVersion` ; le collecteur échoue fermé sur une identité manquante ou discordante.
 - Site : assemblé avec **884 symboles et 147 comportements par locale** ; chacune des 132 entrées de
   cas pointe vers son fichier source.
-- Preuves unitaires : `node --test tools/build-inventory.test.mjs` passe 2/2 (disjonction des ids
-  résidus/exécutables) et `./gradlew check` passe.
+- Preuves unitaires : `./gradlew check` passe.
 - Observé le 2026-10-02.
 
 ## Preuves de mutation des oracles
