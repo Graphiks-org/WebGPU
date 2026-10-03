@@ -556,7 +556,7 @@
     "textures.storage-constraints": "Les contraintes de format et d'accès des storage textures au-delà du cas exercé ne sont pas couvertes.",
     "formats.depth-and-packed": "Plusieurs formats de profondeur et de stencil, et les formats empaquetés, ne sont pas exercés.",
     "sampling.limits": "L'anisotropie et les limites de samplers ne sont pas exercées.",
-    "sampling.comparison-pcf": "Le PCF et les fonctions de comparaison autres que le cas sampler.comparison à profondeur uniforme ne sont pas exercés.",
+    "sampling.comparison-pcf": "Le filtrage pourcentage-plus-proche (percentage-closer filtering : un sampler de comparaison filtre des résultats de comparaison de profondeur plutôt que des valeurs, ce qui adoucit les bords d'ombre) et les fonctions de comparaison autres que le cas sampler.comparison à profondeur uniforme ne sont pas exercés.",
     "transfers.stencil-copy-aspect": "L'aspect de copie StencilOnly n'est pas exercé.",
     "render.primitive-and-multisample": "Les topologies triangle, le culling, le redémarrage de strip et un masque multisample sont exercés ; les points, les lignes et les masques partiels ne le sont pas.",
     "bundles.negative-validation": "La création de render bundles avec des attachements incompatibles n'est pas exercée négativement.",

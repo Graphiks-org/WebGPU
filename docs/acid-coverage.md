@@ -61,8 +61,10 @@ Validation page. The count is a result of scoping, not a target to drive to zero
   `textures.storage-constraints`, `formats.depth-and-packed`, `sampling.limits` — texture creation
   constraints, StencilOnly views, compressed/tiered/packed/depth formats, storage-texture
   constraints and sampler limits.
-- `sampling.comparison-pcf`, `transfers.stencil-copy-aspect` — PCF and comparison functions beyond
-  the uniform-depth case, and a StencilOnly texture copy aspect.
+- `sampling.comparison-pcf` — percentage-closer filtering (a comparison sampler filtering
+  depth-comparison results rather than depth values) and comparison functions beyond the
+  uniform-depth case.
+- `transfers.stencil-copy-aspect` — a StencilOnly texture copy aspect.
 - `render.primitive-and-multisample`, `bundles.negative-validation` — points/lines and partial
   masks, render-bundle negative validation.
 - `data.identifiers-and-indices` — the full 64-bit range of the size/index/coordinate aliases.

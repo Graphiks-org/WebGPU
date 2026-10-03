@@ -556,7 +556,7 @@
     "textures.storage-constraints": "Storage texture format and access constraints beyond the single exercised case are not covered.",
     "formats.depth-and-packed": "Several depth and stencil formats, and packed formats, are not exercised.",
     "sampling.limits": "Anisotropy and the sampler limits are not exercised.",
-    "sampling.comparison-pcf": "PCF and comparison functions other than the uniform-depth sampler.comparison case are not exercised.",
+    "sampling.comparison-pcf": "Percentage-closer filtering (a comparison sampler filtering depth-comparison results rather than depth values, which produces softened shadow edges) and comparison functions other than the uniform-depth sampler.comparison case are not exercised.",
     "transfers.stencil-copy-aspect": "A StencilOnly texture copy aspect is not exercised.",
     "render.primitive-and-multisample": "Triangle topologies, culling, strip restart and one multisample mask are exercised; points, lines and partial sample masks are not.",
     "bundles.negative-validation": "Render bundle creation with mismatched attachments is not exercised negatively.",
