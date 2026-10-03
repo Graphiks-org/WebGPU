@@ -29,16 +29,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 25
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Tests and checks
         run: ./gradlew --no-daemon check
-      - name: Report tooling tests
-        run: node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs
 
   # The Android target has no unit-test task in the KMP library plugin, so the ArrayBuffer
   # business matrix runs instrumented, on an emulator, as a peer of the other test targets.
@@ -66,8 +60,7 @@ jobs:
           api-level: 35
           arch: x86_64
           target: google_apis
-          # Only the business matrix runs on pull requests; the campaign test stays available to
-          # the local Android runner (tools/run-arraybuffer-android.mjs).
+          # Only the safety-check method of the test class runs on pull requests.
           script: ./gradlew --no-daemon :arraybuffer-benchmarks-android:connectedReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.graphiks.webgpu.benchmarks.runner.AndroidBenchmarkTest#arrayBufferSafetyChecks
       - name: Upload test reports
         if: ${{ always() }}

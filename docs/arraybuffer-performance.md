@@ -162,11 +162,11 @@ Native and Android, only competitive on JavaScript images (≈0.5–0.67) and ro
 There is no dedicated ArrayBuffer workflow. Pull requests run the standard **Tests** workflow
 (`.github/workflows/test.yml`): its `./gradlew check` matrix (Ubuntu, macOS, Windows) already covers
 the `webgpu-api` and `arraybuffer-benchmarks` suites, each host's native targets and
-`checkKotlinAbi`, and it runs the Node report-tooling tests. Its `android` job runs the instrumented
-`ArrayBufferAndroidBusinessCases` matrix on an emulator, mirroring the Android `ByteBuffer`
-implementation as a peer of the other test targets. No benchmark campaign runs on a pull request — a
-shared runner is not a performance reference: campaigns are run locally with the commands above, and
-durations are never a CI gate.
+`checkKotlinAbi`. Its `android` job runs the instrumented `ArrayBufferAndroidBusinessCases` matrix on
+an emulator, mirroring the Android `ByteBuffer` implementation as a peer of the other test targets.
+No benchmark campaign runs on a pull request — a shared runner is not a performance reference.
+Campaigns, their tooling and the tooling's unit tests belong to the machines where the campaigns are
+run; the commands are listed above, and durations are never a CI gate.
 
 ## Campaigns not executed in this increment
 
