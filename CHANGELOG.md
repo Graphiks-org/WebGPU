@@ -16,6 +16,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Finalize the browser acid tests at 123 cases (118 mandatory, five optional) covering adapter/device requests and error delivery, shader compilation and asynchronous pipelines, texture aspects, views and comparison sampling, primitive/face/depth-stencil state, submission and mapped-range lifetime, render timestamps, draw limits and alpha-to-coverage. The coverage balance, optional-feature status and remaining contract gaps are published in `docs/acid-coverage.md`.
 - Extend the browser acid tests to 132 cases (125 mandatory, seven optional) with a follow-up increment: storage-binding range length, `minBindingSize` rejection, post-bundle pass-state reset, partial texture initialization, discard re-initialization, min/mag filter selection, timestamp write-index validation for both pass types, and the unenabled `TimestampQuery` refusal.
 - French twins of the repo-level acid records: `docs/acid-coverage.fr.md` and `docs/verification.fr.md`, with the French site pages linking to them.
+- `arraybuffer-benchmarks`, an unpublished CPU measurement harness for `webgpu-api` memory operations: the `arraybuffer-cpu-v1` and `arraybuffer-cpu-writers-v1` protocols with JVM, JS, Wasm, Native and Android runners, report validators, a before/after comparator, an Android instrumentation host, and the `docs/arraybuffer-bounds.md` / `docs/arraybuffer-performance.md` guides.
 
 ### Fixed
 
@@ -23,6 +24,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - `webgpu-browser` omits zero-valued maximum limits from a `requiredLimits` record, so a device request never sends a limit the implementation does not expose (older Chromium rejects an unknown `maxImmediateSize` key). The two alignment limits are always sent: zero is an invalid alignment, not an unexposed limit, so a bad request is rejected rather than silently replaced by the default.
 - The browser suite runner pins Playwright 1.63.0 / Chromium 153, which implements the contract's four-character `DOMString` texture-view swizzle; `texture.view-swizzle` is executed instead of reported as an environment gap.
 - `webgpu-browser` omits an identity `GPUTextureViewDescriptor.swizzle` when creating a view, so a view built from a descriptor no longer sends a swizzle value in the form rejected by Chromium 140's pre-release dictionary encoding.
+- `webgpu-api` validates `ArrayBuffer` operations before touching memory: an out-of-range access throws `IndexOutOfBoundsException`, an unaligned offset, a non-divisible typed conversion or an unrepresentable allocation/wrapping size throws `IllegalArgumentException`, sizes are computed in a wide type before multiplication so nothing is silently truncated, a zero-length operation at `offset == size` is valid and never dereferences memory or builds a typed view, and a write rejected by these preconditions leaves the buffer unchanged. Capacities stay `Int.MAX_VALUE` bytes on Web, Android and Native and `Long.MAX_VALUE` bytes on the JVM.
 
 ### Changed
 

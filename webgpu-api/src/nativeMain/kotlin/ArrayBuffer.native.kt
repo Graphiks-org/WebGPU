@@ -281,6 +281,7 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the byte array
          */
         actual fun of(array: ByteArray): ArrayBuffer {
+            if (array.isEmpty()) return OpaquePointerArrayBuffer(0uL)
             val buffer = OpaquePointerArrayBuffer(array.size.toULong())
             buffer.setBytes(0u, array)
             return buffer
@@ -292,7 +293,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the short array
          */
         actual fun of(array: ShortArray): ArrayBuffer {
-            val buffer = OpaquePointerArrayBuffer((array.size * Short.SIZE_BYTES).toULong())
+            if (array.isEmpty()) return OpaquePointerArrayBuffer(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Short.SIZE_BYTES, Int.MAX_VALUE.toULong())
+            val buffer = OpaquePointerArrayBuffer(bytes)
             buffer.setShorts(0u, array)
             return buffer
         }
@@ -303,7 +306,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the int array
          */
         actual fun of(array: IntArray): ArrayBuffer {
-            val buffer = OpaquePointerArrayBuffer((array.size * Int.SIZE_BYTES).toULong())
+            if (array.isEmpty()) return OpaquePointerArrayBuffer(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Int.SIZE_BYTES, Int.MAX_VALUE.toULong())
+            val buffer = OpaquePointerArrayBuffer(bytes)
             buffer.setInts(0u, array)
             return buffer
         }
@@ -314,7 +319,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the float array
          */
         actual fun of(array: FloatArray): ArrayBuffer {
-            val buffer = OpaquePointerArrayBuffer((array.size * Float.SIZE_BYTES).toULong())
+            if (array.isEmpty()) return OpaquePointerArrayBuffer(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Float.SIZE_BYTES, Int.MAX_VALUE.toULong())
+            val buffer = OpaquePointerArrayBuffer(bytes)
             buffer.setFloats(0u, array)
             return buffer
         }
@@ -325,7 +332,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the double array
          */
         actual fun of(array: DoubleArray): ArrayBuffer {
-            val buffer = OpaquePointerArrayBuffer((array.size * Double.SIZE_BYTES).toULong())
+            if (array.isEmpty()) return OpaquePointerArrayBuffer(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Double.SIZE_BYTES, Int.MAX_VALUE.toULong())
+            val buffer = OpaquePointerArrayBuffer(bytes)
             buffer.setDoubles(0u, array)
             return buffer
         }
@@ -336,6 +345,7 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the unsigned byte array
          */
         actual fun of(array: UByteArray): ArrayBuffer {
+            if (array.isEmpty()) return OpaquePointerArrayBuffer(0uL)
             val buffer = OpaquePointerArrayBuffer(array.size.toULong())
             buffer.setUBytes(0u, array)
             return buffer
@@ -347,7 +357,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the unsigned short array
          */
         actual fun of(array: UShortArray): ArrayBuffer {
-            val buffer = OpaquePointerArrayBuffer((array.size * Short.SIZE_BYTES).toULong())
+            if (array.isEmpty()) return OpaquePointerArrayBuffer(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Short.SIZE_BYTES, Int.MAX_VALUE.toULong())
+            val buffer = OpaquePointerArrayBuffer(bytes)
             buffer.setUShorts(0u, array)
             return buffer
         }
@@ -358,7 +370,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the unsigned int array
          */
         actual fun of(array: UIntArray): ArrayBuffer {
-            val buffer = OpaquePointerArrayBuffer((array.size * Int.SIZE_BYTES).toULong())
+            if (array.isEmpty()) return OpaquePointerArrayBuffer(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Int.SIZE_BYTES, Int.MAX_VALUE.toULong())
+            val buffer = OpaquePointerArrayBuffer(bytes)
             buffer.setUInts(0u, array)
             return buffer
         }

@@ -10,6 +10,30 @@ package org.graphiks.webgpu
  *
  * This class is an abstraction for handling binary data in a format compatible with WebGPU,
  * allowing interoperability with GPU resources like buffers and textures.
+ *
+ * ## Sizes and capacities
+ *
+ * Public sizes stay [ULong]. For this increment each implementation caps its logical capacity at
+ * [Int.MAX_VALUE] bytes on Web, Android and Native, and [Long.MAX_VALUE] bytes on the JVM. These
+ * limits describe the current representations, not the platforms' theoretical capacities, and do
+ * not promise that an allocation succeeds. An allocation or wrapping size that is not
+ * representable is rejected with [IllegalArgumentException]; a real allocation failure surfaces as
+ * the platform error.
+ *
+ * ## Validation order
+ *
+ * An access validates its range, then the alignment of a non-empty operation, then the numeric
+ * conversion, and only then touches memory. An out-of-range access throws
+ * [IndexOutOfBoundsException]; an unaligned offset, a size not divisible by the element width, or
+ * an element count too large for a Kotlin array throws [IllegalArgumentException]. Size
+ * multiplications are computed in a wide type after a `count <= maximum / width` check.
+ *
+ * A zero-length operation at `offset == size` is valid and one past it fails. Empty operations
+ * never dereference a pointer and never create a typed view that would require alignment, so
+ * `allocate(0uL)` and `of(emptyArray)` work on every target. A write rejected by these
+ * preconditions leaves the whole memory unchanged; this is not a transactional guarantee against
+ * concurrent external changes. The checks only cover the declared range: an external pointer must
+ * still designate a real, large enough and live memory region.
  */
 expect sealed interface ArrayBuffer {
     /**

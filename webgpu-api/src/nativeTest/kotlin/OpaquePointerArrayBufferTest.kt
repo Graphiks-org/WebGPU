@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import org.graphiks.webgpu.ArrayBuffer
@@ -225,5 +226,64 @@ class OpaquePointerArrayBufferTest : FreeSpec({
             buffer.getByte(0u) shouldBe it.toByte()
         }
         // Then - no memory leaks should occur (this is verified by not crashing)
+    }
+
+    "ArrayBuffer.allocate() rejects a size this target cannot address" {
+        shouldThrow<IllegalArgumentException> { ArrayBuffer.allocate(4_294_967_296uL) }
+        shouldThrow<IllegalArgumentException> { ArrayBuffer.allocate(ULong.MAX_VALUE) }
+    }
+
+    "ArrayBuffer.wrap() rejects a borrowed size without reading it" {
+        val pointer = nativeHeap.allocArray<ByteVar>(4)
+        try {
+            shouldThrow<IllegalArgumentException> {
+                ArrayBuffer.wrap(pointer.reinterpret(), 4_294_967_296uL)
+            }
+        } finally {
+            nativeHeap.free(pointer)
+        }
+    }
+
+    "ArrayBuffer.wrap() does not widen the accessible range" {
+        val size = 16
+        val pointer = nativeHeap.allocArray<ByteVar>(size)
+        try {
+            val buffer = ArrayBuffer.wrap(pointer.reinterpret(), size.toULong())
+            buffer.setInt(12u, 1)
+            buffer.getInt(12u) shouldBe 1
+            shouldThrow<IndexOutOfBoundsException> { buffer.setInt(13u, 1) }
+            shouldThrow<IndexOutOfBoundsException> { buffer.getInt(16u) }
+            shouldThrow<IllegalArgumentException> { buffer.getInt(1u) }
+        } finally {
+            nativeHeap.free(pointer)
+        }
+    }
+
+    "a wrapped sub-range leaves its sentinels untouched" {
+        val size = 24
+        val pointer = nativeHeap.allocArray<ByteVar>(size)
+        try {
+            for (i in 0 until size) pointer[i] = 0x11
+            // Wrap only the central 16 bytes; the four-byte margins stay outside the contract.
+            val central = interpretCPointer<ByteVar>(pointer.rawValue + 4L)!!
+            val buffer = ArrayBuffer.wrap(central.reinterpret(), 16u)
+
+            buffer.setInts(0u, intArrayOf(1, 2, 3, 4))
+            buffer.getInt(12u) shouldBe 4
+            shouldThrow<IndexOutOfBoundsException> { buffer.setInts(13u, intArrayOf(1)) }
+            shouldThrow<IllegalArgumentException> { buffer.setInts(1u, intArrayOf(1)) }
+
+            for (i in 0 until 4) pointer[i] shouldBe 0x11.toByte()
+            for (i in 20 until 24) pointer[i] shouldBe 0x11.toByte()
+        } finally {
+            nativeHeap.free(pointer)
+        }
+    }
+
+    "ArrayBuffer.allocate() zero-initializes the owned memory" {
+        val buffer = ArrayBuffer.allocate(32u)
+        buffer.toByteArray() shouldBe ByteArray(32) { 0 }
+        buffer.getInt(0u) shouldBe 0
+        buffer.getDouble(0u) shouldBe 0.0
     }
 })
