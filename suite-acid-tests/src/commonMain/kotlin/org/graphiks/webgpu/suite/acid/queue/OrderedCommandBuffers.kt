@@ -49,11 +49,13 @@ suspend fun orderedCommandBuffers(device: GPUDevice) = withValidationScope(devic
                     encoder.copyBufferToBuffer(source, 0uL, intermediate, 0uL, 4uL)
                     encoder.finish()
                 }
-                val second = device.createCommandEncoder().use { encoder ->
-                    encoder.copyBufferToBuffer(intermediate, 0uL, output, 0uL, 4uL)
-                    encoder.finish()
-                }
+                // `use` owns `first` while the second buffer is created and submitted, so a failure
+                // on that path closes it exactly once.
                 first.use {
+                    val second = device.createCommandEncoder().use { encoder ->
+                        encoder.copyBufferToBuffer(intermediate, 0uL, output, 0uL, 4uL)
+                        encoder.finish()
+                    }
                     second.use { device.queue.submit(listOf(first, second)) }
                 }
 

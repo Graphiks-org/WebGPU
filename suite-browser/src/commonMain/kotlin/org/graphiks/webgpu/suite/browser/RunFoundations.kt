@@ -10,6 +10,7 @@ import org.graphiks.webgpu.browser.requestAdapter
 import org.graphiks.webgpu.descriptors.DeviceDescriptor
 import org.graphiks.webgpu.suite.AcidCase
 import org.graphiks.webgpu.suite.AcidContext
+import org.graphiks.webgpu.suite.acid.SuiteBuildIdentity
 import org.graphiks.webgpu.suite.acid.foundationCases
 
 /**
@@ -49,7 +50,11 @@ suspend fun runFoundations(caseIds: Set<String>? = null): BrowserReport {
         }
         results += result
     }
-    return BrowserReport(cases = results)
+    return BrowserReport(
+        buildCommit = SuiteBuildIdentity.COMMIT,
+        buildVersion = SuiteBuildIdentity.VERSION,
+        cases = results,
+    )
 }
 
 private suspend fun runCase(case: AcidCase): CaseResult {

@@ -21,6 +21,7 @@ import org.graphiks.webgpu.suite.AcidInput
 import org.graphiks.webgpu.suite.AcidTest
 import org.graphiks.webgpu.suite.acid.ApiSymbols
 import org.graphiks.webgpu.suite.acid.readBufferBytes
+import org.graphiks.webgpu.suite.acid.withValidationScope
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -88,41 +89,45 @@ suspend fun requiredLimits(context: AcidContext) {
                 "Device maxComputeWorkgroupSizeX ${device.limits.maxComputeWorkgroupSizeX} is below the requested ${requested.maxComputeWorkgroupSizeX}",
             )
 
-            device.createBuffer(
-                BufferDescriptor(4uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),
-            ).use { storage ->
-                device.createShaderModule(ShaderModuleDescriptor(code = WRITE_37_SHADER)).use { shader ->
-                    device.createComputePipeline(
-                        ComputePipelineDescriptor(compute = ProgrammableStage(shader)),
-                    ).use { pipeline ->
-                        pipeline.getBindGroupLayout(0u).use { layout ->
-                            device.createBindGroup(
-                                BindGroupDescriptor(
-                                    layout = layout,
-                                    entries = listOf(BindGroupEntry(0u, BufferBinding(storage))),
-                                ),
-                            ).use { group ->
-                                device.createCommandEncoder().use { encoder ->
-                                    val pass = encoder.beginComputePass()
-                                    pass.setPipeline(pipeline)
-                                    pass.setBindGroup(0u, group)
-                                    pass.dispatchWorkgroups(1u)
-                                    pass.end()
-                                    encoder.finish().use { device.queue.submit(listOf(it)) }
+            // The valid work runs inside a validation scope on this owned device, so a late
+            // validation error is delivered by the scope rather than inferred from the callback.
+            withValidationScope(device) {
+                device.createBuffer(
+                    BufferDescriptor(4uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),
+                ).use { storage ->
+                    device.createShaderModule(ShaderModuleDescriptor(code = WRITE_37_SHADER)).use { shader ->
+                        device.createComputePipeline(
+                            ComputePipelineDescriptor(compute = ProgrammableStage(shader)),
+                        ).use { pipeline ->
+                            pipeline.getBindGroupLayout(0u).use { layout ->
+                                device.createBindGroup(
+                                    BindGroupDescriptor(
+                                        layout = layout,
+                                        entries = listOf(BindGroupEntry(0u, BufferBinding(storage))),
+                                    ),
+                                ).use { group ->
+                                    device.createCommandEncoder().use { encoder ->
+                                        val pass = encoder.beginComputePass()
+                                        pass.setPipeline(pipeline)
+                                        pass.setBindGroup(0u, group)
+                                        pass.dispatchWorkgroups(1u)
+                                        pass.end()
+                                        encoder.finish().use { device.queue.submit(listOf(it)) }
+                                    }
                                 }
                             }
                         }
                     }
+
+                    val bytes = readBufferBytes(device, storage, 4uL)
+                    assertEquals(37, bytes[0].toInt() and 255, "The workgroup_size(1) kernel must write 37")
+                    assertEquals(0, bytes[1].toInt() and 255)
+                    assertEquals(0, bytes[2].toInt() and 255)
+                    assertEquals(0, bytes[3].toInt() and 255)
                 }
 
-                val bytes = readBufferBytes(device, storage, 4uL)
-                assertEquals(37, bytes[0].toInt() and 255, "The workgroup_size(1) kernel must write 37")
-                assertEquals(0, bytes[1].toInt() and 255)
-                assertEquals(0, bytes[2].toInt() and 255)
-                assertEquals(0, bytes[3].toInt() and 255)
+                device.queue.onSubmittedWorkDone().getOrThrow()
             }
-
-            device.queue.onSubmittedWorkDone().getOrThrow()
             assertTrue(
                 !unexpected.isCompleted,
                 "Requesting a limit equal to the adapter's must not report an uncaptured error",

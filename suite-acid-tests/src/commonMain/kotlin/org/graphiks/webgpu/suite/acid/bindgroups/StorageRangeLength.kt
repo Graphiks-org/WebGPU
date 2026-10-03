@@ -24,26 +24,30 @@ import org.graphiks.webgpu.suite.acid.readBufferBytes
 import org.graphiks.webgpu.suite.acid.withValidationScope
 import kotlin.test.assertContentEquals
 
-private const val UNIFORM_RANGE_SHADER = """
-struct Input { value: u32, pad0: u32, pad1: u32, pad2: u32 }
-
-@group(0) @binding(0) var<uniform> input: Input;
-@group(0) @binding(1) var<storage, read_write> output: array<u32>;
+private const val RANGE_LENGTH_SHADER = """
+@group(0) @binding(0) var<storage, read> a: array<u32>;
+@group(0) @binding(1) var<storage, read> b: array<u32>;
+@group(0) @binding(2) var<storage, read_write> out: array<u32>;
 
 @compute @workgroup_size(1)
 fn main() {
-    output[0] = input.value;
+    out[0] = arrayLength(&a);
+    out[1] = a[0];
+    out[2] = arrayLength(&b);
+    out[3] = b[0];
 }
 """
 
 /**
- * A buffer binding starts at its explicit offset, not at the buffer start: a uniform buffer holding 7
- * at byte 0 and 29 at the aligned offset reads back 29 when the binding starts at that alignment.
- * The allocation is exactly `alignment + 16`, so omitting the binding size would expose the same 16
- * bytes and this case does not witness `size`; that witness lives in `bindings.storage-range-length`.
+ * A buffer binding's explicit size bounds its runtime array length, and its offset selects the first
+ * word, even when the backing buffer is larger than either bound range: with a backing buffer of
+ * `alignment + 48` bytes, binding a (offset 0, size 16) reports `arrayLength` 4 and binding b (offset
+ * at the storage alignment, size 32) reports 8 with its first word taken from that offset. Omitting
+ * the explicit size would report the remaining buffer words instead, and ignoring the offset would
+ * read the wrong first word.
  */
 @AcidTest(
-    id = AcidCaseId.BindingsBufferRange,
+    id = AcidCaseId.BindingsStorageRangeLength,
     family = AcidFamily.BindGroupsLayouts,
     contract = [
         ApiSymbols.GPUDevice_createBindGroupLayout,
@@ -56,54 +60,51 @@ fn main() {
         ApiSymbols.GPUComputePassEncoder_dispatchWorkgroups,
     ],
 )
-suspend fun bufferBindingRange(device: GPUDevice) = withValidationScope(device) {
-    val alignment = device.limits.minUniformBufferOffsetAlignment.toULong()
+suspend fun storageRangeLength(device: GPUDevice) = withValidationScope(device) {
+    val alignment = device.limits.minStorageBufferOffsetAlignment.toULong()
+    val bufferBytes = alignment + 48uL
+    val words = UIntArray((bufferBytes / 4uL).toInt()) { index -> 100u + index.toUInt() }
+    words[0] = 7u
+    words[(alignment / 4uL).toInt()] = 29u
 
     device.createBuffer(
-        BufferDescriptor(alignment + 16uL, GPUBufferUsage.Uniform or GPUBufferUsage.CopyDst),
-    ).use { uniform ->
-        device.createBuffer(
-            BufferDescriptor(16uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),
-        ).use { output ->
-            device.queue.writeBuffer(uniform, 0uL, ArrayBuffer.of(uintArrayOf(7u)))
-            device.queue.writeBuffer(uniform, alignment, ArrayBuffer.of(uintArrayOf(29u)))
-
-            device.createShaderModule(ShaderModuleDescriptor(code = UNIFORM_RANGE_SHADER)).use { shader ->
+        BufferDescriptor(bufferBytes, GPUBufferUsage.Storage or GPUBufferUsage.CopyDst),
+    ).use { source ->
+        device.createBuffer(BufferDescriptor(16uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc)).use { output ->
+            device.queue.writeBuffer(source, 0uL, ArrayBuffer.of(words))
+            device.createShaderModule(ShaderModuleDescriptor(code = RANGE_LENGTH_SHADER)).use { shader ->
                 device.createBindGroupLayout(
                     BindGroupLayoutDescriptor(
                         entries = listOf(
                             BindGroupLayoutEntry(
                                 binding = 0u,
                                 visibility = GPUShaderStage.Compute,
-                                buffer = BufferBindingLayout(
-                                    type = GPUBufferBindingType.Uniform,
-                                    minBindingSize = 16uL,
-                                ),
+                                buffer = BufferBindingLayout(type = GPUBufferBindingType.ReadOnlyStorage, minBindingSize = 16uL),
                             ),
                             BindGroupLayoutEntry(
                                 binding = 1u,
                                 visibility = GPUShaderStage.Compute,
-                                buffer = BufferBindingLayout(
-                                    type = GPUBufferBindingType.Storage,
-                                    minBindingSize = 4uL,
-                                ),
+                                buffer = BufferBindingLayout(type = GPUBufferBindingType.ReadOnlyStorage, minBindingSize = 32uL),
+                            ),
+                            BindGroupLayoutEntry(
+                                binding = 2u,
+                                visibility = GPUShaderStage.Compute,
+                                buffer = BufferBindingLayout(type = GPUBufferBindingType.Storage, minBindingSize = 16uL),
                             ),
                         ),
                     ),
                 ).use { layout ->
                     device.createPipelineLayout(PipelineLayoutDescriptor(listOf(layout))).use { pipelineLayout ->
                         device.createComputePipeline(
-                            ComputePipelineDescriptor(
-                                compute = ProgrammableStage(shader),
-                                layout = pipelineLayout,
-                            ),
+                            ComputePipelineDescriptor(compute = ProgrammableStage(shader), layout = pipelineLayout),
                         ).use { pipeline ->
                             device.createBindGroup(
                                 BindGroupDescriptor(
                                     layout = layout,
                                     entries = listOf(
-                                        BindGroupEntry(0u, BufferBinding(uniform, offset = alignment, size = 16uL)),
-                                        BindGroupEntry(1u, BufferBinding(output)),
+                                        BindGroupEntry(0u, BufferBinding(source, offset = 0uL, size = 16uL)),
+                                        BindGroupEntry(1u, BufferBinding(source, offset = alignment, size = 32uL)),
+                                        BindGroupEntry(2u, BufferBinding(output)),
                                     ),
                                 ),
                             ).use { group ->
@@ -115,17 +116,16 @@ suspend fun bufferBindingRange(device: GPUDevice) = withValidationScope(device) 
                                     pass.end()
                                     encoder.finish().use { device.queue.submit(listOf(it)) }
                                 }
-                                val words = ArrayBuffer.of(readBufferBytes(device, output, 16uL)).toUIntArray()
-                                assertContentEquals(
-                                    uintArrayOf(29u, 0u, 0u, 0u),
-                                    words,
-                                    "The bound range starts at the aligned offset, so it reads 29 and not 7",
-                                )
                             }
                         }
                     }
                 }
             }
+            assertContentEquals(
+                uintArrayOf(4u, 7u, 8u, 29u),
+                ArrayBuffer.of(readBufferBytes(device, output, 16uL)).toUIntArray(),
+                "Explicit binding sizes must bound arrayLength and the offset must select the first word",
+            )
         }
     }
 }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.graphiks.webgpu.browser.requestAdapter
+import org.graphiks.webgpu.suite.acid.SuiteBuildIdentity
 import org.graphiks.webgpu.suite.acid.foundationCases
 import org.graphiks.webgpu.suite.benchmarks.BenchmarkProfile
 import org.graphiks.webgpu.suite.browser.benchmarks.showBenchmarkRouteError
@@ -76,6 +77,8 @@ private suspend fun runValidation() {
         throw cancelled
     } catch (failure: Throwable) {
         BrowserReport(
+            buildCommit = SuiteBuildIdentity.COMMIT,
+            buildVersion = SuiteBuildIdentity.VERSION,
             cases = foundationCases().map {
                 CaseResult(it.id.id, "not-run", "Runner could not complete")
             },
@@ -102,7 +105,11 @@ private suspend fun verifyParticles() {
             try {
                 val device = adapter.requestDevice().getOrThrow()
                 try {
-                    DemoReport(cases = particleGpuResults(device))
+                    DemoReport(
+                        buildCommit = SuiteBuildIdentity.COMMIT,
+                        buildVersion = SuiteBuildIdentity.VERSION,
+                        cases = particleGpuResults(device),
+                    )
                 } finally {
                     device.close()
                 }
@@ -121,6 +128,8 @@ private suspend fun verifyParticles() {
 }
 
 private fun failedDemoReport(diagnostic: String) = DemoReport(
+    buildCommit = SuiteBuildIdentity.COMMIT,
+    buildVersion = SuiteBuildIdentity.VERSION,
     cases = listOf(
         CaseResult(ComputeRenderReadbackId, "failed", diagnostic),
         CaseResult(BoundsPauseResetId, "failed", diagnostic),

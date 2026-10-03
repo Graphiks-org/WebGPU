@@ -14,6 +14,8 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - `org.graphiks:suite-benchmarks`, two portable measurement workloads (`transfer.write-buffer`, `compute.encode-submit`) with the explicit `foundations-v1` protocol and GPU readback checks, a `--benchmark` collector mode, and a bilingual Benchmarks page published under the suite site's `benchmarks/` path.
 - Extend the browser acid tests: targeted runs (`--cases=id1,id2` / `?cases=id1,id2` into `selected-<target>.json`), declared optional-feature reporting (`CaseResult.missingFeatures`, accepted as `unsupported` only for declared features), and new buffer, binding, transfer, texture-copy, texture-view, format, storage, sampling, render-command, blending, depth/stencil, advanced-command, error and optional-feature cases (eighty-three in total).
 - Finalize the browser acid tests at 123 cases (118 mandatory, five optional) covering adapter/device requests and error delivery, shader compilation and asynchronous pipelines, texture aspects, views and comparison sampling, primitive/face/depth-stencil state, submission and mapped-range lifetime, render timestamps, draw limits and alpha-to-coverage. The coverage balance, optional-feature status and remaining contract gaps are published in `docs/acid-coverage.md`.
+- Extend the browser acid tests to 132 cases (125 mandatory, seven optional) with a follow-up increment: storage-binding range length, `minBindingSize` rejection, post-bundle pass-state reset, partial texture initialization, discard re-initialization, min/mag filter selection, timestamp write-index validation for both pass types, and the unenabled `TimestampQuery` refusal.
+- French twins of the repo-level acid records: `docs/acid-coverage.fr.md` and `docs/verification.fr.md`, with the French site pages linking to them.
 
 ### Fixed
 
@@ -29,8 +31,10 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Drop the deprecated macOS x64 and watchOS x64 native targets.
 - Rename `webgpu-web` to `webgpu-web-bindings` and move generated descriptors and bindings to the `org.graphiks.webgpu.descriptors` and `org.graphiks.webgpu.bindings` packages.
 - Move the type mapping into the documentation site as a dedicated bilingual section (`docs/docs/type-mapping/`) and remove the root `TYPE_MAPPING.md`.
+- Suite reports (acid, demo, benchmark) carry the exact commit and version they were built from, and the runner fails closed on a missing or mismatched identity instead of attributing a report to the current checkout; inventory generation links every case entry to its source file on the Validation page.
 
 ### Removed
 
 - Remove the deprecated descriptor type aliases (`Size3D`, `ImageCopyTexture`, `ImageCopyBuffer`, `ColorAttachment`, `DepthStencilAttachment`).
+- Remove the four never-testable acid residuals (`errors.device-lost`, `immediates.set-immediates`, `features.not-exposed-by-reference-browser`, `async.oom-and-internal-results`) from the residual inventory: they have no portable case in this contract and stay documented as known limits in `docs/acid-coverage.md`.
 - Remove the redundant browser-target and public-ABI CI steps; `./gradlew check` already runs those tasks on every platform.

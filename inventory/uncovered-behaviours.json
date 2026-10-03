@@ -46,23 +46,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "features.not-exposed-by-reference-browser",
-    "family": "adapter/device/features/limits",
-    "contract": [
-      "GPUFeatureName"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "immediates.set-immediates",
-    "family": "adapter/device/features/limits",
-    "contract": [
-      "GPUSupportedLimits.maxImmediateSize",
-      "GPUBindingCommandsMixin.setImmediates"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "texture.creation",
     "family": "textures/views/samplers",
     "contract": [
@@ -120,6 +103,24 @@
     "requiredFeatures": []
   },
   {
+    "id": "sampling.comparison-pcf",
+    "family": "textures/views/samplers",
+    "contract": [
+      "GPUSamplerDescriptor.compare",
+      "GPUCompareFunction"
+    ],
+    "requiredFeatures": []
+  },
+  {
+    "id": "transfers.stencil-copy-aspect",
+    "family": "transferts buffers/textures",
+    "contract": [
+      "GPUTexelCopyTextureInfo.aspect",
+      "GPUTextureAspect.StencilOnly"
+    ],
+    "requiredFeatures": []
+  },
+  {
     "id": "render.primitive-and-multisample",
     "family": "pipelines/render state",
     "contract": [
@@ -130,38 +131,11 @@
     "requiredFeatures": []
   },
   {
-    "id": "render.discard-reinit",
-    "family": "rendu/passes/attachments",
-    "contract": [
-      "GPULoadOp",
-      "GPUStoreOp"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "bundles.negative-validation",
     "family": "render bundles",
     "contract": [
       "GPURenderBundleEncoder",
       "GPURenderBundleEncoderDescriptor"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "errors.device-lost",
-    "family": "erreurs/asynchronisme",
-    "contract": [
-      "GPUDeviceLostInfo",
-      "GPUDeviceLostReason"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "async.oom-and-internal-results",
-    "family": "erreurs/asynchronisme",
-    "contract": [
-      "GPUOutOfMemoryError",
-      "GPUInternalError"
     ],
     "requiredFeatures": []
   },

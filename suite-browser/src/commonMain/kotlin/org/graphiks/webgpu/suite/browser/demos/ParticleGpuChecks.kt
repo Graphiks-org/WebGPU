@@ -32,6 +32,8 @@ internal const val BoundsPauseResetId = "particles.bounds-pause-reset"
 @Serializable
 internal data class DemoReport(
     val schemaVersion: Int = 1,
+    val buildCommit: String,
+    val buildVersion: String,
     val cases: List<CaseResult>,
     val fatalError: String? = null,
 )
