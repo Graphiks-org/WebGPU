@@ -144,7 +144,7 @@ throws; the caller records the diagnostic and does not publish the samples as us
 
 ## CPU ArrayBuffer benchmarks
 
-Separately from the GPU `foundations-v1` protocol, the `arraybuffer-benchmarks` module measures the
-CPU cost of the `ArrayBuffer` bounds checks. Its contract and capacities are in
-[ArrayBuffer bounds and capacities](arraybuffer-bounds.md); the protocol, commands and the first
-before/after reading are in [ArrayBuffer CPU performance](arraybuffer-performance.md).
+The `arraybuffer-benchmarks` module measures the CPU cost of the `ArrayBuffer` bounds checks. Its
+contract and capacities are in [ArrayBuffer bounds and capacities](arraybuffer-bounds.md); the
+protocol, commands and the first before/after reading are in
+[ArrayBuffer CPU performance](arraybuffer-performance.md).

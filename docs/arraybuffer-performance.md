@@ -6,8 +6,8 @@ fails on a duration, only on a wrong result, a crash or an incomplete report.
 
 ## Protocol
 
-- Schema `arraybuffer-cpu-v1`, implemented in `arraybuffer-benchmarks`. It is distinct from the GPU
-  `foundations-v1` protocol.
+- Schema `arraybuffer-cpu-v1`, implemented in `arraybuffer-benchmarks`. These are CPU-only
+  measurements and are never compared with GPU-suite results.
 - Scenario id format: `<workload>.bytes-<bytes>.<variant>`.
 - Workloads: `scalar.write.i32`, `scalar.read.i32`, `scalar.write.f32`, `scatter.write.i32`,
   `bulk.bytes`, `bulk.floats`, `image.rgba8`, `vertices.p3n3uv2`.
