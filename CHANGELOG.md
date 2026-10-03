@@ -15,6 +15,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Extend the browser acid tests: targeted runs (`--cases=id1,id2` / `?cases=id1,id2` into `selected-<target>.json`), declared optional-feature reporting (`CaseResult.missingFeatures`, accepted as `unsupported` only for declared features), and new buffer, binding, transfer, texture-copy, texture-view, format, storage, sampling, render-command, blending, depth/stencil, advanced-command, error and optional-feature cases (eighty-three in total).
 - Finalize the browser acid tests at 123 cases (118 mandatory, five optional) covering adapter/device requests and error delivery, shader compilation and asynchronous pipelines, texture aspects, views and comparison sampling, primitive/face/depth-stencil state, submission and mapped-range lifetime, render timestamps, draw limits and alpha-to-coverage. The coverage balance, optional-feature status and remaining contract gaps are published in `docs/acid-coverage.md`.
 - Extend the browser acid tests to 132 cases (125 mandatory, seven optional) with a follow-up increment: storage-binding range length, `minBindingSize` rejection, post-bundle pass-state reset, partial texture initialization, discard re-initialization, min/mag filter selection, timestamp write-index validation for both pass types, and the unenabled `TimestampQuery` refusal.
+- French twins of the repo-level acid records: `docs/acid-coverage.fr.md` and `docs/verification.fr.md`, with the French site pages linking to them.
 
 ### Fixed
 
