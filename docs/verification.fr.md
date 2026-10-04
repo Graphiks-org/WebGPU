@@ -17,8 +17,8 @@ un certificat de conformité.
 
 L’inventaire est **généré à la construction** à partir des annotations de cas et des sources de
 l’API ; il n’est pas versionné. Le `symbols.tsv` généré liste **884 déclarations** sur 14 familles,
-et les fichiers localisés de comportements décrivent **147 comportements par locale** :
-**132 cas exécutables** et **15 résidus**. Le nombre de symboles est une simple mesure de surface :
+et les fichiers localisés de comportements décrivent **155 comportements par locale** :
+**147 cas exécutables** et **8 résidus**. Le nombre de symboles est une simple mesure de surface :
 ce n’est pas un pourcentage de conformité, et un symbole listé ne signifie jamais qu’il est testé.
 
 | Famille | Déclarations |
@@ -72,24 +72,24 @@ Le bilan de couverture, les résidus et les limites connues de la preuve sont da
 - Environnement : `Chromium 153.0.8010.12` (Playwright 1.63.0) sur `darwin`, headless avec
   `--enable-unsafe-webgpu --enable-unsafe-swiftshader --use-angle=swiftshader`. Ce sont des
   résultats fonctionnels sur backend logiciel, pas des résultats de GPU physique.
-- Résultat : **132 cas (125 obligatoires, 7 optionnels)**.
+- Résultat : **147 cas (138 obligatoires, 9 optionnels)**.
 
   | Cible | Passés | Unsupported | Échoués | Total |
   | --- | ---: | ---: | ---: | ---: |
-  | JS | 131 | 1 | 0 | 132 |
-  | Wasm JS | 131 | 1 | 0 | 132 |
+  | JS | 146 | 1 | 0 | 147 |
+  | Wasm JS | 146 | 1 | 0 | 147 |
 
-  Les **125 cas obligatoires passent** sur les deux cibles. Le seul cas non passant est l’optionnel
+  Les **138 cas obligatoires passent** sur les deux cibles. Le seul cas non passant est l’optionnel
   `compute.shader-f16`, `unsupported` parce que l’environnement ne dispose pas de `ShaderF16`.
 - Démos : **2/2 sur les deux cibles**. Scénarios de benchmark : **10/10 sur les deux cibles** (profil
   `ci`, 5 échantillons retenus par scénario).
 - Attribution des rapports : le `buildCommit` de chaque enveloppe égale `git rev-parse HEAD` à la
   construction et correspond au `baseline.commit` de l’inventaire, et le `buildVersion` correspond au
   `baseline.suiteVersion` ; le collecteur échoue fermé sur une identité manquante ou discordante.
-- Site : assemblé avec **884 symboles et 147 comportements par locale** ; chacune des 132 entrées de
+- Site : assemblé avec **884 symboles et 155 comportements par locale** ; chacune des 147 entrées de
   cas pointe vers son fichier source.
 - Preuves unitaires : `./gradlew check` passe.
-- Observé le 2026-10-02.
+- Observé le 2026-10-04.
 
 ## Preuves de mutation des oracles
 
@@ -184,7 +184,7 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
   node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
   ```
 
-- Collecteur : **131 réussis + 1 non pris en charge (`compute.shader-f16` optionnel) sur 132 en JS
+- Collecteur : **146 réussis + 1 non pris en charge (`compute.shader-f16` optionnel) sur 147 en JS
   et en Wasm**, et **2/2 cas de démo sur les deux cibles**.
 - Contrôles DOM manuels dans Chromium headless (Playwright, swiftshader) : EN et FR rendent le résumé
   (`2 passed · 0 failed · 0 unsupported — 2 cases` / `2 réussis · 0 échoués · 0 non pris en charge —

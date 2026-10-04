@@ -606,17 +606,13 @@
     }
   },
   "behaviours": {
-    "device.features-and-limits": "Les cas adapter et device vérifient un sous-ensemble choisi de limites et qu'un device ne peut pas dépasser son adapter ; l'espace complet des limites n'est pas énuméré.",
     "device.request-required-features": "Refuser une feature optionnelle réellement absente n'a pas de cas portable déterministe ; les features présentes dans l'environnement sont demandées et utilisées par leurs cas.",
-    "features.compressed-and-tiered": "Les features optionnelles de textures compressées et tiered sont déclarées dans le contrat mais pas exercées.",
-    "texture.creation": "Le cas de création vérifie les getters et l'utilisation d'une texture ; textureBindingViewDimension et les autres contraintes de création ne sont pas exercés.",
-    "texture.view-usage-aspect": "La restriction d'usage et une vue DepthOnly sont exercées ; une vue StencilOnly ne l'est pas.",
-    "texture.usage-and-formats": "Les usages et formats exercés sont reliés à leurs cas ; les formats compressés, tiers et autres, ainsi que TransientAttachment, restent non testés.",
-    "textures.storage-constraints": "Les contraintes de format et d'accès des storage textures au-delà du cas exercé ne sont pas couvertes.",
-    "formats.depth-and-packed": "Plusieurs formats de profondeur et de stencil, et les formats empaquetés, ne sont pas exercés.",
-    "sampling.limits": "L'anisotropie et les limites de samplers ne sont pas exercées.",
-    "sampling.comparison-pcf": "Le filtrage pourcentage-plus-proche (percentage-closer filtering : un sampler de comparaison filtre des résultats de comparaison de profondeur plutôt que des valeurs, ce qui adoucit les bords d'ombre) et les fonctions de comparaison autres que le cas sampler.comparison à profondeur uniforme ne sont pas exercés.",
-    "render.primitive-and-multisample": "Les topologies triangle, le culling, le redémarrage de strip et un masque multisample sont exercés ; les points, les lignes et les masques partiels ne le sont pas.",
-    "data.identifiers-and-indices": "Les valeurs d'offset, de région et d'index, dont un baseVertex négatif, sont exercées par leurs cas ; l'étendue 64 bits complète des alias ne l'est pas."
+    "features.compressed-and-tiered": "Le décodage d’un bloc BC1 est exercé avec TextureCompressionBC ; les features compressées ETC2 et ASTC et les features de formats tier1/tier2 sont déclarées dans le contrat mais pas exercées.",
+    "texture.creation": "Les contraintes de création par dimension de vue et nombre de couches sont exercées ; les contraintes de création restantes, comme les bornes de niveaux de mip et les règles de nombre d’échantillons, ne le sont pas.",
+    "texture.usage-and-formats": "TransientAttachment est exercé avec sa contrainte de compagnon et les formats compressés via le cas compressed-bc ; les formats tiered et les paires format-usage restantes ne le sont pas.",
+    "textures.storage-constraints": "Les refus storage côté format sont exercés ; les contraintes d’accès par format au-delà du cas write-only exercé ne sont pas couvertes.",
+    "formats.depth-and-packed": "Les cibles Depth16Unorm et RGB10A2Uint paqueté sont exercées ; les formats paquetés et de profondeur gated par feature, comme rg11b10ufloat et depth32float-stencil8, ne le sont pas.",
+    "sampling.comparison-pcf": "L’enveloppe de comparaison indépendante du filtrage et les deux directions de comparateur sont exercées sur une profondeur partagée ; la fraction filtrée exacte est dépendante de l’implémentation et n’est volontairement pas assertée.",
+    "data.identifiers-and-indices": "Les indices de tracé 32 bits pleine plage et la largeur de texture refusée sont exercés ; l’étendue 64 bits complète des alias de taille et d’offset ne l’est pas."
   }
 }

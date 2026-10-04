@@ -1,19 +1,5 @@
 [
   {
-    "id": "device.features-and-limits",
-    "family": "adapter/device/features/limits",
-    "contract": [
-      "GPUAdapter.requestDevice",
-      "GPUDevice",
-      "GPUDevice.features",
-      "GPUDevice.limits",
-      "GPUDevice.adapterInfo",
-      "GPUDevice.label",
-      "GPUObjectBase.label"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "device.request-required-features",
     "family": "adapter/device/features/limits",
     "contract": [
@@ -48,15 +34,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "texture.view-usage-aspect",
-    "family": "textures/views/samplers",
-    "contract": [
-      "GPUTextureViewDescriptor.aspect",
-      "GPUTextureAspect.StencilOnly"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "texture.usage-and-formats",
     "family": "textures/views/samplers",
     "contract": [
@@ -85,30 +62,11 @@
     "requiredFeatures": []
   },
   {
-    "id": "sampling.limits",
-    "family": "textures/views/samplers",
-    "contract": [
-      "GPUSamplerDescriptor.maxAnisotropy",
-      "GPUSupportedLimits.maxSamplersPerShaderStage"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "sampling.comparison-pcf",
     "family": "textures/views/samplers",
     "contract": [
       "GPUSamplerDescriptor.compare",
       "GPUCompareFunction"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "render.primitive-and-multisample",
-    "family": "pipelines/render state",
-    "contract": [
-      "GPUPrimitiveTopology.PointList",
-      "GPUPrimitiveTopology.LineList",
-      "GPUPrimitiveTopology.LineStrip"
     ],
     "requiredFeatures": []
   },
