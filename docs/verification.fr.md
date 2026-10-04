@@ -167,7 +167,7 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
   macOS ARM64 via ses tâches normales. Aucune exécution GPU native n’est effectuée dans ce dépôt ;
   cela appartient aux dépôts de bindings consommateurs, comme pour les acid tests.
 
-## Preuves du rapport lisible (2026-10-04)
+## Preuves du rapport lisible
 
 - La route de validation (`run/js|wasm/`) et la route de vérification de la démo rendent une ligne
   de résumé localisée (EN/FR, `?lang=` en priorité, puis la locale mémorisée), un tableau des cas avec
@@ -193,7 +193,6 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
   route de démo affiche son propre titre avec la section de validation masquée. Aucune erreur de page
   n’est journalisée. Avec les ressources de textes bloquées, la page affiche le JSON brut dans
   `#result` avec un diagnostic explicite dans la ligne de statut.
-- Observé le 2026-10-04.
 
 ## Preuves de benchmark (2026-09-28)
 

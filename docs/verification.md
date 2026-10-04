@@ -163,7 +163,7 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   macOS ARM64 through its normal tasks. No native GPU execution is performed in this repository; that
   belongs to the consuming binding repositories, as for the acid tests.
 
-## Readable report evidence (2026-10-04)
+## Readable report evidence
 
 - The validation route (`run/js|wasm/`) and the demo verification route render a localized (EN/FR,
   `?lang=` first, then the stored locale) summary line, a case table with coloured statuses and
@@ -189,7 +189,6 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   shows its own heading with the validation section hidden. No page error is logged. With the text
   resources blocked, the page shows the raw JSON in `#result` with an explicit diagnostic in the
   status line.
-- Observed 2026-10-04.
 
 ## Benchmark evidence (2026-09-28)
 
