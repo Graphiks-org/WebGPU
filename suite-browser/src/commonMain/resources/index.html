@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Graphiks WebGPU Suite</title>
     <style>
-        :root { color-scheme: light dark; }
+        :root {
+            color-scheme: light dark;
+            --ok: #1a7f37;
+            --fail: #b42318;
+            --warn: #8a6100;
+            --muted: #5c5c66;
+        }
         body { margin: 0; padding: 1rem; font-family: system-ui, sans-serif; line-height: 1.4; }
         .demo { max-width: 48rem; margin: 0 auto; display: grid; gap: 1rem; }
         .demo h1 { margin: 0; font-size: 1.5rem; }
@@ -25,16 +31,38 @@
         .benchmark-status { min-height: 1.4rem; }
         .benchmark-status[data-error="true"] { color: #c62828; font-weight: 600; }
         .benchmark-note { color: #555; }
-        .benchmark table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
-        .benchmark th, .benchmark td { border: 1px solid #ccc; padding: 0.25rem 0.4rem; text-align: left; }
-        @media (prefers-color-scheme: dark) { .benchmark-note { color: #aaa; } .benchmark th, .benchmark td { border-color: #555; } }
+        .benchmark table, .validation table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+        .benchmark th, .benchmark td, .validation th, .validation td {
+            border: 1px solid #ccc; padding: 0.25rem 0.4rem; text-align: left; vertical-align: top;
+        }
+        .validation { max-width: 64rem; margin: 0 auto; display: grid; gap: 1rem; }
+        .validation h1 { margin: 0; font-size: 1.5rem; }
+        .validation p { margin: 0; }
+        .validation-status { min-height: 1.4rem; }
+        .validation-fatal { color: var(--fail); font-weight: 600; white-space: pre-wrap; }
+        .validation-summary { font-size: 1.1rem; font-weight: 600; }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+        .status { font-weight: 600; white-space: nowrap; }
+        .status-passed { color: var(--ok); }
+        .status-failed { color: var(--fail); }
+        .status-unsupported { color: var(--warn); }
+        .status-not-run, .status-unknown { color: var(--muted); }
+        .validation-raw summary { cursor: pointer; }
+        .validation-raw pre { margin: 0.5rem 0 0; padding: 0.75rem; background: #f5f5f5; border-radius: 0.5rem; overflow-x: auto; font-size: 0.8rem; }
+        @media (prefers-color-scheme: dark) {
+            :root { --ok: #4ac26b; --fail: #ff7b72; --warn: #d4a72c; --muted: #a0a0aa; }
+            .benchmark-note { color: #aaa; }
+            .benchmark th, .benchmark td, .validation th, .validation td { border-color: #555; }
+            .validation-raw pre { background: #1e1e22; }
+        }
     </style>
 </head>
 <body>
-    <section id="validation">
-        <h1>Graphiks WebGPU Suite — Validation</h1>
-        <p>Runs the portable foundation acid tests against this browser's WebGPU implementation.</p>
-        <pre id="result">Running…</pre>
+    <section id="validation" class="validation">
+        <h1 id="validation-title">Graphiks WebGPU Suite — Validation</h1>
+        <p id="validation-description">Runs the portable foundation acid tests against this browser's WebGPU implementation.</p>
+        <p id="validation-status" role="status">Running…</p>
+        <pre id="result"></pre>
     </section>
     <main id="demo-root" hidden></main>
     <main id="benchmark-root" hidden></main>
