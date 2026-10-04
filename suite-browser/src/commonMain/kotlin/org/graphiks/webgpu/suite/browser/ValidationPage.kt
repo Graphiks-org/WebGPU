@@ -16,9 +16,9 @@ import org.graphiks.webgpu.suite.browser.demos.setText
  * The human-readable rendering of a case report, shared by the validation route and the demo
  * verification route.
  *
- * The runner already publishes the raw JSON in `globalThis.graphiksSuiteReport` and
- * `globalThis.graphiksDemoReport` for tooling; this page turns the same report into a summary, a
- * table and a folded raw block for a person. Everything dynamic is inserted with `textContent`,
+ * The runner publishes the raw JSON in `globalThis.graphiksSuiteReport` and
+ * `globalThis.graphiksDemoReport` for tooling; this page renders the report for a person as a
+ * summary, a table and a folded raw block. Everything dynamic is inserted with `textContent`,
  * never as HTML, and the localized texts come from `validation/texts.<locale>.json`.
  */
 @Serializable

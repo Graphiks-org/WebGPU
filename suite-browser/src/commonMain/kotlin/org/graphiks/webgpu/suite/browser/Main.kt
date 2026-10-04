@@ -33,11 +33,11 @@ import org.graphiks.webgpu.suite.browser.demos.showParticlesPage
  * profile, fails visibly rather than silently running nothing.
  *
  * The validation and demo-verification routes render the report for a person — summary, table and
- * the raw JSON folded below — and publish the identical compact JSON for tooling. When the
- * localized texts cannot be loaded they fall back to the raw JSON display instead of failing blank.
+ * the raw JSON folded below — and publish the compact JSON for tooling. When the localized texts
+ * cannot be loaded they show the raw JSON instead, never a blank or silent page.
  */
 
-/** The JSON shown to a person is pretty-printed; the JSON published for tooling stays compact. */
+/** The JSON shown to a person is pretty-printed; the JSON published for tooling is compact. */
 private val prettyJson = Json { prettyPrint = true }
 
 fun main() {
@@ -197,7 +197,7 @@ private fun publishSuiteReport(value: String): Unit = js("""{
     globalThis.graphiksSuiteReport = value;
 }""")
 
-/** The fallback when the localized texts cannot load: today's raw JSON display plus a diagnostic. */
+/** The display used when the localized texts cannot load: the raw JSON plus an explicit diagnostic. */
 private fun showRawReportFallback(value: String): Unit = js("""{
     var status = document.getElementById('validation-status');
     if (status) { status.textContent = 'Cannot load the page texts; the raw report is shown instead.'; }
@@ -209,7 +209,7 @@ private fun publishDemoReport(value: String): Unit = js("""{
     globalThis.graphiksDemoReport = value;
 }""")
 
-/** The demo fallback: the raw JSON display of today, prefixed with the diagnostic. */
+/** The demo fallback: the raw JSON prefixed with the diagnostic. */
 private fun showDemoRawReportFallback(value: String): Unit = js("""{
     var validation = document.getElementById('validation');
     if (validation) { validation.hidden = true; }
