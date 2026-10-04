@@ -60,8 +60,8 @@ bornes scalaires et en bloc, conversions vides) plus les tests de plateforme pou
 JVM et le pointeur Native. Le plugin KMP de bibliothèque Android n’expose pas de tâche de test
 unitaire, donc `commonTest` ne s’exécute jamais sur la cible Android : la matrice instrumentée
 Android dans `arraybuffer-android-instrumentation` (`ArrayBufferAndroidBusinessCases`, appelée par
-`runSafetyChecks`) reflète ces cas contre le vrai `ByteBuffer` direct sur ART et s’exécute sur
-chaque pull request. Tout cas ajouté à `commonTest` doit y être reflété. Lancez-les avec :
+`runSafetyChecks`) reflète ces cas contre le vrai `ByteBuffer` direct sur ART et est lancée à la
+main. Tout cas ajouté à `commonTest` doit y être reflété. Lancez-les avec :
 
 ```sh
 ./gradlew :webgpu-api:jvmTest :webgpu-api:jsNodeTest :webgpu-api:wasmJsNodeTest :webgpu-api:macosArm64Test

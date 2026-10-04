@@ -58,7 +58,7 @@ scalar and bulk bounds, empty conversions) plus the platform tests for the JVM `
 the Native pointer. The KMP Android library plugin exposes no unit-test task, so `commonTest` never
 executes on the Android target: the Android instrumented matrix in `arraybuffer-android-instrumentation`
 (`ArrayBufferAndroidBusinessCases`, called by `runSafetyChecks`) mirrors those cases against the real
-direct `ByteBuffer` on ART and runs on every pull request. Any case added to `commonTest` must be
+direct `ByteBuffer` on ART and is run by hand. Any case added to `commonTest` must be
 mirrored there. Run them with:
 
 ```sh

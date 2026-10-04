@@ -169,11 +169,10 @@ preuve.**
 
 Il n’y a pas de workflow ArrayBuffer dédié. Les pull requests exécutent le workflow standard
 **Tests** (`.github/workflows/test.yml`) : sa matrice `./gradlew check` (Ubuntu, macOS, Windows)
-couvre déjà les suites `webgpu-api` et `arraybuffer-benchmarks`, les cibles natives de chaque hôte
-et `checkKotlinAbi`. Son job `android` exécute la matrice instrumentée
-`ArrayBufferAndroidBusinessCases` sur un émulateur, en miroir de l’implémentation Android
-`ByteBuffer`, comme pair des autres cibles de test. Aucune campagne de mesure ne s’exécute sur une
-pull request — un runner partagé n’est pas une référence de performance. Les campagnes, leur
+couvre les suites `webgpu-api` et `arraybuffer-benchmarks`, les cibles natives de chaque hôte et
+`checkKotlinAbi`. La matrice instrumentée Android ne fait pas partie de la CI ; elle est lancée à
+la main sur un appareil ou un émulateur avec la commande documentée. Aucune campagne de mesure ne
+s’exécute sur une pull request — un runner partagé n’est pas une référence de performance. Les campagnes, leur
 outillage et les tests unitaires de cet outillage appartiennent aux machines où les campagnes sont
 lancées ; les commandes sont listées ci-dessus, et les durées ne sont jamais un critère de CI.
 
