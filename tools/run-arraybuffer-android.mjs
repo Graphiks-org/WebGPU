@@ -5,7 +5,7 @@
 //
 // The host app is not debuggable in release, so the report is read from the instrumentation status
 // stream (`arraybufferReport`), never through `run-as`. Build and install the host first:
-//   ./gradlew :arraybuffer-benchmarks-android:installRelease
+//   ./gradlew :arraybuffer-android-instrumentation:installRelease
 import { spawnSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';

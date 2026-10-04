@@ -46,8 +46,8 @@ node tools/run-arraybuffer-benchmarks.mjs wasm \
   --profile=standard --run-index=0 --output=build/reports/arraybuffer/baseline-wasm-run0.json
 
 # Android (emulator or device already connected)
-./gradlew :arraybuffer-benchmarks-android:installRelease \
-  :arraybuffer-benchmarks-android:installReleaseAndroidTest
+./gradlew :arraybuffer-android-instrumentation:installRelease \
+  :arraybuffer-android-instrumentation:installReleaseAndroidTest
 node tools/run-arraybuffer-android.mjs \
   --profile=standard --run-index=0 --output=build/reports/arraybuffer/baseline-android-run0.json
 

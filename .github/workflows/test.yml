@@ -61,10 +61,10 @@ jobs:
           arch: x86_64
           target: google_apis
           # Only the safety-check method of the test class runs on pull requests.
-          script: ./gradlew --no-daemon :arraybuffer-benchmarks-android:connectedReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.graphiks.webgpu.benchmarks.runner.AndroidBenchmarkTest#arrayBufferSafetyChecks
+          script: ./gradlew --no-daemon :arraybuffer-android-instrumentation:connectedReleaseAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.graphiks.webgpu.arraybuffer.ArrayBufferAndroidTest#arrayBufferSafetyChecks
       - name: Upload test reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: arraybuffer-android-tests
-          path: arraybuffer-benchmarks-android/build/reports/androidTests/
+          path: arraybuffer-android-instrumentation/build/reports/androidTests/

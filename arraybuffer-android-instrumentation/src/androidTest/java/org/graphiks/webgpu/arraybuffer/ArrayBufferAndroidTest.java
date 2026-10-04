@@ -1,4 +1,4 @@
-package org.graphiks.webgpu.benchmarks.runner;
+package org.graphiks.webgpu.arraybuffer;
 
 import android.os.Bundle;
 
@@ -10,11 +10,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Runs the ArrayBuffer campaign on device and hands the JSON report back through the
- * instrumentation status stream, keyed {@code arraybufferReport}.
+ * Instrumented ArrayBuffer tests on device. {@code runCampaign} executes a measurement campaign and
+ * hands the JSON report back through the instrumentation status stream (keyed {@code
+ * arraybufferReport}) for the local Android runner; {@code arrayBufferSafetyChecks} runs the
+ * business matrix and is what CI executes.
  */
 @RunWith(AndroidJUnit4.class)
-public class AndroidBenchmarkTest {
+public class ArrayBufferAndroidTest {
 
     @Test
     public void runCampaign() {
