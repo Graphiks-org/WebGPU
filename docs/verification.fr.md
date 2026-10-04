@@ -167,6 +167,40 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
   macOS ARM64 via ses tâches normales. Aucune exécution GPU native n’est effectuée dans ce dépôt ;
   cela appartient aux dépôts de bindings consommateurs, comme pour les acid tests.
 
+## Preuves du rapport lisible (2026-10-04)
+
+- La route de validation (`run/js|wasm/`) et la route de vérification de la démo ne déversent plus le
+  JSON brut dans la page. Elles rendent une ligne de résumé localisée (EN/FR, `?lang=` en priorité,
+  puis la locale mémorisée), un tableau des cas avec statuts colorés et diagnostics, et le JSON brut
+  pretty-printé dans un bloc `details` replié. Les chaînes publiées `graphiksSuiteReport` et
+  `graphiksDemoReport` restent un JSON compact identique octet par octet : seule la présentation DOM
+  a changé.
+- Commandes :
+
+  ```sh
+  ./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+  ./gradlew :suite-browser:check
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
+  ```
+
+- Collecteur inchangé : **131 réussis + 1 non pris en charge (`compute.shader-f16` optionnel) sur 132
+  en JS et en Wasm**, et **2/2 cas de démo sur les deux cibles** — les mêmes chiffres que la campagne
+  d’acid tests ci-dessus.
+- Preuves unitaires : les nouveaux tests communs de `suite-browser` (comptage des statuts, lignes de
+  résumé et de progression, normalisation des statuts) tournent sur `jsNodeTest`, `wasmJsNodeTest`,
+  `jsBrowserTest` et `wasmJsBrowserTest` (8 tests chacun, inclus dans `check`).
+- Contrôles DOM manuels dans Chromium headless (Playwright, swiftshader) : EN et FR rendent le résumé
+  (`2 passed · 0 failed · 0 unsupported — 2 cases` / `2 réussis · 0 échoués · 0 non pris en charge —
+  2 cas`), les lignes des cas affichent des statuts localisés, le JSON replié est pretty-printé, le
+  mode sombre garde sa palette, la distribution Wasm rend la même page, et la route de démo affiche
+  son propre titre avec la section de validation masquée. Aucune erreur de page n’a été journalisée.
+  Avec les ressources de textes bloquées, la page retombe sur le JSON brut dans `#result` avec un
+  diagnostic explicite dans la ligne de statut.
+- Observé le 2026-10-04.
+
 ## Preuves de benchmark (2026-09-28)
 
 - Commandes :

@@ -11,7 +11,14 @@ kotlin {
             commonWebpackConfig {
                 outputFileName = "suite.js"
             }
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
         }
+        nodejs()
+
         binaries.executable()
     }
 
@@ -21,7 +28,14 @@ kotlin {
             commonWebpackConfig {
                 outputFileName = "suite.js"
             }
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
         }
+        nodejs()
+
         binaries.executable()
         compilerOptions {
             optIn.add("kotlin.js.ExperimentalWasmJsInterop")
@@ -37,5 +51,27 @@ kotlin {
         implementation(libs.coroutines)
         implementation(libs.kotlinx.serialization.json)
         implementation(kotlin("test"))
+    }
+
+    sourceSets {
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
+
+        jsTest {
+            dependencies {
+                implementation(kotlin("test-js"))
+            }
+        }
+
+        wasmJsTest {
+            dependencies {
+                implementation(kotlin("test-wasm-js"))
+            }
+        }
     }
 }

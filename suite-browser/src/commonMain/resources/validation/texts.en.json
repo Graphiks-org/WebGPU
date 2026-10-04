@@ -1,0 +1,26 @@
+{
+  "title": "Graphiks WebGPU Suite — Validation",
+  "description": "Runs the portable foundation acid tests against this browser's WebGPU implementation. The results stay in this page; the raw report remains available folded below.",
+  "running": "Running case",
+  "summaryPassed": "passed",
+  "summaryFailed": "failed",
+  "summaryUnsupported": "unsupported",
+  "summaryNotRun": "not run",
+  "summaryUnknown": "unknown",
+  "summaryTotal": "{total} cases",
+  "fatal": "Fatal error",
+  "columnCase": "Case",
+  "columnStatus": "Status",
+  "columnDiagnostic": "Diagnostic",
+  "columnAdapter": "Adapter",
+  "rawSummary": "Raw report (JSON)",
+  "demoTitle": "Graphiks WebGPU Suite — Demo verification",
+  "demoDescription": "Runs the two GPU checks of the particle demo against this browser's WebGPU implementation.",
+  "statuses": {
+    "passed": "Passed",
+    "failed": "Failed",
+    "unsupported": "Unsupported",
+    "not-run": "Not run",
+    "unknown": "Unknown"
+  }
+}

@@ -163,6 +163,37 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   macOS ARM64 through its normal tasks. No native GPU execution is performed in this repository; that
   belongs to the consuming binding repositories, as for the acid tests.
 
+## Readable report evidence (2026-10-04)
+
+- The validation route (`run/js|wasm/`) and the demo verification route no longer dump the raw JSON in
+  the page. They render a localized (EN/FR, `?lang=` first, then the stored locale) summary line, a
+  case table with coloured statuses and diagnostics, and the raw JSON pretty-printed in a folded
+  `details` block. The published `graphiksSuiteReport` and `graphiksDemoReport` strings stay
+  byte-identical compact JSON: only the DOM presentation changed.
+- Commands:
+
+  ```sh
+  ./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+  ./gradlew :suite-browser:check
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
+  ```
+
+- Collector unchanged: **131 passed + 1 unsupported (optional `compute.shader-f16`) of 132 on JS and
+  on Wasm**, and **2/2 demo cases on both targets** — the same figures as the acid campaign above.
+- Unit evidence: the new common tests of `suite-browser` (status counts, summary and progress lines,
+  status normalization) run on `jsNodeTest`, `wasmJsNodeTest`, `jsBrowserTest` and `wasmJsBrowserTest`
+  (8 tests each, part of `check`).
+- Manual DOM checks in headless Chromium (Playwright, swiftshader): EN and FR render the summary
+  (`2 passed · 0 failed · 0 unsupported — 2 cases` / `2 réussis · 0 échoués · 0 non pris en charge —
+  2 cas`), the case rows show localized statuses, the folded JSON is pretty-printed, dark mode keeps
+  its palette, the Wasm distribution renders the same page, and the demo route shows its own heading
+  with the validation section hidden. No page error was logged. With the text resources blocked, the
+  page falls back to the raw JSON in `#result` with an explicit diagnostic in the status line.
+- Observed 2026-10-04.
+
 ## Benchmark evidence (2026-09-28)
 
 - Commands:

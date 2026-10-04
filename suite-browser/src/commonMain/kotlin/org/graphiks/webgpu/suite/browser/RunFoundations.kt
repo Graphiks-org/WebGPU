@@ -21,11 +21,17 @@ import org.graphiks.webgpu.suite.acid.foundationCases
  * only known case ids; an unknown id or an empty selection fails before any case runs, so a typo is
  * never silently executed as a full catalogue.
  *
+ * [onProgress] is called just before each case runs, with the 1-based number of the case now
+ * starting, the number of selected cases and the case id, so the page can show a progress line.
+ *
  * Cases run sequentially: `requestDevice` consumes its adapter, so the runner never asks one
  * adapter for two devices. A case that times out or throws is reported as `failed`; a missing
  * optional feature is reported as `unsupported` without running the case.
  */
-suspend fun runFoundations(caseIds: Set<String>? = null): BrowserReport {
+suspend fun runFoundations(
+    caseIds: Set<String>? = null,
+    onProgress: (current: Int, total: Int, id: String) -> Unit = { _, _, _ -> },
+): BrowserReport {
     val catalogue = foundationCases()
     val selected = if (caseIds == null) {
         catalogue
@@ -38,7 +44,8 @@ suspend fun runFoundations(caseIds: Set<String>? = null): BrowserReport {
     }
 
     val results = mutableListOf<CaseResult>()
-    for (case in selected) {
+    for ((index, case) in selected.withIndex()) {
+        onProgress(index + 1, selected.size, case.id.id)
         val result = try {
             withTimeout(30.seconds) { runCase(case) }
         } catch (timeout: TimeoutCancellationException) {
