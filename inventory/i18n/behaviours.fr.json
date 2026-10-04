@@ -554,19 +554,19 @@
     },
     "formats.depth16unorm-rgb10a2uint": {
       "title": "Rendre et relire depth16unorm et rgb10a2uint",
-      "expectation": "Un effacement Depth16Unorm copie son quantum de profondeur, et un rendu RGB10A2Uint paqueté relit le mot exact."
+      "expectation": "Un effacement Depth16Unorm copie son quantum de profondeur, et un rendu RGB10A2Uint paqueté relit le mot 10/10/10/2 exact de composantes au-delà de 255 — qu'aucune interprétation 8 bits ne peut produire."
     },
     "sampling.anisotropy-filters": {
       "title": "Valider les filtres d'un sampler anisotrope",
-      "expectation": "Un sampler dont maxAnisotropy dépasse 1 exige des filtres linéaires : un sampler linéaire est valide, un sampler nearest échoue la validation."
+      "expectation": "Un sampler dont maxAnisotropy dépasse 1 exige que chaque filtre soit linéaire : un sampler linéaire est valide, et chaque filtre laissé nearest isolément échoue la validation."
     },
     "sampler.comparison-pcf": {
       "title": "Filtrer les résultats de comparaison (PCF)",
-      "expectation": "Un sampler de comparaison linéaire sur une profondeur partagée renvoie la fraction de taps réussis au centre de la texture, tandis qu'une comparaison nearest reste binaire."
+      "expectation": "Sur une profondeur partagée entre 0,25 et 0,5, les références au-delà des deux bornes renvoient 1 ou 0 pour Less et l'inverse pour Greater quel que soit le filtrage de l'implémentation, et une comparaison nearest à une référence intermédiaire renvoie le résultat binaire de chaque tap."
     },
     "render.point-line-topology": {
       "title": "Dessiner des points et des lignes",
-      "expectation": "Un tracé point-list couvre exactement son pixel, et un tracé line-list couvre les pixels que son segment quitte : le pixel du point final reste non couvert par la règle diamond-exit."
+      "expectation": "Chaque pixel de la cible est comparé à l'ensemble exact des couvertures : un tracé point-list couvre son propre pixel, un tracé line-list couvre les pixels que son segment quitte, et le pixel du point final reste non couvert par la règle diamond-exit."
     },
     "render.msaa-partial-mask": {
       "title": "Résoudre un masque d'échantillons partiel",
@@ -578,11 +578,11 @@
     },
     "textures.storage-format-constraints": {
       "title": "Refuser l'usage storage sur les formats non storage",
-      "expectation": "Une texture RGBA8Unorm accepte StorageBinding tandis que Depth24Plus et Stencil8 échouent la validation avec cet usage."
+      "expectation": "Une texture RGBA8Unorm accepte StorageBinding avec TextureBinding, tandis que Depth24Plus et Stencil8 échouent la validation avec cette même paire : sans le bit storage la texture resterait un échantillon valide, donc les refus prouvent que le bit est honoré."
     },
     "bundles.negative-validation": {
       "title": "Refuser l'exécution d'un bundle incompatible",
-      "expectation": "Exécuter un bundle dans un pass dont les attachements ne correspondent pas à ses formats déclarés est une erreur de validation."
+      "expectation": "Un bundle enregistré contre RGBA8Unorm échoue la validation dans un pass à un attachement RGBA16Float et dans un pass valide à deux attachements RGBA8Unorm alors que le bundle n'en déclare qu'un."
     },
     "data.large-indices": {
       "title": "Transporter des indices et coordonnées pleine plage",
@@ -598,11 +598,11 @@
     },
     "features.subgroups": {
       "title": "Sommer à travers les subgroups",
-      "expectation": "Avec Subgroups accordée, un subgroupAdd sur un workgroup de 64 invocations renvoie la taille du subgroup, dans les bornes rapportées par l'adaptateur et cohérente par subgroup."
+      "expectation": "Avec Subgroups accordée, un subgroupAdd sur un workgroup de 64 invocations renvoie exactement la population de chaque subgroup — les invocations partageant un identifiant subgroupBroadcastFirst —, chaque subgroup reste sous la taille maximale de l'adaptateur, et les subgroups partitionnent le workgroup."
     },
     "texture.transient-usage": {
       "title": "Contraindre l'usage transient attachment",
-      "expectation": "TransientAttachment est valide avec RenderAttachment et échoue la validation seul."
+      "expectation": "TransientAttachment n'accepte que RenderAttachment comme compagnon : ajouter CopySrc à la paire échoue la validation tandis que RenderAttachment avec CopySrc reste valide, et l'usage transient seul échoue aussi."
     }
   },
   "behaviours": {

@@ -15,6 +15,7 @@ import org.graphiks.webgpu.suite.AcidCaseId
 import org.graphiks.webgpu.suite.AcidFamily
 import org.graphiks.webgpu.suite.AcidTest
 import org.graphiks.webgpu.suite.acid.ApiSymbols
+import org.graphiks.webgpu.suite.acid.assertChannel
 import org.graphiks.webgpu.suite.acid.assertPixel
 import org.graphiks.webgpu.suite.acid.createColorTarget
 import org.graphiks.webgpu.suite.acid.createRenderPipeline
@@ -33,9 +34,9 @@ private const val WHITE_SHADER = """
 /**
  * A 4x MSAA white fullscreen draw with the full sample mask resolves to pure white, while the same
  * draw with the partial mask `0b0101` covers only samples 0 and 2 of every pixel: the resolved
- * colour is about half the draw over the black clear — strictly between the two, never 0 and
- * never 255. The sibling `msaa.sample-mask-zero` proves the empty mask; this proves a genuinely
- * partial one.
+ * colour channels land one quantum around 127.5 — half the draw over the black clear — while
+ * alpha, opaque in both the clear and the draw, resolves to exactly 255. The sibling
+ * `msaa.sample-mask-zero` proves the empty mask; this proves a genuinely partial one.
  */
 @AcidTest(
     id = AcidCaseId.RenderMsaaPartialMask,
@@ -125,10 +126,16 @@ suspend fun msaaPartialMask(device: GPUDevice) = withValidationScope(device) {
                     }
 
                     val pixels = readRgba8(device, partialResolved, 16, 16)
-                    // Two of the four samples per pixel are white; the resolve is about half
-                    // brightness, and the tolerance only absorbs the resolve's rounding.
-                    assertPixel(pixels, 16, 8, 8, 128, 128, 128, 255, tolerance = 28)
-                    assertPixel(pixels, 16, 2, 13, 128, 128, 128, 255, tolerance = 28)
+                    // Two of the four samples per pixel are white, so the resolve lands one
+                    // quantum around 127.5 in each colour channel; alpha is opaque in both the
+                    // clear and the draw, so it resolves to exactly 255.
+                    for (pixel in listOf(Pair(8, 8), Pair(2, 13))) {
+                        val (x, y) = pixel
+                        assertChannel(pixels, 16, x, y, 0, 128, "red", tolerance = 1)
+                        assertChannel(pixels, 16, x, y, 1, 128, "green", tolerance = 1)
+                        assertChannel(pixels, 16, x, y, 2, 128, "blue", tolerance = 1)
+                        assertChannel(pixels, 16, x, y, 3, 255, "alpha")
+                    }
                 }
             }
         }

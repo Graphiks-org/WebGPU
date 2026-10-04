@@ -44,8 +44,7 @@ import org.graphiks.webgpu.suite.AcidTest
 import org.graphiks.webgpu.suite.acid.ApiSymbols
 import org.graphiks.webgpu.suite.acid.readBufferBytes
 import org.graphiks.webgpu.suite.acid.withValidationScope
-import kotlin.math.abs
-import kotlin.test.assertTrue
+import kotlin.test.assertContentEquals
 
 private const val SPLIT_DEPTH_SHADER = """
 @vertex fn splitMain(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {
@@ -65,21 +64,29 @@ private const val PCF_SHADER = """
 
 @compute @workgroup_size(1)
 fn main() {
-    // At the centre of the 2x2 depth texture a linear comparison sampler filters all four taps,
-    // so the result is the fraction of taps whose depth passes the comparison, not a binary edge.
-    result[0] = textureSampleCompareLevel(image, lessLinear, vec2f(0.5), 0.375);
-    result[1] = textureSampleCompareLevel(image, greaterLinear, vec2f(0.5), 0.375);
-    // With nearest filtering only the (0, 0) tap participates: 0.25 against 0.125 is binary.
-    result[2] = textureSampleCompareLevel(image, lessNearest, vec2f(0.25), 0.125);
+    // References beyond both depths are filter-independent: every tap passes or fails the same
+    // way however the implementation filters comparison results.
+    result[0] = textureSampleCompareLevel(image, lessLinear, vec2f(0.5), 0.125);
+    result[1] = textureSampleCompareLevel(image, lessLinear, vec2f(0.5), 0.75);
+    result[2] = textureSampleCompareLevel(image, greaterLinear, vec2f(0.5), 0.75);
+    result[3] = textureSampleCompareLevel(image, greaterLinear, vec2f(0.5), 0.125);
+    // With nearest filtering the single tap's comparison is binary: the between-depths
+    // reference 0.375 fails on the 0.25 tap and passes on the 0.5 tap.
+    result[4] = textureSampleCompareLevel(image, lessNearest, vec2f(0.25), 0.375);
+    result[5] = textureSampleCompareLevel(image, lessNearest, vec2f(0.75), 0.375);
 }
 """
 
 /**
  * A Depth32Float 2x2 target holds depth 0.25 in its left column and 0.5 in its right column — a
  * clear writes the first value and a depth-only draw writes the second. Comparison samplers then
- * observe percentage-closer filtering: at the texture centre a linear `Less` and a linear `Greater`
- * each return the fraction of passing taps, one half of them, instead of the binary 0/1 the
- * uniform-depth `sampler.comparison` case observes; a nearest comparison over one tap stays binary.
+ * observe percentage-closer comparison semantics over a split depth. The filtered result of a
+ * comparison sampler is implementation-dependent, so the case asserts the filter-independent
+ * envelope: with linear comparison samplers, a reference below both depths returns 1 for `Less`
+ * and 0 for `Greater`, and a reference above both depths returns the opposite, so the two
+ * comparators are told apart whatever the implementation's filtering. A nearest comparison at a
+ * between-depths reference returns each single tap's binary result — 0 on the 0.25 tap, 1 on the
+ * 0.5 tap — so the split depth is observed, not assumed.
  */
 @AcidTest(
     id = AcidCaseId.SamplerComparisonPcf,
@@ -180,7 +187,7 @@ suspend fun comparisonPcf(device: GPUDevice) = withValidationScope(device) {
                     SamplerDescriptor(compare = GPUCompareFunction.Less),
                 ).use { lessNearest ->
                     device.createBuffer(
-                        BufferDescriptor(12uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),
+                        BufferDescriptor(24uL, GPUBufferUsage.Storage or GPUBufferUsage.CopySrc),
                     ).use { output ->
                         device.createShaderModule(ShaderModuleDescriptor(code = PCF_SHADER)).use { shader ->
                             device.createBindGroupLayout(
@@ -212,7 +219,7 @@ suspend fun comparisonPcf(device: GPUDevice) = withValidationScope(device) {
                                         BindGroupLayoutEntry(
                                             binding = 4u,
                                             visibility = GPUShaderStage.Compute,
-                                            buffer = BufferBindingLayout(type = GPUBufferBindingType.Storage, minBindingSize = 12uL),
+                                            buffer = BufferBindingLayout(type = GPUBufferBindingType.Storage, minBindingSize = 24uL),
                                         ),
                                     ),
                                 ),
@@ -249,19 +256,14 @@ suspend fun comparisonPcf(device: GPUDevice) = withValidationScope(device) {
                             }
                         }
 
-                        val results = ArrayBuffer.of(readBufferBytes(device, output, 12uL)).toFloatArray()
+                        val results = ArrayBuffer.of(readBufferBytes(device, output, 24uL)).toFloatArray()
 
-                        assertTrue(
-                            abs(results[0] - 0.5f) <= 0.01f,
-                            "Linear Less PCF at the centre must return the passing fraction about 0.5, observed ${results[0]}",
-                        )
-                        assertTrue(
-                            abs(results[1] - 0.5f) <= 0.01f,
-                            "Linear Greater PCF at the centre must return the passing fraction about 0.5, observed ${results[1]}",
-                        )
-                        assertTrue(
-                            abs(results[2] - 1.0f) <= 1e-6f,
-                            "Nearest Less comparison over the 0.25 tap must stay binary 1.0, observed ${results[2]}",
+                        assertContentEquals(
+                            floatArrayOf(1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f),
+                            results,
+                            "Linear Less and Greater over the split depth must answer 1 and 0 for references beyond " +
+                                "both depths in opposite directions, and nearest taps at 0.375 must answer the " +
+                                "0.25 tap with 0 and the 0.5 tap with 1",
                         )
                     }
                 }

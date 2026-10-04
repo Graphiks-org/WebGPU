@@ -17,6 +17,7 @@ import org.graphiks.webgpu.suite.AcidTest
 import org.graphiks.webgpu.suite.acid.ApiSymbols
 import org.graphiks.webgpu.suite.acid.readBufferBytes
 import org.graphiks.webgpu.suite.acid.withValidationScope
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 private const val SUBGROUP_SHADER = """
@@ -25,19 +26,22 @@ enable subgroups;
 @group(0) @binding(0) var<storage, read_write> out: array<u32>;
 
 @compute @workgroup_size(64)
-fn main(@builtin(global_invocation_id) gid: vec3u, @builtin(subgroup_id) sg: u32) {
-    let size = subgroupAdd(1u);
-    out[2u * gid.x] = size;
-    out[2u * gid.x + 1u] = sg;
+fn main(@builtin(global_invocation_id) gid: vec3u) {
+    let count = subgroupAdd(1u);
+    let tag = subgroupBroadcastFirst(u32(gid.x));
+    out[2u * gid.x] = count;
+    out[2u * gid.x + 1u] = tag;
 }
 """
 
 /**
  * The optional `Subgroups` feature is exercised end to end: the granted device reports it, its
  * adapter identity exposes the subgroup size bounds, and a 64-invocation workgroup runs a
- * `subgroupAdd` whose result — the subgroup's own size — is read back per invocation. Every sum
- * lies within the reported bounds, invocations of the same subgroup agree on it, and the number of
- * distinct subgroups fits the bounds' arithmetic.
+ * `subgroupAdd(1u)` whose result — the active population of each subgroup — is read back per
+ * invocation. Every subgroup is identified by its `subgroupBroadcastFirst` identifier, the
+ * invocation-local sums are compared against the population counted CPU-side from the read
+ * identifiers, no subgroup exceeds the adapter's maximum size, and the subgroups partition the
+ * whole workgroup.
  *
  * Requires the optional `Subgroups` feature; the runner reports it as `unsupported` otherwise.
  */
@@ -93,28 +97,31 @@ suspend fun subgroups(device: GPUDevice) = withValidationScope(device) {
         }
 
         val words = ArrayBuffer.of(readBufferBytes(device, output, 512uL)).toUIntArray()
-        val sumBySubgroup = mutableMapOf<UInt, UInt>()
+        val countsByTag = mutableMapOf<UInt, MutableList<UInt>>()
         for (invocation in 0 until 64) {
-            val sum = words[2 * invocation]
-            val subgroup = words[2 * invocation + 1]
-            assertTrue(
-                sum >= minSize && sum <= maxSize,
-                "Invocation $invocation: subgroupAdd(1) must land within [$minSize, $maxSize], observed $sum",
-            )
-            val previous = sumBySubgroup.put(subgroup, sum)
-            assertTrue(
-                previous == null || previous == sum,
-                "Subgroup $subgroup reported the sums $previous and $sum from different invocations",
-            )
+            val count = words[2 * invocation]
+            val tag = words[2 * invocation + 1]
+            countsByTag.getOrPut(tag) { mutableListOf() }.add(count)
         }
-        val distinct = sumBySubgroup.size.toUInt()
+        var total = 0u
+        for ((tag, counts) in countsByTag) {
+            assertTrue(
+                counts.size.toUInt() <= maxSize,
+                "Subgroup tagged $tag reports ${counts.size} invocations, above the adapter's maximum subgroup size $maxSize",
+            )
+            counts.forEach { count ->
+                assertEquals(
+                    counts.size.toUInt(),
+                    count,
+                    "subgroupAdd(1u) must return subgroup $tag's own active population (${counts.size}), observed $count",
+                )
+            }
+            total += counts.size.toUInt()
+        }
+        assertEquals(64u, total, "The subgroups must partition the 64-invocation workgroup")
         assertTrue(
-            distinct >= (64u + maxSize - 1u) / maxSize,
-            "A 64-invocation workgroup needs at least ${(64u + maxSize - 1u) / maxSize} subgroups of at most $maxSize, observed $distinct",
-        )
-        assertTrue(
-            distinct <= (64u + minSize - 1u) / minSize,
-            "A 64-invocation workgroup cannot exceed ${(64u + minSize - 1u) / minSize} subgroups of at least $minSize, observed $distinct",
+            countsByTag.size.toUInt() >= (64u + maxSize - 1u) / maxSize,
+            "64 invocations cannot fit in fewer than ${(64u + maxSize - 1u) / maxSize} subgroups of at most $maxSize",
         )
     }
 }

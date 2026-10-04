@@ -16,8 +16,8 @@ import kotlin.test.assertIs
 /**
  * A sampler with `maxAnisotropy` 16 and all three filters linear is created without a validation
  * error, and a default-filter sampler with `maxAnisotropy` 1 stays valid. A sampler that asks for
- * anisotropy while any filter is `nearest` fails validation: anisotropic filtering requires
- * linear filtering, so `maxAnisotropy` 2 with the default filters reports a validation error.
+ * anisotropy fails validation with any single filter left `nearest` — each of the three is checked
+ * alone, so a validation that forgot only one of them still fails the case.
  */
 @AcidTest(
     id = AcidCaseId.SamplingAnisotropyFilters,
@@ -49,8 +49,46 @@ suspend fun anisotropyFilters(device: GPUDevice) = withValidationScope(device) {
 
     device.pushErrorScope(GPUErrorFilter.Validation)
     try {
-        // The default filters are nearest; anisotropy above 1 requires linear filters.
-        device.createSampler(SamplerDescriptor(maxAnisotropy = 2u)).close()
+        // Anisotropy above 1 requires every filter to be linear; each filter is checked alone so
+        // a validation that forgot only one of the three still fails the case.
+        device.createSampler(
+            SamplerDescriptor(
+                maxAnisotropy = 16u,
+                magFilter = GPUFilterMode.Nearest,
+                minFilter = GPUFilterMode.Linear,
+                mipmapFilter = GPUMipmapFilterMode.Linear,
+            ),
+        ).close()
+    } finally {
+        val error = device.popErrorScope().getOrThrow()
+        assertIs<GPUValidationError>(error)
+    }
+
+    device.pushErrorScope(GPUErrorFilter.Validation)
+    try {
+        device.createSampler(
+            SamplerDescriptor(
+                maxAnisotropy = 16u,
+                magFilter = GPUFilterMode.Linear,
+                minFilter = GPUFilterMode.Nearest,
+                mipmapFilter = GPUMipmapFilterMode.Linear,
+            ),
+        ).close()
+    } finally {
+        val error = device.popErrorScope().getOrThrow()
+        assertIs<GPUValidationError>(error)
+    }
+
+    device.pushErrorScope(GPUErrorFilter.Validation)
+    try {
+        device.createSampler(
+            SamplerDescriptor(
+                maxAnisotropy = 16u,
+                magFilter = GPUFilterMode.Linear,
+                minFilter = GPUFilterMode.Linear,
+                mipmapFilter = GPUMipmapFilterMode.Nearest,
+            ),
+        ).close()
     } finally {
         val error = device.popErrorScope().getOrThrow()
         assertIs<GPUValidationError>(error)

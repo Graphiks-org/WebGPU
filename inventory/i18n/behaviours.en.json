@@ -554,19 +554,19 @@
     },
     "formats.depth16unorm-rgb10a2uint": {
       "title": "Render and read back depth16unorm and rgb10a2uint",
-      "expectation": "A Depth16Unorm clear copies its depth quantum, and a packed RGB10A2Uint render reads back the exact packed word."
+      "expectation": "A Depth16Unorm clear copies its depth quantum, and a packed RGB10A2Uint render reads back the exact 10/10/10/2 word of components beyond 255 — an 8-bit interpretation cannot produce it."
     },
     "sampling.anisotropy-filters": {
       "title": "Validate anisotropic sampler filters",
-      "expectation": "A sampler with maxAnisotropy above 1 requires linear filters: a linear one is valid while a nearest one fails validation."
+      "expectation": "A sampler with maxAnisotropy above 1 requires every filter to be linear: a linear one is valid while any single filter left nearest fails validation, each checked alone."
     },
     "sampler.comparison-pcf": {
       "title": "Filter comparison results (PCF)",
-      "expectation": "A linear comparison sampler over a split depth returns the fraction of passing taps at the texture centre, while a nearest comparison stays binary."
+      "expectation": "Over a depth target split between 0.25 and 0.5, references beyond both depths return 1 or 0 for Less and the opposite for Greater whatever the implementation's filtering, and a nearest comparison at a between-depths reference returns each tap's binary result."
     },
     "render.point-line-topology": {
       "title": "Draw points and lines",
-      "expectation": "A point-list draw covers exactly its pixel, and a line-list draw covers the pixels its segment exits: the endpoint's centre pixel stays uncovered by the diamond-exit rule."
+      "expectation": "Every pixel of the target is compared against exactly the covered set: a point-list draw covers its own pixel, a line-list draw covers the pixels its segment exits, and the endpoint's centre pixel stays uncovered by the diamond-exit rule."
     },
     "render.msaa-partial-mask": {
       "title": "Resolve a partial sample mask",
@@ -578,11 +578,11 @@
     },
     "textures.storage-format-constraints": {
       "title": "Refuse storage usage on non-storage formats",
-      "expectation": "An RGBA8Unorm texture accepts StorageBinding while Depth24Plus and Stencil8 fail validation with that usage."
+      "expectation": "An RGBA8Unorm texture accepts StorageBinding alongside TextureBinding, while Depth24Plus and Stencil8 fail validation with that same pair: dropping the storage bit would leave a valid sampled texture, so the refusals prove the bit is honoured."
     },
     "bundles.negative-validation": {
       "title": "Refuse incompatible bundle execution",
-      "expectation": "Executing a bundle in a pass whose attachments do not match its declared formats is a validation error."
+      "expectation": "A bundle recorded against RGBA8Unorm fails validation in a pass with a single RGBA16Float attachment and in a valid two-attachment RGBA8Unorm pass while the bundle declares one."
     },
     "data.large-indices": {
       "title": "Carry full-range indices and coordinates",
@@ -598,11 +598,11 @@
     },
     "features.subgroups": {
       "title": "Sum across subgroups",
-      "expectation": "With Subgroups granted, a subgroupAdd over a 64-invocation workgroup returns the subgroup size, within the adapter's reported bounds and consistent per subgroup."
+      "expectation": "With Subgroups granted, a subgroupAdd over a 64-invocation workgroup returns exactly each subgroup's population — the invocations sharing a subgroupBroadcastFirst identifier — every subgroup stays within the adapter's maximum size, and the subgroups partition the workgroup."
     },
     "texture.transient-usage": {
       "title": "Constrain the transient attachment usage",
-      "expectation": "TransientAttachment is valid together with RenderAttachment and fails validation alone."
+      "expectation": "TransientAttachment accepts exactly RenderAttachment as its companion: adding CopySrc to the pair fails validation while RenderAttachment with CopySrc stays valid, and the transient usage alone fails too."
     }
   },
   "behaviours": {

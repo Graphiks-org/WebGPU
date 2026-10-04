@@ -18,7 +18,9 @@ import kotlin.test.assertTrue
  * A device requested with `requiredLimits` set to the adapter's own value for **every** limit of the
  * contract succeeds, and the granted device reports exactly those values: the whole limit space is
  * enumerated, requested and observed field by field, not just the one field the sibling
- * `device.required-limits` case pins. The core feature and the adapter identity are observed too.
+ * `device.required-limits` case pins. This observes the concordance of the granted device with the
+ * requested record — it is a state round trip, not an independent exercise of each limit — and the
+ * core feature and the adapter identity are observed too.
  */
 @AcidTest(
     id = AcidCaseId.DeviceFullLimitsSpace,

@@ -32,15 +32,16 @@ private const val PACKED_UINT_SHADER = """
     return vec4f(points[i], 0.5, 1.0);
 }
 
-@fragment fn fragmentMain() -> @location(0) vec4u { return vec4u(3u, 0u, 0u, 0u); }
+@fragment fn fragmentMain() -> @location(0) vec4u { return vec4u(1023u, 512u, 300u, 3u); }
 """
 
 /**
  * Two formats outside the exercised set render and read back. A Depth16Unorm target cleared to
  * 0.25 copies, through its depth aspect, the 16-bit unsigned-normalized quantum of that depth
  * (16383.75 rounds to 16384, so one quantum of tolerance is allowed). An RGB10A2Uint target
- * rendered with a `vec4u(3,0,0,0)` fragment copies the packed 10-bit red bits as the exact
- * little-endian word 3.
+ * rendered with a `vec4u(1023, 512, 300, 3)` fragment copies the exact 10/10/10/2 word 0xD2C803FF
+ * — components beyond 255 and a non-zero alpha, which no 8-bit-per-channel interpretation can
+ * produce.
  */
 @AcidTest(
     id = AcidCaseId.FormatsDepthAndPacked,
@@ -181,15 +182,20 @@ suspend fun depthAndPacked(device: GPUDevice) = withValidationScope(device) {
                 staging.mapAsync(GPUMapMode.Read).getOrThrow()
                 try {
                     val bytes = staging.getMappedRange().toByteArray()
+                    // The 10/10/10/2 word of (1023, 512, 300, 3): an 8-bit interpretation cannot
+                    // represent a component beyond 255, so the packed layout is observed.
+                    val expectedWord = 1023u or (512u shl 10) or (300u shl 20) or (3u shl 30)
                     for (texel in 0 until 16) {
                         val base = (texel / 4) * 256 + (texel % 4) * 4
-                        val word = (bytes[base].toInt() and 255) or
-                            ((bytes[base + 1].toInt() and 255) shl 8) or
-                            ((bytes[base + 2].toInt() and 255) shl 16) or
-                            ((bytes[base + 3].toInt() and 255) shl 24)
+                        val word = (bytes[base].toUInt() and 255u) or
+                            ((bytes[base + 1].toUInt() and 255u) shl 8) or
+                            ((bytes[base + 2].toUInt() and 255u) shl 16) or
+                            ((bytes[base + 3].toUInt() and 255u) shl 24)
                         assertTrue(
-                            word == 3,
-                            "RGB10A2Uint texel $texel: expected the packed word 3 but observed $word",
+                            word == expectedWord,
+                            "RGB10A2Uint texel $texel: expected the packed word 0x" +
+                                expectedWord.toString(16).uppercase() + " but observed 0x" +
+                                word.toString(16).uppercase(),
                         )
                     }
                 } finally {

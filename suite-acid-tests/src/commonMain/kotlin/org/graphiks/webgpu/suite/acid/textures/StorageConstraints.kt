@@ -16,8 +16,11 @@ import kotlin.test.assertIs
 
 /**
  * The `StorageBinding` usage is a creation constraint, not a property every format has: an
- * RGBA8Unorm texture created with it is valid, while the same usage on Depth24Plus and on Stencil8
- * fails validation because depth and stencil formats are never storage textures.
+ * RGBA8Unorm texture created with `StorageBinding` alongside `TextureBinding` is valid, while the
+ * same usage pair fails validation on Depth24Plus and on Stencil8 because depth and stencil formats
+ * are never storage textures. The negatives keep `TextureBinding` in the pair, so an
+ * implementation that dropped the storage bit would leave a valid sampled texture and the expected
+ * error would not arrive — the refusals prove the bit is honoured.
  */
 @AcidTest(
     id = AcidCaseId.TexturesStorageConstraints,
@@ -49,7 +52,7 @@ suspend fun storageConstraints(device: GPUDevice) = withValidationScope(device) 
             TextureDescriptor(
                 size = Extent3D(2u, 2u, 1u),
                 format = GPUTextureFormat.Depth24Plus,
-                usage = GPUTextureUsage.StorageBinding,
+                usage = GPUTextureUsage.StorageBinding or GPUTextureUsage.TextureBinding,
             ),
         ).close()
     } finally {
@@ -63,7 +66,7 @@ suspend fun storageConstraints(device: GPUDevice) = withValidationScope(device) 
             TextureDescriptor(
                 size = Extent3D(2u, 2u, 1u),
                 format = GPUTextureFormat.Stencil8,
-                usage = GPUTextureUsage.StorageBinding,
+                usage = GPUTextureUsage.StorageBinding or GPUTextureUsage.TextureBinding,
             ),
         ).close()
     } finally {

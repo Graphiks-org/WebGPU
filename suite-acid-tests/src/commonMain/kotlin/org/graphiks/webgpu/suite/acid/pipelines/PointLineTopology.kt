@@ -34,11 +34,11 @@ private const val POINT_LINE_SHADER = """
 
 /**
  * A point-list pipeline draws one point at the centre of pixel (2, 2) of an 8x8 target, and a
- * line-list pipeline draws a horizontal line through the centres of the row-0 pixels 0 to 3. The
- * readback shows exactly the covered pixels: one pixel for the point, the line pixels its segment
- * enters and exits, and nothing else. The line's endpoint sits at the centre of pixel (3, 0):
- * the diamond-exit rule covers a pixel only when the segment leaves its diamond, so that final
- * pixel stays black — the endpoint rule is observed, not assumed.
+ * line-list pipeline draws a horizontal line through the centres of the row-0 pixels 0 to 3. Every
+ * pixel of the target is compared against exactly the covered set: one pixel for the point, the
+ * line pixels its segment enters and exits, and nothing else. The line's endpoint sits at the
+ * centre of pixel (3, 0): the diamond-exit rule covers a pixel only when the segment leaves its
+ * diamond, so that final pixel stays black — the endpoint rule is observed, not assumed.
  */
 @AcidTest(
     id = AcidCaseId.RenderPointLineTopology,
@@ -102,18 +102,18 @@ suspend fun pointLineTopology(device: GPUDevice) = withValidationScope(device) {
                 }
 
                 val pixels = readRgba8(device, target, 8, 8)
-                // The point covers exactly its own pixel.
-                assertPixel(pixels, 8, 2, 2, 255, 0, 0, 255)
-                assertPixel(pixels, 8, 1, 1, 0, 0, 0, 255)
-                assertPixel(pixels, 8, 3, 3, 0, 0, 0, 255)
-                // The horizontal line covers the row-0 pixels its segment exits (0 to 2); the
-                // endpoint at the centre of (3, 0) never exits that diamond, so it stays black.
-                assertPixel(pixels, 8, 0, 0, 255, 0, 0, 255)
-                assertPixel(pixels, 8, 1, 0, 255, 0, 0, 255)
-                assertPixel(pixels, 8, 2, 0, 255, 0, 0, 255)
-                assertPixel(pixels, 8, 3, 0, 0, 0, 0, 255)
-                assertPixel(pixels, 8, 4, 0, 0, 0, 0, 255)
-                assertPixel(pixels, 8, 1, 1, 0, 0, 0, 255)
+                // Every pixel of the target is compared against exactly the covered set: the
+                // point's own pixel, the line's exited pixels and nothing else.
+                for (y in 0 until 8) {
+                    for (x in 0 until 8) {
+                        val covered = (x == 2 && y == 2) || (y == 0 && x <= 2)
+                        if (covered) {
+                            assertPixel(pixels, 8, x, y, 255, 0, 0, 255)
+                        } else {
+                            assertPixel(pixels, 8, x, y, 0, 0, 0, 255)
+                        }
+                    }
+                }
             }
         }
     }

@@ -21,8 +21,9 @@ import kotlin.test.assertIs
 
 /**
  * A render bundle recorded against RGBA8Unorm is not executable everywhere: executing it in a pass
- * whose colour attachment is RGBA16Float fails validation, and executing it in a pass with no
- * colour attachment fails too. Both errors are captured by an error scope around the submission.
+ * whose colour attachment is RGBA16Float fails validation, and so does executing it in a pass with
+ * two RGBA8Unorm colour attachments while the bundle declares one. Both passes are valid on their
+ * own, so the captured errors come from the bundle's compatibility, not from the passes.
  */
 @AcidTest(
     id = AcidCaseId.BundlesNegativeValidation,
@@ -77,18 +78,56 @@ suspend fun bundlesNegativeValidation(device: GPUDevice) {
                 assertIs<GPUValidationError>(mismatch)
             }
 
-            // A pass with no colour attachment while the bundle declares one.
-            device.pushErrorScope(GPUErrorFilter.Validation)
-            try {
-                device.createCommandEncoder().use { encoder ->
-                    val pass = encoder.beginRenderPass(RenderPassDescriptor(colorAttachments = emptyList()))
-                    pass.executeBundles(listOf(bundle))
-                    pass.end()
-                    encoder.finish().use { device.queue.submit(listOf(it)) }
+            // A pass with two RGBA8Unorm colour attachments while the bundle declares one: the
+            // pass is valid on its own, so the refusal can only come from the bundle's formats.
+            device.createTexture(
+                TextureDescriptor(
+                    size = Extent3D(4u, 4u, 1u),
+                    format = GPUTextureFormat.RGBA8Unorm,
+                    usage = GPUTextureUsage.RenderAttachment or GPUTextureUsage.CopySrc,
+                ),
+            ).use { firstTarget ->
+                firstTarget.createView().use { firstView ->
+                    device.createTexture(
+                        TextureDescriptor(
+                            size = Extent3D(4u, 4u, 1u),
+                            format = GPUTextureFormat.RGBA8Unorm,
+                            usage = GPUTextureUsage.RenderAttachment or GPUTextureUsage.CopySrc,
+                        ),
+                    ).use { secondTarget ->
+                        secondTarget.createView().use { secondView ->
+                            device.pushErrorScope(GPUErrorFilter.Validation)
+                            try {
+                                device.createCommandEncoder().use { encoder ->
+                                    val pass = encoder.beginRenderPass(
+                                        RenderPassDescriptor(
+                                            colorAttachments = listOf(
+                                                RenderPassColorAttachment(
+                                                    view = firstView,
+                                                    loadOp = GPULoadOp.Clear,
+                                                    storeOp = GPUStoreOp.Store,
+                                                    clearValue = Color(0.0, 0.0, 0.0, 1.0),
+                                                ),
+                                                RenderPassColorAttachment(
+                                                    view = secondView,
+                                                    loadOp = GPULoadOp.Clear,
+                                                    storeOp = GPUStoreOp.Store,
+                                                    clearValue = Color(0.0, 0.0, 0.0, 1.0),
+                                                ),
+                                            ),
+                                        ),
+                                    )
+                                    pass.executeBundles(listOf(bundle))
+                                    pass.end()
+                                    encoder.finish().use { device.queue.submit(listOf(it)) }
+                                }
+                            } finally {
+                                val count = device.popErrorScope().getOrThrow()
+                                assertIs<GPUValidationError>(count)
+                            }
+                        }
+                    }
                 }
-            } finally {
-                val missing = device.popErrorScope().getOrThrow()
-                assertIs<GPUValidationError>(missing)
             }
         }
     }

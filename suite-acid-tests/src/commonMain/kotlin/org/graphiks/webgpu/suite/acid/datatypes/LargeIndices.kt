@@ -53,8 +53,13 @@ struct IndexOut {
 }
 
 @vertex fn offsetMain(@builtin(vertex_index) vertexIndex: u32) -> @builtin(position) vec4f {
-    // The draw passes firstVertex 2^30, so the geometry only exists when vertex_index carries it.
+    // The draw passes firstVertex 2^30, so vertex_index must carry it for local to land in range;
+    // an offset that does not reach the shader puts the vertex outside the clip volume, a
+    // spec-defined place, instead of relying on an out-of-bounds array read.
     let local = vertexIndex - 0x40000000u;
+    if (local >= 3u) {
+        return vec4f(0.0, 0.0, 2.0, 1.0);
+    }
     let points = array<vec2f,3>(vec2f(-1,-1), vec2f(3,-1), vec2f(-1,3));
     return vec4f(points[local], 0.5, 1.0);
 }
