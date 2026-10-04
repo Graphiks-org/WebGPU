@@ -552,7 +552,7 @@
       "title": "Copy the stencil aspect",
       "expectation": "A copy with aspect StencilOnly returns the cleared stencil bytes exactly and leaves the rest of the destination intact."
     },
-    "formats.depth-and-packed": {
+    "formats.depth16unorm-rgb10a2uint": {
       "title": "Render and read back depth16unorm and rgb10a2uint",
       "expectation": "A Depth16Unorm clear copies its depth quantum, and a packed RGB10A2Uint render reads back the exact packed word."
     },
@@ -576,7 +576,7 @@
       "title": "Constrain the view dimension by the texture",
       "expectation": "A TwoDArray view of a 2D array, a TwoD view and a six-layer Cube view are valid; a Cube view of four layers and a ThreeD view of a 2D texture fail validation."
     },
-    "textures.storage-constraints": {
+    "textures.storage-format-constraints": {
       "title": "Refuse storage usage on non-storage formats",
       "expectation": "An RGBA8Unorm texture accepts StorageBinding while Depth24Plus and Stencil8 fail validation with that usage."
     },
@@ -609,7 +609,6 @@
     "device.features-and-limits": "The adapter and device cases check a pinned subset of limits and that a device cannot exceed its adapter; the full limit space is not enumerated.",
     "device.request-required-features": "Refusing a genuinely absent optional feature has no deterministic portable case; the features present in the environment are requested and used by their cases.",
     "features.compressed-and-tiered": "Compressed-texture and tiered optional features are declared in the contract but not exercised.",
-    "features.subgroups": "Subgroup features and the reported subgroup sizes are not exercised.",
     "texture.creation": "The creation case checks the getters and usability of one texture; textureBindingViewDimension and the remaining creation constraints are not exercised.",
     "texture.view-usage-aspect": "Usage restriction and a DepthOnly view are exercised; a StencilOnly view is not.",
     "texture.usage-and-formats": "The exercised usages and formats are tied to their cases; compressed, tiered and other formats, plus TransientAttachment, remain untested.",
@@ -617,9 +616,7 @@
     "formats.depth-and-packed": "Several depth and stencil formats, and packed formats, are not exercised.",
     "sampling.limits": "Anisotropy and the sampler limits are not exercised.",
     "sampling.comparison-pcf": "Percentage-closer filtering (a comparison sampler filtering depth-comparison results rather than depth values, which produces softened shadow edges) and comparison functions other than the uniform-depth sampler.comparison case are not exercised.",
-    "transfers.stencil-copy-aspect": "A StencilOnly texture copy aspect is not exercised.",
     "render.primitive-and-multisample": "Triangle topologies, culling, strip restart and one multisample mask are exercised; points, lines and partial sample masks are not.",
-    "bundles.negative-validation": "Render bundle creation with mismatched attachments is not exercised negatively.",
     "data.identifiers-and-indices": "Offset, region and index values, including a negative baseVertex, are exercised by their cases; the full 64-bit range of the aliases is not."
   }
 }

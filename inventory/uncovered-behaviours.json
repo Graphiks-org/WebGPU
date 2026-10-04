@@ -37,15 +37,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "features.subgroups",
-    "family": "adapter/device/features/limits",
-    "contract": [
-      "GPUAdapterInfo.subgroupMinSize",
-      "GPUAdapterInfo.subgroupMaxSize"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "texture.creation",
     "family": "textures/views/samplers",
     "contract": [
@@ -112,30 +103,12 @@
     "requiredFeatures": []
   },
   {
-    "id": "transfers.stencil-copy-aspect",
-    "family": "transferts buffers/textures",
-    "contract": [
-      "GPUTexelCopyTextureInfo.aspect",
-      "GPUTextureAspect.StencilOnly"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "render.primitive-and-multisample",
     "family": "pipelines/render state",
     "contract": [
       "GPUPrimitiveTopology.PointList",
       "GPUPrimitiveTopology.LineList",
       "GPUPrimitiveTopology.LineStrip"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "bundles.negative-validation",
-    "family": "render bundles",
-    "contract": [
-      "GPURenderBundleEncoder",
-      "GPURenderBundleEncoderDescriptor"
     ],
     "requiredFeatures": []
   },
