@@ -120,7 +120,7 @@ function renderChrome(baseline, behaviours, reports) {
   for (const [target, label] of [['js', 'JS'], ['wasm', 'Wasm']]) {
     const item = document.createElement('li');
     const link = el('a', t.runLabel(label));
-    link.href = `./run/${target}/`;
+    link.href = `./run/${target}/?lang=${locale}`;
     item.append(link);
     runLinks.append(item);
   }

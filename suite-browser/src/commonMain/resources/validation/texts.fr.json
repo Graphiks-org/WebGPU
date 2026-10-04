@@ -1,0 +1,26 @@
+{
+  "title": "Graphiks WebGPU Suite — Validation",
+  "description": "Exécute les acid tests portables de fondation sur l'implémentation WebGPU de ce navigateur. Les résultats restent dans cette page ; le rapport brut reste disponible replié ci-dessous.",
+  "running": "Exécution du cas",
+  "summaryPassed": "réussis",
+  "summaryFailed": "échoués",
+  "summaryUnsupported": "non pris en charge",
+  "summaryNotRun": "non exécutés",
+  "summaryUnknown": "inconnus",
+  "summaryTotal": "{total} cas",
+  "fatal": "Erreur fatale",
+  "columnCase": "Cas",
+  "columnStatus": "Statut",
+  "columnDiagnostic": "Diagnostic",
+  "columnAdapter": "Adapter",
+  "rawSummary": "Rapport brut (JSON)",
+  "demoTitle": "Graphiks WebGPU Suite — Vérification de la démo",
+  "demoDescription": "Exécute les deux contrôles GPU de la démo de particules sur l'implémentation WebGPU de ce navigateur.",
+  "statuses": {
+    "passed": "Réussi",
+    "failed": "Échoué",
+    "unsupported": "Non pris en charge",
+    "not-run": "Non exécuté",
+    "unknown": "Inconnu"
+  }
+}

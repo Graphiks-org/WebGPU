@@ -31,7 +31,15 @@ import org.graphiks.webgpu.suite.browser.demos.showParticlesPage
  * campaign and publishes `graphiksBenchmarkReport`; `autorun=1` starts it without the user, for the
  * collector. Asking for a demo and a benchmark at once, or naming an unknown demo, benchmark or
  * profile, fails visibly rather than silently running nothing.
+ *
+ * The validation and demo-verification routes render the report for a person — summary, table and
+ * the raw JSON folded below — and publish the compact JSON for tooling. When the localized texts
+ * cannot be loaded they show the raw JSON instead, never a blank or silent page.
  */
+
+/** The JSON shown to a person is pretty-printed; the JSON published for tooling is compact. */
+private val prettyJson = Json { prettyPrint = true }
+
 fun main() {
     MainScope().launch {
         val demo = queryParameter("demo")
@@ -70,9 +78,15 @@ private suspend fun routeBenchmark(name: String) {
 }
 
 private suspend fun runValidation() {
+    val locale = selectedLocale()
+    val texts = loadValidationTexts(locale)
+    if (texts != null) applyValidationTexts(locale, texts)
+
     val selection = parseCaseSelection(queryParameter("cases"))
     val report = try {
-        runFoundations(selection)
+        runFoundations(selection) { current, total, id ->
+            if (texts != null) setValidationStatus(progressLine(texts.running, current, total, id))
+        }
     } catch (cancelled: CancellationException) {
         throw cancelled
     } catch (failure: Throwable) {
@@ -85,7 +99,22 @@ private suspend fun runValidation() {
             fatalError = failure.stackTraceToString(),
         )
     }
-    publishReport(Json.encodeToString(report))
+
+    val json = Json.encodeToString(report)
+    publishSuiteReport(json)
+    if (texts == null) {
+        showRawReportFallback(json)
+    } else {
+        renderCaseReport(
+            rootId = "validation",
+            title = texts.title,
+            description = texts.description,
+            cases = report.cases,
+            fatalError = report.fatalError,
+            texts = texts,
+            rawJson = prettyJson.encodeToString(report),
+        )
+    }
 }
 
 /** Reads `?cases=id1,id2`: `null` without the parameter, the trimmed non-empty ids otherwise. */
@@ -99,6 +128,9 @@ private fun parseCaseSelection(value: String?): Set<String>? =
  * 60-second timeout; the adapter and device are always closed.
  */
 private suspend fun verifyParticles() {
+    val locale = selectedLocale()
+    val texts = loadValidationTexts(locale)
+    if (texts != null) setDocumentLang(locale)
     val report = try {
         withTimeout(60.seconds) {
             val adapter = requestAdapter().getOrThrow()
@@ -124,7 +156,23 @@ private suspend fun verifyParticles() {
     } catch (failure: Throwable) {
         failedDemoReport(failure.stackTraceToString())
     }
-    publishDemoReport(Json.encodeToString(report))
+
+    val json = Json.encodeToString(report)
+    publishDemoReport(json)
+    if (texts == null) {
+        showDemoRawReportFallback(json)
+    } else {
+        elementById("validation")?.hidden = true
+        renderCaseReport(
+            rootId = "demo-root",
+            title = texts.demoTitle,
+            description = texts.demoDescription,
+            cases = report.cases,
+            fatalError = report.fatalError,
+            texts = texts,
+            rawJson = prettyJson.encodeToString(report),
+        )
+    }
 }
 
 private fun failedDemoReport(diagnostic: String) = DemoReport(
@@ -145,15 +193,29 @@ private fun showUnknownRoute(demo: String) {
     }
 }
 
-private fun publishReport(value: String): Unit = js("""{
+private fun publishSuiteReport(value: String): Unit = js("""{
     globalThis.graphiksSuiteReport = value;
-    document.getElementById('result').textContent = value;
+}""")
+
+/** The display used when the localized texts cannot load: the raw JSON plus an explicit diagnostic. */
+private fun showRawReportFallback(value: String): Unit = js("""{
+    var status = document.getElementById('validation-status');
+    if (status) { status.textContent = 'Cannot load the page texts; the raw report is shown instead.'; }
+    var result = document.getElementById('result');
+    if (result) { result.textContent = value; }
 }""")
 
 private fun publishDemoReport(value: String): Unit = js("""{
     globalThis.graphiksDemoReport = value;
-    var root = document.getElementById('demo-root');
-    if (root) { root.hidden = false; root.textContent = value; }
+}""")
+
+/** The demo fallback: the raw JSON prefixed with the diagnostic. */
+private fun showDemoRawReportFallback(value: String): Unit = js("""{
     var validation = document.getElementById('validation');
     if (validation) { validation.hidden = true; }
+    var root = document.getElementById('demo-root');
+    if (root) {
+        root.hidden = false;
+        root.textContent = 'Cannot load the page texts; the raw report is shown instead.\n' + value;
+    }
 }""")
