@@ -543,23 +543,76 @@
     "errors.unenabled-timestamp-feature": {
       "title": "Refuser un query set de timestamps sans la feature",
       "expectation": "Un device demandé sans TimestampQuery ne rapporte pas la feature et refuse un query set de timestamps de façon synchrone, tandis qu'un query set d'occlusion se crée normalement."
+    },
+    "texture.stencil-view-aspect": {
+      "title": "Lire une vue StencilOnly",
+      "expectation": "Une texture Depth24PlusStencil8 effacée au stencil 7 charge la valeur 7 à travers une vue StencilOnly liée en texture_2d."
+    },
+    "transfers.stencil-copy-aspect": {
+      "title": "Copier l'aspect stencil",
+      "expectation": "Une copie avec l'aspect StencilOnly renvoie exactement les octets de stencil effacés et laisse le reste de la destination intact."
+    },
+    "formats.depth16unorm-rgb10a2uint": {
+      "title": "Rendre et relire depth16unorm et rgb10a2uint",
+      "expectation": "Un effacement Depth16Unorm copie son quantum de profondeur, et un rendu RGB10A2Uint paqueté relit le mot 10/10/10/2 exact de composantes au-delà de 255 — qu'aucune interprétation 8 bits ne peut produire."
+    },
+    "sampling.anisotropy-filters": {
+      "title": "Valider les filtres d'un sampler anisotrope",
+      "expectation": "Un sampler dont maxAnisotropy dépasse 1 exige que chaque filtre soit linéaire : un sampler linéaire est valide, et chaque filtre laissé nearest isolément échoue la validation."
+    },
+    "sampler.comparison-pcf": {
+      "title": "Filtrer les résultats de comparaison (PCF)",
+      "expectation": "Sur une profondeur partagée entre 0,25 et 0,5, les références au-delà des deux bornes renvoient 1 ou 0 pour Less et l'inverse pour Greater quel que soit le filtrage de l'implémentation, et une comparaison nearest à une référence intermédiaire renvoie le résultat binaire de chaque tap."
+    },
+    "render.point-line-topology": {
+      "title": "Dessiner des points et des lignes",
+      "expectation": "Chaque pixel de la cible est comparé à l'ensemble exact des couvertures : un tracé point-list couvre son propre pixel, un tracé line-list couvre les pixels que son segment quitte, et le pixel du point final reste non couvert par la règle diamond-exit."
+    },
+    "render.msaa-partial-mask": {
+      "title": "Résoudre un masque d'échantillons partiel",
+      "expectation": "Un tracé 4x MSAA avec le masque 0b0101 se résout à environ la moitié de la couleur du tracé sur l'effacement, strictement entre les deux."
+    },
+    "texture.creation-constraints": {
+      "title": "Contraindre la dimension de vue par la texture",
+      "expectation": "Une vue TwoDArray d'une texture tableau, une vue TwoD et une vue Cube de six couches sont valides ; une vue Cube de quatre couches et une vue ThreeD d'une texture 2D échouent la validation."
+    },
+    "textures.storage-format-constraints": {
+      "title": "Refuser l'usage storage sur les formats non storage",
+      "expectation": "Une texture RGBA8Unorm accepte StorageBinding avec TextureBinding, tandis que Depth24Plus et Stencil8 échouent la validation avec cette même paire : sans le bit storage la texture resterait un échantillon valide, donc les refus prouvent que le bit est honoré."
+    },
+    "bundles.negative-validation": {
+      "title": "Refuser l'exécution d'un bundle incompatible",
+      "expectation": "Un bundle enregistré contre RGBA8Unorm échoue la validation dans un pass à un attachement RGBA16Float et dans un pass valide à deux attachements RGBA8Unorm alors que le bundle n'en déclare qu'un."
+    },
+    "data.large-indices": {
+      "title": "Transporter des indices et coordonnées pleine plage",
+      "expectation": "Un tracé avec firstInstance 2^31 livre la valeur exacte à travers l'entrée plate du fragment, un tracé avec firstVertex 2^30 ne rend que si vertex_index porte l'offset, et une largeur de texture de 2^31 est refusée."
+    },
+    "device.full-limits-space": {
+      "title": "Demander et observer l'espace complet des limites",
+      "expectation": "Un device demandé avec chaque limite à la valeur de l'adaptateur rapporte exactement ces limites champ par champ."
+    },
+    "features.compressed-bc": {
+      "title": "Décoder une texture compressée BC1",
+      "expectation": "Avec TextureCompressionBC accordée, un bloc BC1 dont l'extrémité rouge remporte la palette décode en rouge pur sur un quad qui l'échantillonne."
+    },
+    "features.subgroups": {
+      "title": "Sommer à travers les subgroups",
+      "expectation": "Avec Subgroups accordée, un subgroupAdd sur un workgroup de 64 invocations renvoie exactement la population de chaque subgroup — les invocations partageant un identifiant subgroupBroadcastFirst —, chaque subgroup reste sous la taille maximale de l'adaptateur, et les subgroups partitionnent le workgroup."
+    },
+    "texture.transient-usage": {
+      "title": "Contraindre l'usage transient attachment",
+      "expectation": "TransientAttachment n'accepte que RenderAttachment comme compagnon : ajouter CopySrc à la paire échoue la validation tandis que RenderAttachment avec CopySrc reste valide, et l'usage transient seul échoue aussi."
     }
   },
   "behaviours": {
-    "device.features-and-limits": "Les cas adapter et device vérifient un sous-ensemble choisi de limites et qu'un device ne peut pas dépasser son adapter ; l'espace complet des limites n'est pas énuméré.",
     "device.request-required-features": "Refuser une feature optionnelle réellement absente n'a pas de cas portable déterministe ; les features présentes dans l'environnement sont demandées et utilisées par leurs cas.",
-    "features.compressed-and-tiered": "Les features optionnelles de textures compressées et tiered sont déclarées dans le contrat mais pas exercées.",
-    "features.subgroups": "Les features de subgroups et les tailles de subgroup rapportées ne sont pas exercées.",
-    "texture.creation": "Le cas de création vérifie les getters et l'utilisation d'une texture ; textureBindingViewDimension et les autres contraintes de création ne sont pas exercés.",
-    "texture.view-usage-aspect": "La restriction d'usage et une vue DepthOnly sont exercées ; une vue StencilOnly ne l'est pas.",
-    "texture.usage-and-formats": "Les usages et formats exercés sont reliés à leurs cas ; les formats compressés, tiers et autres, ainsi que TransientAttachment, restent non testés.",
-    "textures.storage-constraints": "Les contraintes de format et d'accès des storage textures au-delà du cas exercé ne sont pas couvertes.",
-    "formats.depth-and-packed": "Plusieurs formats de profondeur et de stencil, et les formats empaquetés, ne sont pas exercés.",
-    "sampling.limits": "L'anisotropie et les limites de samplers ne sont pas exercées.",
-    "sampling.comparison-pcf": "Le filtrage pourcentage-plus-proche (percentage-closer filtering : un sampler de comparaison filtre des résultats de comparaison de profondeur plutôt que des valeurs, ce qui adoucit les bords d'ombre) et les fonctions de comparaison autres que le cas sampler.comparison à profondeur uniforme ne sont pas exercés.",
-    "transfers.stencil-copy-aspect": "L'aspect de copie StencilOnly n'est pas exercé.",
-    "render.primitive-and-multisample": "Les topologies triangle, le culling, le redémarrage de strip et un masque multisample sont exercés ; les points, les lignes et les masques partiels ne le sont pas.",
-    "bundles.negative-validation": "La création de render bundles avec des attachements incompatibles n'est pas exercée négativement.",
-    "data.identifiers-and-indices": "Les valeurs d'offset, de région et d'index, dont un baseVertex négatif, sont exercées par leurs cas ; l'étendue 64 bits complète des alias ne l'est pas."
+    "features.compressed-and-tiered": "Le décodage d’un bloc BC1 est exercé avec TextureCompressionBC ; les features compressées ETC2 et ASTC et les features de formats tier1/tier2 sont déclarées dans le contrat mais pas exercées.",
+    "texture.creation": "Les contraintes de création par dimension de vue et nombre de couches sont exercées ; les contraintes de création restantes, comme les bornes de niveaux de mip et les règles de nombre d’échantillons, ne le sont pas.",
+    "texture.usage-and-formats": "TransientAttachment est exercé avec sa contrainte de compagnon et les formats compressés via le cas compressed-bc ; les formats tiered et les paires format-usage restantes ne le sont pas.",
+    "textures.storage-constraints": "Les refus storage côté format sont exercés ; les contraintes d’accès par format au-delà du cas write-only exercé ne sont pas couvertes.",
+    "formats.depth-and-packed": "Les cibles Depth16Unorm et RGB10A2Uint paqueté sont exercées ; les formats paquetés et de profondeur gated par feature, comme rg11b10ufloat et depth32float-stencil8, ne le sont pas.",
+    "sampling.comparison-pcf": "L’enveloppe de comparaison indépendante du filtrage et les deux directions de comparateur sont exercées sur une profondeur partagée ; la fraction filtrée exacte est dépendante de l’implémentation et n’est volontairement pas assertée.",
+    "data.identifiers-and-indices": "Les indices de tracé 32 bits pleine plage et la largeur de texture refusée sont exercés ; l’étendue 64 bits complète des alias de taille et d’offset ne l’est pas."
   }
 }

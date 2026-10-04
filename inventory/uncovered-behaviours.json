@@ -1,19 +1,5 @@
 [
   {
-    "id": "device.features-and-limits",
-    "family": "adapter/device/features/limits",
-    "contract": [
-      "GPUAdapter.requestDevice",
-      "GPUDevice",
-      "GPUDevice.features",
-      "GPUDevice.limits",
-      "GPUDevice.adapterInfo",
-      "GPUDevice.label",
-      "GPUObjectBase.label"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "device.request-required-features",
     "family": "adapter/device/features/limits",
     "contract": [
@@ -37,15 +23,6 @@
     "requiredFeatures": []
   },
   {
-    "id": "features.subgroups",
-    "family": "adapter/device/features/limits",
-    "contract": [
-      "GPUAdapterInfo.subgroupMinSize",
-      "GPUAdapterInfo.subgroupMaxSize"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "texture.creation",
     "family": "textures/views/samplers",
     "contract": [
@@ -53,15 +30,6 @@
       "GPUTexture",
       "GPUTextureDescriptor.textureBindingViewDimension",
       "GPUTextureDescriptor.viewFormats"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "texture.view-usage-aspect",
-    "family": "textures/views/samplers",
-    "contract": [
-      "GPUTextureViewDescriptor.aspect",
-      "GPUTextureAspect.StencilOnly"
     ],
     "requiredFeatures": []
   },
@@ -94,48 +62,11 @@
     "requiredFeatures": []
   },
   {
-    "id": "sampling.limits",
-    "family": "textures/views/samplers",
-    "contract": [
-      "GPUSamplerDescriptor.maxAnisotropy",
-      "GPUSupportedLimits.maxSamplersPerShaderStage"
-    ],
-    "requiredFeatures": []
-  },
-  {
     "id": "sampling.comparison-pcf",
     "family": "textures/views/samplers",
     "contract": [
       "GPUSamplerDescriptor.compare",
       "GPUCompareFunction"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "transfers.stencil-copy-aspect",
-    "family": "transferts buffers/textures",
-    "contract": [
-      "GPUTexelCopyTextureInfo.aspect",
-      "GPUTextureAspect.StencilOnly"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "render.primitive-and-multisample",
-    "family": "pipelines/render state",
-    "contract": [
-      "GPUPrimitiveTopology.PointList",
-      "GPUPrimitiveTopology.LineList",
-      "GPUPrimitiveTopology.LineStrip"
-    ],
-    "requiredFeatures": []
-  },
-  {
-    "id": "bundles.negative-validation",
-    "family": "render bundles",
-    "contract": [
-      "GPURenderBundleEncoder",
-      "GPURenderBundleEncoderDescriptor"
     ],
     "requiredFeatures": []
   },
