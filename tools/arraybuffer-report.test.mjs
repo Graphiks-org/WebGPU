@@ -12,7 +12,7 @@ function validReport(profile = 'ci') {
   const sampleCount = profile === 'ci' ? 5 : 30;
   return {
     schemaVersion: 1,
-    protocol: 'arraybuffer-cpu-v1',
+    protocol: 'arraybuffer-cpu',
     target: 'jvm',
     buildMode: 'release',
     suiteCommit: 'fixture',

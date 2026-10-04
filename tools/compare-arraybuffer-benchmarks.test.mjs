@@ -11,7 +11,7 @@ import {
 
 function report(overrides = {}) {
   return {
-    protocol: 'arraybuffer-cpu-v1',
+    protocol: 'arraybuffer-cpu',
     environmentId: 'macos-aarch64-jvm-25',
     profile: 'standard',
     target: 'jvm',

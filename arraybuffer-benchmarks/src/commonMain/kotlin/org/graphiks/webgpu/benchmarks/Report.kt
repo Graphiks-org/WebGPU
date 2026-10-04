@@ -8,8 +8,8 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-internal const val PROTOCOL = "arraybuffer-cpu-v1"
-internal const val WRITERS_PROTOCOL = "arraybuffer-cpu-writers-v1"
+internal const val PROTOCOL = "arraybuffer-cpu"
+internal const val WRITERS_PROTOCOL = "arraybuffer-cpu-writers"
 internal const val SCHEMA_VERSION = 1
 
 @Serializable

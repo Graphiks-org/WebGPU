@@ -1,12 +1,12 @@
 # ArrayBuffer CPU performance
 
-This guide records the `arraybuffer-cpu-v1` protocol, the commands that produce its reports, and the
+This guide records the `arraybuffer-cpu` protocol, the commands that produce its reports, and the
 first before/after reading of the Graphiks bounds checks. Durations are informative: the CI never
 fails on a duration, only on a wrong result, a crash or an incomplete report.
 
 ## Protocol
 
-- Schema `arraybuffer-cpu-v1`, implemented in `arraybuffer-benchmarks`. These are CPU-only
+- Protocol `arraybuffer-cpu`, implemented in `arraybuffer-benchmarks`. These are CPU-only
   measurements and are never compared with GPU-suite results.
 - Scenario id format: `<workload>.bytes-<bytes>.<variant>`.
 - Workloads: `scalar.write.i32`, `scalar.read.i32`, `scalar.write.f32`, `scatter.write.i32`,
@@ -75,7 +75,7 @@ Environment: macOS (arm64), JDK 25, Chromium 153, Android emulator API 35 (`benc
 count is refused rather than silently normalised. A single launch on a workstation is **not** a
 stable hardware benchmark reference; treat the numbers as directional.
 
-Median change of the per-sample duration, by workload (positive = the checked version is slower):
+Median change of the per-sample duration, by workload (positive = the checked build is slower):
 
 | Target | scalar.write.i32 | scalar.read.i32 | scalar.write.f32 | scatter.write.i32 | bulk.bytes | bulk.floats | image.rgba8 | vertices.p3n3uv2 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ Median change of the per-sample duration, by workload (positive = the checked ve
   JavaScript, which is far more expensive than a typed-array element access; a per-element scalar
   access becomes an order of magnitude slower. This is a design signal, not a measurement artefact:
   the `Reference` variant in the same run is unchanged. The prevalidated writers prototyped in the
-  `arraybuffer-cpu-writers-v1` companion protocol exist precisely to move the checks out of the
+  `arraybuffer-cpu-writers` companion protocol exist precisely to move the checks out of the
   per-element loop on this target.
 - The JVM `scalar.read.i32` and `scalar.write.f32` medians moved by less than 1%; the write loop is
   the clearest regression, consistent with two non-inlined checks per store.
@@ -112,7 +112,7 @@ Median change of the per-sample duration, by workload (positive = the checked ve
 - `of` shares the backing store in JS and copies on the other targets; no cross-target conclusion
   about "a faster runtime" follows.
 
-## Prevalidated writers (`arraybuffer-cpu-writers-v1`)
+## Prevalidated writers (`arraybuffer-cpu-writers`)
 
 The internal prototypes `RgbaWriterPrototype`/`VertexWriterPrototype` validate a whole layout once
 (rows, stride, range, base alignment), then perform the pixel or vertex stores with the platform
@@ -168,12 +168,11 @@ No benchmark campaign runs on a pull request — a shared runner is not a perfor
 Campaigns, their tooling and the tooling's unit tests belong to the machines where the campaigns are
 run; the commands are listed above, and durations are never a CI gate.
 
-## Campaigns not executed in this increment
+## Campaigns not executed
 
-- The `arraybuffer-cpu-lifecycle-v1` companion (allocation + fill, `of` + consumption) is not
-  implemented yet.
+- A lifecycle companion campaign (allocation + fill, `of` + consumption) is not implemented yet.
 - Allocation profiling (JFR on the JVM, Perfetto on Android, DevTools sampling in Chromium, an
   allocation profiler on the host for Native) was not run; every report keeps
   `allocationMeasurement: "unavailable"`.
 - Only one `standard` launch per target was captured; the five-launch medians remain to be produced
-  on a stable host. The `arraybuffer-cpu-writers-v1` companion is defined in the next task.
+  on a stable host.

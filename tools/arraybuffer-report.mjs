@@ -1,4 +1,4 @@
-// Validates the ArrayBuffer CPU campaign reports (`arraybuffer-cpu-v1`).
+// Validates the ArrayBuffer CPU campaign reports (`arraybuffer-cpu`).
 //
 // The inventory mirrors webgpu-api/arraybuffer-benchmarks Protocol.kt. Keeping it here lets the
 // collectors check a report against the protocol instead of trusting whatever the runner published.
@@ -7,8 +7,8 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-export const PROTOCOL = 'arraybuffer-cpu-v1';
-export const WRITERS_PROTOCOL = 'arraybuffer-cpu-writers-v1';
+export const PROTOCOL = 'arraybuffer-cpu';
+export const WRITERS_PROTOCOL = 'arraybuffer-cpu-writers';
 export const PROTOCOLS = [PROTOCOL, WRITERS_PROTOCOL];
 export const SCHEMA_VERSION = 1;
 export const PROFILE_SAMPLES = { ci: 5, standard: 30 };
