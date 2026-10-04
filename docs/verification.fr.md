@@ -178,7 +178,6 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
 
   ```sh
   ./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
-  ./gradlew :suite-browser:check
   node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
   node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
   node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
@@ -187,9 +186,6 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
 
 - Collecteur : **131 réussis + 1 non pris en charge (`compute.shader-f16` optionnel) sur 132 en JS
   et en Wasm**, et **2/2 cas de démo sur les deux cibles**.
-- Preuves unitaires : les tests communs de `suite-browser` (comptage des statuts, lignes de
-  résumé et de progression, normalisation des statuts) tournent sur `jsNodeTest`, `wasmJsNodeTest`,
-  `jsBrowserTest` et `wasmJsBrowserTest` (8 tests chacun, inclus dans `check`).
 - Contrôles DOM manuels dans Chromium headless (Playwright, swiftshader) : EN et FR rendent le résumé
   (`2 passed · 0 failed · 0 unsupported — 2 cases` / `2 réussis · 0 échoués · 0 non pris en charge —
   2 cas`), les lignes des cas affichent des statuts localisés, le JSON replié est pretty-printé, le

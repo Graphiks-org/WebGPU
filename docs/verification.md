@@ -174,7 +174,6 @@ from the positive timestamp cases (covered by the deterministic index cases), an
 
   ```sh
   ./gradlew :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
-  ./gradlew :suite-browser:check
   node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
   node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
   node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
@@ -183,9 +182,6 @@ from the positive timestamp cases (covered by the deterministic index cases), an
 
 - Collector: **131 passed + 1 unsupported (optional `compute.shader-f16`) of 132 on JS and on
   Wasm**, and **2/2 demo cases on both targets**.
-- Unit evidence: the common tests of `suite-browser` (status counts, summary and progress lines,
-  status normalization) run on `jsNodeTest`, `wasmJsNodeTest`, `jsBrowserTest` and `wasmJsBrowserTest`
-  (8 tests each, part of `check`).
 - Manual DOM checks in headless Chromium (Playwright, swiftshader): EN and FR render the summary
   (`2 passed · 0 failed · 0 unsupported — 2 cases` / `2 réussis · 0 échoués · 0 non pris en charge —
   2 cas`), the case rows show localized statuses, the folded JSON is pretty-printed, dark mode uses

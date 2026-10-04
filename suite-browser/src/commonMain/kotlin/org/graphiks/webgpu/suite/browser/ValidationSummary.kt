@@ -3,9 +3,8 @@ package org.graphiks.webgpu.suite.browser
 /**
  * The pure summary logic behind the human-readable validation page.
  *
- * Everything here is free of DOM access so the same code runs on Node in the common tests of both
- * the JS and the Wasm build. A status outside the four documented ones is never silently swallowed:
- * it is counted and displayed separately, so a runner change can never hide behind a familiar sum.
+ * A status outside the four documented ones is never silently swallowed: it is counted and
+ * displayed separately, so a runner change can never hide behind a familiar sum.
  */
 
 /** The counted statuses of a report; [unknown] holds every status outside the four known ones. */
