@@ -543,6 +543,66 @@
     "errors.unenabled-timestamp-feature": {
       "title": "Refuse a timestamp query set without the feature",
       "expectation": "A device requested without TimestampQuery does not report the feature and refuses a timestamp query set synchronously, while an occlusion query set is created normally."
+    },
+    "texture.stencil-view-aspect": {
+      "title": "Read a StencilOnly view",
+      "expectation": "A Depth24PlusStencil8 texture cleared to stencil 7 loads the value 7 through a StencilOnly view bound as texture_2d."
+    },
+    "transfers.stencil-copy-aspect": {
+      "title": "Copy the stencil aspect",
+      "expectation": "A copy with aspect StencilOnly returns the cleared stencil bytes exactly and leaves the rest of the destination intact."
+    },
+    "formats.depth-and-packed": {
+      "title": "Render and read back depth16unorm and rgb10a2uint",
+      "expectation": "A Depth16Unorm clear copies its depth quantum, and a packed RGB10A2Uint render reads back the exact packed word."
+    },
+    "sampling.anisotropy-filters": {
+      "title": "Validate anisotropic sampler filters",
+      "expectation": "A sampler with maxAnisotropy above 1 requires linear filters: a linear one is valid while a nearest one fails validation."
+    },
+    "sampler.comparison-pcf": {
+      "title": "Filter comparison results (PCF)",
+      "expectation": "A linear comparison sampler over a split depth returns the fraction of passing taps at the texture centre, while a nearest comparison stays binary."
+    },
+    "render.point-line-topology": {
+      "title": "Draw points and lines",
+      "expectation": "A point-list draw covers exactly its pixel, and a line-list draw covers the pixels its segment exits: the endpoint's centre pixel stays uncovered by the diamond-exit rule."
+    },
+    "render.msaa-partial-mask": {
+      "title": "Resolve a partial sample mask",
+      "expectation": "A 4x MSAA draw with mask 0b0101 resolves to about half the draw colour over the clear, strictly between the two."
+    },
+    "texture.creation-constraints": {
+      "title": "Constrain the view dimension by the texture",
+      "expectation": "A TwoDArray view of a 2D array, a TwoD view and a six-layer Cube view are valid; a Cube view of four layers and a ThreeD view of a 2D texture fail validation."
+    },
+    "textures.storage-constraints": {
+      "title": "Refuse storage usage on non-storage formats",
+      "expectation": "An RGBA8Unorm texture accepts StorageBinding while Depth24Plus and Stencil8 fail validation with that usage."
+    },
+    "bundles.negative-validation": {
+      "title": "Refuse incompatible bundle execution",
+      "expectation": "Executing a bundle in a pass whose attachments do not match its declared formats is a validation error."
+    },
+    "data.large-indices": {
+      "title": "Carry full-range indices and coordinates",
+      "expectation": "A draw with firstInstance 2^31 delivers the exact value through the flat fragment input, a draw with firstVertex 2^30 renders only when vertex_index carries the offset, and a 2^31 texture width is refused."
+    },
+    "device.full-limits-space": {
+      "title": "Request and observe the full limit space",
+      "expectation": "A device requested with every limit at the adapter's own value reports exactly those limits field by field."
+    },
+    "features.compressed-bc": {
+      "title": "Decode a BC1 compressed texture",
+      "expectation": "With TextureCompressionBC granted, a BC1 block whose red endpoint wins the palette decodes to pure red on a quad that samples it."
+    },
+    "features.subgroups": {
+      "title": "Sum across subgroups",
+      "expectation": "With Subgroups granted, a subgroupAdd over a 64-invocation workgroup returns the subgroup size, within the adapter's reported bounds and consistent per subgroup."
+    },
+    "texture.transient-usage": {
+      "title": "Constrain the transient attachment usage",
+      "expectation": "TransientAttachment is valid together with RenderAttachment and fails validation alone."
     }
   },
   "behaviours": {

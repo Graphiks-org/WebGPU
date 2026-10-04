@@ -543,6 +543,66 @@
     "errors.unenabled-timestamp-feature": {
       "title": "Refuser un query set de timestamps sans la feature",
       "expectation": "Un device demandé sans TimestampQuery ne rapporte pas la feature et refuse un query set de timestamps de façon synchrone, tandis qu'un query set d'occlusion se crée normalement."
+    },
+    "texture.stencil-view-aspect": {
+      "title": "Lire une vue StencilOnly",
+      "expectation": "Une texture Depth24PlusStencil8 effacée au stencil 7 charge la valeur 7 à travers une vue StencilOnly liée en texture_2d."
+    },
+    "transfers.stencil-copy-aspect": {
+      "title": "Copier l'aspect stencil",
+      "expectation": "Une copie avec l'aspect StencilOnly renvoie exactement les octets de stencil effacés et laisse le reste de la destination intact."
+    },
+    "formats.depth-and-packed": {
+      "title": "Rendre et relire depth16unorm et rgb10a2uint",
+      "expectation": "Un effacement Depth16Unorm copie son quantum de profondeur, et un rendu RGB10A2Uint paqueté relit le mot exact."
+    },
+    "sampling.anisotropy-filters": {
+      "title": "Valider les filtres d'un sampler anisotrope",
+      "expectation": "Un sampler dont maxAnisotropy dépasse 1 exige des filtres linéaires : un sampler linéaire est valide, un sampler nearest échoue la validation."
+    },
+    "sampler.comparison-pcf": {
+      "title": "Filtrer les résultats de comparaison (PCF)",
+      "expectation": "Un sampler de comparaison linéaire sur une profondeur partagée renvoie la fraction de taps réussis au centre de la texture, tandis qu'une comparaison nearest reste binaire."
+    },
+    "render.point-line-topology": {
+      "title": "Dessiner des points et des lignes",
+      "expectation": "Un tracé point-list couvre exactement son pixel, et un tracé line-list couvre les pixels que son segment quitte : le pixel du point final reste non couvert par la règle diamond-exit."
+    },
+    "render.msaa-partial-mask": {
+      "title": "Résoudre un masque d'échantillons partiel",
+      "expectation": "Un tracé 4x MSAA avec le masque 0b0101 se résout à environ la moitié de la couleur du tracé sur l'effacement, strictement entre les deux."
+    },
+    "texture.creation-constraints": {
+      "title": "Contraindre la dimension de vue par la texture",
+      "expectation": "Une vue TwoDArray d'une texture tableau, une vue TwoD et une vue Cube de six couches sont valides ; une vue Cube de quatre couches et une vue ThreeD d'une texture 2D échouent la validation."
+    },
+    "textures.storage-constraints": {
+      "title": "Refuser l'usage storage sur les formats non storage",
+      "expectation": "Une texture RGBA8Unorm accepte StorageBinding tandis que Depth24Plus et Stencil8 échouent la validation avec cet usage."
+    },
+    "bundles.negative-validation": {
+      "title": "Refuser l'exécution d'un bundle incompatible",
+      "expectation": "Exécuter un bundle dans un pass dont les attachements ne correspondent pas à ses formats déclarés est une erreur de validation."
+    },
+    "data.large-indices": {
+      "title": "Transporter des indices et coordonnées pleine plage",
+      "expectation": "Un tracé avec firstInstance 2^31 livre la valeur exacte à travers l'entrée plate du fragment, un tracé avec firstVertex 2^30 ne rend que si vertex_index porte l'offset, et une largeur de texture de 2^31 est refusée."
+    },
+    "device.full-limits-space": {
+      "title": "Demander et observer l'espace complet des limites",
+      "expectation": "Un device demandé avec chaque limite à la valeur de l'adaptateur rapporte exactement ces limites champ par champ."
+    },
+    "features.compressed-bc": {
+      "title": "Décoder une texture compressée BC1",
+      "expectation": "Avec TextureCompressionBC accordée, un bloc BC1 dont l'extrémité rouge remporte la palette décode en rouge pur sur un quad qui l'échantillonne."
+    },
+    "features.subgroups": {
+      "title": "Sommer à travers les subgroups",
+      "expectation": "Avec Subgroups accordée, un subgroupAdd sur un workgroup de 64 invocations renvoie la taille du subgroup, dans les bornes rapportées par l'adaptateur et cohérente par subgroup."
+    },
+    "texture.transient-usage": {
+      "title": "Contraindre l'usage transient attachment",
+      "expectation": "TransientAttachment est valide avec RenderAttachment et échoue la validation seul."
     }
   },
   "behaviours": {
