@@ -11,7 +11,7 @@ site publié sont des sorties de build, jamais édités à la main.
 
 ## Catalogue
 
-Il y a **132 cas** : **125 obligatoires** et **7 optionnels**. Un cas n’est optionnel que lorsque la
+Il y a **147 cas** : **138 obligatoires** et **9 optionnels**. Un cas n’est optionnel que lorsque la
 feature du contrat dont il a besoin est elle-même optionnelle ; la feature est déclarée dans
 `requiredFeatures`, jamais cachée.
 
@@ -24,9 +24,12 @@ feature du contrat dont il a besoin est elle-même optionnelle ; la feature est 
 | `errors.compute-timestamp-indices` | `TimestampQuery` | passé |
 | `errors.render-timestamp-indices` | `TimestampQuery` | passé |
 | `texture.view-swizzle` | `TextureComponentSwizzle` | passé |
+| `features.compressed-bc` | `TextureCompressionBC` | passé |
+| `features.subgroups` | `Subgroups` | passé |
 
-Les sept cas optionnels couvrent quatre features distinctes : `TimestampQuery` est utilisée par
-quatre cas, `TextureComponentSwizzle` par un, `ShaderF16` par un et `IndirectFirstInstance` par un.
+Les neuf cas optionnels couvrent six features distinctes : `TimestampQuery` est utilisée par quatre
+cas, `TextureComponentSwizzle` par une, `ShaderF16` par une, `IndirectFirstInstance` par une,
+`TextureCompressionBC` par une et `Subgroups` par une.
 
 Le runner protège chaque device contre une feature demandée mais non reçue : l’ensemble demandé
 doit être un sous-ensemble de `adapter.features`, et après `requestDevice` il doit aussi être un
@@ -38,10 +41,10 @@ Sur les deux cibles navigateur, avec Chromium 153.0.8010.12 / SwiftShader sur `d
 
 | Cible | Passés | Unsupported | Échoués | Total |
 | --- | ---: | ---: | ---: | ---: |
-| JS | 131 | 1 | 0 | 132 |
-| Wasm JS | 131 | 1 | 0 | 132 |
+| JS | 146 | 1 | 0 | 147 |
+| Wasm JS | 146 | 1 | 0 | 147 |
 
-Les **125 cas obligatoires passent** sur les deux cibles. Le seul cas non passant est optionnel :
+Les **138 cas obligatoires passent** sur les deux cibles. Le seul cas non passant est optionnel :
 `compute.shader-f16` est `unsupported` parce que l’environnement ne dispose pas de `ShaderF16`. Il
 n’est pas présenté comme une preuve de support.
 
@@ -53,21 +56,28 @@ consignés dans [verification.fr.md](verification.fr.md).
 Ces entrées restent dans `inventory/uncovered-behaviours.json` et sont affichées comme *à tester* sur
 la page de Validation. Le compte est un résultat du scoping, pas une cible à réduire à zéro.
 
-- `device.features-and-limits`, `device.request-required-features` — l’espace complet des limites et
-  le refus déterministe d’une feature absente.
-- `features.compressed-and-tiered`, `features.subgroups` — features optionnelles déclarées dans le
-  contrat mais non exercées.
-- `texture.creation`, `texture.view-usage-aspect`, `texture.usage-and-formats`,
-  `textures.storage-constraints`, `formats.depth-and-packed`, `sampling.limits` — contraintes de
-  création de texture, vues StencilOnly, formats compressés/tiered/à paquets/profondeur, contraintes
-  de texture de stockage et limites de sampler.
-- `sampling.comparison-pcf` — le filtrage pourcentage-plus-proche (un sampler de comparaison filtre
-  des résultats de comparaison de profondeur plutôt que des valeurs) et les fonctions de comparaison
-  au-delà du cas à profondeur uniforme.
-- `transfers.stencil-copy-aspect` — un aspect de copie de texture StencilOnly.
-- `render.primitive-and-multisample`, `bundles.negative-validation` — points/lignes et masques
-  partiels, validation négative de render bundles.
-- `data.identifiers-and-indices` — l’étendue 64 bits complète des alias de taille/index/coordonnées.
+- `device.request-required-features` — le refus déterministe d’une feature optionnelle absente n’a
+  pas de cas portable : la feature absente varie avec l’environnement.
+- `features.compressed-and-tiered` — le décodage d’un bloc BC1 est exercé avec
+  `TextureCompressionBC` ; les features compressées ETC2 et ASTC et les features de formats
+  tier1/tier2 sont déclarées dans le contrat mais pas exercées.
+- `texture.creation` — les contraintes de création par dimension de vue et nombre de couches sont
+  exercées ; les contraintes de création restantes, comme les bornes de niveaux de mip et les
+  règles de nombre d’échantillons, ne le sont pas.
+- `texture.usage-and-formats` — `TransientAttachment` est exercé avec sa contrainte de compagnon et
+  les formats compressés via le cas compressed-bc ; les formats tiered et les paires format-usage
+  restantes ne le sont pas.
+- `textures.storage-constraints` — les refus storage côté format sont exercés ; les contraintes
+  d’accès par format au-delà du cas write-only exercé ne sont pas couvertes.
+- `formats.depth-and-packed` — les cibles `Depth16Unorm` et `RGB10A2Uint` paqueté sont exercées ;
+  les formats paquetés et de profondeur gated par feature, comme `rg11b10ufloat` et
+  `depth32float-stencil8`, ne le sont pas.
+- `sampling.comparison-pcf` — l’enveloppe de comparaison indépendante du filtrage et les deux
+  directions de comparateur sont exercées sur une profondeur partagée ; la fraction filtrée exacte
+  est dépendante de l’implémentation et n’est volontairement pas assertée.
+- `data.identifiers-and-indices` — les indices de tracé 32 bits pleine plage et la largeur de
+  texture refusée sont exercés ; l’étendue 64 bits complète des alias de taille et d’offset ne
+  l’est pas.
 
 ## Limites connues de cette preuve
 
@@ -76,6 +86,13 @@ la page de Validation. Le compte est un résultat du scoping, pas une cible à r
   même pour une requête que le pass n’a jamais écrite. Le cas prouve une utilisation valide des
   requêtes, la résolution et la préservation de l’étendue, pas qu’un temps mesurable a été
   enregistré ; aucun seuil `end > begin` ou `> 0` n’est imposé.
+- **Filtrage de comparaison.** Le résultat filtré exact d’un sampler de comparaison est dépendant
+  de l’implémentation ; `sampler.comparison-pcf` asserte l’enveloppe indépendante du filtrage —
+  des références au-delà des deux bornes, répondues différemment par `Less` et `Greater` — et les
+  résultats binaires par tap, jamais une valeur fractionnaire.
+- **Chemin de décodage compressé.** Sur le backend de référence, le texel décodé d’une texture
+  compressée s’observe via le sampling fragment ; un load côté compute renvoie zéro, donc
+  `features.compressed-bc` rend un quad qui échantillonne au lieu de charger des texels.
 - **Attachements discardés.** Un attachement de rendu stocké avec `GPUStoreOp.Discard` puis attaché
   avec `Load` est vérifié comme lisant le noir transparent `(0,0,0,0)` : la spécification pinnée
   garantit que la sous-région discardée est mise à zéro, y compris pour les attachements `Load`

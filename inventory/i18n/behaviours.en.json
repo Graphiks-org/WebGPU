@@ -543,23 +543,76 @@
     "errors.unenabled-timestamp-feature": {
       "title": "Refuse a timestamp query set without the feature",
       "expectation": "A device requested without TimestampQuery does not report the feature and refuses a timestamp query set synchronously, while an occlusion query set is created normally."
+    },
+    "texture.stencil-view-aspect": {
+      "title": "Read a StencilOnly view",
+      "expectation": "A Depth24PlusStencil8 texture cleared to stencil 7 loads the value 7 through a StencilOnly view bound as texture_2d."
+    },
+    "transfers.stencil-copy-aspect": {
+      "title": "Copy the stencil aspect",
+      "expectation": "A copy with aspect StencilOnly returns the cleared stencil bytes exactly and leaves the rest of the destination intact."
+    },
+    "formats.depth16unorm-rgb10a2uint": {
+      "title": "Render and read back depth16unorm and rgb10a2uint",
+      "expectation": "A Depth16Unorm clear copies its depth quantum, and a packed RGB10A2Uint render reads back the exact 10/10/10/2 word of components beyond 255 — an 8-bit interpretation cannot produce it."
+    },
+    "sampling.anisotropy-filters": {
+      "title": "Validate anisotropic sampler filters",
+      "expectation": "A sampler with maxAnisotropy above 1 requires every filter to be linear: a linear one is valid while any single filter left nearest fails validation, each checked alone."
+    },
+    "sampler.comparison-pcf": {
+      "title": "Filter comparison results (PCF)",
+      "expectation": "Over a depth target split between 0.25 and 0.5, references beyond both depths return 1 or 0 for Less and the opposite for Greater whatever the implementation's filtering, and a nearest comparison at a between-depths reference returns each tap's binary result."
+    },
+    "render.point-line-topology": {
+      "title": "Draw points and lines",
+      "expectation": "Every pixel of the target is compared against exactly the covered set: a point-list draw covers its own pixel, a line-list draw covers the pixels its segment exits, and the endpoint's centre pixel stays uncovered by the diamond-exit rule."
+    },
+    "render.msaa-partial-mask": {
+      "title": "Resolve a partial sample mask",
+      "expectation": "A 4x MSAA draw with mask 0b0101 resolves to about half the draw colour over the clear, strictly between the two."
+    },
+    "texture.creation-constraints": {
+      "title": "Constrain the view dimension by the texture",
+      "expectation": "A TwoDArray view of a 2D array, a TwoD view and a six-layer Cube view are valid; a Cube view of four layers and a ThreeD view of a 2D texture fail validation."
+    },
+    "textures.storage-format-constraints": {
+      "title": "Refuse storage usage on non-storage formats",
+      "expectation": "An RGBA8Unorm texture accepts StorageBinding alongside TextureBinding, while Depth24Plus and Stencil8 fail validation with that same pair: dropping the storage bit would leave a valid sampled texture, so the refusals prove the bit is honoured."
+    },
+    "bundles.negative-validation": {
+      "title": "Refuse incompatible bundle execution",
+      "expectation": "A bundle recorded against RGBA8Unorm fails validation in a pass with a single RGBA16Float attachment and in a valid two-attachment RGBA8Unorm pass while the bundle declares one."
+    },
+    "data.large-indices": {
+      "title": "Carry full-range indices and coordinates",
+      "expectation": "A draw with firstInstance 2^31 delivers the exact value through the flat fragment input, a draw with firstVertex 2^30 renders only when vertex_index carries the offset, and a 2^31 texture width is refused."
+    },
+    "device.full-limits-space": {
+      "title": "Request and observe the full limit space",
+      "expectation": "A device requested with every limit at the adapter's own value reports exactly those limits field by field."
+    },
+    "features.compressed-bc": {
+      "title": "Decode a BC1 compressed texture",
+      "expectation": "With TextureCompressionBC granted, a BC1 block whose red endpoint wins the palette decodes to pure red on a quad that samples it."
+    },
+    "features.subgroups": {
+      "title": "Sum across subgroups",
+      "expectation": "With Subgroups granted, a subgroupAdd over a 64-invocation workgroup returns exactly each subgroup's population — the invocations sharing a subgroupBroadcastFirst identifier — every subgroup stays within the adapter's maximum size, and the subgroups partition the workgroup."
+    },
+    "texture.transient-usage": {
+      "title": "Constrain the transient attachment usage",
+      "expectation": "TransientAttachment accepts exactly RenderAttachment as its companion: adding CopySrc to the pair fails validation while RenderAttachment with CopySrc stays valid, and the transient usage alone fails too."
     }
   },
   "behaviours": {
-    "device.features-and-limits": "The adapter and device cases check a pinned subset of limits and that a device cannot exceed its adapter; the full limit space is not enumerated.",
     "device.request-required-features": "Refusing a genuinely absent optional feature has no deterministic portable case; the features present in the environment are requested and used by their cases.",
-    "features.compressed-and-tiered": "Compressed-texture and tiered optional features are declared in the contract but not exercised.",
-    "features.subgroups": "Subgroup features and the reported subgroup sizes are not exercised.",
-    "texture.creation": "The creation case checks the getters and usability of one texture; textureBindingViewDimension and the remaining creation constraints are not exercised.",
-    "texture.view-usage-aspect": "Usage restriction and a DepthOnly view are exercised; a StencilOnly view is not.",
-    "texture.usage-and-formats": "The exercised usages and formats are tied to their cases; compressed, tiered and other formats, plus TransientAttachment, remain untested.",
-    "textures.storage-constraints": "Storage texture format and access constraints beyond the single exercised case are not covered.",
-    "formats.depth-and-packed": "Several depth and stencil formats, and packed formats, are not exercised.",
-    "sampling.limits": "Anisotropy and the sampler limits are not exercised.",
-    "sampling.comparison-pcf": "Percentage-closer filtering (a comparison sampler filtering depth-comparison results rather than depth values, which produces softened shadow edges) and comparison functions other than the uniform-depth sampler.comparison case are not exercised.",
-    "transfers.stencil-copy-aspect": "A StencilOnly texture copy aspect is not exercised.",
-    "render.primitive-and-multisample": "Triangle topologies, culling, strip restart and one multisample mask are exercised; points, lines and partial sample masks are not.",
-    "bundles.negative-validation": "Render bundle creation with mismatched attachments is not exercised negatively.",
-    "data.identifiers-and-indices": "Offset, region and index values, including a negative baseVertex, are exercised by their cases; the full 64-bit range of the aliases is not."
+    "features.compressed-and-tiered": "BC1 block decode is exercised with TextureCompressionBC; the ETC2 and ASTC compressed features and the tier1/tier2 format features are declared in the contract but not exercised.",
+    "texture.creation": "View-dimension and layer-count creation constraints are exercised; the remaining creation constraints, such as mip-level bounds and sample-count rules, are not.",
+    "texture.usage-and-formats": "TransientAttachment is exercised with its companion constraint and compressed formats through the compressed-bc case; the tiered formats and the remaining format-and-usage pairs are not.",
+    "textures.storage-constraints": "Format-side storage refusals are exercised; the per-format access constraints beyond the exercised write-only case are not.",
+    "formats.depth-and-packed": "Depth16Unorm and packed RGB10A2Uint targets are exercised; the feature-gated packed and depth formats, such as rg11b10ufloat and depth32float-stencil8, are not.",
+    "sampling.comparison-pcf": "The filter-independent comparison envelope and both comparator directions are exercised over a split depth; the exact filtered fraction is implementation-dependent and deliberately not asserted.",
+    "data.identifiers-and-indices": "Full-range 32-bit draw indices and the refused texture width are exercised; the full 64-bit extent of the size and offset aliases is not."
   }
 }

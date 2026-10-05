@@ -16,8 +16,8 @@ not a conformance certificate.
 
 The inventory is **generated at build time** from the case annotations and the API sources; it is not
 versioned. The generated `symbols.tsv` lists **884 declarations** across 14 families, and the
-localized behaviour files describe **147 behaviours per locale**: **132 executable cases** and
-**15 residuals**. The number of symbols is a measure of surface area only: it is not a conformance
+localized behaviour files describe **155 behaviours per locale**: **147 executable cases** and
+**8 residuals**. The number of symbols is a measure of surface area only: it is not a conformance
 percentage, and a symbol being listed never means it is tested.
 
 | Family | Declarations |
@@ -71,24 +71,24 @@ The coverage balance, the residuals and the known limits of the evidence are in
 - Environment: `Chromium 153.0.8010.12` (Playwright 1.63.0) on `darwin`, headless with
   `--enable-unsafe-webgpu --enable-unsafe-swiftshader --use-angle=swiftshader`. These are functional
   software-backend results, not physical-GPU results.
-- Result: **132 cases (125 mandatory, 7 optional)**.
+- Result: **147 cases (138 mandatory, 9 optional)**.
 
   | Target | Passed | Unsupported | Failed | Total |
   | --- | ---: | ---: | ---: | ---: |
-  | JS | 131 | 1 | 0 | 132 |
-  | Wasm JS | 131 | 1 | 0 | 132 |
+  | JS | 146 | 1 | 0 | 147 |
+  | Wasm JS | 146 | 1 | 0 | 147 |
 
-  All **125 mandatory cases pass** on both targets. The only non-passing case is optional
+  All **138 mandatory cases pass** on both targets. The only non-passing case is optional
   `compute.shader-f16`, `unsupported` because the environment lacks `ShaderF16`.
 - Demo checks: **2/2 on both targets**. Benchmark scenarios: **10/10 on both targets** (`ci`
   profile, 5 retained samples per scenario).
 - Report attribution: each envelope's `buildCommit` equals `git rev-parse HEAD` at build time and
   matches the inventory `baseline.commit`, and `buildVersion` matches `baseline.suiteVersion`; the
   collector fails closed on a missing or mismatched identity.
-- Site: assembled with **884 symbols and 147 behaviours per locale**; each of the 132 case entries
+- Site: assembled with **884 symbols and 155 behaviours per locale**; each of the 147 case entries
   links to its source file.
 - Unit evidence: `./gradlew check` passes.
-- Observed 2026-10-02.
+- Observed 2026-10-04.
 
 ## Oracle mutation evidence
 
@@ -180,7 +180,7 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
   ```
 
-- Collector: **131 passed + 1 unsupported (optional `compute.shader-f16`) of 132 on JS and on
+- Collector: **146 passed + 1 unsupported (optional `compute.shader-f16`) of 147 on JS and on
   Wasm**, and **2/2 demo cases on both targets**.
 - Manual DOM checks in headless Chromium (Playwright, swiftshader): EN and FR render the summary
   (`2 passed · 0 failed · 0 unsupported — 2 cases` / `2 réussis · 0 échoués · 0 non pris en charge —
