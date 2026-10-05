@@ -6,6 +6,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- Publish the portable suite modules across the `webgpu-api` KMP target matrix, including Android, Windows, and ARM64 tvOS targets.
 - Bilingual documentation, contributor guidance, and repository automation.
 - `org.graphiks:webgpu-browser`, a browser implementation for Kotlin/JS and Kotlin/Wasm JS with adapter acquisition, resource wrappers, descriptor conversions, and canvas surfaces.
 - `WebGpuRecord` and nullable browser binding values in `org.graphiks:webgpu-web-bindings`.
