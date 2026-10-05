@@ -33,6 +33,6 @@ android {
 
 dependencies {
     implementation(project(":arraybuffer-benchmarks"))
-    androidTestImplementation("androidx.test:runner:1.7.0")
-    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
 }
