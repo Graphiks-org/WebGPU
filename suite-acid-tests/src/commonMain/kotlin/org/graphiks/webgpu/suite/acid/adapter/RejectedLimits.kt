@@ -1,7 +1,7 @@
 package org.graphiks.webgpu.suite.acid.adapter
 
-import org.graphiks.webgpu.GPUSupportedLimits
 import org.graphiks.webgpu.descriptors.DeviceDescriptor
+import org.graphiks.webgpu.descriptors.RequiredLimits
 import org.graphiks.webgpu.suite.AcidCaseId
 import org.graphiks.webgpu.suite.AcidContext
 import org.graphiks.webgpu.suite.AcidFamily
@@ -22,7 +22,8 @@ import kotlin.test.assertTrue
         ApiSymbols.GPUAdapter_requestDevice,
         ApiSymbols.GPUAdapter_limits,
         ApiSymbols.GPUSupportedLimits,
-        ApiSymbols.GPUSupportedLimits_maxComputeWorkgroupSizeX,
+        ApiSymbols.GPURequiredLimits,
+        ApiSymbols.GPURequiredLimits_maxComputeWorkgroupSizeX,
         ApiSymbols.GPUDeviceDescriptor,
         ApiSymbols.GPUDeviceDescriptor_requiredLimits,
     ],
@@ -37,9 +38,7 @@ suspend fun rejectedLimits(context: AcidContext) {
             "maxComputeWorkgroupSizeX cannot be the maximum UInt for an excess request to exist",
         )
         val excess = base + 1u
-        val requested = object : GPUSupportedLimits by adapter.limits {
-            override val maxComputeWorkgroupSizeX = excess
-        }
+        val requested = RequiredLimits(maxComputeWorkgroupSizeX = excess)
         val result = adapter.requestDevice(
             DeviceDescriptor(requiredLimits = requested),
         )

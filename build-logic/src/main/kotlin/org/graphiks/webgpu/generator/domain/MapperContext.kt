@@ -2,6 +2,7 @@ package org.graphiks.webgpu.generator.domain
 
 import com.squareup.kotlinpoet.TypeSpec
 import de.fabmax.webidl.model.IdlModel
+import org.graphiks.webgpu.generator.mapper.adaptRequiredLimits
 
 class MapperContext(
     val idlModel: IdlModel,
@@ -35,20 +36,8 @@ class MapperContext(
         interfaces.filter { it.name in interfaceToAddAutocloseableTrait }
             .forEach { it.extends += "AutoCloseable" }
 
-        // Change GPUDeviceDescriptor#requiredLimits type to GPUSupportedLimits?
-        descriptors.first { it.name == "GPUDeviceDescriptor" }
-            .also { descriptor ->
-                descriptor.parameter.first { it.name == "requiredLimits" }.apply {
-                    type = "GPUSupportedLimits?"
-                    defaultValue = "null"
-                }
-            }
-
-        interfaces.find { it.name == "GPUDeviceDescriptor" }!!.apply {
-            attributes.find { it.name == "requiredLimits" }!!.apply {
-                this.type = "GPUSupportedLimits?"
-            }
-        }
+        // Model the requested limits independently from the supported ones.
+        adaptRequiredLimits()
 
         // Convert setlike to typealias
         val setLikes = idlModel.interfaces

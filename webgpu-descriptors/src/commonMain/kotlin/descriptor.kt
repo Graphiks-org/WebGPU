@@ -163,7 +163,7 @@ data class DeviceDescriptor(
 	 * Specifies the limits that are required by the device request. The request will fail if the adapter cannot provide these limits. Each key with a non-undefined value must be the name of a member of supported limits.
 	 *
 	 */
-	override val requiredLimits: GPUSupportedLimits? = null,
+	override val requiredLimits: GPURequiredLimits? = null,
 	/**
 	 * The descriptor for the default GPUQueue.
 	 *
@@ -1327,3 +1327,42 @@ data class QuerySetDescriptor(
 	override val count: GPUSize32,
 	override val label: String = ""
 ): GPUQuerySetDescriptor
+
+data class RequiredLimits(
+	override val maxTextureDimension1D: UInt? = null,
+	override val maxTextureDimension2D: UInt? = null,
+	override val maxTextureDimension3D: UInt? = null,
+	override val maxTextureArrayLayers: UInt? = null,
+	override val maxBindGroups: UInt? = null,
+	override val maxBindGroupsPlusVertexBuffers: UInt? = null,
+	override val maxImmediateSize: UInt? = null,
+	override val maxBindingsPerBindGroup: UInt? = null,
+	override val maxDynamicUniformBuffersPerPipelineLayout: UInt? = null,
+	override val maxDynamicStorageBuffersPerPipelineLayout: UInt? = null,
+	override val maxSampledTexturesPerShaderStage: UInt? = null,
+	override val maxSamplersPerShaderStage: UInt? = null,
+	override val maxStorageBuffersPerShaderStage: UInt? = null,
+	override val maxStorageBuffersInVertexStage: UInt? = null,
+	override val maxStorageBuffersInFragmentStage: UInt? = null,
+	override val maxStorageTexturesPerShaderStage: UInt? = null,
+	override val maxStorageTexturesInVertexStage: UInt? = null,
+	override val maxStorageTexturesInFragmentStage: UInt? = null,
+	override val maxUniformBuffersPerShaderStage: UInt? = null,
+	override val maxUniformBufferBindingSize: ULong? = null,
+	override val maxStorageBufferBindingSize: ULong? = null,
+	override val minUniformBufferOffsetAlignment: UInt? = null,
+	override val minStorageBufferOffsetAlignment: UInt? = null,
+	override val maxVertexBuffers: UInt? = null,
+	override val maxBufferSize: ULong? = null,
+	override val maxVertexAttributes: UInt? = null,
+	override val maxVertexBufferArrayStride: UInt? = null,
+	override val maxInterStageShaderVariables: UInt? = null,
+	override val maxColorAttachments: UInt? = null,
+	override val maxColorAttachmentBytesPerSample: UInt? = null,
+	override val maxComputeWorkgroupStorageSize: UInt? = null,
+	override val maxComputeInvocationsPerWorkgroup: UInt? = null,
+	override val maxComputeWorkgroupSizeX: UInt? = null,
+	override val maxComputeWorkgroupSizeY: UInt? = null,
+	override val maxComputeWorkgroupSizeZ: UInt? = null,
+	override val maxComputeWorkgroupsPerDimension: UInt? = null
+): GPURequiredLimits
