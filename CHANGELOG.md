@@ -36,6 +36,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Rename `webgpu-web` to `webgpu-web-bindings` and move generated descriptors and bindings to the `org.graphiks.webgpu.descriptors` and `org.graphiks.webgpu.bindings` packages.
 - Move the type mapping into the documentation site as a dedicated bilingual section (`docs/docs/type-mapping/`) and remove the root `TYPE_MAPPING.md`.
 - Suite reports (acid, demo, benchmark) carry the exact commit and version they were built from, and the runner fails closed on a missing or mismatched identity instead of attributing a report to the current checkout; inventory generation links every case entry to its source file on the Validation page.
+- Accept automated dependency updates in the PR policy: a pull request authored by `dependabot[bot]` on a `dependabot/` branch passes a reduced bot lane — Conventional Commit subjects with the reserved `deps` scope and the current `master` commit — instead of failing the fork, branch-prefix, template, documentation, and changelog rules; the validator now ships unit tests that run on every pull request.
 
 ### Removed
 
