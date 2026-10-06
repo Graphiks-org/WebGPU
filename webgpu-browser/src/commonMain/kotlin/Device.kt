@@ -86,7 +86,7 @@ class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallb
 
     override fun createTexture(descriptor: GPUTextureDescriptor): GPUTexture = map(descriptor)
         .let { handler.createTexture(it) }
-        .let(::Texture)
+        .let { Texture.wrapOwned(it) }
 
     override fun createBindGroup(descriptor: GPUBindGroupDescriptor): GPUBindGroup = map(descriptor)
         .let { handler.createBindGroup(it) }

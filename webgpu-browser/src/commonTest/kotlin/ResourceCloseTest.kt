@@ -62,7 +62,7 @@ class ResourceCloseTest {
     @Test
     fun closingAnOwnedTextureTwiceDestroysItOnce() {
         val raw = closeCountedTexture()
-        val texture = Texture(raw, canBeDestroy = true)
+        val texture = Texture.wrapOwned(raw)
         texture.close()
         texture.close()
         assertEquals(1.0, raw.destroyCount)
@@ -71,7 +71,7 @@ class ResourceCloseTest {
     @Test
     fun closingABorrowedTextureNeverDestroysIt() {
         val raw = closeCountedTexture()
-        val texture = Texture(raw, canBeDestroy = false)
+        val texture = Texture.wrapBorrowed(raw)
         texture.close()
         texture.close()
         assertEquals(0.0, raw.destroyCount, "A borrowed canvas texture must not be destroyed by its wrapper")

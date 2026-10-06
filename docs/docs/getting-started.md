@@ -60,6 +60,29 @@ The canvas helpers (`getCanvasSurface`, `SurfaceConfiguration`) also live in
 `(canvas as HTMLCanvasElement).getCanvasSurface()`). `webgpu-browser` does not bring a DOM wrapper
 library transitively, so add one (for example `kotlin-browser`) when your code needs DOM types.
 
+## Interop with the browser backend
+
+Browser wrappers expose their raw handle as `handler` for interop. Calling operations on the
+handle directly can invalidate the wrapper's contract (ownership and close-once semantics), so
+prefer the wrapper's own API.
+
+Texture ownership is explicit. `Texture.wrapOwned(handler)` takes over the destruction of the
+handle; `Texture.wrapBorrowed(handler)` wraps a texture owned by someone else (for example the
+canvas of a `CanvasSurface`) and never destroys it. Textures from `device.createTexture` are
+owned; textures from `CanvasSurface.getCurrentTexture` are borrowed. `CanvasSurface` is
+`AutoCloseable`: `close()` unconfigures the canvas context and does not close the device passed
+to `configure`.
+
+```kotlin
+import org.graphiks.webgpu.browser.Texture
+
+// Owned: closing the wrapper destroys the texture.
+val owned = Texture.wrapOwned(device.createTexture(descriptor).let { it as org.graphiks.webgpu.browser.Texture }.handler)
+
+// Borrowed: closing the wrapper leaves the canvas texture alone.
+val borrowed = Texture.wrapBorrowed(surface.getCurrentTexture().texture.let { it as org.graphiks.webgpu.browser.Texture }.handler)
+```
+
 ## Map a buffer with a scoped range
 
 `GPUBuffer.withMappedRange` maps a range, runs a non-suspending block with the borrowed view and

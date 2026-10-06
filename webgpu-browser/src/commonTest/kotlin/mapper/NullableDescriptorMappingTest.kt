@@ -44,7 +44,7 @@ class NullableDescriptorMappingTest {
 
     private fun fakeBindGroupLayout() = BindGroupLayout(createJsObject<WGPUBindGroupLayout>())
 
-    private fun fakeTexture() = Texture(createJsObject<WGPUTexture>(), canBeDestroy = false)
+    private fun fakeTexture() = Texture.wrapBorrowed(createJsObject<WGPUTexture>())
 
     private fun fakeShaderModule(): GPUShaderModule = ShaderModule(createJsObject<WGPUShaderModule>())
 
