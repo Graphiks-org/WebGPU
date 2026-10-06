@@ -670,6 +670,18 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 	 *
 	 */
 	suspend fun popErrorScope(): Result<GPUError?>
+/**
+ * Waits until this device is lost and resolves with the loss information.
+ *
+ * The loss is a successful result: it carries a [GPUDeviceLostReason] and an
+ * implementation-provided message, it is not a failure of the returned [Result].
+ * Several observers may wait at the same time and all of them observe the same
+ * loss; an observer that starts waiting after the loss resolves immediately.
+ * Cancelling one observer neither cancels the other observers nor destroys the
+ * device. Closing the device explicitly notifies the loss with the destruction
+ * reason when the backend provides one.
+ */
+	suspend fun awaitLost(): Result<GPUDeviceLostInfo>
 }
 
 /**

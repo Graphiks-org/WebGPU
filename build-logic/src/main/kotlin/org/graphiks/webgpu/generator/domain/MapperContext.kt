@@ -22,6 +22,7 @@ class MapperContext(
     fun adaptToGuidelines() {
 
         generateUncapturedErrorCallback()
+        addAwaitLost()
         changeGPUErrorAsSealed()
 
         // If interface contains destroy, we set it as AutoCloseable
@@ -102,6 +103,36 @@ class MapperContext(
             parameter.first { it.name == fieldName }.apply {
                 defaultValue = newDefaultValue
                 type = newType
+            }
+        }
+    }
+
+    /**
+     * Replaces the JavaScript `lost` promise with a portable, cancellable observation of the
+     * device loss. The loss itself is a successful result carrying a reason and a message; only an
+     * interop failure is a `Result` failure.
+     */
+    private fun addAwaitLost() {
+        interfaces.find { it.name == "GPUDevice" }!!.apply {
+            methods = methods + Interface.Method(
+                name = "awaitLost",
+                returnType = "Result<GPUDeviceLostInfo>",
+                parameters = emptyList(),
+                isSuspend = true,
+            ).apply {
+                kDoc = KDoc(
+                    """
+                    Waits until this device is lost and resolves with the loss information.
+
+                    The loss is a successful result: it carries a [GPUDeviceLostReason] and an
+                    implementation-provided message, it is not a failure of the returned [Result].
+                    Several observers may wait at the same time and all of them observe the same
+                    loss; an observer that starts waiting after the loss resolves immediately.
+                    Cancelling one observer neither cancels the other observers nor destroys the
+                    device. Closing the device explicitly notifies the loss with the destruction
+                    reason when the backend provides one.
+                    """.trimIndent(),
+                )
             }
         }
     }

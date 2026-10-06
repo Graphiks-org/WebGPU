@@ -7,6 +7,7 @@ import org.graphiks.webgpu.bindings.*
 
 import org.graphiks.webgpu.browser.mapper.errorOf
 import org.graphiks.webgpu.browser.mapper.map
+import org.graphiks.webgpu.browser.mapper.mapDeviceLostInfo
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.toJsString
 import kotlin.js.unsafeCast
@@ -124,6 +125,10 @@ class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallb
 
     override suspend fun popErrorScope(): Result<GPUError?> = browserResult {
         handler.popErrorScope().await()?.let { errorOf(it.unsafeCast<WGPUError>()) }
+    }
+
+    override suspend fun awaitLost(): Result<GPUDeviceLostInfo> = browserResult {
+        mapDeviceLostInfo(handler.lost.await().unsafeCast<WGPUDeviceLostInfo>())
     }
 
     override fun close() {
