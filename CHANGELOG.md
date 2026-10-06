@@ -6,6 +6,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- Public API contract rework with a migration guide (`docs/docs/public-api-migration.md` and its French twin): nullable `sequence<T?>` slots keep their element nullability end to end; `GPUDeviceDescriptor.requiredLimits` becomes `GPURequiredLimits?` with a partial `RequiredLimits` descriptor; `GPUDevice.awaitLost()` exposes a cancellable device-loss observation; `GPUBuffer.usage`/`GPUTexture.usage` return typed masks with `fromBits` and `contains`; `GPUBuffer.withMappedRange` scopes a mapping; browser texture ownership is explicit (`Texture.wrapOwned`/`Texture.wrapBorrowed`, `CanvasSurface : AutoCloseable`); cancelled GPU acquisitions are cleaned up deterministically. The signature breaks are intentional and are not binary- or source-compatible with the previous contract.
 - Android `ArrayBuffer.wrap(address, size)`: a borrowed, non-owning view over native memory (native byte order, bounds-checked) so a backend can expose a range a native library lends the caller — such as a GPU-mapped buffer between map and unmap — without copying it.
 - Publish the portable suite modules across the `webgpu-api` KMP target matrix, including Android, Windows, and ARM64 tvOS targets.
 - Bilingual documentation, contributor guidance, and repository automation.

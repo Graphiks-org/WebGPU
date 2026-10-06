@@ -1088,7 +1088,7 @@ abstract interface org.graphiks.webgpu/GPUBuffer : kotlin/AutoCloseable, org.gra
     abstract val size // org.graphiks.webgpu/GPUBuffer.size|{}size[0]
         abstract fun <get-size>(): kotlin/ULong // org.graphiks.webgpu/GPUBuffer.size.<get-size>|<get-size>(){}[0]
     abstract val usage // org.graphiks.webgpu/GPUBuffer.usage|{}usage[0]
-        abstract fun <get-usage>(): kotlin.collections/Set<org.graphiks.webgpu/GPUBufferUsage> // org.graphiks.webgpu/GPUBuffer.usage.<get-usage>|<get-usage>(){}[0]
+        abstract fun <get-usage>(): org.graphiks.webgpu/GPUBufferUsage // org.graphiks.webgpu/GPUBuffer.usage.<get-usage>|<get-usage>(){}[0]
 
     abstract fun getMappedRange(kotlin/ULong = ..., kotlin/ULong? = ...): org.graphiks.webgpu/ArrayBuffer // org.graphiks.webgpu/GPUBuffer.getMappedRange|getMappedRange(kotlin.ULong;kotlin.ULong?){}[0]
     abstract fun unmap() // org.graphiks.webgpu/GPUBuffer.unmap|unmap(){}[0]
@@ -1262,6 +1262,7 @@ abstract interface org.graphiks.webgpu/GPUDevice : kotlin/AutoCloseable, org.gra
     abstract fun createShaderModule(org.graphiks.webgpu/GPUShaderModuleDescriptor): org.graphiks.webgpu/GPUShaderModule // org.graphiks.webgpu/GPUDevice.createShaderModule|createShaderModule(org.graphiks.webgpu.GPUShaderModuleDescriptor){}[0]
     abstract fun createTexture(org.graphiks.webgpu/GPUTextureDescriptor): org.graphiks.webgpu/GPUTexture // org.graphiks.webgpu/GPUDevice.createTexture|createTexture(org.graphiks.webgpu.GPUTextureDescriptor){}[0]
     abstract fun pushErrorScope(org.graphiks.webgpu/GPUErrorFilter) // org.graphiks.webgpu/GPUDevice.pushErrorScope|pushErrorScope(org.graphiks.webgpu.GPUErrorFilter){}[0]
+    abstract suspend fun awaitLost(): kotlin/Result<org.graphiks.webgpu/GPUDeviceLostInfo> // org.graphiks.webgpu/GPUDevice.awaitLost|awaitLost(){}[0]
     abstract suspend fun createComputePipelineAsync(org.graphiks.webgpu/GPUComputePipelineDescriptor): kotlin/Result<org.graphiks.webgpu/GPUComputePipeline> // org.graphiks.webgpu/GPUDevice.createComputePipelineAsync|createComputePipelineAsync(org.graphiks.webgpu.GPUComputePipelineDescriptor){}[0]
     abstract suspend fun createRenderPipelineAsync(org.graphiks.webgpu/GPURenderPipelineDescriptor): kotlin/Result<org.graphiks.webgpu/GPURenderPipeline> // org.graphiks.webgpu/GPUDevice.createRenderPipelineAsync|createRenderPipelineAsync(org.graphiks.webgpu.GPURenderPipelineDescriptor){}[0]
     abstract suspend fun popErrorScope(): kotlin/Result<org.graphiks.webgpu/GPUError?> // org.graphiks.webgpu/GPUDevice.popErrorScope|popErrorScope(){}[0]
@@ -1275,7 +1276,7 @@ abstract interface org.graphiks.webgpu/GPUDeviceDescriptor : org.graphiks.webgpu
     abstract val requiredFeatures // org.graphiks.webgpu/GPUDeviceDescriptor.requiredFeatures|{}requiredFeatures[0]
         abstract fun <get-requiredFeatures>(): kotlin.collections/List<org.graphiks.webgpu/GPUFeatureName> // org.graphiks.webgpu/GPUDeviceDescriptor.requiredFeatures.<get-requiredFeatures>|<get-requiredFeatures>(){}[0]
     abstract val requiredLimits // org.graphiks.webgpu/GPUDeviceDescriptor.requiredLimits|{}requiredLimits[0]
-        abstract fun <get-requiredLimits>(): org.graphiks.webgpu/GPUSupportedLimits? // org.graphiks.webgpu/GPUDeviceDescriptor.requiredLimits.<get-requiredLimits>|<get-requiredLimits>(){}[0]
+        abstract fun <get-requiredLimits>(): org.graphiks.webgpu/GPURequiredLimits? // org.graphiks.webgpu/GPUDeviceDescriptor.requiredLimits.<get-requiredLimits>|<get-requiredLimits>(){}[0]
 }
 
 abstract interface org.graphiks.webgpu/GPUDeviceLostInfo { // org.graphiks.webgpu/GPUDeviceLostInfo|null[0]
@@ -1296,7 +1297,7 @@ abstract interface org.graphiks.webgpu/GPUExtent3D { // org.graphiks.webgpu/GPUE
 
 abstract interface org.graphiks.webgpu/GPUFragmentState : org.graphiks.webgpu/GPUProgrammableStage { // org.graphiks.webgpu/GPUFragmentState|null[0]
     abstract val targets // org.graphiks.webgpu/GPUFragmentState.targets|{}targets[0]
-        abstract fun <get-targets>(): kotlin.collections/List<org.graphiks.webgpu/GPUColorTargetState> // org.graphiks.webgpu/GPUFragmentState.targets.<get-targets>|<get-targets>(){}[0]
+        abstract fun <get-targets>(): kotlin.collections/List<org.graphiks.webgpu/GPUColorTargetState?> // org.graphiks.webgpu/GPUFragmentState.targets.<get-targets>|<get-targets>(){}[0]
 }
 
 abstract interface org.graphiks.webgpu/GPUInternalError : org.graphiks.webgpu/GPUError // org.graphiks.webgpu/GPUInternalError|null[0]
@@ -1352,7 +1353,7 @@ abstract interface org.graphiks.webgpu/GPUPipelineLayout : kotlin/AutoCloseable,
 
 abstract interface org.graphiks.webgpu/GPUPipelineLayoutDescriptor : org.graphiks.webgpu/GPUObjectDescriptorBase { // org.graphiks.webgpu/GPUPipelineLayoutDescriptor|null[0]
     abstract val bindGroupLayouts // org.graphiks.webgpu/GPUPipelineLayoutDescriptor.bindGroupLayouts|{}bindGroupLayouts[0]
-        abstract fun <get-bindGroupLayouts>(): kotlin.collections/List<org.graphiks.webgpu/GPUBindGroupLayout> // org.graphiks.webgpu/GPUPipelineLayoutDescriptor.bindGroupLayouts.<get-bindGroupLayouts>|<get-bindGroupLayouts>(){}[0]
+        abstract fun <get-bindGroupLayouts>(): kotlin.collections/List<org.graphiks.webgpu/GPUBindGroupLayout?> // org.graphiks.webgpu/GPUPipelineLayoutDescriptor.bindGroupLayouts.<get-bindGroupLayouts>|<get-bindGroupLayouts>(){}[0]
     abstract val immediateSize // org.graphiks.webgpu/GPUPipelineLayoutDescriptor.immediateSize|{}immediateSize[0]
         abstract fun <get-immediateSize>(): kotlin/UInt // org.graphiks.webgpu/GPUPipelineLayoutDescriptor.immediateSize.<get-immediateSize>|<get-immediateSize>(){}[0]
 }
@@ -1465,7 +1466,7 @@ abstract interface org.graphiks.webgpu/GPURenderPassDepthStencilAttachment { // 
 
 abstract interface org.graphiks.webgpu/GPURenderPassDescriptor : org.graphiks.webgpu/GPUObjectDescriptorBase { // org.graphiks.webgpu/GPURenderPassDescriptor|null[0]
     abstract val colorAttachments // org.graphiks.webgpu/GPURenderPassDescriptor.colorAttachments|{}colorAttachments[0]
-        abstract fun <get-colorAttachments>(): kotlin.collections/List<org.graphiks.webgpu/GPURenderPassColorAttachment> // org.graphiks.webgpu/GPURenderPassDescriptor.colorAttachments.<get-colorAttachments>|<get-colorAttachments>(){}[0]
+        abstract fun <get-colorAttachments>(): kotlin.collections/List<org.graphiks.webgpu/GPURenderPassColorAttachment?> // org.graphiks.webgpu/GPURenderPassDescriptor.colorAttachments.<get-colorAttachments>|<get-colorAttachments>(){}[0]
     abstract val depthStencilAttachment // org.graphiks.webgpu/GPURenderPassDescriptor.depthStencilAttachment|{}depthStencilAttachment[0]
         abstract fun <get-depthStencilAttachment>(): org.graphiks.webgpu/GPURenderPassDepthStencilAttachment? // org.graphiks.webgpu/GPURenderPassDescriptor.depthStencilAttachment.<get-depthStencilAttachment>|<get-depthStencilAttachment>(){}[0]
     abstract val maxDrawCount // org.graphiks.webgpu/GPURenderPassDescriptor.maxDrawCount|{}maxDrawCount[0]
@@ -1489,7 +1490,7 @@ abstract interface org.graphiks.webgpu/GPURenderPassEncoder : org.graphiks.webgp
 
 abstract interface org.graphiks.webgpu/GPURenderPassLayout : org.graphiks.webgpu/GPUObjectDescriptorBase { // org.graphiks.webgpu/GPURenderPassLayout|null[0]
     abstract val colorFormats // org.graphiks.webgpu/GPURenderPassLayout.colorFormats|{}colorFormats[0]
-        abstract fun <get-colorFormats>(): kotlin.collections/List<org.graphiks.webgpu/GPUTextureFormat> // org.graphiks.webgpu/GPURenderPassLayout.colorFormats.<get-colorFormats>|<get-colorFormats>(){}[0]
+        abstract fun <get-colorFormats>(): kotlin.collections/List<org.graphiks.webgpu/GPUTextureFormat?> // org.graphiks.webgpu/GPURenderPassLayout.colorFormats.<get-colorFormats>|<get-colorFormats>(){}[0]
     abstract val depthStencilFormat // org.graphiks.webgpu/GPURenderPassLayout.depthStencilFormat|{}depthStencilFormat[0]
         abstract fun <get-depthStencilFormat>(): org.graphiks.webgpu/GPUTextureFormat? // org.graphiks.webgpu/GPURenderPassLayout.depthStencilFormat.<get-depthStencilFormat>|<get-depthStencilFormat>(){}[0]
     abstract val sampleCount // org.graphiks.webgpu/GPURenderPassLayout.sampleCount|{}sampleCount[0]
@@ -1529,6 +1530,81 @@ abstract interface org.graphiks.webgpu/GPURequestAdapterOptions { // org.graphik
         abstract fun <get-powerPreference>(): org.graphiks.webgpu/GPUPowerPreference? // org.graphiks.webgpu/GPURequestAdapterOptions.powerPreference.<get-powerPreference>|<get-powerPreference>(){}[0]
     abstract val xrCompatible // org.graphiks.webgpu/GPURequestAdapterOptions.xrCompatible|{}xrCompatible[0]
         abstract fun <get-xrCompatible>(): kotlin/Boolean // org.graphiks.webgpu/GPURequestAdapterOptions.xrCompatible.<get-xrCompatible>|<get-xrCompatible>(){}[0]
+}
+
+abstract interface org.graphiks.webgpu/GPURequiredLimits { // org.graphiks.webgpu/GPURequiredLimits|null[0]
+    abstract val maxBindGroups // org.graphiks.webgpu/GPURequiredLimits.maxBindGroups|{}maxBindGroups[0]
+        abstract fun <get-maxBindGroups>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxBindGroups.<get-maxBindGroups>|<get-maxBindGroups>(){}[0]
+    abstract val maxBindGroupsPlusVertexBuffers // org.graphiks.webgpu/GPURequiredLimits.maxBindGroupsPlusVertexBuffers|{}maxBindGroupsPlusVertexBuffers[0]
+        abstract fun <get-maxBindGroupsPlusVertexBuffers>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxBindGroupsPlusVertexBuffers.<get-maxBindGroupsPlusVertexBuffers>|<get-maxBindGroupsPlusVertexBuffers>(){}[0]
+    abstract val maxBindingsPerBindGroup // org.graphiks.webgpu/GPURequiredLimits.maxBindingsPerBindGroup|{}maxBindingsPerBindGroup[0]
+        abstract fun <get-maxBindingsPerBindGroup>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxBindingsPerBindGroup.<get-maxBindingsPerBindGroup>|<get-maxBindingsPerBindGroup>(){}[0]
+    abstract val maxBufferSize // org.graphiks.webgpu/GPURequiredLimits.maxBufferSize|{}maxBufferSize[0]
+        abstract fun <get-maxBufferSize>(): kotlin/ULong? // org.graphiks.webgpu/GPURequiredLimits.maxBufferSize.<get-maxBufferSize>|<get-maxBufferSize>(){}[0]
+    abstract val maxColorAttachmentBytesPerSample // org.graphiks.webgpu/GPURequiredLimits.maxColorAttachmentBytesPerSample|{}maxColorAttachmentBytesPerSample[0]
+        abstract fun <get-maxColorAttachmentBytesPerSample>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxColorAttachmentBytesPerSample.<get-maxColorAttachmentBytesPerSample>|<get-maxColorAttachmentBytesPerSample>(){}[0]
+    abstract val maxColorAttachments // org.graphiks.webgpu/GPURequiredLimits.maxColorAttachments|{}maxColorAttachments[0]
+        abstract fun <get-maxColorAttachments>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxColorAttachments.<get-maxColorAttachments>|<get-maxColorAttachments>(){}[0]
+    abstract val maxComputeInvocationsPerWorkgroup // org.graphiks.webgpu/GPURequiredLimits.maxComputeInvocationsPerWorkgroup|{}maxComputeInvocationsPerWorkgroup[0]
+        abstract fun <get-maxComputeInvocationsPerWorkgroup>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxComputeInvocationsPerWorkgroup.<get-maxComputeInvocationsPerWorkgroup>|<get-maxComputeInvocationsPerWorkgroup>(){}[0]
+    abstract val maxComputeWorkgroupSizeX // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupSizeX|{}maxComputeWorkgroupSizeX[0]
+        abstract fun <get-maxComputeWorkgroupSizeX>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupSizeX.<get-maxComputeWorkgroupSizeX>|<get-maxComputeWorkgroupSizeX>(){}[0]
+    abstract val maxComputeWorkgroupSizeY // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupSizeY|{}maxComputeWorkgroupSizeY[0]
+        abstract fun <get-maxComputeWorkgroupSizeY>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupSizeY.<get-maxComputeWorkgroupSizeY>|<get-maxComputeWorkgroupSizeY>(){}[0]
+    abstract val maxComputeWorkgroupSizeZ // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupSizeZ|{}maxComputeWorkgroupSizeZ[0]
+        abstract fun <get-maxComputeWorkgroupSizeZ>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupSizeZ.<get-maxComputeWorkgroupSizeZ>|<get-maxComputeWorkgroupSizeZ>(){}[0]
+    abstract val maxComputeWorkgroupStorageSize // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupStorageSize|{}maxComputeWorkgroupStorageSize[0]
+        abstract fun <get-maxComputeWorkgroupStorageSize>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupStorageSize.<get-maxComputeWorkgroupStorageSize>|<get-maxComputeWorkgroupStorageSize>(){}[0]
+    abstract val maxComputeWorkgroupsPerDimension // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupsPerDimension|{}maxComputeWorkgroupsPerDimension[0]
+        abstract fun <get-maxComputeWorkgroupsPerDimension>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxComputeWorkgroupsPerDimension.<get-maxComputeWorkgroupsPerDimension>|<get-maxComputeWorkgroupsPerDimension>(){}[0]
+    abstract val maxDynamicStorageBuffersPerPipelineLayout // org.graphiks.webgpu/GPURequiredLimits.maxDynamicStorageBuffersPerPipelineLayout|{}maxDynamicStorageBuffersPerPipelineLayout[0]
+        abstract fun <get-maxDynamicStorageBuffersPerPipelineLayout>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxDynamicStorageBuffersPerPipelineLayout.<get-maxDynamicStorageBuffersPerPipelineLayout>|<get-maxDynamicStorageBuffersPerPipelineLayout>(){}[0]
+    abstract val maxDynamicUniformBuffersPerPipelineLayout // org.graphiks.webgpu/GPURequiredLimits.maxDynamicUniformBuffersPerPipelineLayout|{}maxDynamicUniformBuffersPerPipelineLayout[0]
+        abstract fun <get-maxDynamicUniformBuffersPerPipelineLayout>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxDynamicUniformBuffersPerPipelineLayout.<get-maxDynamicUniformBuffersPerPipelineLayout>|<get-maxDynamicUniformBuffersPerPipelineLayout>(){}[0]
+    abstract val maxImmediateSize // org.graphiks.webgpu/GPURequiredLimits.maxImmediateSize|{}maxImmediateSize[0]
+        abstract fun <get-maxImmediateSize>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxImmediateSize.<get-maxImmediateSize>|<get-maxImmediateSize>(){}[0]
+    abstract val maxInterStageShaderVariables // org.graphiks.webgpu/GPURequiredLimits.maxInterStageShaderVariables|{}maxInterStageShaderVariables[0]
+        abstract fun <get-maxInterStageShaderVariables>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxInterStageShaderVariables.<get-maxInterStageShaderVariables>|<get-maxInterStageShaderVariables>(){}[0]
+    abstract val maxSampledTexturesPerShaderStage // org.graphiks.webgpu/GPURequiredLimits.maxSampledTexturesPerShaderStage|{}maxSampledTexturesPerShaderStage[0]
+        abstract fun <get-maxSampledTexturesPerShaderStage>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxSampledTexturesPerShaderStage.<get-maxSampledTexturesPerShaderStage>|<get-maxSampledTexturesPerShaderStage>(){}[0]
+    abstract val maxSamplersPerShaderStage // org.graphiks.webgpu/GPURequiredLimits.maxSamplersPerShaderStage|{}maxSamplersPerShaderStage[0]
+        abstract fun <get-maxSamplersPerShaderStage>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxSamplersPerShaderStage.<get-maxSamplersPerShaderStage>|<get-maxSamplersPerShaderStage>(){}[0]
+    abstract val maxStorageBufferBindingSize // org.graphiks.webgpu/GPURequiredLimits.maxStorageBufferBindingSize|{}maxStorageBufferBindingSize[0]
+        abstract fun <get-maxStorageBufferBindingSize>(): kotlin/ULong? // org.graphiks.webgpu/GPURequiredLimits.maxStorageBufferBindingSize.<get-maxStorageBufferBindingSize>|<get-maxStorageBufferBindingSize>(){}[0]
+    abstract val maxStorageBuffersInFragmentStage // org.graphiks.webgpu/GPURequiredLimits.maxStorageBuffersInFragmentStage|{}maxStorageBuffersInFragmentStage[0]
+        abstract fun <get-maxStorageBuffersInFragmentStage>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxStorageBuffersInFragmentStage.<get-maxStorageBuffersInFragmentStage>|<get-maxStorageBuffersInFragmentStage>(){}[0]
+    abstract val maxStorageBuffersInVertexStage // org.graphiks.webgpu/GPURequiredLimits.maxStorageBuffersInVertexStage|{}maxStorageBuffersInVertexStage[0]
+        abstract fun <get-maxStorageBuffersInVertexStage>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxStorageBuffersInVertexStage.<get-maxStorageBuffersInVertexStage>|<get-maxStorageBuffersInVertexStage>(){}[0]
+    abstract val maxStorageBuffersPerShaderStage // org.graphiks.webgpu/GPURequiredLimits.maxStorageBuffersPerShaderStage|{}maxStorageBuffersPerShaderStage[0]
+        abstract fun <get-maxStorageBuffersPerShaderStage>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxStorageBuffersPerShaderStage.<get-maxStorageBuffersPerShaderStage>|<get-maxStorageBuffersPerShaderStage>(){}[0]
+    abstract val maxStorageTexturesInFragmentStage // org.graphiks.webgpu/GPURequiredLimits.maxStorageTexturesInFragmentStage|{}maxStorageTexturesInFragmentStage[0]
+        abstract fun <get-maxStorageTexturesInFragmentStage>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxStorageTexturesInFragmentStage.<get-maxStorageTexturesInFragmentStage>|<get-maxStorageTexturesInFragmentStage>(){}[0]
+    abstract val maxStorageTexturesInVertexStage // org.graphiks.webgpu/GPURequiredLimits.maxStorageTexturesInVertexStage|{}maxStorageTexturesInVertexStage[0]
+        abstract fun <get-maxStorageTexturesInVertexStage>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxStorageTexturesInVertexStage.<get-maxStorageTexturesInVertexStage>|<get-maxStorageTexturesInVertexStage>(){}[0]
+    abstract val maxStorageTexturesPerShaderStage // org.graphiks.webgpu/GPURequiredLimits.maxStorageTexturesPerShaderStage|{}maxStorageTexturesPerShaderStage[0]
+        abstract fun <get-maxStorageTexturesPerShaderStage>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxStorageTexturesPerShaderStage.<get-maxStorageTexturesPerShaderStage>|<get-maxStorageTexturesPerShaderStage>(){}[0]
+    abstract val maxTextureArrayLayers // org.graphiks.webgpu/GPURequiredLimits.maxTextureArrayLayers|{}maxTextureArrayLayers[0]
+        abstract fun <get-maxTextureArrayLayers>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxTextureArrayLayers.<get-maxTextureArrayLayers>|<get-maxTextureArrayLayers>(){}[0]
+    abstract val maxTextureDimension1D // org.graphiks.webgpu/GPURequiredLimits.maxTextureDimension1D|{}maxTextureDimension1D[0]
+        abstract fun <get-maxTextureDimension1D>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxTextureDimension1D.<get-maxTextureDimension1D>|<get-maxTextureDimension1D>(){}[0]
+    abstract val maxTextureDimension2D // org.graphiks.webgpu/GPURequiredLimits.maxTextureDimension2D|{}maxTextureDimension2D[0]
+        abstract fun <get-maxTextureDimension2D>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxTextureDimension2D.<get-maxTextureDimension2D>|<get-maxTextureDimension2D>(){}[0]
+    abstract val maxTextureDimension3D // org.graphiks.webgpu/GPURequiredLimits.maxTextureDimension3D|{}maxTextureDimension3D[0]
+        abstract fun <get-maxTextureDimension3D>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxTextureDimension3D.<get-maxTextureDimension3D>|<get-maxTextureDimension3D>(){}[0]
+    abstract val maxUniformBufferBindingSize // org.graphiks.webgpu/GPURequiredLimits.maxUniformBufferBindingSize|{}maxUniformBufferBindingSize[0]
+        abstract fun <get-maxUniformBufferBindingSize>(): kotlin/ULong? // org.graphiks.webgpu/GPURequiredLimits.maxUniformBufferBindingSize.<get-maxUniformBufferBindingSize>|<get-maxUniformBufferBindingSize>(){}[0]
+    abstract val maxUniformBuffersPerShaderStage // org.graphiks.webgpu/GPURequiredLimits.maxUniformBuffersPerShaderStage|{}maxUniformBuffersPerShaderStage[0]
+        abstract fun <get-maxUniformBuffersPerShaderStage>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxUniformBuffersPerShaderStage.<get-maxUniformBuffersPerShaderStage>|<get-maxUniformBuffersPerShaderStage>(){}[0]
+    abstract val maxVertexAttributes // org.graphiks.webgpu/GPURequiredLimits.maxVertexAttributes|{}maxVertexAttributes[0]
+        abstract fun <get-maxVertexAttributes>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxVertexAttributes.<get-maxVertexAttributes>|<get-maxVertexAttributes>(){}[0]
+    abstract val maxVertexBufferArrayStride // org.graphiks.webgpu/GPURequiredLimits.maxVertexBufferArrayStride|{}maxVertexBufferArrayStride[0]
+        abstract fun <get-maxVertexBufferArrayStride>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxVertexBufferArrayStride.<get-maxVertexBufferArrayStride>|<get-maxVertexBufferArrayStride>(){}[0]
+    abstract val maxVertexBuffers // org.graphiks.webgpu/GPURequiredLimits.maxVertexBuffers|{}maxVertexBuffers[0]
+        abstract fun <get-maxVertexBuffers>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.maxVertexBuffers.<get-maxVertexBuffers>|<get-maxVertexBuffers>(){}[0]
+    abstract val minStorageBufferOffsetAlignment // org.graphiks.webgpu/GPURequiredLimits.minStorageBufferOffsetAlignment|{}minStorageBufferOffsetAlignment[0]
+        abstract fun <get-minStorageBufferOffsetAlignment>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.minStorageBufferOffsetAlignment.<get-minStorageBufferOffsetAlignment>|<get-minStorageBufferOffsetAlignment>(){}[0]
+    abstract val minUniformBufferOffsetAlignment // org.graphiks.webgpu/GPURequiredLimits.minUniformBufferOffsetAlignment|{}minUniformBufferOffsetAlignment[0]
+        abstract fun <get-minUniformBufferOffsetAlignment>(): kotlin/UInt? // org.graphiks.webgpu/GPURequiredLimits.minUniformBufferOffsetAlignment.<get-minUniformBufferOffsetAlignment>|<get-minUniformBufferOffsetAlignment>(){}[0]
 }
 
 abstract interface org.graphiks.webgpu/GPUSampler : kotlin/AutoCloseable, org.graphiks.webgpu/GPUBindingResource, org.graphiks.webgpu/GPUObjectBase // org.graphiks.webgpu/GPUSampler|null[0]
@@ -1713,7 +1789,7 @@ abstract interface org.graphiks.webgpu/GPUTexture : kotlin/AutoCloseable, org.gr
     abstract val sampleCount // org.graphiks.webgpu/GPUTexture.sampleCount|{}sampleCount[0]
         abstract fun <get-sampleCount>(): kotlin/UInt // org.graphiks.webgpu/GPUTexture.sampleCount.<get-sampleCount>|<get-sampleCount>(){}[0]
     abstract val usage // org.graphiks.webgpu/GPUTexture.usage|{}usage[0]
-        abstract fun <get-usage>(): kotlin.collections/Set<org.graphiks.webgpu/GPUTextureUsage> // org.graphiks.webgpu/GPUTexture.usage.<get-usage>|<get-usage>(){}[0]
+        abstract fun <get-usage>(): org.graphiks.webgpu/GPUTextureUsage // org.graphiks.webgpu/GPUTexture.usage.<get-usage>|<get-usage>(){}[0]
     abstract val width // org.graphiks.webgpu/GPUTexture.width|{}width[0]
         abstract fun <get-width>(): kotlin/UInt // org.graphiks.webgpu/GPUTexture.width.<get-width>|<get-width>(){}[0]
 
@@ -1793,7 +1869,7 @@ abstract interface org.graphiks.webgpu/GPUVertexBufferLayout { // org.graphiks.w
 
 abstract interface org.graphiks.webgpu/GPUVertexState : org.graphiks.webgpu/GPUProgrammableStage { // org.graphiks.webgpu/GPUVertexState|null[0]
     abstract val buffers // org.graphiks.webgpu/GPUVertexState.buffers|{}buffers[0]
-        abstract fun <get-buffers>(): kotlin.collections/List<org.graphiks.webgpu/GPUVertexBufferLayout> // org.graphiks.webgpu/GPUVertexState.buffers.<get-buffers>|<get-buffers>(){}[0]
+        abstract fun <get-buffers>(): kotlin.collections/List<org.graphiks.webgpu/GPUVertexBufferLayout?> // org.graphiks.webgpu/GPUVertexState.buffers.<get-buffers>|<get-buffers>(){}[0]
 }
 
 sealed interface org.graphiks.webgpu/ArrayBuffer { // org.graphiks.webgpu/ArrayBuffer|null[0]
@@ -1888,6 +1964,7 @@ final value class org.graphiks.webgpu/GPUBufferUsage { // org.graphiks.webgpu/GP
     final val value // org.graphiks.webgpu/GPUBufferUsage.value|{}value[0]
         final fun <get-value>(): kotlin/ULong // org.graphiks.webgpu/GPUBufferUsage.value.<get-value>|<get-value>(){}[0]
 
+    final fun contains(org.graphiks.webgpu/GPUBufferUsage): kotlin/Boolean // org.graphiks.webgpu/GPUBufferUsage.contains|contains(org.graphiks.webgpu.GPUBufferUsage){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // org.graphiks.webgpu/GPUBufferUsage.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.graphiks.webgpu/GPUBufferUsage.hashCode|hashCode(){}[0]
     final fun of(kotlin/Array<org.graphiks.webgpu/GPUBufferUsage>): org.graphiks.webgpu/GPUBufferUsage // org.graphiks.webgpu/GPUBufferUsage.of|of(kotlin.Array<org.graphiks.webgpu.GPUBufferUsage>){}[0]
@@ -1919,6 +1996,8 @@ final value class org.graphiks.webgpu/GPUBufferUsage { // org.graphiks.webgpu/GP
             final fun <get-Vertex>(): org.graphiks.webgpu/GPUBufferUsage // org.graphiks.webgpu/GPUBufferUsage.Companion.Vertex.<get-Vertex>|<get-Vertex>(){}[0]
         final val entries // org.graphiks.webgpu/GPUBufferUsage.Companion.entries|{}entries[0]
             final fun <get-entries>(): kotlin.collections/Set<org.graphiks.webgpu/GPUBufferUsage> // org.graphiks.webgpu/GPUBufferUsage.Companion.entries.<get-entries>|<get-entries>(){}[0]
+
+        final fun fromBits(kotlin/ULong): org.graphiks.webgpu/GPUBufferUsage // org.graphiks.webgpu/GPUBufferUsage.Companion.fromBits|fromBits(kotlin.ULong){}[0]
     }
 }
 
@@ -1926,6 +2005,7 @@ final value class org.graphiks.webgpu/GPUColorWrite { // org.graphiks.webgpu/GPU
     final val value // org.graphiks.webgpu/GPUColorWrite.value|{}value[0]
         final fun <get-value>(): kotlin/ULong // org.graphiks.webgpu/GPUColorWrite.value.<get-value>|<get-value>(){}[0]
 
+    final fun contains(org.graphiks.webgpu/GPUColorWrite): kotlin/Boolean // org.graphiks.webgpu/GPUColorWrite.contains|contains(org.graphiks.webgpu.GPUColorWrite){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // org.graphiks.webgpu/GPUColorWrite.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.graphiks.webgpu/GPUColorWrite.hashCode|hashCode(){}[0]
     final fun of(kotlin/Array<org.graphiks.webgpu/GPUColorWrite>): org.graphiks.webgpu/GPUColorWrite // org.graphiks.webgpu/GPUColorWrite.of|of(kotlin.Array<org.graphiks.webgpu.GPUColorWrite>){}[0]
@@ -1947,6 +2027,8 @@ final value class org.graphiks.webgpu/GPUColorWrite { // org.graphiks.webgpu/GPU
             final fun <get-Red>(): org.graphiks.webgpu/GPUColorWrite // org.graphiks.webgpu/GPUColorWrite.Companion.Red.<get-Red>|<get-Red>(){}[0]
         final val entries // org.graphiks.webgpu/GPUColorWrite.Companion.entries|{}entries[0]
             final fun <get-entries>(): kotlin.collections/Set<org.graphiks.webgpu/GPUColorWrite> // org.graphiks.webgpu/GPUColorWrite.Companion.entries.<get-entries>|<get-entries>(){}[0]
+
+        final fun fromBits(kotlin/ULong): org.graphiks.webgpu/GPUColorWrite // org.graphiks.webgpu/GPUColorWrite.Companion.fromBits|fromBits(kotlin.ULong){}[0]
     }
 }
 
@@ -1954,6 +2036,7 @@ final value class org.graphiks.webgpu/GPUMapMode { // org.graphiks.webgpu/GPUMap
     final val value // org.graphiks.webgpu/GPUMapMode.value|{}value[0]
         final fun <get-value>(): kotlin/ULong // org.graphiks.webgpu/GPUMapMode.value.<get-value>|<get-value>(){}[0]
 
+    final fun contains(org.graphiks.webgpu/GPUMapMode): kotlin/Boolean // org.graphiks.webgpu/GPUMapMode.contains|contains(org.graphiks.webgpu.GPUMapMode){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // org.graphiks.webgpu/GPUMapMode.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.graphiks.webgpu/GPUMapMode.hashCode|hashCode(){}[0]
     final fun of(kotlin/Array<org.graphiks.webgpu/GPUMapMode>): org.graphiks.webgpu/GPUMapMode // org.graphiks.webgpu/GPUMapMode.of|of(kotlin.Array<org.graphiks.webgpu.GPUMapMode>){}[0]
@@ -1969,6 +2052,8 @@ final value class org.graphiks.webgpu/GPUMapMode { // org.graphiks.webgpu/GPUMap
             final fun <get-Write>(): org.graphiks.webgpu/GPUMapMode // org.graphiks.webgpu/GPUMapMode.Companion.Write.<get-Write>|<get-Write>(){}[0]
         final val entries // org.graphiks.webgpu/GPUMapMode.Companion.entries|{}entries[0]
             final fun <get-entries>(): kotlin.collections/Set<org.graphiks.webgpu/GPUMapMode> // org.graphiks.webgpu/GPUMapMode.Companion.entries.<get-entries>|<get-entries>(){}[0]
+
+        final fun fromBits(kotlin/ULong): org.graphiks.webgpu/GPUMapMode // org.graphiks.webgpu/GPUMapMode.Companion.fromBits|fromBits(kotlin.ULong){}[0]
     }
 }
 
@@ -1976,6 +2061,7 @@ final value class org.graphiks.webgpu/GPUShaderStage { // org.graphiks.webgpu/GP
     final val value // org.graphiks.webgpu/GPUShaderStage.value|{}value[0]
         final fun <get-value>(): kotlin/ULong // org.graphiks.webgpu/GPUShaderStage.value.<get-value>|<get-value>(){}[0]
 
+    final fun contains(org.graphiks.webgpu/GPUShaderStage): kotlin/Boolean // org.graphiks.webgpu/GPUShaderStage.contains|contains(org.graphiks.webgpu.GPUShaderStage){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // org.graphiks.webgpu/GPUShaderStage.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.graphiks.webgpu/GPUShaderStage.hashCode|hashCode(){}[0]
     final fun of(kotlin/Array<org.graphiks.webgpu/GPUShaderStage>): org.graphiks.webgpu/GPUShaderStage // org.graphiks.webgpu/GPUShaderStage.of|of(kotlin.Array<org.graphiks.webgpu.GPUShaderStage>){}[0]
@@ -1993,6 +2079,8 @@ final value class org.graphiks.webgpu/GPUShaderStage { // org.graphiks.webgpu/GP
             final fun <get-Vertex>(): org.graphiks.webgpu/GPUShaderStage // org.graphiks.webgpu/GPUShaderStage.Companion.Vertex.<get-Vertex>|<get-Vertex>(){}[0]
         final val entries // org.graphiks.webgpu/GPUShaderStage.Companion.entries|{}entries[0]
             final fun <get-entries>(): kotlin.collections/Set<org.graphiks.webgpu/GPUShaderStage> // org.graphiks.webgpu/GPUShaderStage.Companion.entries.<get-entries>|<get-entries>(){}[0]
+
+        final fun fromBits(kotlin/ULong): org.graphiks.webgpu/GPUShaderStage // org.graphiks.webgpu/GPUShaderStage.Companion.fromBits|fromBits(kotlin.ULong){}[0]
     }
 }
 
@@ -2000,6 +2088,7 @@ final value class org.graphiks.webgpu/GPUTextureUsage { // org.graphiks.webgpu/G
     final val value // org.graphiks.webgpu/GPUTextureUsage.value|{}value[0]
         final fun <get-value>(): kotlin/ULong // org.graphiks.webgpu/GPUTextureUsage.value.<get-value>|<get-value>(){}[0]
 
+    final fun contains(org.graphiks.webgpu/GPUTextureUsage): kotlin/Boolean // org.graphiks.webgpu/GPUTextureUsage.contains|contains(org.graphiks.webgpu.GPUTextureUsage){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // org.graphiks.webgpu/GPUTextureUsage.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // org.graphiks.webgpu/GPUTextureUsage.hashCode|hashCode(){}[0]
     final fun of(kotlin/Array<org.graphiks.webgpu/GPUTextureUsage>): org.graphiks.webgpu/GPUTextureUsage // org.graphiks.webgpu/GPUTextureUsage.of|of(kotlin.Array<org.graphiks.webgpu.GPUTextureUsage>){}[0]
@@ -2023,11 +2112,14 @@ final value class org.graphiks.webgpu/GPUTextureUsage { // org.graphiks.webgpu/G
             final fun <get-TransientAttachment>(): org.graphiks.webgpu/GPUTextureUsage // org.graphiks.webgpu/GPUTextureUsage.Companion.TransientAttachment.<get-TransientAttachment>|<get-TransientAttachment>(){}[0]
         final val entries // org.graphiks.webgpu/GPUTextureUsage.Companion.entries|{}entries[0]
             final fun <get-entries>(): kotlin.collections/Set<org.graphiks.webgpu/GPUTextureUsage> // org.graphiks.webgpu/GPUTextureUsage.Companion.entries.<get-entries>|<get-entries>(){}[0]
+
+        final fun fromBits(kotlin/ULong): org.graphiks.webgpu/GPUTextureUsage // org.graphiks.webgpu/GPUTextureUsage.Companion.fromBits|fromBits(kotlin.ULong){}[0]
     }
 }
 
 final fun (kotlin.collections/Set<org.graphiks.webgpu/FlagEnumeration>).org.graphiks.webgpu/toFlagInt(): kotlin/Int // org.graphiks.webgpu/toFlagInt|toFlagInt@kotlin.collections.Set<org.graphiks.webgpu.FlagEnumeration>(){}[0]
 final fun (kotlin.collections/Set<org.graphiks.webgpu/FlagEnumeration>).org.graphiks.webgpu/toFlagULong(): kotlin/ULong // org.graphiks.webgpu/toFlagULong|toFlagULong@kotlin.collections.Set<org.graphiks.webgpu.FlagEnumeration>(){}[0]
+final suspend fun <#A: kotlin/Any?> (org.graphiks.webgpu/GPUBuffer).org.graphiks.webgpu/withMappedRange(org.graphiks.webgpu/GPUMapMode, kotlin/ULong = ..., kotlin/ULong? = ..., kotlin/Function1<org.graphiks.webgpu/ArrayBuffer, #A>): #A // org.graphiks.webgpu/withMappedRange|withMappedRange@org.graphiks.webgpu.GPUBuffer(org.graphiks.webgpu.GPUMapMode;kotlin.ULong;kotlin.ULong?;kotlin.Function1<org.graphiks.webgpu.ArrayBuffer,0:0>){0§<kotlin.Any?>}[0]
 
 // Targets: [native]
 final class org.graphiks.webgpu/OpaquePointerArrayBuffer : org.graphiks.webgpu/ArrayBuffer { // org.graphiks.webgpu/OpaquePointerArrayBuffer|null[0]
