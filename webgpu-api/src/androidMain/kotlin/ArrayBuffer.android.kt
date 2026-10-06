@@ -273,6 +273,23 @@ actual sealed interface ArrayBuffer {
         fun wrap(buffer: ByteBuffer): ArrayBuffer = AndroidArrayBuffer(buffer)
 
         /**
+         * Wraps borrowed native memory as an ArrayBuffer.
+         *
+         * The returned view reads and writes the memory at [address] directly, in
+         * the platform's native byte order: it never copies and never frees — the
+         * caller keeps owning the memory and must keep it valid for the view's
+         * whole lifetime. The intended use is a range a native library lends the
+         * caller for a bounded time, such as a GPU-mapped buffer between map and
+         * unmap.
+         *
+         * @param address the native address of the borrowed memory (must not be null when [size] is non-zero)
+         * @param size the size of the borrowed range in bytes
+         * @return an ArrayBuffer view over the borrowed native memory
+         * @throws IllegalStateException when a non-zero size is paired with a null address
+         */
+        fun wrap(address: Long, size: ULong): ArrayBuffer = BorrowedNativeArrayBuffer(address, size)
+
+        /**
          * Creates an ArrayBuffer from a ByteArray.
          * @param array the byte array to convert
          * @return an ArrayBuffer containing the data from the byte array

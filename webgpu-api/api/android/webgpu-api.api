@@ -125,6 +125,7 @@ public final class org/graphiks/webgpu/ArrayBuffer$Companion {
 	public final fun of-GBYM_sE ([B)Lorg/graphiks/webgpu/ArrayBuffer;
 	public final fun of-rL5Bavg ([S)Lorg/graphiks/webgpu/ArrayBuffer;
 	public final fun wrap (Ljava/nio/ByteBuffer;)Lorg/graphiks/webgpu/ArrayBuffer;
+	public final fun wrap-2TYgG_w (JJ)Lorg/graphiks/webgpu/ArrayBuffer;
 }
 
 public abstract interface class org/graphiks/webgpu/FlagEnumeration {
