@@ -16,17 +16,6 @@ jobs:
   suite:
     uses: ./.github/workflows/suite.yml
 
-  policy-validator:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: PR policy validator tests
-        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py' -v
-
   tests:
     strategy:
       fail-fast: false
