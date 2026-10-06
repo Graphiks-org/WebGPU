@@ -67,6 +67,59 @@ class TextureOwnershipTest {
     }
 
     @Test
+    fun deprecatedConstructorWithFalseKeepsTheTextureBorrowed() {
+        val raw = ownedTexture()
+        @Suppress("DEPRECATION")
+        val texture = Texture(raw, canBeDestroy = false)
+        @Suppress("DEPRECATION")
+        assertEquals(false, texture.canBeDestroy, "canBeDestroy = false must stay borrowed")
+        texture.close()
+        texture.close()
+        assertEquals(0.0, raw.destroyCount, "A borrowed texture must not be destroyed by its wrapper")
+    }
+
+    @Test
+    fun deprecatedConstructorDefaultIsOwned() {
+        val raw = ownedTexture()
+        @Suppress("DEPRECATION")
+        val texture = Texture(raw)
+        @Suppress("DEPRECATION")
+        assertEquals(true, texture.canBeDestroy, "The default canBeDestroy must stay true (owned)")
+        texture.close()
+        assertEquals(1.0, raw.destroyCount)
+    }
+
+    @Test
+    fun deprecatedConstructorFalseMatchesWrapBorrowed() {
+        val rawBorrowed = ownedTexture()
+        val rawWrapped = ownedTexture()
+        @Suppress("DEPRECATION")
+        val fromConstructor = Texture(rawBorrowed, canBeDestroy = false)
+        val fromFactory = Texture.wrapBorrowed(rawWrapped)
+        @Suppress("DEPRECATION")
+        assertEquals(fromFactory.canBeDestroy, fromConstructor.canBeDestroy)
+        fromConstructor.close()
+        fromFactory.close()
+        assertEquals(0.0, rawBorrowed.destroyCount)
+        assertEquals(0.0, rawWrapped.destroyCount)
+    }
+
+    @Test
+    fun deprecatedConstructorTrueMatchesWrapOwned() {
+        val rawBorrowed = ownedTexture()
+        val rawWrapped = ownedTexture()
+        @Suppress("DEPRECATION")
+        val fromConstructor = Texture(rawBorrowed, canBeDestroy = true)
+        val fromFactory = Texture.wrapOwned(rawWrapped)
+        @Suppress("DEPRECATION")
+        assertEquals(fromFactory.canBeDestroy, fromConstructor.canBeDestroy)
+        fromConstructor.close()
+        fromFactory.close()
+        assertEquals(1.0, rawBorrowed.destroyCount)
+        assertEquals(1.0, rawWrapped.destroyCount)
+    }
+
+    @Test
     fun canvasTextureIsBorrowedAndTheNextFrameIsStillAcquirable() {
         val raw = ownedTexture()
         val context = fakeCanvasContext(raw)

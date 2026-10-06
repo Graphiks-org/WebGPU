@@ -1,7 +1,10 @@
 package org.graphiks.webgpu.suite.acid.buffers
 
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.yield
 import org.graphiks.webgpu.GPUBufferMapState
 import org.graphiks.webgpu.GPUBufferUsage
 import org.graphiks.webgpu.GPUDevice
@@ -17,8 +20,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * A `mapAsync` request cancelled before it starts must not lock the buffer: the next mapping
- * succeeds, accepts a write, and the written pattern reads back.
+ * A `mapAsync` request cancelled after it has really started must release the buffer: the next
+ * mapping succeeds immediately, accepts a write, and the written pattern reads back.
+ *
+ * The first request is started with `CoroutineStart.UNDISPATCHED` so it reaches the backend
+ * before the cancellation; the buffer is then `Pending`. Cancelling the request must unmap the
+ * buffer synchronously, otherwise the immediate second `mapAsync` is rejected by WebGPU with
+ * "Buffer already has an outstanding map pending".
  */
 @AcidTest(
     id = AcidCaseId.BuffersMapCancelRemap,
@@ -38,11 +46,22 @@ suspend fun mapCancelRemap(device: GPUDevice) = withValidationScope(device) {
         BufferDescriptor(16uL, GPUBufferUsage.MapWrite or GPUBufferUsage.CopySrc),
     ).use { buffer ->
         coroutineScope {
-            val cancelled = async { buffer.mapAsync(GPUMapMode.Write) }
-            cancelled.cancel()
+            // Start the request undispatched so it reaches the backend before the cancellation:
+            // the buffer is Pending when the coroutine is cancelled.
+            val cancelled = async(start = CoroutineStart.UNDISPATCHED) {
+                buffer.mapAsync(GPUMapMode.Write)
+            }
+            assertEquals(GPUBufferMapState.Pending, buffer.mapState, "The mapping request must have started")
+            cancelled.cancelAndJoin()
             assertTrue(cancelled.isCancelled, "The mapping request must be cancelled")
+            assertEquals(
+                GPUBufferMapState.Unmapped,
+                buffer.mapState,
+                "Cancelling a started mapping must release the buffer immediately",
+            )
         }
 
+        // The immediate remap must not be rejected by the backend: the buffer is free.
         buffer.mapAsync(GPUMapMode.Write).getOrThrow()
         try {
             assertEquals(GPUBufferMapState.Mapped, buffer.mapState)

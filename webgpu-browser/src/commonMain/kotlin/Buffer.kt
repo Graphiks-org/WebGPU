@@ -10,11 +10,18 @@ import kotlin.js.ExperimentalWasmJsInterop
 class Buffer(val handler: WGPUBuffer) : GPUBuffer {
 
     /**
-     * Identity of the latest `mapAsync` call. A cancelled mapping only unmaps when no newer
-     * mapping has started in the meantime, so a late settlement of the cancelled request cannot
-     * invalidate a mapping that is already active.
+     * Monotonic identity of every `mapAsync` request. Tokens are never reused, so a late
+     * settlement of an old request can never be confused with a newer one.
      */
-    private var mapGeneration = 0L
+    private var nextRequestId = 0L
+
+    /**
+     * Identity of the request that currently owns the buffer's mapping (its request was accepted
+     * by the backend and is pending or mapped). `0L` means no request owns the mapping. Only the
+     * owner may release the buffer: a rejected request never becomes the owner, so cancelling it
+     * can never unmap a mapping it does not own.
+     */
+    private var ownerRequestId = 0L
 
     override var label: String
         get() = handler.label
@@ -39,14 +46,31 @@ class Buffer(val handler: WGPUBuffer) : GPUBuffer {
         offset: GPUSize64,
         size: GPUSize64?
     ): Result<Unit> = browserResult {
-        val generation = ++mapGeneration
-        when (size) {
+        val requestId = ++nextRequestId
+        // The backend accepts or rejects a mapping request synchronously: an accepted request
+        // moves the buffer from 'unmapped' to 'pending' before the promise settles. A request
+        // that finds the buffer already 'pending' or 'mapped' is rejected by the backend (the
+        // rejection is delivered through the promise, not thrown synchronously).
+        val stateBefore = handler.mapState
+        val promise = when (size) {
             null -> handler.mapAsync(mode.value.asJsNumber(), offset.asJsNumber())
             else -> handler.mapAsync(mode.value.asJsNumber(), offset.asJsNumber(), size.asJsNumber())
-        }.await {
-            // This mapping request was cancelled: if the backend still completed it, unmap it,
-            // unless a newer mapping has already started on this buffer.
-            if (generation == mapGeneration) handler.unmap()
+        }
+        val accepted = stateBefore == "unmapped" && handler.mapState == "pending"
+        if (accepted) ownerRequestId = requestId
+        try {
+            promise.await()
+        } catch (cancelled: kotlinx.coroutines.CancellationException) {
+            // The caller is gone while the request was pending, or after the backend resolved it
+            // but before the value was delivered. Release the buffer only if this request is the
+            // real owner: a rejected request never owned the mapping, so cancelling it must not
+            // unmap a mapping it does not own. Releasing at cancellation time (not at the late
+            // settlement) lets a mapping started right after the cancellation succeed.
+            if (accepted && ownerRequestId == requestId) {
+                ownerRequestId = 0L
+                handler.unmap()
+            }
+            throw cancelled
         }
         return@browserResult Unit
     }

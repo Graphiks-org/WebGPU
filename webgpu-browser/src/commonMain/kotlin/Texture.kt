@@ -31,8 +31,10 @@ class Texture private constructor(
     private enum class Ownership { Owned, Borrowed }
 
     @Deprecated(
-        "Ownership is now explicit: use Texture.wrapOwned or Texture.wrapBorrowed.",
-        ReplaceWith("Texture.wrapOwned(handler)"),
+        "Ownership is now explicit: use Texture.wrapOwned(handler) for a texture this wrapper " +
+            "must destroy, or Texture.wrapBorrowed(handler) for a texture owned by someone else " +
+            "(a canvas context, an imported handle). The old canBeDestroy flag maps to " +
+            "wrapOwned when true and wrapBorrowed when false.",
     )
     constructor(handler: WGPUTexture, canBeDestroy: Boolean = true) : this(
         handler,

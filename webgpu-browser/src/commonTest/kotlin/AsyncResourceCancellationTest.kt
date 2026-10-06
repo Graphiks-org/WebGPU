@@ -4,6 +4,7 @@ package org.graphiks.webgpu.browser
 
 import js.promise.Promise
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
@@ -73,11 +74,18 @@ private external interface CountedBuffer : WGPUBuffer {
     var currentPromise: Promise<JsAny?>?
 }
 
+/**
+ * A stateful fake buffer: `mapAsync` moves the buffer from `unmapped` to `pending` (the backend
+ * accepts synchronously) and returns the controlled promise; a second request while the buffer
+ * is not `unmapped` is rejected, like a real backend. `unmap` returns the buffer to `unmapped`.
+ */
 private fun countedBuffer(): CountedBuffer =
     js(
-        "({ unmapCount: 0, currentPromise: null, " +
-            "unmap: function() { this.unmapCount++; }, " +
-            "mapAsync: function() { return this.currentPromise; } })",
+        "({ unmapCount: 0, currentPromise: null, mapState: 'unmapped', " +
+            "unmap: function() { this.unmapCount++; this.mapState = 'unmapped'; }, " +
+            "mapAsync: function() { " +
+            "  if (this.mapState !== 'unmapped') return Promise.reject(new Error('mapping already pending')); " +
+            "  this.mapState = 'pending'; return this.currentPromise; } })",
     )
 
 class AsyncResourceCancellationTest {
@@ -188,6 +196,8 @@ class AsyncResourceCancellationTest {
 
         val mappingA = async { buffer.mapAsync(GPUMapMode.Write, 0uL, null) }
         yield()
+        // The stateful fake rejects a second request while the first is pending, like a real
+        // backend: mappingB never starts, so it cannot own the buffer.
         raw.currentPromise = promiseB.promise
         val mappingB = async { buffer.mapAsync(GPUMapMode.Write, 0uL, null) }
         yield()
@@ -197,11 +207,11 @@ class AsyncResourceCancellationTest {
         promiseB.resolve(jsUndefined())
 
         val resultB = mappingB.await()
-        assertTrue(resultB.isSuccess, "The newer mapping must succeed")
+        assertTrue(resultB.isFailure, "The second mapping must be rejected while the first is pending")
         assertEquals(
-            0,
+            1,
             raw.unmapCount,
-            "A late settlement of the cancelled mapping must not unmap the newer mapping",
+            "Cancelling the accepted pending mapping must release the buffer exactly once",
         )
     }
 
@@ -231,6 +241,55 @@ class AsyncResourceCancellationTest {
         mappingA.cancel()
         pumpEventLoop()
         assertTrue(mappingA.isCancelled)
-        assertEquals(0, raw.unmapCount, "A rejected mapping never mapped, so there is nothing to unmap")
+        // The stateful fake accepted the request (mapState became 'pending'), so the wrapper
+        // releases the buffer at cancellation time. The late rejection is swallowed.
+        assertEquals(1, raw.unmapCount, "Cancelling a started mapping releases the buffer immediately")
+    }
+
+    @Test
+    fun rejectedMappingWhileAnotherIsPendingDoesNotUnmapIt() = runTest {
+        val raw = countedBuffer()
+        val promiseA = ControlledPromise()
+        raw.currentPromise = promiseA.promise
+        val buffer = Buffer(raw)
+
+        val mappingA = async { buffer.mapAsync(GPUMapMode.Write, 0uL, null) }
+        yield()
+        // The stateful fake rejects a second request while the first is pending, like a real
+        // backend. The rejected request never becomes the owner.
+        val rejected = buffer.mapAsync(GPUMapMode.Write, 0uL, null)
+        assertTrue(rejected.isFailure, "The second mapping must be rejected")
+        pumpEventLoop()
+
+        // The first request is still the owner: cancelling it releases the buffer exactly once.
+        mappingA.cancel()
+        pumpEventLoop()
+        assertEquals(1, raw.unmapCount, "The rejected request must not have unmapped the pending mapping")
+    }
+
+    @Test
+    fun rejectedMappingCancelledBeforeRejectionDoesNotUnmapTheOwner() = runTest {
+        val raw = countedBuffer()
+        val promiseA = ControlledPromise()
+        raw.currentPromise = promiseA.promise
+        val buffer = Buffer(raw)
+
+        // A is accepted (pending).
+        val mappingA = async { buffer.mapAsync(GPUMapMode.Write, 0uL, null) }
+        yield()
+
+        // B is rejected by the stateful fake (buffer pending). Cancel B immediately, before the
+        // rejection microtask runs: B never owned the mapping, so it must not unmap A's.
+        val mappingB = async { buffer.mapAsync(GPUMapMode.Write, 0uL, null) }
+        yield()
+        mappingB.cancelAndJoin()
+
+        assertEquals(0, raw.unmapCount, "A rejected request must not unmap the pending owner")
+
+        // A is still the owner: completing it maps the buffer for its caller.
+        promiseA.resolve(jsUndefined())
+        pumpEventLoop()
+        assertTrue(mappingA.await().isSuccess, "The pending mapping must succeed")
+        assertEquals(0, raw.unmapCount)
     }
 }
