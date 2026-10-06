@@ -1,8 +1,9 @@
 # ArrayBuffer CPU performance
 
-This guide records the `arraybuffer-cpu` protocol, the commands that produce its reports, and the
-first before/after reading of the Graphiks bounds checks. Durations are informative: the CI never
-fails on a duration, only on a wrong result, a crash or an incomplete report.
+This guide records the `arraybuffer-cpu` protocol, the commands that produce its reports, and two
+readings of the Graphiks bounds checks: the first before/after comparison, then five-launch
+medians of the checked path against the raw platform primitive. Durations are informative: the CI
+never fails on a duration, only on a wrong result, a crash or an incomplete report.
 
 ## Protocol
 
@@ -112,6 +113,60 @@ Median change of the per-sample duration, by workload (positive = the checked bu
 - `of` shares the backing store in JS and copies on the other targets; no cross-target conclusion
   about "a faster runtime" follows.
 
+## Five-launch medians
+
+Same workstation as the first reading (physical macOS arm64), merged branch tip `94dfcbd`
+(2026-10-06), JDK 25.0.1, Chromium 153.0.8010.12, five `standard` launches per target (reports
+`post3-<target>-run0..4.json`). Where the first reading compares two builds, this one compares two
+variants inside each report: `Checked` and `Reference` share the repetition count of their layout
+group, so each ratio is computed per launch and the median of the five launches is shown with its
+range. The ratio therefore measures the whole public checked path — validation plus the API layer —
+against the raw platform primitive on the same build. The library sources are unchanged since the
+first reading (identical `libraryHash`), so both readings describe the same code, and the cost of
+the checks alone remains the first reading's percentages. The same caveat applies: this is a
+workstation, not a benchmark rig.
+
+Median of the per-launch `Checked`/`Reference` ratios (range of the five launches in parentheses):
+
+| Target | scalar.write.i32 | scalar.read.i32 | scalar.write.f32 | scatter.write.i32 | bulk ≥ 64 KiB | bulk 256 B |
+| --- | --- | --- | --- | --- | --- | --- |
+| jvm | 1.63–1.91× (1.62–2.38×) | ≈0.99× (0.98–1.19×) | 1.61–1.94× (1.58–1.95×) | 0.15–0.17× (0.14–10.20×) | 0.83–1.12× (0.69–1.55×) | 1.02–1.03× (0.98–1.05×) |
+| native | ≈4.3× (4.00–4.41×) | ≈7.3× (6.85–7.48×) | 6.97–9.58× (6.92–9.71×) | 4.32–6.12× (4.25–11.67×) | 1.00–1.03× (0.90–1.13×) | 1.33–1.46× (1.31–1.47×) |
+| js | ≈27.7× (26.7–36.2×) | ≈27.8× (26.3–36.8×) | ≈27.5× (26.8–36.3×) | ≈29.2× (26.5–34.7×) | 1.00–1.01× (0.97–1.03×) | 2.24–4.36× (2.18–4.91×) |
+| wasm | ≈1.18× (1.15–1.33×) | ≈1.22× (1.18–1.42×) | ≈1.20× (1.03–1.24×) | ≈1.25× (1.23–1.28×) | 0.94–0.95× (0.93–0.97×) | 0.94–0.96× (0.93–0.97×) |
+
+Per-element checked stores against the validate-once bulk copy (`Checked`/`BulkPrepared`, median,
+range):
+
+| Target | image 256² | image 1024² | image 4096² | vertices 1 K | vertices 64 K | vertices 1 M |
+| --- | --- | --- | --- | --- | --- | --- |
+| jvm | 29.5× (28.4–164×) | 40.3× (30.2–176×) | 26.9× (26.1–111×) | 10.4× (7.6–43.8×) | 13.3× (11.1–66.0×) | 5.9× (5.9–28.7×) |
+| native | 260× (252–262×) | 262× (255–268×) | 236× (225–243×) | 90.4× (39.3–98.2×) | 116× (114–117×) | 109× (85.5–110×) |
+| js | 138× (135–194×) | 161× (156–196×) | 161× (158–201×) | n/a | 871× (651–996×) | 764× (753–1003×) |
+| wasm | 3.67× (3.66–3.72×) | 3.68× (2.39–3.70×) | 3.68× (3.64–3.73×) | 3.45× (3.38–3.53×) | 3.41× (3.31–3.44×) | 3.40× (3.21–3.44×) |
+
+### Reading
+
+- **The checks are free on the paths the API is meant for.** At 64 KiB and above, every checked
+  bulk copy sits between 0.83× and 1.12× across the four targets: the validation runs once per call
+  and the copy dominates. On Wasm the checked bulk path is even consistently around 5% faster than
+  the raw primitive (0.94–0.96×, range 0.93–0.97×); the Reference primitive is not always the floor.
+- **Scalar access pays per element.** JVM writes pay +61–94% and reads stay flat (≈0.99×); Native
+  pays ≈4.3× per int store and ≈7.3× per load; JavaScript pays ≈27× because the unsigned-offset
+  arithmetic of the checks is emulated per element; Wasm pays +18–25%, the smallest scalar cost of
+  the four.
+- The JVM scatter cell is bimodal across launches (per-launch ratios from 0.14× to 10.2×): the
+  scattered `ByteBuffer` primitive is itself subject to a JIT pathology and neither variant
+  dominates on that target. Treat the cell as unstable, not as a checked-path win.
+- Building an image or a vertex stream through per-element checked stores instead of the
+  validate-once bulk copy costs from 3.4× (Wasm) to 262× (Native). The JavaScript 1 K-vertex bulk
+  median rounds to a zero duration and is not reported, as in the writers table below.
+- The image and vertex ranges are wide on the JVM because a single launch can warm the bulk-copy
+  path unevenly; the medians of the per-launch ratios remain the robust reading.
+
+The instrumented Android campaign keeps the single launch of the first reading; five launches on a
+device remain to be produced for it.
+
 ## Prevalidated writers (`arraybuffer-cpu-writers`)
 
 The internal prototypes `RgbaWriterPrototype`/`VertexWriterPrototype` validate a whole layout once
@@ -174,5 +229,6 @@ run; the commands are listed above, and durations are never a CI gate.
 - Allocation profiling (JFR on the JVM, Perfetto on Android, DevTools sampling in Chromium, an
   allocation profiler on the host for Native) was not run; every report keeps
   `allocationMeasurement: "unavailable"`.
-- Only one `standard` launch per target was captured; the five-launch medians remain to be produced
-  on a stable host.
+- Five `standard` launches per target were captured on the first reading's workstation for JVM,
+  Native, JavaScript and Wasm (2026-10-06); the medians are recorded above. The instrumented
+  Android campaign remains a single launch; five launches on a device remain to be produced.
