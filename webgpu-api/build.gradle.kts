@@ -48,6 +48,10 @@ kotlin {
         namespace = "org.graphiks.webgpu.ktypes"
         compileSdk = 36
         minSdk = 28
+
+        // Creates the androidUnitTest compilation (testDebugUnitTest /
+        // testReleaseUnitTest) so the Android source sets are tested on the host JVM.
+        withHostTest { }
     }
 
 
@@ -97,6 +101,7 @@ kotlin {
                 implementation(libs.kotlin.reflect)
             }
         }
+
     }
 }
 
@@ -107,6 +112,15 @@ java {
 }
 
 
+// AGP creates the host-test compilation lazily (withHostTest); its
+// configurations only exist after evaluation, so the Kotest runner is added
+// by configuration name, exactly like jvmTest.
+project.afterEvaluate {
+    dependencies {
+        add("androidHostTestImplementation", libs.kotest.runner.junit5)
+    }
+}
+
 tasks.withType<Test>().configureEach {
     filter {
         failOnNoDiscoveredTests = false
@@ -115,6 +129,12 @@ tasks.withType<Test>().configureEach {
         junitXml.required.set(true)
         html.required.set(true)
     }
+}
+
+// AGP host tests run the Android source sets on the host JVM; the Kotest
+// engine needs the JUnit 5 platform, exactly like jvmTest.
+tasks.withType<Test>().matching { it.name == "testAndroidHostTest" || it.name == "testAndroid" }.configureEach {
+    useJUnitPlatform()
 }
 
 tasks.named<Test>("jvmTest") {
