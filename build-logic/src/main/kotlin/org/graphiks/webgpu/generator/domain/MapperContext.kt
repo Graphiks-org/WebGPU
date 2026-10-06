@@ -69,12 +69,12 @@ class MapperContext(
 
         interfaces.first { it.name == "GPUBuffer" }.apply {
             attributes.find { it.name == "usage" }!!.apply {
-                type = "Set<GPUBufferUsage>"
+                type = "GPUBufferUsage"
             }
         }
         interfaces.first { it.name == "GPUTexture" }.apply {
             attributes.find { it.name == "usage" }!!.apply {
-                type = "Set<GPUTextureUsage>"
+                type = "GPUTextureUsage"
             }
         }
 

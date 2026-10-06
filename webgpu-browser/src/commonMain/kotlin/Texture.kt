@@ -32,8 +32,8 @@ class Texture(val handler: WGPUTexture, val canBeDestroy: Boolean = true) : GPUT
         get() = GPUTextureDimension.of(handler.dimension) ?: error("unsupported texture dimension ${handler.dimension}")
     override val format: GPUTextureFormat
         get() = GPUTextureFormat.of(handler.format) ?: error("unsupported texture format ${handler.format}")
-    override val usage: Set<GPUTextureUsage>
-        get() = GPUTextureUsage.entries.filter { (it.value and handler.usage.toULong()) != 0uL }.toSet()
+    override val usage: GPUTextureUsage
+        get() = GPUTextureUsage.fromBits(handler.usage.toULong())
 
     override fun createView(descriptor: GPUTextureViewDescriptor?): GPUTextureView {
         return TextureView(

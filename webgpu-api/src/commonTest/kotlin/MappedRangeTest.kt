@@ -15,7 +15,7 @@ private class FakeBuffer(val capacity: ULong = 16uL) : GPUBuffer {
 
     override var label: String = ""
     override val size: ULong get() = capacity
-    override val usage: Set<GPUBufferUsage> get() = setOf(GPUBufferUsage.MapWrite)
+    override val usage: GPUBufferUsage get() = GPUBufferUsage.MapWrite
     override val mapState: GPUBufferMapState
         get() = if (mapped) GPUBufferMapState.Mapped else GPUBufferMapState.Unmapped
 

@@ -29,7 +29,7 @@ interface GPUBuffer : GPUBindingResource, GPUObjectBase, AutoCloseable {
 	 * See [GPUBuffer.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubuffer-usage).
 	 *
 	 */
-	val usage: Set<GPUBufferUsage>
+	val usage: GPUBufferUsage
 	/**
 	 * The buffer is not mapped for use by this.getMappedRange(). A mapping of the buffer has been requested, but is pending. It may succeed, or fail validation in mapAsync().
 	 *
@@ -152,7 +152,7 @@ interface GPUTexture : GPUBindingResource, GPUObjectBase, GPUTextureOrGPUTexture
 	 * See [GPUTexture.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexture-usage).
 	 *
 	 */
-	val usage: Set<GPUTextureUsage>
+	val usage: GPUTextureUsage
 	/**
 	 * Creates a GPUTextureView.
 	 *

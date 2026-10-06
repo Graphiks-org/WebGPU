@@ -21,8 +21,8 @@ class Buffer(val handler: WGPUBuffer) : GPUBuffer {
         set(value) { handler.label = value }
     override val size: GPUSize64
         get() = handler.size.toULong()
-    override val usage: Set<GPUBufferUsage>
-        get() = GPUBufferUsage.entries.filter { it.value and handler.usage.toULong() != 0uL }.toSet()
+    override val usage: GPUBufferUsage
+        get() = GPUBufferUsage.fromBits(handler.usage.toULong())
     override val mapState: GPUBufferMapState
         get() = GPUBufferMapState.of(handler.mapState) ?: error("fail to get MapState")
 

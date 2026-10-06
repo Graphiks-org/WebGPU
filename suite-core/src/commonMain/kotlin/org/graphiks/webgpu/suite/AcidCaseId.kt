@@ -153,4 +153,5 @@ enum class AcidCaseId(val id: String) {
     ErrorsDeviceLost("errors.device-lost"),
     BuffersMapCancelRemap("buffers.map-cancel-remap"),
     BuffersMappedRangeScope("buffers.mapped-range-scope"),
+    BuffersUsageMaskRoundTrip("buffers.usage-mask-round-trip"),
 }
