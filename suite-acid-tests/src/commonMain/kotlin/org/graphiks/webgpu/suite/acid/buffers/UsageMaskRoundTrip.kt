@@ -25,17 +25,17 @@ import kotlin.test.assertTrue
         ApiSymbols.GPUBufferUsage,
         ApiSymbols.GPUBufferUsage_CopySrc,
         ApiSymbols.GPUBufferUsage_CopyDst,
-        ApiSymbols.GPUBufferUsage_MapWrite,
+        ApiSymbols.GPUBufferUsage_Storage,
     ],
 )
 suspend fun usageMaskRoundTrip(device: GPUDevice) = withValidationScope(device) {
-    val created = GPUBufferUsage.CopySrc or GPUBufferUsage.CopyDst or GPUBufferUsage.MapWrite
+    val created = GPUBufferUsage.CopySrc or GPUBufferUsage.CopyDst or GPUBufferUsage.Storage
     device.createBuffer(
         BufferDescriptor(size = 32uL, usage = created),
     ).use { source ->
         assertEquals(created, source.usage)
         assertTrue(GPUBufferUsage.CopySrc in source.usage)
-        assertTrue(GPUBufferUsage.MapWrite in source.usage)
+        assertTrue(GPUBufferUsage.Storage in source.usage)
 
         device.createBuffer(
             BufferDescriptor(size = source.size, usage = source.usage),

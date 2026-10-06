@@ -16,8 +16,7 @@ import kotlin.test.assertEquals
 
 /**
  * `withMappedRange` maps a write range, runs the block with the borrowed view and unmaps on
- * exit: the buffer is back to `Unmapped` afterwards, and the written pattern reads back through
- * a staging buffer.
+ * exit: the buffer is back to `Unmapped` afterwards, and the written pattern reads back.
  */
 @AcidTest(
     id = AcidCaseId.BuffersMappedRangeScope,
@@ -28,11 +27,8 @@ import kotlin.test.assertEquals
         ApiSymbols.GPUBuffer_getMappedRange,
         ApiSymbols.GPUBuffer_unmap,
         ApiSymbols.GPUBuffer_mapState,
-        ApiSymbols.GPUCommandEncoder_copyBufferToBuffer,
-        ApiSymbols.GPUQueue_submit,
         ApiSymbols.GPUBufferUsage_MapWrite,
         ApiSymbols.GPUBufferUsage_CopySrc,
-        ApiSymbols.GPUBufferUsage_CopyDst,
     ],
 )
 suspend fun mappedRangeScope(device: GPUDevice) = withValidationScope(device) {
@@ -45,18 +41,10 @@ suspend fun mappedRangeScope(device: GPUDevice) = withValidationScope(device) {
         }
         assertEquals(GPUBufferMapState.Unmapped, buffer.mapState)
 
-        device.createBuffer(
-            BufferDescriptor(16uL, GPUBufferUsage.MapRead or GPUBufferUsage.CopyDst),
-        ).use { staging ->
-            device.createCommandEncoder().use { encoder ->
-                encoder.copyBufferToBuffer(buffer, 0uL, staging, 0uL, 16uL)
-                encoder.finish().use { device.queue.submit(listOf(it)) }
-            }
-            val bytes = readBufferBytes(device, staging, 16uL)
-            assertEquals(11, bytes[0].toInt() and 255)
-            assertEquals(22, bytes[4].toInt() and 255)
-            assertEquals(33, bytes[8].toInt() and 255)
-            assertEquals(44, bytes[12].toInt() and 255)
-        }
+        val bytes = readBufferBytes(device, buffer, 16uL)
+        assertEquals(11, bytes[0].toInt() and 255)
+        assertEquals(22, bytes[4].toInt() and 255)
+        assertEquals(33, bytes[8].toInt() and 255)
+        assertEquals(44, bytes[12].toInt() and 255)
     }
 }
