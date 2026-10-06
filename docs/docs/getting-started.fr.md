@@ -61,6 +61,37 @@ exemple `(canvas as HTMLCanvasElement).getCanvasSurface()`). `webgpu-browser` ne
 bibliothèque DOM de façon transitive : ajoutez-en une (par exemple `kotlin-browser`) si votre code
 utilise des types DOM.
 
+## Mapper un buffer avec une plage bornée
+
+`GPUBuffer.withMappedRange` mappe une plage, exécute un bloc non suspendu avec la vue empruntée,
+puis dépappe (`unmap`) dans un `finally` : le buffer revient à `Unmapped` même si le bloc lève une
+exception.
+
+```kotlin
+import org.graphiks.webgpu.GPUBufferUsage
+import org.graphiks.webgpu.GPUDevice
+import org.graphiks.webgpu.GPUMapMode
+import org.graphiks.webgpu.descriptors.BufferDescriptor
+import org.graphiks.webgpu.withMappedRange
+
+suspend fun writeExample(device: GPUDevice) {
+    val buffer = device.createBuffer(
+        BufferDescriptor(size = 16uL, usage = GPUBufferUsage.MapWrite or GPUBufferUsage.CopySrc),
+    )
+    buffer.use {
+        it.withMappedRange(GPUMapMode.Write) { view ->
+            view.setUInts(0uL, uintArrayOf(1u, 2u, 3u, 4u))
+        }
+    }
+}
+```
+
+La vue passée au bloc est empruntée : elle est invalidée par le `unmap()` effectué par le helper
+et ne doit ni être conservée ni retournée. Les ressources créées par un device appartiennent à
+l’appelant : `close()` les détruit (un backend natif libère aussi sa référence possédée), et fermer
+une ressource déjà fermée ne libère pas la même référence une seconde fois. Une texture obtenue
+d’un contexte canvas est empruntée : fermer son wrapper ne détruit pas la texture du canvas.
+
 ## Utiliser un type portable
 
 ```kotlin

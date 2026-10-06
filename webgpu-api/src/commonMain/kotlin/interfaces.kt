@@ -10,6 +10,10 @@ sealed interface GPUBindingResource
 /**
  * A GPUBuffer represents a block of memory that can be used in GPU operations. Data is stored in linear layout, meaning that each byte of the allocation can be addressed by its offset from the start of the GPUBuffer, subject to alignment restrictions depending on the operation. Some GPUBuffers can be mapped which makes the block of memory accessible via an ArrayBuffer called its mapping.
  *
+ * ## Lifetime
+ *
+ * A GPUBuffer created by a device is owned by the caller. `close()` destroys the buffer: it runs the WebGPU `destroy` operation, and a native backend must also release its owned reference. Closing an already closed buffer does not release the same reference a second time; general thread safety is not promised. Mapped ranges are borrowed: they are invalidated by `unmap()` and by destroying the buffer. Whether a backend detects an access to an invalidated range is not portable.
+ *
  */
 interface GPUBuffer : GPUBindingResource, GPUObjectBase, AutoCloseable {
 	/**
@@ -43,13 +47,15 @@ interface GPUBuffer : GPUBindingResource, GPUObjectBase, AutoCloseable {
 	/**
 	 * Returns an ArrayBuffer with the contents of the GPUBuffer in the given mapped range.
 	 *
+	 * The returned range is borrowed, not owned: it is invalidated by `unmap()` and by destroying the buffer, and it must not be retained or used after either. Prefer `GPUBuffer.withMappedRange`, which maps, runs a non-suspending block with the borrowed range and unmaps in a `finally`.
+	 *
 	 * @param offset Offset in bytes into the buffer to return buffer contents from.
 	 * @param size Size in bytes of the ArrayBuffer to return.
 	 *
 	 */
 	fun getMappedRange(offset: GPUSize64 = 0u, size: GPUSize64? = null): ArrayBuffer
 	/**
-	 * Unmaps the mapped range of the GPUBuffer and makes its contents available for use by the GPU again.
+	 * Unmaps the mapped range of the GPUBuffer and makes its contents available for use by the GPU again. Every borrowed range previously returned by `getMappedRange` is invalidated by this call.
 	 *
 	 */
 	fun unmap()
@@ -86,6 +92,10 @@ interface GPUBufferBinding : GPUBindingResource {
 interface GPUSampler : GPUBindingResource, GPUObjectBase, AutoCloseable
 /**
  * A texture is made up of 1d, 2d, or 3d arrays of data which can contain multiple values per-element to represent things like colors. Textures can be read and written in many ways, depending on the GPUTextureUsage they are created with. For example, textures can be sampled, read, and written from render and compute pipeline shaders, and they can be written by render pass outputs. Internally, textures are often stored in GPU memory with a layout optimized for multidimensional access rather than linear access.
+ *
+ * ## Lifetime
+ *
+ * A GPUTexture created by a device is owned by the caller: `close()` destroys it, and a native backend must also release its owned reference. A texture obtained from a canvas context is borrowed: closing its wrapper does not destroy the texture owned by the canvas. Closing an already closed texture does not release the same reference a second time.
  *
  */
 interface GPUTexture : GPUBindingResource, GPUObjectBase, GPUTextureOrGPUTextureView, AutoCloseable {
@@ -535,6 +545,10 @@ interface GPUAdapter : AutoCloseable {
 
 /**
  * A GPUDevice encapsulates a device and exposes the functionality of that device.
+ *
+ * ## Lifetime
+ *
+ * `close()` destroys the device and triggers the loss notification observed by `awaitLost`, with the destruction reason when the backend provides one. Closing an already closed device does not release the same reference a second time.
  *
  */
 interface GPUDevice : GPUObjectBase, AutoCloseable {

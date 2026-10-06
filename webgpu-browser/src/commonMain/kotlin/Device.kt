@@ -131,7 +131,12 @@ class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallb
         mapDeviceLostInfo(handler.lost.await().unsafeCast<WGPUDeviceLostInfo>())
     }
 
+    private var closed = false
+
     override fun close() {
+        // A repeated close must not release the same owned reference twice.
+        if (closed) return
+        closed = true
         handler.destroy()
     }
 

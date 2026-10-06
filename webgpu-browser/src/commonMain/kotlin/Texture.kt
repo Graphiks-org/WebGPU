@@ -44,7 +44,12 @@ class Texture(val handler: WGPUTexture, val canBeDestroy: Boolean = true) : GPUT
         )
     }
 
+    private var closed = false
+
     override fun close() {
+        // A repeated close must not release the same owned reference twice.
+        if (closed) return
+        closed = true
         // On firefox, canvas textures throw an exception when calling destroy
         if (canBeDestroy) handler.destroy()
     }

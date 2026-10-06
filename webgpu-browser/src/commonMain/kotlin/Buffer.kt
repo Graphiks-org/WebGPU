@@ -55,7 +55,12 @@ class Buffer(val handler: WGPUBuffer) : GPUBuffer {
         handler.unmap()
     }
 
+    private var closed = false
+
     override fun close() {
+        // A repeated close must not release the same owned reference twice.
+        if (closed) return
+        closed = true
         handler.destroy()
     }
 }

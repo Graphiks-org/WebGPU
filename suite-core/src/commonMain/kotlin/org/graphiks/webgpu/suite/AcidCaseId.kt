@@ -152,4 +152,5 @@ enum class AcidCaseId(val id: String) {
     RenderSparseColorAttachments("render.sparse-color-attachments"),
     ErrorsDeviceLost("errors.device-lost"),
     BuffersMapCancelRemap("buffers.map-cancel-remap"),
+    BuffersMappedRangeScope("buffers.mapped-range-scope"),
 }
