@@ -151,4 +151,5 @@ enum class AcidCaseId(val id: String) {
     TexturesTransientUsage("texture.transient-usage"),
     RenderSparseColorAttachments("render.sparse-color-attachments"),
     ErrorsDeviceLost("errors.device-lost"),
+    BuffersMapCancelRemap("buffers.map-cancel-remap"),
 }

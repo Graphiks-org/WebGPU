@@ -9,6 +9,13 @@ import kotlin.js.ExperimentalWasmJsInterop
 
 class Buffer(val handler: WGPUBuffer) : GPUBuffer {
 
+    /**
+     * Identity of the latest `mapAsync` call. A cancelled mapping only unmaps when no newer
+     * mapping has started in the meantime, so a late settlement of the cancelled request cannot
+     * invalidate a mapping that is already active.
+     */
+    private var mapGeneration = 0L
+
     override var label: String
         get() = handler.label
         set(value) { handler.label = value }
@@ -32,10 +39,15 @@ class Buffer(val handler: WGPUBuffer) : GPUBuffer {
         offset: GPUSize64,
         size: GPUSize64?
     ): Result<Unit> = browserResult {
+        val generation = ++mapGeneration
         when (size) {
             null -> handler.mapAsync(mode.value.asJsNumber(), offset.asJsNumber())
             else -> handler.mapAsync(mode.value.asJsNumber(), offset.asJsNumber(), size.asJsNumber())
-        }.await()
+        }.await {
+            // This mapping request was cancelled: if the backend still completed it, unmap it,
+            // unless a newer mapping has already started on this buffer.
+            if (generation == mapGeneration) handler.unmap()
+        }
         return@browserResult Unit
     }
 
