@@ -58,6 +58,7 @@ Use a Conventional Commit subject for **every non-merge commit** and for the PR 
 | `ci` | GitHub workflows and validation scripts |
 | `docs` | Site guides and repository documentation |
 | `release` | Versioning and Maven publication |
+| `deps` | Automated dependency updates (reserved for Dependabot) |
 
 Keep this table aligned with the [machine-readable PR policy](.github/contributing-policy.toml) when modules change. Commit your focused change first:
 
@@ -78,6 +79,8 @@ git push -u origin feat/short-description
 Resolve any merge conflicts and rerun relevant tests before continuing. Check `git status --short` before pushing.
 
 Open a PR **from your fork** against `Graphiks-org/WebGPU`'s `master` branch. Fill in the [PR template](.github/PULL_REQUEST_TEMPLATE.md): describe the behavior and tests, select **one** change type, select **one** documentation decision, and select **one** changelog decision. If an update is unnecessary, explain it in Description using `Documentation: ...` or `Changelog: ...`. The PR title type must match the selected type. Wait for the **PR policy** check, business tests, and documentation build to pass. Address failures and review comments with additional Conventional Commits, and update your branch from `upstream/master` if it advances.
+
+Automated dependency updates are exempt from the fork, branch-prefix, and template rules: the PR policy accepts a pull request authored by `dependabot[bot]` on a `dependabot/` branch when its title and commits stay Conventional Commits with the reserved `deps` scope — for example `build(deps): bump ktor from 3.5.0 to 3.6.0` — and its head includes the current `master` commit. Documentation and changelog decisions are not required for these automated updates; maintainers fold notable dependency changes into the release notes.
 
 ## Maintainer publication
 

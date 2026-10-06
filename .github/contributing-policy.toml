@@ -3,3 +3,11 @@ scopes = ["api", "descriptors", "web", "specifications", "buildSrc", "build-logi
 branch_prefixes = ["feat/", "fix/", "chore/"]
 required_sections = ["Description", "Type of Change", "Checklist", "Screenshots (if applicable)", "Additional Notes"]
 changelog_file = "CHANGELOG.md"
+
+# Automated dependency-update bots. A pull request is validated by the reduced
+# bot lane only when its author AND branch prefix match one entry; every other
+# pull request follows the full contribution policy above.
+[[dependency_bots]]
+author = "dependabot[bot]"
+branch_prefixes = ["dependabot/"]
+allowed_scopes = ["deps"]
