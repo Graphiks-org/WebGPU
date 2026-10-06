@@ -1,8 +1,10 @@
 // Assembles the static Validation, Demos and Benchmarks pages into build/site/.
 //
-// Copies the pages, the two browser reports, the two demo reports, the two benchmark reports and
-// the two runnable distributions, and builds the generated contract inventory. Fails when the
-// inventory or any report is missing: an absent report is never treated as a success.
+// Copies the pages, the two browser reports, the two demo reports, the two runnable distributions
+// and the generated contract inventory. Benchmark campaigns are run by hand on chosen machines,
+// never on CI runners, so the two benchmark reports are copied when present and simply absent
+// otherwise; the Benchmarks page shows "No published measurements" in that case. The suite and
+// demo reports stay mandatory: an absent report is never treated as a success.
 import { execFileSync } from 'node:child_process';
 import { access, cp, mkdir, rm } from 'node:fs/promises';
 import { constants } from 'node:fs';
@@ -35,9 +37,6 @@ for (const target of Object.keys(distributionByTarget)) {
 for (const report of Object.values(demoReportByTarget)) {
   await access(join(root, 'build', 'reports', report), constants.R_OK);
 }
-for (const report of Object.values(benchmarkReportByTarget)) {
-  await access(join(root, 'build', 'reports', report), constants.R_OK);
-}
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
@@ -54,7 +53,11 @@ for (const report of Object.values(demoReportByTarget)) {
   await cp(join(root, 'build', 'reports', report), join(out, 'reports', report));
 }
 for (const report of Object.values(benchmarkReportByTarget)) {
-  await cp(join(root, 'build', 'reports', report), join(out, 'reports', report));
+  const source = join(root, 'build', 'reports', report);
+  // Benchmark campaigns run on chosen machines outside CI; their reports may or may not exist here.
+  if (await access(source, constants.R_OK).then(() => true, () => false)) {
+    await cp(source, join(out, 'reports', report));
+  }
 }
 
 execFileSync(process.execPath, [join(root, 'tools', 'build-inventory.mjs'), join(out, 'inventory')], { stdio: 'inherit' });

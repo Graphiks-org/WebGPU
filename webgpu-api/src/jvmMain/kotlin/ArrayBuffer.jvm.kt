@@ -261,7 +261,7 @@ actual sealed interface ArrayBuffer {
          * @return a new ArrayBuffer with the specified size
          */
         actual fun allocate(sizeInBytes: ULong): ArrayBuffer {
-            return JvmArrayBuffer(Arena.ofAuto().allocate(sizeInBytes.toLong()))
+            return JvmArrayBuffer(Arena.ofAuto().allocate(checkedLongSize(sizeInBytes)))
         }
 
         /**
@@ -277,8 +277,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the byte array
          */
         actual fun of(array: ByteArray): ArrayBuffer {
-            return allocate((array.size * Byte.SIZE_BYTES).toULong())
-                .also { it.setBytes(0u, array) }
+            if (array.isEmpty()) return allocate(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Byte.SIZE_BYTES, Long.MAX_VALUE.toULong())
+            return allocate(bytes).also { it.setBytes(0u, array) }
         }
 
         /**
@@ -287,8 +288,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the short array
          */
         actual fun of(array: ShortArray): ArrayBuffer {
-            return allocate((array.size * Short.SIZE_BYTES).toULong())
-                .also { it.setShorts(0u, array) }
+            if (array.isEmpty()) return allocate(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Short.SIZE_BYTES, Long.MAX_VALUE.toULong())
+            return allocate(bytes).also { it.setShorts(0u, array) }
         }
 
         /**
@@ -297,8 +299,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the int array
          */
         actual fun of(array: IntArray): ArrayBuffer {
-            return allocate((array.size * Int.SIZE_BYTES).toULong())
-                .also { it.setInts(0u, array) }
+            if (array.isEmpty()) return allocate(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Int.SIZE_BYTES, Long.MAX_VALUE.toULong())
+            return allocate(bytes).also { it.setInts(0u, array) }
         }
 
 
@@ -308,8 +311,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the float array
          */
         actual fun of(array: FloatArray): ArrayBuffer {
-            return allocate((array.size * Float.SIZE_BYTES).toULong())
-                .also { it.setFloats(0u, array) }
+            if (array.isEmpty()) return allocate(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Float.SIZE_BYTES, Long.MAX_VALUE.toULong())
+            return allocate(bytes).also { it.setFloats(0u, array) }
         }
 
         /**
@@ -318,8 +322,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the double array
          */
         actual fun of(array: DoubleArray): ArrayBuffer {
-            return allocate((array.size * Double.SIZE_BYTES).toULong())
-                .also { it.setDoubles(0u, array) }
+            if (array.isEmpty()) return allocate(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), Double.SIZE_BYTES, Long.MAX_VALUE.toULong())
+            return allocate(bytes).also { it.setDoubles(0u, array) }
         }
 
         /**
@@ -328,8 +333,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the unsigned byte array
          */
         actual fun of(array: UByteArray): ArrayBuffer {
-            return allocate((array.size * UByte.SIZE_BYTES).toULong())
-                .also { it.setUBytes(0u, array) }
+            if (array.isEmpty()) return allocate(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), UByte.SIZE_BYTES, Long.MAX_VALUE.toULong())
+            return allocate(bytes).also { it.setUBytes(0u, array) }
         }
 
         /**
@@ -338,8 +344,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the unsigned short array
          */
         actual fun of(array: UShortArray): ArrayBuffer {
-            return allocate((array.size * UShort.SIZE_BYTES).toULong())
-                .also { it.setUShorts(0u, array) }
+            if (array.isEmpty()) return allocate(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), UShort.SIZE_BYTES, Long.MAX_VALUE.toULong())
+            return allocate(bytes).also { it.setUShorts(0u, array) }
         }
 
         /**
@@ -348,8 +355,9 @@ actual sealed interface ArrayBuffer {
          * @return an ArrayBuffer containing the data from the unsigned int array
          */
         actual fun of(array: UIntArray): ArrayBuffer {
-            return allocate((array.size * UInt.SIZE_BYTES).toULong())
-                .also { it.setUInts(0u, array) }
+            if (array.isEmpty()) return allocate(0uL)
+            val bytes = checkedByteCount(array.size.toULong(), UInt.SIZE_BYTES, Long.MAX_VALUE.toULong())
+            return allocate(bytes).also { it.setUInts(0u, array) }
         }
 
     }

@@ -291,3 +291,9 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
   leur propre device. Ce dépôt compile les modules partagés et exécute les cas navigateur.
 - Les résultats ci-dessus sont des résultats fonctionnels sur backend logiciel. Ce ne sont pas des
   mesures de performance et ne représentent pas un GPU physique.
+- Le travail sur les bornes d’ArrayBuffer n’ajoute que des tests de correction : les suites
+  commune, JVM et Native de `webgpu-api`, et les contrôles instrumentés Android dans
+  `arraybuffer-android-instrumentation`. Ses mesures de durée sont informatives et rapportées à
+  part, jamais comme un seuil de réussite ou d’échec ; voir
+  [Performance CPU d’ArrayBuffer](arraybuffer-performance.fr.md) et
+  [Bornes et capacités d’ArrayBuffer](arraybuffer-bounds.fr.md).

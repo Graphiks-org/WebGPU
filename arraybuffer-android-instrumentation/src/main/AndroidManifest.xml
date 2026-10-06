@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application android:label="ArrayBuffer Benchmarks">
+        <!-- Release build type is not minified; the report records this so a "release" number is
+             never mistaken for an R8-optimized program. -->
+        <meta-data
+            android:name="org.graphiks.webgpu.benchmarks.minified"
+            android:value="false" />
+    </application>
+
+</manifest>

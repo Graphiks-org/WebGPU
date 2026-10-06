@@ -47,12 +47,6 @@ jobs:
       - name: Run Wasm demo check
         if: ${{ !cancelled() }}
         run: node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
-      - name: Run JS benchmark
-        if: ${{ !cancelled() }}
-        run: node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --benchmark --profile=ci --backend=swiftshader
-      - name: Run Wasm benchmark
-        if: ${{ !cancelled() }}
-        run: node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --benchmark --profile=ci --backend=swiftshader
       - name: Upload reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4

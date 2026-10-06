@@ -1,3 +1,4 @@
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import org.graphiks.webgpu.ArrayBuffer
@@ -179,6 +180,20 @@ class JvmArrayBufferTest: FreeSpec({
 
                 // Verify change is reflected in segment
                 segment.get(ValueLayout.JAVA_INT_UNALIGNED, 0L) shouldBe 111
+            }
+        }
+
+        "should not widen the range of a small wrapped segment" {
+            Arena.ofConfined().use { arena ->
+                val segment = arena.allocate(16L)
+                val buffer = ArrayBuffer.wrap(segment)
+
+                buffer.setInt(12u, 1)
+                buffer.getInt(12u) shouldBe 1
+
+                shouldThrow<IndexOutOfBoundsException> { buffer.setInt(13u, 1) }
+                shouldThrow<IndexOutOfBoundsException> { buffer.getInt(16u) }
+                shouldThrow<IllegalArgumentException> { buffer.getInt(1u) }
             }
         }
     }
