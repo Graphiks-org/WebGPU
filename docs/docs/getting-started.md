@@ -60,6 +60,12 @@ The canvas helpers (`getCanvasSurface`, `SurfaceConfiguration`) also live in
 `(canvas as HTMLCanvasElement).getCanvasSurface()`). `webgpu-browser` does not bring a DOM wrapper
 library transitively, so add one (for example `kotlin-browser`) when your code needs DOM types.
 
+When creating textures in compatibility mode, set `TextureDescriptor.textureBindingViewDimension`
+to the intended binding view dimension (for example, `GPUTextureViewDimension.Cube` for a cube
+view). The browser implementation forwards an explicit value to WebGPU; leaving it `null` omits
+the property and lets WebGPU choose its default. Devices with `core-features-and-limits` ignore
+this restriction.
+
 ## Use a portable type
 
 ```kotlin

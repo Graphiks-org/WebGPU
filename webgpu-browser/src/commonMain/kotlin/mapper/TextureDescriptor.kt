@@ -19,4 +19,5 @@ internal fun map(input: GPUTextureDescriptor): WGPUTextureDescriptor = createJsO
     format = input.format.value
     usage = input.usage.value.asJsNumber()
     viewFormats = input.viewFormats.mapJsArray { it.value.toJsString() }
+    input.textureBindingViewDimension?.let { textureBindingViewDimension = it.value }
 }

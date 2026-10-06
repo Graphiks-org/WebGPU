@@ -61,6 +61,12 @@ exemple `(canvas as HTMLCanvasElement).getCanvasSurface()`). `webgpu-browser` ne
 bibliothèque DOM de façon transitive : ajoutez-en une (par exemple `kotlin-browser`) si votre code
 utilise des types DOM.
 
+Lors de la création de textures en mode compatibilité, renseignez
+`TextureDescriptor.textureBindingViewDimension` avec la dimension de vue prévue pour le binding
+(par exemple `GPUTextureViewDimension.Cube` pour une vue cube). L’implémentation navigateur transmet
+une valeur explicite à WebGPU ; la valeur `null` omet la propriété et laisse WebGPU choisir sa valeur
+par défaut. Les devices disposant de `core-features-and-limits` ignorent cette restriction.
+
 ## Utiliser un type portable
 
 ```kotlin
