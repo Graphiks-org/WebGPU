@@ -54,6 +54,7 @@ jobs:
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           PR_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
           PR_BASE_REPOSITORY: ${{ github.event.pull_request.base.repo.full_name }}
           PR_HEAD_IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
@@ -63,6 +64,7 @@ jobs:
             --title "$PR_TITLE" \
             --body-file "$RUNNER_TEMP/pr-body.md" \
             --branch "$PR_BRANCH" \
+            --author "$PR_AUTHOR" \
             --changed-files-file "$RUNNER_TEMP/changed-files.txt" \
             --commit-subjects-file "$RUNNER_TEMP/commit-subjects.txt" \
             --base-ancestor "$(cat "$RUNNER_TEMP/base-ancestor.txt")" \

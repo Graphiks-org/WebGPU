@@ -12,15 +12,26 @@ HEADING = re.compile(r"^## (.+)$", re.MULTILINE)
 CHECKBOX = re.compile(r"^- \[([ xX])\] (.+)$", re.MULTILINE)
 
 
-def _subject_error(subject: str, policy: dict) -> str | None:
+def _subject_error(subject: str, policy: dict, scopes: list[str]) -> str | None:
     match = SUBJECT.fullmatch(subject.strip())
     if match is None:
         return "must be a Conventional Commit subject"
     if match.group("type") not in policy["types"]:
         return f"uses an unknown type: {match.group('type')}"
     scope = match.group("scope")
-    if scope is not None and scope not in policy["scopes"]:
+    if scope is not None and scope not in scopes:
         return f"uses an unknown scope: {scope}"
+    return None
+
+
+def _matching_bot(policy: dict, author: str, branch: str) -> dict | None:
+    """Return the dependency-update bot matching both the author and the branch."""
+    for bot in policy.get("dependency_bots", []):
+        if author == bot.get("author") and any(
+            branch.startswith(prefix) and len(branch) > len(prefix)
+            for prefix in bot.get("branch_prefixes", [])
+        ):
+            return bot
     return None
 
 
@@ -35,12 +46,27 @@ def _section(body: str, heading: str) -> str:
 def validate_pr(title: str, body: str, branch: str,
                 commit_subjects: list[str], changed_files: list[str], policy: dict,
                 *, base_ancestor: bool, head_repository: str,
-                base_repository: str, head_is_fork: bool) -> list[str]:
+                base_repository: str, head_is_fork: bool,
+                author: str = "") -> list[str]:
     """Return every policy violation; no network or GitHub API is used."""
+    bot = _matching_bot(policy, author, branch)
+    scopes = policy["scopes"] if bot is None else bot["allowed_scopes"]
     errors = []
-    title_error = _subject_error(title, policy)
+    title_error = _subject_error(title, policy, scopes)
     if title_error:
         errors.append(f"PR title {title_error}.")
+    if bot is not None:
+        # Reduced lane for automated dependency updates: Conventional Commit
+        # subjects with the bot scopes and the current base commit, without
+        # the fork, branch-prefix, template, documentation, and changelog
+        # rules that apply to human contributions.
+        if not base_ancestor:
+            errors.append("Current base commit must be an ancestor of the pull request head.")
+        for index, subject in enumerate(commit_subjects, 1):
+            commit_error = _subject_error(subject, policy, scopes)
+            if commit_error:
+                errors.append(f"Commit {index} {commit_error}.")
+        return errors
     if not any(branch.startswith(prefix) and len(branch) > len(prefix)
                for prefix in policy["branch_prefixes"]):
         errors.append("Branch must use an allowed prefix and a nonempty name.")
@@ -92,7 +118,7 @@ def validate_pr(title: str, body: str, branch: str,
             errors.append("No changelog needed requires a reason in Description as 'Changelog: ...'.")
 
     for index, subject in enumerate(commit_subjects, 1):
-        commit_error = _subject_error(subject, policy)
+        commit_error = _subject_error(subject, policy, scopes)
         if commit_error:
             errors.append(f"Commit {index} {commit_error}.")
     return errors
@@ -118,6 +144,7 @@ def main() -> int:
     parser.add_argument("--head-repository", required=True)
     parser.add_argument("--base-repository", required=True)
     parser.add_argument("--head-is-fork", type=_parse_bool, required=True)
+    parser.add_argument("--author", required=True)
     args = parser.parse_args()
 
     with args.policy.open("rb") as stream:
@@ -131,6 +158,7 @@ def main() -> int:
         head_repository=args.head_repository,
         base_repository=args.base_repository,
         head_is_fork=args.head_is_fork,
+        author=args.author,
     )
     for error in errors:
         print(f"ERROR: {error}")

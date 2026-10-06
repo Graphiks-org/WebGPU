@@ -6,6 +6,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- Android `ArrayBuffer.wrap(address, size)`: a borrowed, non-owning view over native memory (native byte order, bounds-checked) so a backend can expose a range a native library lends the caller — such as a GPU-mapped buffer between map and unmap — without copying it.
 - Publish the portable suite modules across the `webgpu-api` KMP target matrix, including Android, Windows, and ARM64 tvOS targets.
 - Bilingual documentation, contributor guidance, and repository automation.
 - `org.graphiks:webgpu-browser`, a browser implementation for Kotlin/JS and Kotlin/Wasm JS with adapter acquisition, resource wrappers, descriptor conversions, and canvas surfaces.
@@ -38,6 +39,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Move the type mapping into the documentation site as a dedicated bilingual section (`docs/docs/type-mapping/`) and remove the root `TYPE_MAPPING.md`.
 - Benchmark campaigns no longer run on CI runners, which are not a reliable performance reference: the GPU benchmark steps are gone from the suite workflow, the validation site is assembled without benchmark reports when absent (the Benchmarks page shows "No published measurements"), and campaigns are run by hand on chosen machines.
 - Suite reports (acid, demo, benchmark) carry the exact commit and version they were built from, and the runner fails closed on a missing or mismatched identity instead of attributing a report to the current checkout; inventory generation links every case entry to its source file on the Validation page.
+- Accept automated dependency updates in the PR policy: a pull request authored by `dependabot[bot]` on a `dependabot/` branch passes a reduced bot lane — Conventional Commit subjects with the reserved `deps` scope and the current `master` commit — instead of failing the fork, branch-prefix, template, documentation, and changelog rules.
 
 ### Removed
 

@@ -121,10 +121,10 @@ Same workstation as the first reading (physical macOS arm64), merged branch tip 
 variants inside each report: `Checked` and `Reference` share the repetition count of their layout
 group, so each ratio is computed per launch and the median of the five launches is shown with its
 range. The ratio therefore measures the whole public checked path — validation plus the API layer —
-against the raw platform primitive on the same build. The library sources are unchanged since the
-first reading (identical `libraryHash`), so both readings describe the same code, and the cost of
-the checks alone remains the first reading's percentages. The same caveat applies: this is a
-workstation, not a benchmark rig.
+against the raw platform primitive on the same build. The library sources of that build are unchanged
+since the first reading (identical `libraryHash` on `94dfcbd`), so both readings describe the same
+code, and the cost of the checks alone remains the first reading's percentages. The same caveat
+applies: this is a workstation, not a benchmark rig.
 
 Median of the per-launch `Checked`/`Reference` ratios (range of the five launches in parentheses):
 

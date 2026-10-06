@@ -128,10 +128,10 @@ celle-ci compare deux variantes **au sein de chaque rapport** : `Checked` et `Re
 le compte de répétitions de leur groupe de layout, donc chaque rapport est calculé par lancement,
 et la médiane des cinq lancements est consignée avec son étendue. Le rapport mesure donc le chemin
 public vérifié complet — validation plus couche API — contre la primitive de plateforme brute, sur
-le même build. Les sources de la bibliothèque n’ont pas changé depuis la première lecture
-(`libraryHash` identique) : les deux lectures décrivent le même code, et le coût des seuls
-contrôles reste celui des pourcentages de la première lecture. La même réserve s’applique : c’est
-un poste de travail, pas un banc d’essai.
+le même build. Les sources de la bibliothèque de ce build n’ont pas changé depuis la première
+lecture (`libraryHash` identique sur `94dfcbd`) : les deux lectures décrivent le même code, et le
+coût des seuls contrôles reste celui des pourcentages de la première lecture. La même réserve
+s’applique : c’est un poste de travail, pas un banc d’essai.
 
 Médiane des rapports `Checked`/`Reference` par lancement (étendue des cinq lancements entre
 parenthèses) :

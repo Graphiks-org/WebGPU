@@ -55,7 +55,16 @@ external interface WGPUColor : JsAny {
 
 - Dans les environnements navigateur (JavaScript et WebAssembly), il correspond au type
   `ArrayBuffer` de JavaScript.
-- Sur les autres plateformes (natif), il correspond à un pointeur brut.
+- Sur la JVM, il enveloppe un `MemorySegment` via `ArrayBuffer.wrap(segment)`.
+- Sur les cibles Kotlin/Native, il enveloppe un pointeur brut via
+  `ArrayBuffer.wrap(pointer, size)`.
+- Sur Android, il enveloppe un `ByteBuffer` direct via `ArrayBuffer.wrap(buffer)` ou —
+  pour une mémoire qu'une bibliothèque native prête à l'appelant, telle qu'une plage
+  mappée d'un buffer GPU entre map et unmap — la plage empruntée elle-même via
+  `ArrayBuffer.wrap(address, size)`. La vue empruntée lit et écrit cette mémoire sur
+  place, dans l'ordre des octets natif de la plateforme, et ne la libère jamais :
+  l'appelant reste propriétaire de la mémoire et doit la maintenir valide pendant
+  toute la durée de vie de la vue.
 
 ### AllowSharedBufferSource
 
