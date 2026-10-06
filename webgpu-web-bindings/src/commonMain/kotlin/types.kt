@@ -411,7 +411,7 @@ external interface WGPUBufferBinding : JsAny {
 }
 
 external interface WGPUPipelineLayoutDescriptor : JsAny, WGPUObjectDescriptorBase {
-	var bindGroupLayouts: JsArray<JsAny> /* sequence<GPUBindGroupLayout?> */
+	var bindGroupLayouts: JsArray<JsAny?> /* sequence<GPUBindGroupLayout?> */
 	var immediateSize: JsNumber  /* GPUSize32 */
 }
 
@@ -466,7 +466,7 @@ external interface WGPUMultisampleState : JsAny {
 }
 
 external interface WGPUFragmentState : JsAny, WGPUProgrammableStage {
-	var targets: JsArray<JsAny> /* sequence<GPUColorTargetState?> */
+	var targets: JsArray<JsAny?> /* sequence<GPUColorTargetState?> */
 }
 
 external interface WGPUColorTargetState : JsAny {
@@ -507,7 +507,7 @@ external interface WGPUStencilFaceState : JsAny {
 }
 
 external interface WGPUVertexState : JsAny, WGPUProgrammableStage {
-	var buffers: JsArray<JsAny> /* sequence<GPUVertexBufferLayout?> */
+	var buffers: JsArray<JsAny?> /* sequence<GPUVertexBufferLayout?> */
 }
 
 external interface WGPUVertexBufferLayout : JsAny {
@@ -569,7 +569,7 @@ external interface WGPURenderPassTimestampWrites : JsAny {
 }
 
 external interface WGPURenderPassDescriptor : JsAny, WGPUObjectDescriptorBase {
-	var colorAttachments: JsArray<JsAny> /* sequence<GPURenderPassColorAttachment?> */
+	var colorAttachments: JsArray<JsAny?> /* sequence<GPURenderPassColorAttachment?> */
 	var depthStencilAttachment: WGPURenderPassDepthStencilAttachment  /* GPURenderPassDepthStencilAttachment */
 	var occlusionQuerySet: WGPUQuerySet  /* GPUQuerySet */
 	var timestampWrites: WGPURenderPassTimestampWrites  /* GPURenderPassTimestampWrites */
@@ -598,7 +598,7 @@ external interface WGPURenderPassDepthStencilAttachment : JsAny {
 }
 
 external interface WGPURenderPassLayout : JsAny, WGPUObjectDescriptorBase {
-	var colorFormats: JsArray<JsAny> /* sequence<GPUTextureFormat?> */
+	var colorFormats: JsArray<JsAny?> /* sequence<GPUTextureFormat?> */
 	var depthStencilFormat: String  /* GPUTextureFormat */
 	var sampleCount: JsNumber  /* GPUSize32 */
 }

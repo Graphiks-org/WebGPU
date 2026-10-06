@@ -1633,7 +1633,7 @@ interface GPUPipelineLayoutDescriptor : GPUObjectDescriptorBase {
 	 * A list of optional GPUBindGroupLayouts the pipeline will use. Each element corresponds to a @group attribute in the GPUShaderModule, with the Nth element corresponding with @group(N).
 	 *
 	 */
-	val bindGroupLayouts: List<GPUBindGroupLayout>
+	val bindGroupLayouts: List<GPUBindGroupLayout?>
 	/**
 	 * The size, in bytes, of the immediate data range used by the pipeline.
 	 *
@@ -1820,7 +1820,7 @@ interface GPUFragmentState : GPUProgrammableStage {
 	 * A list of GPUColorTargetState defining the formats and behaviors of the color targets this pipeline writes to.
 	 *
 	 */
-	val targets: List<GPUColorTargetState>
+	val targets: List<GPUColorTargetState?>
 }
 
 /**
@@ -1977,7 +1977,7 @@ interface GPUVertexState : GPUProgrammableStage {
 	 * A list of GPUVertexBufferLayouts, each defining the layout of vertex attribute data in a vertex buffer used by this pipeline.
 	 *
 	 */
-	val buffers: List<GPUVertexBufferLayout>
+	val buffers: List<GPUVertexBufferLayout?>
 }
 
 /**
@@ -2168,7 +2168,7 @@ interface GPURenderPassDescriptor : GPUObjectDescriptorBase {
 	 * The set of GPURenderPassColorAttachment values in this sequence defines which color attachments will be output to when executing this render pass. Due to usage compatibility, no color attachment may alias another attachment or any resource used inside the render pass.
 	 *
 	 */
-	val colorAttachments: List<GPURenderPassColorAttachment>
+	val colorAttachments: List<GPURenderPassColorAttachment?>
 	/**
 	 * The GPURenderPassDepthStencilAttachment value that defines the depth/stencil attachment that will be output to and tested against when executing this render pass. Due to usage compatibility, no writable depth/stencil attachment may alias another attachment or any resource used inside the render pass.
 	 *
@@ -2294,7 +2294,7 @@ interface GPURenderPassLayout : GPUObjectDescriptorBase {
 	 * A list of the GPUTextureFormats of the color attachments for this pass or bundle.
 	 *
 	 */
-	val colorFormats: List<GPUTextureFormat>
+	val colorFormats: List<GPUTextureFormat?>
 	/**
 	 * The GPUTextureFormat of the depth/stencil attachment for this pass or bundle.
 	 *

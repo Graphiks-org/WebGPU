@@ -15,7 +15,7 @@ internal fun map(input: GPURenderBundleEncoderDescriptor): WGPURenderBundleEncod
         label = input.label
         depthReadOnly = input.depthReadOnly
         stencilReadOnly = input.stencilReadOnly
-        colorFormats = input.colorFormats.mapJsArray { it.value.toJsString() }
+        colorFormats = input.colorFormats.mapJsArray { format -> format?.value?.toJsString() }
         input.depthStencilFormat?.let { depthStencilFormat = it.value }
         sampleCount = input.sampleCount.asJsNumber()
     }
