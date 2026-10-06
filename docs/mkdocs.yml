@@ -30,7 +30,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
-  - Public API Migration: public-api-migration.md
+  - Public API Contract: public-api-contract.md
   - Architecture: architecture.md
   - Testing: testing.md
   - Suite: suite.md
@@ -66,7 +66,7 @@ plugins:
           nav_translations:
             Home: Accueil
             Getting Started: Démarrage
-            Public API Migration: Migration de l’API publique
+            Public API Contract: Contrat de l’API publique
             Architecture: Architecture
             Testing: Tests
             Specification Maintenance: Maintenance des spécifications

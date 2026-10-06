@@ -10,7 +10,7 @@ ressources, les conversions de descripteurs et les surfaces canvas. `webgpu-web-
 bindings JavaScript générés pour l’interop directe.
 
 - [Démarrer](getting-started.md) avec une dépendance et un exemple d’API.
-- [Migrer l’API publique](public-api-migration.md) lors d’une mise à niveau à travers la refonte du contrat.
+- [Lire le contrat de l’API publique](public-api-contract.md) pour les signatures actuelles et les obligations des backends.
 - [Comprendre les modules](architecture.md) et leurs limites par plateforme.
 - [Lancer les tests métier](testing.md) avant de proposer un changement.
 - [Entretenir la spécification](specification-maintenance.md) lors d’une évolution de WebGPU.
