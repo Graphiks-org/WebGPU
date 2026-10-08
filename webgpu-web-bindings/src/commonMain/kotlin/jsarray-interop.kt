@@ -2,15 +2,6 @@
 
 package org.graphiks.webgpu.bindings
 
-import kotlin.js.ExperimentalWasmJsInterop
-import kotlin.js.JsAny
-import kotlin.js.JsArray
-import kotlin.js.get
-import kotlin.js.js
-import kotlin.js.length
-import kotlin.js.set
-import kotlin.js.unsafeCast
-
 expect fun <A: JsAny, B> JsArray<A>.map(converter: (A) -> B): List<B>
 
 fun <A: JsAny> jsArray(vararg values: A): JsArray<A> = js("Array.from(values)")

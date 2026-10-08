@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.yield
 import org.graphiks.webgpu.GPUBufferMapState
 import org.graphiks.webgpu.GPUBufferUsage
 import org.graphiks.webgpu.GPUDevice
