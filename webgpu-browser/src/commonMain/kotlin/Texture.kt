@@ -5,7 +5,6 @@ import org.graphiks.webgpu.bindings.*
 
 import org.graphiks.webgpu.browser.mapper.map
 import kotlin.Boolean
-import kotlin.Deprecated
 import kotlin.OptIn
 import kotlin.String
 import kotlin.error
@@ -29,21 +28,6 @@ class Texture private constructor(
 ) : GPUTexture {
 
     private enum class Ownership { Owned, Borrowed }
-
-    @Deprecated(
-        "Ownership is now explicit: use Texture.wrapOwned(handler) for a texture this wrapper " +
-            "must destroy, or Texture.wrapBorrowed(handler) for a texture owned by someone else " +
-            "(a canvas context, an imported handle). The old canBeDestroy flag maps to " +
-            "wrapOwned when true and wrapBorrowed when false.",
-    )
-    constructor(handler: WGPUTexture, canBeDestroy: Boolean = true) : this(
-        handler,
-        if (canBeDestroy) Ownership.Owned else Ownership.Borrowed,
-    )
-
-    @Deprecated("Ownership is now explicit: use Texture.wrapOwned or Texture.wrapBorrowed.")
-    val canBeDestroy: Boolean
-        get() = ownership == Ownership.Owned
 
     override var label: String
         get() = handler.label
