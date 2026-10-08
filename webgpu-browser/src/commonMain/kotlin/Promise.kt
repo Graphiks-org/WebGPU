@@ -28,3 +28,25 @@ internal suspend fun <T : JsAny?> Promise<T>.await(): T =
             },
         )
     }
+
+/**
+ * Awaits the promise like [await], but releases the resolved value when the delivery is cancelled:
+ * the value was produced by the backend, yet the calling coroutine was cancelled before it could
+ * take ownership of it. [releaseUndelivered] runs exactly once for such an undelivered value and
+ * never for a value that was actually delivered to the caller.
+ */
+internal suspend fun <T : JsAny?> Promise<T>.await(releaseUndelivered: (T) -> Unit): T =
+    suspendCancellableCoroutine { continuation ->
+        then(
+            onFulfilled = { value ->
+                continuation.resume(value) { _, undelivered, _ ->
+                    releaseUndelivered(undelivered)
+                }
+                null
+            },
+            onRejected = { error ->
+                continuation.resumeWithError(error)
+                null
+            },
+        )
+    }

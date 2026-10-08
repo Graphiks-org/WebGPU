@@ -53,6 +53,21 @@ private fun MapperContext.loadBitFlagEnums() {
                             .initializer("setOf(${bitflag.entries.joinToString { it.name.convertToKotlinClassName() }})")
                             .build()
                     )
+                    .addFunction(
+                        FunSpec.builder("fromBits")
+                            .addParameter("value", ULong::class)
+                            .returns(className)
+                            .addCode("return ${className.simpleName}(value)")
+                            .build()
+                    )
+                    .build()
+            )
+            .addFunction(
+                FunSpec.builder("contains")
+                    .addModifiers(KModifier.OPERATOR)
+                    .addParameter("other", className)
+                    .returns(Boolean::class)
+                    .addCode("return (value and other.value) == other.value")
                     .build()
             )
             .addFunction(

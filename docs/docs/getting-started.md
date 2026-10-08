@@ -60,6 +60,59 @@ The canvas helpers (`getCanvasSurface`, `SurfaceConfiguration`) also live in
 `(canvas as HTMLCanvasElement).getCanvasSurface()`). `webgpu-browser` does not bring a DOM wrapper
 library transitively, so add one (for example `kotlin-browser`) when your code needs DOM types.
 
+## Interop with the browser backend
+
+Browser wrappers expose their raw handle as `handler` for interop. Calling operations on the
+handle directly can invalidate the wrapper's contract (ownership and close-once semantics), so
+prefer the wrapper's own API.
+
+Texture ownership is explicit. `Texture.wrapOwned(handler)` takes over the destruction of the
+handle; `Texture.wrapBorrowed(handler)` wraps a texture owned by someone else (for example the
+canvas of a `CanvasSurface`) and never destroys it. Textures from `device.createTexture` are
+owned; textures from `CanvasSurface.getCurrentTexture` are borrowed. `CanvasSurface` is
+`AutoCloseable`: `close()` unconfigures the canvas context and does not close the device passed
+to `configure`.
+
+```kotlin
+import org.graphiks.webgpu.browser.Texture
+
+// Owned: closing the wrapper destroys the texture.
+val owned = Texture.wrapOwned(device.createTexture(descriptor).let { it as org.graphiks.webgpu.browser.Texture }.handler)
+
+// Borrowed: closing the wrapper leaves the canvas texture alone.
+val borrowed = Texture.wrapBorrowed(surface.getCurrentTexture().texture.let { it as org.graphiks.webgpu.browser.Texture }.handler)
+```
+
+## Map a buffer with a scoped range
+
+`GPUBuffer.withMappedRange` maps a range, runs a non-suspending block with the borrowed view and
+unmaps in a `finally`, so the buffer is back to `Unmapped` even when the block throws:
+
+```kotlin
+import org.graphiks.webgpu.GPUBufferUsage
+import org.graphiks.webgpu.GPUDevice
+import org.graphiks.webgpu.GPUMapMode
+import org.graphiks.webgpu.descriptors.BufferDescriptor
+import org.graphiks.webgpu.withMappedRange
+
+suspend fun writeExample(device: GPUDevice) {
+    val buffer = device.createBuffer(
+        BufferDescriptor(size = 16uL, usage = GPUBufferUsage.MapWrite or GPUBufferUsage.CopySrc),
+    )
+    buffer.use {
+        it.withMappedRange(GPUMapMode.Write) { view ->
+            view.setUInts(0uL, uintArrayOf(1u, 2u, 3u, 4u))
+        }
+    }
+}
+```
+
+The view passed to the block is borrowed: it is invalidated by the `unmap()` the helper performs
+and must not be retained or returned. Resources created by a device are owned by the caller:
+`close()` destroys them (a native backend also releases its owned reference), and closing an
+already closed resource does not release the same reference twice. A texture obtained from a
+canvas context is borrowed: closing its wrapper does not destroy the canvas-owned texture.
+
 ## Use a portable type
 
 ```kotlin

@@ -149,4 +149,9 @@ enum class AcidCaseId(val id: String) {
     FeaturesCompressedBc("features.compressed-bc"),
     FeaturesSubgroups("features.subgroups"),
     TexturesTransientUsage("texture.transient-usage"),
+    RenderSparseColorAttachments("render.sparse-color-attachments"),
+    ErrorsDeviceLost("errors.device-lost"),
+    BuffersMapCancelRemap("buffers.map-cancel-remap"),
+    BuffersMappedRangeScope("buffers.mapped-range-scope"),
+    BuffersUsageMaskRoundTrip("buffers.usage-mask-round-trip"),
 }

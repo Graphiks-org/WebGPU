@@ -200,7 +200,7 @@ public abstract interface class org/graphiks/webgpu/GPUBuffer : java/lang/AutoCl
 	public abstract fun getMappedRange-y8-82ps (JLkotlin/ULong;)Lorg/graphiks/webgpu/ArrayBuffer;
 	public static synthetic fun getMappedRange-y8-82ps$default (Lorg/graphiks/webgpu/GPUBuffer;JLkotlin/ULong;ILjava/lang/Object;)Lorg/graphiks/webgpu/ArrayBuffer;
 	public abstract fun getSize-s-VKNKU ()J
-	public abstract fun getUsage ()Ljava/util/Set;
+	public abstract fun getUsage-582ih68 ()J
 	public abstract fun mapAsync-fYWVpIM (JJLkotlin/ULong;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun mapAsync-fYWVpIM$default (Lorg/graphiks/webgpu/GPUBuffer;JJLkotlin/ULong;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun unmap ()V
@@ -263,6 +263,7 @@ public final class org/graphiks/webgpu/GPUBufferMapState$Companion {
 public final class org/graphiks/webgpu/GPUBufferUsage {
 	public static final field Companion Lorg/graphiks/webgpu/GPUBufferUsage$Companion;
 	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUBufferUsage;
+	public static final fun contains-FrK9SjQ (JJ)Z
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (JLjava/lang/Object;)Z
 	public static final fun equals-impl0 (JJ)Z
@@ -277,6 +278,7 @@ public final class org/graphiks/webgpu/GPUBufferUsage {
 }
 
 public final class org/graphiks/webgpu/GPUBufferUsage$Companion {
+	public final fun fromBits-YdQ286s (J)J
 	public final fun getCopyDst-582ih68 ()J
 	public final fun getCopySrc-582ih68 ()J
 	public final fun getEntries ()Ljava/util/Set;
@@ -307,6 +309,7 @@ public abstract interface class org/graphiks/webgpu/GPUColorTargetState {
 public final class org/graphiks/webgpu/GPUColorWrite {
 	public static final field Companion Lorg/graphiks/webgpu/GPUColorWrite$Companion;
 	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUColorWrite;
+	public static final fun contains-HfGDjjI (JJ)Z
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (JLjava/lang/Object;)Z
 	public static final fun equals-impl0 (JJ)Z
@@ -321,6 +324,7 @@ public final class org/graphiks/webgpu/GPUColorWrite {
 }
 
 public final class org/graphiks/webgpu/GPUColorWrite$Companion {
+	public final fun fromBits-duVof0U (J)J
 	public final fun getAll-JI3ISog ()J
 	public final fun getAlpha-JI3ISog ()J
 	public final fun getBlue-JI3ISog ()J
@@ -477,6 +481,7 @@ public abstract interface class org/graphiks/webgpu/GPUDepthStencilState {
 }
 
 public abstract interface class org/graphiks/webgpu/GPUDevice : java/lang/AutoCloseable, org/graphiks/webgpu/GPUObjectBase {
+	public abstract fun awaitLost-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun createBindGroup (Lorg/graphiks/webgpu/GPUBindGroupDescriptor;)Lorg/graphiks/webgpu/GPUBindGroup;
 	public abstract fun createBindGroupLayout (Lorg/graphiks/webgpu/GPUBindGroupLayoutDescriptor;)Lorg/graphiks/webgpu/GPUBindGroupLayout;
 	public abstract fun createBuffer (Lorg/graphiks/webgpu/GPUBufferDescriptor;)Lorg/graphiks/webgpu/GPUBuffer;
@@ -510,7 +515,7 @@ public abstract interface class org/graphiks/webgpu/GPUDeviceDescriptor : org/gr
 	public abstract fun getDefaultQueue ()Lorg/graphiks/webgpu/GPUQueueDescriptor;
 	public abstract fun getOnUncapturedError ()Lorg/graphiks/webgpu/GPUUncapturedErrorCallback;
 	public abstract fun getRequiredFeatures ()Ljava/util/List;
-	public abstract fun getRequiredLimits ()Lorg/graphiks/webgpu/GPUSupportedLimits;
+	public abstract fun getRequiredLimits ()Lorg/graphiks/webgpu/GPURequiredLimits;
 }
 
 public abstract interface class org/graphiks/webgpu/GPUDeviceLostInfo {
@@ -659,6 +664,7 @@ public final class org/graphiks/webgpu/GPULoadOp$Companion {
 public final class org/graphiks/webgpu/GPUMapMode {
 	public static final field Companion Lorg/graphiks/webgpu/GPUMapMode$Companion;
 	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUMapMode;
+	public static final fun contains-qj5KMus (JJ)Z
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (JLjava/lang/Object;)Z
 	public static final fun equals-impl0 (JJ)Z
@@ -673,6 +679,7 @@ public final class org/graphiks/webgpu/GPUMapMode {
 }
 
 public final class org/graphiks/webgpu/GPUMapMode$Companion {
+	public final fun fromBits-qi9v9is (J)J
 	public final fun getEntries ()Ljava/util/Set;
 	public final fun getNone-TPjGWGg ()J
 	public final fun getRead-TPjGWGg ()J
@@ -933,6 +940,45 @@ public abstract interface class org/graphiks/webgpu/GPURequestAdapterOptions {
 	public abstract fun getXrCompatible ()Z
 }
 
+public abstract interface class org/graphiks/webgpu/GPURequiredLimits {
+	public abstract fun getMaxBindGroups-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxBindGroupsPlusVertexBuffers-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxBindingsPerBindGroup-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxBufferSize-6VbMDqA ()Lkotlin/ULong;
+	public abstract fun getMaxColorAttachmentBytesPerSample-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxColorAttachments-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxComputeInvocationsPerWorkgroup-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxComputeWorkgroupSizeX-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxComputeWorkgroupSizeY-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxComputeWorkgroupSizeZ-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxComputeWorkgroupStorageSize-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxComputeWorkgroupsPerDimension-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxDynamicStorageBuffersPerPipelineLayout-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxDynamicUniformBuffersPerPipelineLayout-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxImmediateSize-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxInterStageShaderVariables-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxSampledTexturesPerShaderStage-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxSamplersPerShaderStage-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxStorageBufferBindingSize-6VbMDqA ()Lkotlin/ULong;
+	public abstract fun getMaxStorageBuffersInFragmentStage-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxStorageBuffersInVertexStage-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxStorageBuffersPerShaderStage-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxStorageTexturesInFragmentStage-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxStorageTexturesInVertexStage-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxStorageTexturesPerShaderStage-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxTextureArrayLayers-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxTextureDimension1D-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxTextureDimension2D-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxTextureDimension3D-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxUniformBufferBindingSize-6VbMDqA ()Lkotlin/ULong;
+	public abstract fun getMaxUniformBuffersPerShaderStage-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxVertexAttributes-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxVertexBufferArrayStride-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMaxVertexBuffers-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMinStorageBufferOffsetAlignment-0hXNFcg ()Lkotlin/UInt;
+	public abstract fun getMinUniformBufferOffsetAlignment-0hXNFcg ()Lkotlin/UInt;
+}
+
 public abstract interface class org/graphiks/webgpu/GPUSampler : java/lang/AutoCloseable, org/graphiks/webgpu/GPUBindingResource, org/graphiks/webgpu/GPUObjectBase {
 }
 
@@ -986,6 +1032,7 @@ public abstract interface class org/graphiks/webgpu/GPUShaderModuleDescriptor : 
 public final class org/graphiks/webgpu/GPUShaderStage {
 	public static final field Companion Lorg/graphiks/webgpu/GPUShaderStage$Companion;
 	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUShaderStage;
+	public static final fun contains-R8HnQ8g (JJ)Z
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (JLjava/lang/Object;)Z
 	public static final fun equals-impl0 (JJ)Z
@@ -1000,6 +1047,7 @@ public final class org/graphiks/webgpu/GPUShaderStage {
 }
 
 public final class org/graphiks/webgpu/GPUShaderStage$Companion {
+	public final fun fromBits-tCbCtTg (J)J
 	public final fun getCompute--NbGva0 ()J
 	public final fun getEntries ()Ljava/util/Set;
 	public final fun getFragment--NbGva0 ()J
@@ -1135,7 +1183,7 @@ public abstract interface class org/graphiks/webgpu/GPUTexture : java/lang/AutoC
 	public abstract fun getHeight-pVg5ArA ()I
 	public abstract fun getMipLevelCount-pVg5ArA ()I
 	public abstract fun getSampleCount-pVg5ArA ()I
-	public abstract fun getUsage ()Ljava/util/Set;
+	public abstract fun getUsage-XIm6oF0 ()J
 	public abstract fun getWidth-pVg5ArA ()I
 }
 
@@ -1359,6 +1407,7 @@ public final class org/graphiks/webgpu/GPUTextureSwizzleSource : java/lang/Enum 
 public final class org/graphiks/webgpu/GPUTextureUsage {
 	public static final field Companion Lorg/graphiks/webgpu/GPUTextureUsage$Companion;
 	public static final synthetic fun box-impl (J)Lorg/graphiks/webgpu/GPUTextureUsage;
+	public static final fun contains-kFebwVA (JJ)Z
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (JLjava/lang/Object;)Z
 	public static final fun equals-impl0 (JJ)Z
@@ -1373,6 +1422,7 @@ public final class org/graphiks/webgpu/GPUTextureUsage {
 }
 
 public final class org/graphiks/webgpu/GPUTextureUsage$Companion {
+	public final fun fromBits-HGf7ZgY (J)J
 	public final fun getCopyDst-XIm6oF0 ()J
 	public final fun getCopySrc-XIm6oF0 ()J
 	public final fun getEntries ()Ljava/util/Set;
@@ -1583,5 +1633,10 @@ public final class org/graphiks/webgpu/JvmArrayBuffer : org/graphiks/webgpu/Arra
 	public fun toUShortArray-amswpOA ()[S
 	public static fun toUShortArray-amswpOA (Ljava/lang/foreign/MemorySegment;)[S
 	public final synthetic fun unbox-impl ()Ljava/lang/foreign/MemorySegment;
+}
+
+public final class org/graphiks/webgpu/MappedRangeKt {
+	public static final fun withMappedRange-LCfpyFs (Lorg/graphiks/webgpu/GPUBuffer;JJLkotlin/ULong;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withMappedRange-LCfpyFs$default (Lorg/graphiks/webgpu/GPUBuffer;JJLkotlin/ULong;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 

@@ -12,8 +12,22 @@ import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.toInt
 import kotlin.toUInt
 
+/**
+ * A WebGPU texture wrapper with an explicit ownership contract.
+ *
+ * Use [wrapOwned] for a texture this wrapper is responsible for destroying, and [wrapBorrowed]
+ * for a texture owned by someone else (a canvas context, an imported handle): closing a borrowed
+ * wrapper never destroys the underlying texture.
+ */
 @OptIn(ExperimentalWasmJsInterop::class)
-class Texture(val handler: WGPUTexture, val canBeDestroy: Boolean = true) : GPUTexture {
+class Texture private constructor(
+    /** Interop escape hatch: the raw WebGPU handle. Calling operations on it directly can
+     *  invalidate the wrapper's contract (ownership and close-once semantics). */
+    val handler: WGPUTexture,
+    private val ownership: Ownership,
+) : GPUTexture {
+
+    private enum class Ownership { Owned, Borrowed }
 
     override var label: String
         get() = handler.label
@@ -32,8 +46,8 @@ class Texture(val handler: WGPUTexture, val canBeDestroy: Boolean = true) : GPUT
         get() = GPUTextureDimension.of(handler.dimension) ?: error("unsupported texture dimension ${handler.dimension}")
     override val format: GPUTextureFormat
         get() = GPUTextureFormat.of(handler.format) ?: error("unsupported texture format ${handler.format}")
-    override val usage: Set<GPUTextureUsage>
-        get() = GPUTextureUsage.entries.filter { (it.value and handler.usage.toULong()) != 0uL }.toSet()
+    override val usage: GPUTextureUsage
+        get() = GPUTextureUsage.fromBits(handler.usage.toULong())
 
     override fun createView(descriptor: GPUTextureViewDescriptor?): GPUTextureView {
         return TextureView(
@@ -44,8 +58,28 @@ class Texture(val handler: WGPUTexture, val canBeDestroy: Boolean = true) : GPUT
         )
     }
 
+    private var closed = false
+
     override fun close() {
+        // A repeated close must not release the same owned reference twice.
+        if (closed) return
+        closed = true
         // On firefox, canvas textures throw an exception when calling destroy
-        if (canBeDestroy) handler.destroy()
+        if (ownership == Ownership.Owned) handler.destroy()
+    }
+
+    companion object {
+        /**
+         * Wraps a texture whose destruction is transferred to the wrapper: [Texture.close]
+         * destroys the handle. No new texture is created.
+         */
+        fun wrapOwned(handler: WGPUTexture): Texture = Texture(handler, Ownership.Owned)
+
+        /**
+         * Wraps a texture owned by someone else (for example the canvas of a
+         * [CanvasSurface]): [Texture.close] only releases the wrapper, never the handle. The
+         * caller must not rely on the wrapper to keep the source resource alive.
+         */
+        fun wrapBorrowed(handler: WGPUTexture): Texture = Texture(handler, Ownership.Borrowed)
     }
 }

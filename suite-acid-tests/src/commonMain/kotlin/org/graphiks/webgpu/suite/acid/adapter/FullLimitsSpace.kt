@@ -4,6 +4,7 @@ import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.GPUFeatureName
 import org.graphiks.webgpu.GPUSupportedLimits
 import org.graphiks.webgpu.descriptors.DeviceDescriptor
+import org.graphiks.webgpu.descriptors.RequiredLimits
 import org.graphiks.webgpu.suite.AcidCaseId
 import org.graphiks.webgpu.suite.AcidContext
 import org.graphiks.webgpu.suite.AcidFamily
@@ -33,6 +34,7 @@ import kotlin.test.assertTrue
         ApiSymbols.GPUSupportedLimits_maxTextureDimension2D,
         ApiSymbols.GPUSupportedLimits_maxColorAttachments,
         ApiSymbols.GPUSupportedLimits_maxComputeWorkgroupsPerDimension,
+        ApiSymbols.GPURequiredLimits,
         ApiSymbols.GPUDeviceDescriptor_requiredLimits,
         ApiSymbols.GPUDevice_limits,
         ApiSymbols.GPUDevice_features,
@@ -44,7 +46,7 @@ import kotlin.test.assertTrue
 suspend fun fullLimitsSpace(context: AcidContext) {
     val adapter = context.requestAdapter(null).getOrThrow()
     try {
-        val requested = object : GPUSupportedLimits by adapter.limits {}
+        val requested = adapter.limits.asExplicitRequest()
         adapter.requestDevice(DeviceDescriptor(requiredLimits = requested)).getOrThrow().use { device ->
             assertTrue(
                 GPUFeatureName.CoreFeaturesAndLimits in device.features,
@@ -94,3 +96,43 @@ suspend fun fullLimitsSpace(context: AcidContext) {
         adapter.close()
     }
 }
+
+/** Requests every limit of the contract explicitly, at the adapter's own value for each. */
+private fun GPUSupportedLimits.asExplicitRequest(): RequiredLimits = RequiredLimits(
+    maxTextureDimension1D = maxTextureDimension1D,
+    maxTextureDimension2D = maxTextureDimension2D,
+    maxTextureDimension3D = maxTextureDimension3D,
+    maxTextureArrayLayers = maxTextureArrayLayers,
+    maxBindGroups = maxBindGroups,
+    maxBindGroupsPlusVertexBuffers = maxBindGroupsPlusVertexBuffers,
+    maxImmediateSize = maxImmediateSize,
+    maxBindingsPerBindGroup = maxBindingsPerBindGroup,
+    maxDynamicUniformBuffersPerPipelineLayout = maxDynamicUniformBuffersPerPipelineLayout,
+    maxDynamicStorageBuffersPerPipelineLayout = maxDynamicStorageBuffersPerPipelineLayout,
+    maxSampledTexturesPerShaderStage = maxSampledTexturesPerShaderStage,
+    maxSamplersPerShaderStage = maxSamplersPerShaderStage,
+    maxStorageBuffersPerShaderStage = maxStorageBuffersPerShaderStage,
+    maxStorageBuffersInVertexStage = maxStorageBuffersInVertexStage,
+    maxStorageBuffersInFragmentStage = maxStorageBuffersInFragmentStage,
+    maxStorageTexturesPerShaderStage = maxStorageTexturesPerShaderStage,
+    maxStorageTexturesInVertexStage = maxStorageTexturesInVertexStage,
+    maxStorageTexturesInFragmentStage = maxStorageTexturesInFragmentStage,
+    maxUniformBuffersPerShaderStage = maxUniformBuffersPerShaderStage,
+    maxUniformBufferBindingSize = maxUniformBufferBindingSize,
+    maxStorageBufferBindingSize = maxStorageBufferBindingSize,
+    minUniformBufferOffsetAlignment = minUniformBufferOffsetAlignment,
+    minStorageBufferOffsetAlignment = minStorageBufferOffsetAlignment,
+    maxVertexBuffers = maxVertexBuffers,
+    maxBufferSize = maxBufferSize,
+    maxVertexAttributes = maxVertexAttributes,
+    maxVertexBufferArrayStride = maxVertexBufferArrayStride,
+    maxInterStageShaderVariables = maxInterStageShaderVariables,
+    maxColorAttachments = maxColorAttachments,
+    maxColorAttachmentBytesPerSample = maxColorAttachmentBytesPerSample,
+    maxComputeWorkgroupStorageSize = maxComputeWorkgroupStorageSize,
+    maxComputeInvocationsPerWorkgroup = maxComputeInvocationsPerWorkgroup,
+    maxComputeWorkgroupSizeX = maxComputeWorkgroupSizeX,
+    maxComputeWorkgroupSizeY = maxComputeWorkgroupSizeY,
+    maxComputeWorkgroupSizeZ = maxComputeWorkgroupSizeZ,
+    maxComputeWorkgroupsPerDimension = maxComputeWorkgroupsPerDimension,
+)

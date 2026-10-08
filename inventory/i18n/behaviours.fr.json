@@ -16,6 +16,26 @@
     "types de données/descripteurs/flags/swizzle": "Types de données, descripteurs, flags et swizzle"
   },
   "cases": {
+    "buffers.map-cancel-remap": {
+      "title": "Remapper après annulation d’un mapping en attente",
+      "expectation": "Annuler un mapping démarré libère le buffer et permet de le remapper immédiatement, d’écrire puis de relire les données."
+    },
+    "buffers.mapped-range-scope": {
+      "title": "Libérer une plage mappée à portée limitée",
+      "expectation": "withMappedRange libère le mapping à la sortie du bloc et les octets écrits peuvent être relus."
+    },
+    "buffers.usage-mask-round-trip": {
+      "title": "Relire le masque typé d’usage d’un buffer",
+      "expectation": "Le masque d’usage du buffer conserve les flags demandés à la création."
+    },
+    "errors.device-lost": {
+      "title": "Observer la perte d’un device après destruction",
+      "expectation": "Les observateurs avant et après la fermeture d’un device dédié reçoivent la raison de destruction."
+    },
+    "render.sparse-color-attachments": {
+      "title": "Dessiner avec un emplacement de couleur vide",
+      "expectation": "Un emplacement null avant un attachement de couleur actif conserve son indice et le pixel attendu est rendu."
+    },
     "buffers.mapped-at-creation": {
       "title": "Écrire le contenu initial d'un buffer",
       "expectation": "Un buffer créé mappé expose immédiatement sa plage complète et redevient non mappé après unmap."
