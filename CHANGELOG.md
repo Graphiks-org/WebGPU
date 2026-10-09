@@ -4,6 +4,10 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ## [Unreleased]
 
+### Fixed
+
+- Android `ArrayBuffer` typed factories and views now use native byte order for GPU data; borrowed native-memory bulk reads and writes no longer depend on HotSpot-only `Unsafe` fields or methods unavailable on ART.
+
 ### Added
 
 - Public API contract rework documented in `docs/docs/public-api-contract.md` (and its French twin): nullable `sequence<T?>` slots keep their element nullability end to end; `GPUDeviceDescriptor.requiredLimits` becomes `GPURequiredLimits?` with a partial `RequiredLimits` descriptor; `GPUDevice.awaitLost()` exposes a cancellable device-loss observation; `GPUBuffer.usage`/`GPUTexture.usage` return typed masks with `fromBits` and `contains`; `GPUBuffer.withMappedRange` scopes a mapping; browser texture ownership is explicit (`Texture.wrapOwned`/`Texture.wrapBorrowed`, `CanvasSurface : AutoCloseable`); cancelled GPU acquisitions are cleaned up deterministically. The signature breaks are intentional and are not binary- or source-compatible with the previous contract.
