@@ -1,7 +1,7 @@
 # Démo réaction-diffusion — spécification
 
 Date : 2026-10-09
-Statut : conception conversationnelle approuvée ; spécification écrite à relire.
+Statut : spécification écrite approuvée par l'utilisateur ; plan rédigé, à relire.
 
 ## Intention et périmètre
 
@@ -216,6 +216,6 @@ d'un redimensionnement desktop ; vérifier les événements tactiles ou pointer 
 - [x] Conception conversationnelle approuvée.
 - [x] Spécification écrite.
 - [x] Auto-relecture : périmètre, cohérence, décisions numériques et rapports précisés.
-- [ ] Spécification écrite relue et approuvée par l'utilisateur.
-- [ ] Plan d'implémentation rédigé après cette approbation.
+- [x] Spécification écrite relue et approuvée par l'utilisateur.
+- [x] Plan d'implémentation rédigé après cette approbation.
 - [ ] Plan relu et méthode d'exécution choisie.
