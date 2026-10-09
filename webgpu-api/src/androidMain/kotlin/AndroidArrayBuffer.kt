@@ -3,6 +3,7 @@
 package org.graphiks.webgpu
 
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 /**
  * An Android-specific implementation of the `ArrayBuffer` interface.
@@ -22,6 +23,7 @@ import java.nio.ByteBuffer
 value class AndroidArrayBuffer internal constructor(val buffer: ByteBuffer): ArrayBuffer {
     init {
         if (buffer.isDirect.not()) error("ByteBuffer must be direct")
+        buffer.order(ByteOrder.nativeOrder())
     }
 
     override val size: ULong
@@ -37,25 +39,25 @@ value class AndroidArrayBuffer internal constructor(val buffer: ByteBuffer): Arr
 
     override fun toShortArray(): ShortArray {
         val array = ShortArray(checkedArrayLength(size, Short.SIZE_BYTES))
-        buffer.duplicate().asShortBuffer().get(array)
+        buffer.duplicate().order(ByteOrder.nativeOrder()).asShortBuffer().get(array)
         return array
     }
 
     override fun toIntArray(): IntArray {
         val array = IntArray(checkedArrayLength(size, Int.SIZE_BYTES))
-        buffer.duplicate().asIntBuffer().get(array)
+        buffer.duplicate().order(ByteOrder.nativeOrder()).asIntBuffer().get(array)
         return array
     }
 
     override fun toFloatArray(): FloatArray {
         val array = FloatArray(checkedArrayLength(size, Float.SIZE_BYTES))
-        buffer.duplicate().asFloatBuffer().get(array)
+        buffer.duplicate().order(ByteOrder.nativeOrder()).asFloatBuffer().get(array)
         return array
     }
 
     override fun toDoubleArray(): DoubleArray {
         val array = DoubleArray(checkedArrayLength(size, Double.SIZE_BYTES))
-        buffer.duplicate().asDoubleBuffer().get(array)
+        buffer.duplicate().order(ByteOrder.nativeOrder()).asDoubleBuffer().get(array)
         return array
     }
 
@@ -149,35 +151,35 @@ value class AndroidArrayBuffer internal constructor(val buffer: ByteBuffer): Arr
 
     override fun setBytes(offset: ULong, array: ByteArray) {
         if (checkedBulkBytes(size, offset, array.size, Byte.SIZE_BYTES) == 0uL) return
-        val duplicate = buffer.duplicate()
+        val duplicate = buffer.duplicate().order(ByteOrder.nativeOrder())
         duplicate.position(offset.toInt())
         duplicate.put(array)
     }
 
     override fun setShorts(offset: ULong, array: ShortArray) {
         if (checkedBulkBytes(size, offset, array.size, Short.SIZE_BYTES) == 0uL) return
-        val duplicate = buffer.duplicate()
+        val duplicate = buffer.duplicate().order(ByteOrder.nativeOrder())
         duplicate.position(offset.toInt())
         duplicate.asShortBuffer().put(array)
     }
 
     override fun setInts(offset: ULong, array: IntArray) {
         if (checkedBulkBytes(size, offset, array.size, Int.SIZE_BYTES) == 0uL) return
-        val duplicate = buffer.duplicate()
+        val duplicate = buffer.duplicate().order(ByteOrder.nativeOrder())
         duplicate.position(offset.toInt())
         duplicate.asIntBuffer().put(array)
     }
 
     override fun setFloats(offset: ULong, array: FloatArray) {
         if (checkedBulkBytes(size, offset, array.size, Float.SIZE_BYTES) == 0uL) return
-        val duplicate = buffer.duplicate()
+        val duplicate = buffer.duplicate().order(ByteOrder.nativeOrder())
         duplicate.position(offset.toInt())
         duplicate.asFloatBuffer().put(array)
     }
 
     override fun setDoubles(offset: ULong, array: DoubleArray) {
         if (checkedBulkBytes(size, offset, array.size, Double.SIZE_BYTES) == 0uL) return
-        val duplicate = buffer.duplicate()
+        val duplicate = buffer.duplicate().order(ByteOrder.nativeOrder())
         duplicate.position(offset.toInt())
         duplicate.asDoubleBuffer().put(array)
     }
