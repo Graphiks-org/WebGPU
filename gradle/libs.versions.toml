@@ -2,7 +2,7 @@
 jsoup = "1.23.2"
 kotlinx-serialization-json = "1.11.0"
 ktor = "3.6.0"
-webidl-util = "0.10.5"
+webidl-util = "0.11.0"
 wgpu4k-native = "v29.0.0-SNAPSHOT"
 kaml = "0.104.0"
 kotlin = "2.4.20"
