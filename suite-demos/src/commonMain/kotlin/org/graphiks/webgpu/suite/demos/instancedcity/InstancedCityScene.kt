@@ -30,6 +30,14 @@ class InstancedCityScene private constructor(
     private var depthHeight=0
     private var closed=false
 
+    /** Prepare size-dependent resources before publishing a replacement scene. */
+    fun prepareTarget(width: Int,height: Int) {
+        check(!closed) { "City scene is closed" }
+        require(width>0 && height>0 && width.toUInt()<=device.limits.maxTextureDimension2D &&
+            height.toUInt()<=device.limits.maxTextureDimension2D) { "Invalid city frame dimensions" }
+        ensureDepth(width,height)
+    }
+
     fun encodeFrame(encoder: GPUCommandEncoder,target: GPUTextureView,width: Int,height: Int,
         camera: CityCamera,heightScale: Float=1f,gridStep: Float=2f,display: CityDisplay=CityDisplay.Neon) {
         check(!closed) { "City scene is closed" }
@@ -38,7 +46,7 @@ class InstancedCityScene private constructor(
         require(heightScale.isFinite() && heightScale in .5f..2f) { "Height scale must be in .5..2" }
         require(gridStep.isFinite() && gridStep in 2f..8f) { "Grid pitch must be in 2..8" }
         val matrix=cityViewProjection(camera,width,height)
-        ensureDepth(width,height)
+        prepareTarget(width,height)
         device.queue.writeBuffer(frameBuffer,0uL,ArrayBuffer.of(matrix+floatArrayOf(heightScale,gridStep,display.ordinal.toFloat(),0f)))
         val pass=encoder.beginRenderPass(RenderPassDescriptor(
             colorAttachments=listOf(RenderPassColorAttachment(view=target,loadOp=GPULoadOp.Clear,

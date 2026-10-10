@@ -41,6 +41,7 @@ private class CityPage(private val view: CityView): AutoCloseable {
     private var closed=false
     private var failed=false
     private var replacing=false
+    private var layoutWatch: CityLayoutWatch?=null
 
     fun start() {
         installListeners(); view.message(view.texts.loading)
@@ -75,13 +76,25 @@ private class CityPage(private val view: CityView): AutoCloseable {
     }
     private suspend fun createValidatedScene(d: GPUDevice,format: GPUTextureFormat,density: CityDensity): InstancedCityScene {
         d.pushErrorScope(GPUErrorFilter.Validation)
+        d.pushErrorScope(GPUErrorFilter.OutOfMemory)
         var candidate: InstancedCityScene?=null
         var failure: Throwable?=null
-        try { candidate=InstancedCityScene.create(d,format,initialCityInstances(density)) }
+        try {
+            candidate=InstancedCityScene.create(d,format,initialCityInstances(density))
+            val canvas=view.canvas.unsafeCast<DomCanvas>()
+            val max=d.limits.maxTextureDimension2D.toInt()
+            val width=if(canvas.clientWidth>0) min((canvas.clientWidth*pixelRatio()).toInt(),max).coerceAtLeast(1) else canvas.width.coerceIn(1,max)
+            val height=if(canvas.clientHeight>0) min((canvas.clientHeight*pixelRatio()).toInt(),max).coerceAtLeast(1) else canvas.height.coerceIn(1,max)
+            candidate.prepareTarget(width,height)
+        }
         catch(error: Throwable) { failure=error }
         try {
-            val error=d.popErrorScope().getOrThrow()
-            if(error!=null) { val validation=IllegalStateException(error.message); failure?.addSuppressed(validation) ?: run { failure=validation } }
+            repeat(2) {
+                try {
+                    val error=d.popErrorScope().getOrThrow()
+                    if(error!=null) throw IllegalStateException(error.message)
+                } catch(error: Throwable) { failure?.addSuppressed(error) ?: run { failure=error } }
+            }
             failure?.let { throw it }
             return checkNotNull(candidate)
         } catch(error: Throwable) {
@@ -105,6 +118,7 @@ private class CityPage(private val view: CityView): AutoCloseable {
         }
     }
     private fun installListeners() {
+        layoutWatch=watchCityLayout(view.canvas) { controls.resetClock(); requestFrame() }
         windowRef().listen("pagehide",controller) { close() }
         windowRef().listen("resize",controller) { requestFrame() }
         documentRef().listen("visibilitychange",controller) { controls.resetClock(); requestFrame() }
@@ -175,6 +189,7 @@ private class CityPage(private val view: CityView): AutoCloseable {
     private fun fail(message: String) {
         if(closed || failed) return
         failed=true; ready=false; stopLoop(); releasePointer()
+        layoutWatch?.disconnect(); layoutWatch=null
         view.container.setAttribute("data-ready","false"); view.message(message,true)
         view.reload.hidden=false; view.update(controls,false); scope.cancel()
         closeGpu()?.let { view.message(message+" "+it.message,true) }
@@ -182,6 +197,7 @@ private class CityPage(private val view: CityView): AutoCloseable {
     override fun close() {
         if(closed) return
         closed=true; ready=false; view.container.setAttribute("data-ready","false")
+        layoutWatch?.disconnect(); layoutWatch=null
         stopLoop(); releasePointer(); controller.abort(); scope.cancel(); closeGpu()
     }
     private fun closeGpu(): Throwable? {

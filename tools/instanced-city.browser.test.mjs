@@ -28,7 +28,7 @@ test('city verification reports three genuine GPU checks', { timeout: 150000 }, 
 
 function instrumentCity({ gateDevice = false } = {}) {
   const state = globalThis.__city = { handles: new Set(), destroyedDevices: 0, destroyedBuffers: 0,
-    acquisitions: 0, failAfter: null };
+    acquisitions: 0, failAfter: null, failDepth:false, scopedOom:false };
   const raf = requestAnimationFrame.bind(globalThis), cancel = cancelAnimationFrame.bind(globalThis);
   globalThis.requestAnimationFrame = callback => {
     const handle = raf(time => { state.handles.delete(handle); callback(time); });
@@ -47,6 +47,23 @@ function instrumentCity({ gateDevice = false } = {}) {
       const destroy = device.destroy.bind(device);
       device.destroy = () => { state.destroyedDevices++; destroy(); };
       const createBuffer = device.createBuffer.bind(device);
+      const scopes=[], push=device.pushErrorScope.bind(device), pop=device.popErrorScope.bind(device);
+      device.pushErrorScope = filter => { scopes.push(filter); push(filter); };
+      device.popErrorScope = async () => {
+        const filter=scopes.pop(), error=await pop();
+        if (state.scopedOom && filter === 'out-of-memory') {
+          state.scopedOom=false; return new GPUOutOfMemoryError('fixture scoped allocation failure');
+        }
+        return error;
+      };
+      const createTexture = device.createTexture.bind(device);
+      device.createTexture = (...args) => {
+        if (state.failDepth && args[0].format === 'depth24plus') {
+          state.failDepth = false;
+          throw new Error('fixture depth allocation failed');
+        }
+        return createTexture(...args);
+      };
       device.createBuffer = (...args) => {
         if (state.failAfter !== null && state.failAfter-- === 0) {
           state.failAfter = null; throw new Error('fixture candidate allocation failed');
@@ -190,15 +207,48 @@ test('invisible and detached canvases never acquire surfaces and retain latest c
       await canvas.evaluate((c,[property,value]) => { c.style[property] = value; }, [property,value]);
       await range(page, 'height', 2); assert.equal(await page.evaluate(() => __city.acquisitions), count);
       await canvas.evaluate((c,property) => { c.style[property] = ''; }, property);
-      await page.evaluate(() => dispatchEvent(new Event('resize'))); await settle(page);
+      await settle(page);
       assert.notDeepEqual(await canvas.screenshot(), initial);
     }
     const count = await page.evaluate(() => __city.acquisitions);
     await canvas.evaluate(c => { globalThis.detachedCityCanvas = c; c.remove(); });
     await range(page, 'distance', 100); assert.equal(await page.evaluate(() => __city.acquisitions), count);
-    await page.evaluate(() => { document.querySelector('.city-demo .demo-stage').append(detachedCityCanvas); dispatchEvent(new Event('resize')); });
+    await page.evaluate(() => { document.querySelector('.city-demo .demo-stage').append(detachedCityCanvas); });
     await settle(page); assert.ok(await page.evaluate(() => __city.acquisitions > 0));
     assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
+test('depth preparation failure rejects only the candidate and preserves the working scene', async () => {
+  const {context,page,errors}=await cityPage();
+  try {
+    const canvas=page.locator('#city-canvas'), initial=await canvas.screenshot();
+    const freed=await page.evaluate(() => __city.destroyedBuffers);
+    await page.evaluate(() => { __city.failDepth=true; });
+    await page.locator('#city-density').selectOption('Sparse');
+    await page.locator('#city-status[data-error="true"]').waitFor();
+    assert.equal(await page.locator('[data-ready="true"]').count(), 1);
+    assert.equal(await page.locator('#city-density').inputValue(), 'Dense');
+    assert.equal(await page.locator('#city-height').isEnabled(), true);
+    assert.equal(await page.evaluate(freed => __city.destroyedBuffers-freed,freed),4);
+    assert.equal(await page.evaluate(() => __city.destroyedDevices),0);
+    assert.deepEqual(await canvas.screenshot(),initial);
+    await range(page,'height',2); assert.notDeepEqual(await canvas.screenshot(),initial);
+    assert.deepEqual(errors,[]);
+  } finally { await context.close(); }
+});
+
+test('allocation error scope rejects only the density candidate', async () => {
+  const {context,page,errors}=await cityPage();
+  try {
+    await page.evaluate(() => { __city.scopedOom=true; });
+    await page.locator('#city-density').selectOption('Sparse');
+    await page.locator('#city-status[data-error="true"]').waitFor();
+    assert.equal(await page.locator('[data-ready="true"]').count(),1);
+    assert.equal(await page.locator('#city-density').inputValue(),'Dense');
+    assert.equal(await page.evaluate(() => __city.scopedOom),false,'Candidate consumes local OutOfMemory scope');
+    assert.equal(await page.evaluate(() => __city.destroyedDevices),0);
+    assert.deepEqual(errors,[]);
   } finally { await context.close(); }
 });
 
