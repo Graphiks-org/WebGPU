@@ -9,6 +9,7 @@ import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.graphiks.webgpu.browser.requestAdapter
+import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.suite.acid.SuiteBuildIdentity
 import org.graphiks.webgpu.suite.acid.foundationCases
 import org.graphiks.webgpu.suite.benchmarks.BenchmarkProfile
@@ -22,6 +23,10 @@ import org.graphiks.webgpu.suite.browser.demos.particleGpuResults
 import org.graphiks.webgpu.suite.browser.demos.queryParameter
 import org.graphiks.webgpu.suite.browser.demos.selectedLocale
 import org.graphiks.webgpu.suite.browser.demos.showParticlesPage
+import org.graphiks.webgpu.suite.browser.demos.ReactionCheckIds
+import org.graphiks.webgpu.suite.browser.demos.reactionDiffusionGpuResults
+import org.graphiks.webgpu.suite.browser.demos.showReactionDiffusionPage
+import org.graphiks.webgpu.suite.browser.demos.showDemoNavigation
 
 /**
  * The page has explicit routes. Without parameters it runs the foundation validation suite and
@@ -50,9 +55,16 @@ fun main() {
             benchmark != null -> routeBenchmark(benchmark)
             demo == null -> runValidation()
             demo == "particles" -> if (queryParameter("verify") == "1") {
-                verifyParticles()
+                verifyDemo(listOf(ComputeRenderReadbackId, BoundsPauseResetId), ::particleGpuResults)
             } else {
+                showDemoNavigation(demo, selectedLocale())
                 showParticlesPage(selectedLocale())
+            }
+            demo == "reaction-diffusion" -> if (queryParameter("verify") == "1") {
+                verifyDemo(ReactionCheckIds, ::reactionDiffusionGpuResults)
+            } else {
+                showDemoNavigation(demo, selectedLocale())
+                showReactionDiffusionPage(selectedLocale())
             }
             else -> showUnknownRoute(demo)
         }
@@ -122,12 +134,12 @@ private fun parseCaseSelection(value: String?): Set<String>? =
     value?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }?.toSet()
 
 /**
- * Runs the two demo GPU checks on their own adapter and device and publishes `graphiksDemoReport`.
+ * Runs the selected demo GPU checks on their own adapter and device and publishes `graphiksDemoReport`.
  *
  * An initialization failure is fatal and reported, never skipped. The whole run is bounded by a real
  * 60-second timeout; the adapter and device are always closed.
  */
-private suspend fun verifyParticles() {
+private suspend fun verifyDemo(ids: List<String>, results: suspend (GPUDevice) -> List<CaseResult>) {
     val locale = selectedLocale()
     val texts = loadValidationTexts(locale)
     if (texts != null) setDocumentLang(locale)
@@ -140,7 +152,7 @@ private suspend fun verifyParticles() {
                     DemoReport(
                         buildCommit = SuiteBuildIdentity.COMMIT,
                         buildVersion = SuiteBuildIdentity.VERSION,
-                        cases = particleGpuResults(device),
+                        cases = results(device),
                     )
                 } finally {
                     device.close()
@@ -150,11 +162,11 @@ private suspend fun verifyParticles() {
             }
         }
     } catch (timeout: TimeoutCancellationException) {
-        failedDemoReport("Timed out after 60 seconds")
+        failedDemoReport(ids, "Timed out after 60 seconds")
     } catch (cancelled: CancellationException) {
         throw cancelled
     } catch (failure: Throwable) {
-        failedDemoReport(failure.stackTraceToString())
+        failedDemoReport(ids, failure.stackTraceToString())
     }
 
     val json = Json.encodeToString(report)
@@ -175,13 +187,10 @@ private suspend fun verifyParticles() {
     }
 }
 
-private fun failedDemoReport(diagnostic: String) = DemoReport(
+private fun failedDemoReport(ids: List<String>, diagnostic: String) = DemoReport(
     buildCommit = SuiteBuildIdentity.COMMIT,
     buildVersion = SuiteBuildIdentity.VERSION,
-    cases = listOf(
-        CaseResult(ComputeRenderReadbackId, "failed", diagnostic),
-        CaseResult(BoundsPauseResetId, "failed", diagnostic),
-    ),
+    cases = ids.map { CaseResult(it, "failed", diagnostic) },
     fatalError = diagnostic,
 )
 
@@ -189,7 +198,7 @@ private fun showUnknownRoute(demo: String) {
     elementById("validation")?.hidden = true
     elementById("demo-root")?.apply {
         hidden = false
-        textContent = "Unknown demo '$demo'. Available demos: particles."
+        textContent = "Unknown demo '$demo'. Available demos: particles, reaction-diffusion."
     }
 }
 

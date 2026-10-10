@@ -46,4 +46,7 @@ kotlin {
         api(project(":suite-core"))
         implementation(project(":webgpu-descriptors"))
     }
+    sourceSets.commonTest.dependencies {
+        implementation(kotlin("test"))
+    }
 }

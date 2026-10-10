@@ -167,6 +167,72 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
   macOS ARM64 via ses tâches normales. Aucune exécution GPU native n’est effectuée dans ce dépôt ;
   cela appartient aux dépôts de bindings consommateurs, comme pour les acid tests.
 
+## Preuves réaction-diffusion (2026-10-10)
+
+- Commandes exécutées :
+
+  ```sh
+  ./gradlew check :suite-core:compileKotlinJvm :suite-demos:compileKotlinJvm :suite-demos:compileKotlinMacosArm64 :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+  node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs tools/demo-reports.test.mjs tools/demos-gallery.browser.test.mjs
+  node --test tools/reaction-diffusion.browser.test.mjs
+  GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/reaction-diffusion.browser.test.mjs
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+  node tools/build-site.mjs
+  ```
+
+- Identité des distributions : `d30d290e3ee1b70ba1d1c658f2e14d5093c1ceed`, version `0.1.0-SNAPSHOT`.
+  Les enveloppes démos et acid concordent avec le baseline embarqué. Les commits de documentation
+  ultérieurs ne réattribuent pas ces rapports à un build plus récent.
+- Environnement : JDK 25.0.1, Gradle 9.8.0, Node local 26.11.0 (la CI reste en Node 22),
+  Playwright 1.63.0, Chromium headless 153.0.8010.12 sur macOS ARM64, backend demandé `swiftshader`.
+  Ce sont des résultats fonctionnels WebGPU logiciel, pas des mesures de GPU physique.
+- `check`, les compilations explicites et les distributions passent (560 tâches actionnables).
+  Tests CPU de la démo : 3/3 sur JVM, JS, Wasm JS et macOS ARM64 ; contrôles/oracle du runner :
+  6/6 par cible navigateur. Les avertissements plugin Kotlin, dépréciations Gradle et taille des
+  bundles webpack restent visibles ; ils ne sont ni supprimés ni assimilés à des échecs de tests.
+- Tests Node outils/galerie : **30/30**, dont les 19 régressions existantes de rapports/comparaison.
+  Le test négatif CLI contrôle une sortie non nulle et une enveloppe d'échec conservée dans un
+  dossier de fixtures temporaire, jamais dans les résultats publiables du dépôt.
+- Tests interactifs : **11/11 sur JS et 11/11 sur Wasm**. Ils exercent pause/un pas/reset,
+  capture souris réelle et toucher, peinture périodique, second pointeur ignoré et annulation,
+  canvas masqué, perte de device, libération d'une acquisition tardive, adapter/textes absents,
+  noms accessibles des curseurs, WGSL complet affiché et panneau sur desktop/mobile.
+- Rapports démos : **5/5 réussis par cible**, sans erreur fatale ni erreur de page. Les trois
+  nouveaux ids comparent le compute à un oracle CPU vérifié indépendamment, lisent les pixels
+  en niveaux de gris et exercent alternances paires/impaires, pause/reset, scène fermée et injection
+  traversant un bord.
+- Régression acid : **151 réussis + 1 non pris en charge sur 152 par cible**, aucun échec.
+  Le cas optionnel `compute.shader-f16` reste indisponible. Le site s'assemble avec les **922 symboles
+  et 160 comportements par locale** du contrat existant ; les démos n'ajoutent pas de couverture acid.
+- Contrôle visuel : chaque préréglage est réinitialisé puis évolue pendant au moins 2000 étapes
+  compute GPU instrumentées. Les captures locales `reaction-coral-2000.png`,
+  `reaction-labyrinth-2000.png` et `reaction-spots-2000.png` montrent anneaux, motifs sinueux reliés
+  et taches séparées. Ces captures exploratoires non versionnées se reproduisent avec
+  `GRAPHIKS_CAPTURE_DIR` ; ce ne sont pas des images de référence exactes. OpenChamber a aussi
+  inspecté desktop/mobile et ouvert le panneau. Ce contrôle a révélé que `display:grid` annulait
+  `hidden` sur la section Validation : le test de visibilité rouge a précédé la règle ciblée
+  `.validation[hidden]`.
+- Aucune exécution GPU native ni sur hôte Linux n'est revendiquée. Tests CPU/compilation native
+  et vérification WebGPU navigateur restent distincts. Aucun benchmark n'a été ajouté ou relancé.
+
+### Revue indépendante et dernière campagne
+
+La revue indépendante n'a relevé aucun défaut critique, mais a identifié une initialisation tardive
+après pagehide pendant le chargement des textes, des champs JSON mal typés et l'acquisition d'une
+texture de surface pour un canvas invisible en CSS. Ces trois défauts ont été reproduits par des
+tests rouges puis corrigés dans `5b103e3`. Le collecteur conserve aussi les échecs de validation
+dans le `fatalError` du rapport imbriqué.
+
+Après correction, le check Gradle complet et les distributions passent à nouveau (560 tâches
+actionnables). Les **44 tests Node/outils/galerie/interactions JS** et **13 tests interactifs Wasm**
+passent. Les deux collecteurs démos rapportent toujours **5/5**, les deux collecteurs acid
+**151 réussis + 1 optionnel indisponible sur 152**, et le site s'assemble. Les rapports régénérés
+identifient le build `5b103e3` (`0.1.0-SNAPSHOT`) et concordent avec leur baseline ; la documentation
+ultérieure ne modifie pas cette attribution. Aucun constat de revue ne reste ouvert.
+
 ## Preuves du rapport lisible
 
 - La route de validation (`run/js|wasm/`) et la route de vérification de la démo rendent une ligne

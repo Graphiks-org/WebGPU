@@ -90,11 +90,83 @@ node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable -
 node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
 ```
 
-`--demo-check` opens `?demo=particles&verify=1`, requires both demo ids to pass and writes
-`build/reports/demos-<target>.json`, separate from the acid-test reports. The gallery page at
-`site/demos/` presents the demo with local launches and links to the scene sources. The demo is an
-illustration, not a benchmark: this increment records no frame rate presented as a measurement, no
-GPU time and no ranking.
+`--demo-check` opens both `?demo=particles&verify=1` and
+`?demo=reaction-diffusion&verify=1` in fresh pages, requires all five ids to pass, and writes
+one aggregated `build/reports/demos-<target>.json`, separate from the acid-test reports.
+Missing routes, invalid JSON, mismatched build identities, missing/duplicate/unexpected ids,
+failed cases and page errors all make the collector exit non-zero; partial real results are
+retained as failures, never fabricated successes. The gallery at `site/demos/` presents both
+demos with local launches and scene source links. Demos are illustrations, not benchmarks:
+no GPU time, frame-rate measurement or ranking is claimed.
+
+## Run the reaction-diffusion demo
+
+Both interactive demo pages have a shared Demo selector at the top. Switching between Particles
+and Reaction-diffusion preserves the locale and JS/Wasm runner path, and reloads the page so the
+outgoing demo releases its GPU resources. Simulation state is not preserved across demos.
+
+- `?demo=reaction-diffusion&lang=en|fr` — interactive Gray–Scott simulation on a fixed 256 × 256
+  grid. Coral, Labyrinth and Spots select feed/kill parameters and reset the same nine seed squares.
+  Mouse or touch paints a six-cell-radius disk of B, with periodic boundaries. Painting also works
+  while paused. Only one pointer and its latest position per frame are consumed; strokes are not
+  interpolated.
+- `?demo=reaction-diffusion&verify=1` — three GPU checks, published in `globalThis.graphiksDemoReport`.
+
+Speed selects 1–16 fixed simulation steps **per frame**, default 8, not physical seconds.
+Pause freezes the reaction; One step advances exactly one iteration and stays paused. Reset
+restores the state but keeps the current parameters and palette. Feed and kill range from 0 to 0.1.
+Ocean, Ember and Grayscale change only the view; Display A/B shows each concentration separately.
+The optional learning panel explains diffusion, reaction, texture ping-pong and the additional
+brush pass, and displays the commented WGSL actually compiled by the scene.
+
+Two RGBA32Float textures hold `[A, B, 0, 1]`. The compute passes read one and write the other,
+then swap. Reading uses `textureLoad` without optional float filtering features. The render pass
+maps the resulting B concentration to a palette. Device loss stops animation, disables GPU controls
+and offers reload; unavailable WebGPU is a visible error, not a CPU fallback.
+
+The combined demo report requires these five ids:
+
+```text
+particles.compute-render-readback
+particles.bounds-pause-reset
+reaction-diffusion.compute-render-readback
+reaction-diffusion.pause-step-reset
+reaction-diffusion.brush-boundaries
+```
+
+Run the CPU/control/oracle and browser regressions with:
+
+```sh
+./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
+node --test tools/demo-reports.test.mjs tools/demos-gallery.browser.test.mjs
+node --test tools/reaction-diffusion.browser.test.mjs
+GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/reaction-diffusion.browser.test.mjs
+```
+
+The last two commands use the distributions built above and software WebGPU flags. To retain
+canvas captures after at least 2000 GPU steps of each preset, set `GRAPHIKS_CAPTURE_DIR` to a local
+output directory. Screenshots are exploratory evidence, not exact cross-backend reference images.
+
+A native binding can use the portable scene without this DOM runner:
+
+```kotlin
+import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionDiffusionScene
+import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionPreset
+
+// device, format and targetView are supplied and owned by the binding.
+ReactionDiffusionScene.create(device, format).use { scene ->
+    device.createCommandEncoder().use { encoder ->
+        scene.encodeFrame(encoder, targetView, width, height, 8, ReactionPreset.Coral.parameters)
+        encoder.finish().use { device.queue.submit(listOf(it)) }
+    }
+}
+```
+
+Submit once after each `encodeFrame`, before encoding another frame with different uniform values.
+Keep the scene alive across animation frames in a real application. `reset()` writes both state
+textures; `encodeStateCopy(encoder, buffer)` copies the current state into a borrowed CopyDst buffer
+of at least 1,048,576 bytes (4096 bytes per row). The scene closes its resources, never the supplied
+device. This repository runs browser GPU checks; native compilation is not native GPU execution.
 
 ## Run the benchmarks
 

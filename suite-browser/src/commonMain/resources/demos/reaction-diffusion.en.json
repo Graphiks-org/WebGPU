@@ -1,0 +1,21 @@
+{
+  "title": "Reaction–diffusion",
+  "description": "Paint living patterns with a Gray–Scott simulation. Compute shaders evolve two substances on a 256 × 256 grid; a separate render pass colors the result.",
+  "paint": "Paint with a mouse or touch to inject substance B. Painting also works while paused.",
+  "pause": "Pause", "resume": "Resume", "step": "One step", "reset": "Reset",
+  "preset": "Pattern", "presetLabels": ["Coral", "Labyrinth", "Spots"],
+  "speed": "Steps per frame (not physical seconds)", "feed": "Feed A", "kill": "Remove B",
+  "palette": "Palette", "paletteLabels": ["Ocean", "Ember", "Grayscale"],
+  "display": "Display", "displayLabels": ["Colors", "Concentration A", "Concentration B"],
+  "source": "Portable scene source code", "loading": "Initializing WebGPU…",
+  "unavailable": "WebGPU is unavailable in this environment.", "failed": "The demo could not continue.",
+  "lost": "The GPU device was lost. Reload the page to restart.", "reload": "Reload",
+  "lesson": "How does it work?",
+  "substances": "Each cell stores concentrations A and B. Both diffuse to neighboring cells. Their reaction consumes A and produces B. The grid connects opposite edges.",
+  "parametersHelp": "Feed replenishes A; kill removes B. The balance creates different patterns. Choosing a preset resets the same nine seeds with new parameters.",
+  "pingPong": "Read texture A → compute → write texture B → swap. Each texture contains both substances. The next pass reads the newly written state; it never reads and writes the same texture.",
+  "brushHelp": "The brush adds a separate compute pass before simulation: it injects B into a six-cell-radius disk, including across an edge. In pause, that pass runs without advancing the reaction.",
+  "colorHelp": "Rendering maps concentration B to a palette without changing the state. Display A or B in grayscale to examine the concentrations independently of color.",
+  "speedHelp": "The simulation uses a fixed numerical step. Speed selects 1–16 steps per frame, not physical seconds; evolution per second depends on browser cadence. Pause and One step let you inspect a single iteration.",
+  "simulationShader": "Simulation — WGSL", "brushShader": "Injection — WGSL", "renderShader": "Rendering — WGSL"
+}

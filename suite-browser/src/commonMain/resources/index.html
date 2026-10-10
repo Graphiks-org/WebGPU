@@ -23,6 +23,13 @@
         .demo-status { min-height: 1.4rem; }
         .demo-status[data-error="true"] { color: #c62828; font-weight: 600; }
         .demo-nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+        #demo-navigation { max-width: 48rem; margin: 0 auto 1rem; }
+        #demo-navigation label { display: inline-flex; align-items: center; gap: 0.5rem; }
+        #demo-navigation select { font: inherit; padding: 0.35rem 0.6rem; }
+        .reaction-demo canvas { aspect-ratio: 1; touch-action: none; }
+        .reaction-demo .demo-controls input { font: inherit; max-width: 100%; }
+        .reaction-demo pre { overflow-x: auto; max-width: 100%; }
+        .reaction-demo details { min-width: 0; }
         .benchmark { max-width: 64rem; margin: 0 auto; display: grid; gap: 1rem; }
         .benchmark h1 { margin: 0; font-size: 1.5rem; }
         .benchmark p { margin: 0; }
@@ -36,6 +43,7 @@
             border: 1px solid #ccc; padding: 0.25rem 0.4rem; text-align: left; vertical-align: top;
         }
         .validation { max-width: 64rem; margin: 0 auto; display: grid; gap: 1rem; }
+        .validation[hidden] { display: none; }
         .validation h1 { margin: 0; font-size: 1.5rem; }
         .validation p { margin: 0; }
         .validation-status { min-height: 1.4rem; }
@@ -64,6 +72,7 @@
         <p id="validation-status" role="status">Running…</p>
         <pre id="result"></pre>
     </section>
+    <nav id="demo-navigation" hidden></nav>
     <main id="demo-root" hidden></main>
     <main id="benchmark-root" hidden></main>
     <script src="suite.js"></script>
