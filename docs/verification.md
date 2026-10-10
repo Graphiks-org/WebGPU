@@ -212,6 +212,20 @@ from the positive timestamp cases (covered by the deterministic index cases), an
 - No native GPU execution or Linux-host execution is claimed. Native CPU tests/compilation are
   distinct from browser WebGPU verification. No benchmark campaign was added or rerun for this demo.
 
+### Final independent review and rerun
+
+The independent review found no critical issues, but identified late initialization after pagehide
+during localization loading, malformed default JSON fields, and surface acquisition while a canvas
+is CSS-invisible. All three were reproduced with failing tests and corrected in `5b103e3`.
+The collector now also retains validation failures in the nested report's `fatalError`.
+
+After these fixes, the same complete Gradle check/distribution build passed again (560 actionable
+tasks). All **44 Node/tooling/gallery/JS interactive tests** and **13 Wasm interactive tests** pass.
+Both demo collectors still report **5/5**, both acid collectors **151 passed + 1 optional unsupported
+of 152**, and site assembly succeeds. Regenerated reports identify build
+`5b103e3` (`0.1.0-SNAPSHOT`) and match their inventory baseline; subsequent documentation does not
+change that attribution. No review findings remain unresolved.
+
 ## Readable report evidence
 
 - The validation route (`run/js|wasm/`) and the demo verification route render a localized (EN/FR,

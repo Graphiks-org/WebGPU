@@ -218,6 +218,21 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
 - Aucune exécution GPU native ni sur hôte Linux n'est revendiquée. Tests CPU/compilation native
   et vérification WebGPU navigateur restent distincts. Aucun benchmark n'a été ajouté ou relancé.
 
+### Revue indépendante et dernière campagne
+
+La revue indépendante n'a relevé aucun défaut critique, mais a identifié une initialisation tardive
+après pagehide pendant le chargement des textes, des champs JSON mal typés et l'acquisition d'une
+texture de surface pour un canvas invisible en CSS. Ces trois défauts ont été reproduits par des
+tests rouges puis corrigés dans `5b103e3`. Le collecteur conserve aussi les échecs de validation
+dans le `fatalError` du rapport imbriqué.
+
+Après correction, le check Gradle complet et les distributions passent à nouveau (560 tâches
+actionnables). Les **44 tests Node/outils/galerie/interactions JS** et **13 tests interactifs Wasm**
+passent. Les deux collecteurs démos rapportent toujours **5/5**, les deux collecteurs acid
+**151 réussis + 1 optionnel indisponible sur 152**, et le site s'assemble. Les rapports régénérés
+identifient le build `5b103e3` (`0.1.0-SNAPSHOT`) et concordent avec leur baseline ; la documentation
+ultérieure ne modifie pas cette attribution. Aucun constat de revue ne reste ouvert.
+
 ## Preuves du rapport lisible
 
 - La route de validation (`run/js|wasm/`) et la route de vérification de la démo rendent une ligne
