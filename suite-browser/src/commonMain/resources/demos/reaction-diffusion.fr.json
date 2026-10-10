@@ -1,0 +1,13 @@
+{
+  "title": "Réaction–diffusion",
+  "description": "Peignez des motifs vivants avec une simulation Gray–Scott. Les compute shaders font évoluer deux substances sur une grille de 256 × 256 ; une passe de rendu séparée colore le résultat.",
+  "paint": "Peignez à la souris ou au toucher pour injecter la substance B. La peinture fonctionne aussi en pause.",
+  "pause": "Pause", "resume": "Reprendre", "step": "Un pas", "reset": "Réinitialiser",
+  "preset": "Motif", "presetLabels": ["Corail", "Labyrinthe", "Taches"],
+  "speed": "Étapes par frame (pas des secondes physiques)", "feed": "Alimentation A", "kill": "Élimination B",
+  "palette": "Palette", "paletteLabels": ["Océan", "Braise", "Niveaux de gris"],
+  "display": "Affichage", "displayLabels": ["Couleurs", "Concentration A", "Concentration B"],
+  "source": "Sources de la scène portable", "loading": "Initialisation de WebGPU…",
+  "unavailable": "WebGPU est indisponible dans cet environnement.", "failed": "La démo ne peut pas continuer.",
+  "lost": "Le périphérique GPU a été perdu. Rechargez la page pour redémarrer.", "reload": "Recharger"
+}

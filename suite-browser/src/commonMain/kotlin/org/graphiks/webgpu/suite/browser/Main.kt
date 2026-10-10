@@ -25,7 +25,7 @@ import org.graphiks.webgpu.suite.browser.demos.selectedLocale
 import org.graphiks.webgpu.suite.browser.demos.showParticlesPage
 import org.graphiks.webgpu.suite.browser.demos.ReactionCheckIds
 import org.graphiks.webgpu.suite.browser.demos.reactionDiffusionGpuResults
-import org.graphiks.webgpu.suite.browser.demos.showDemoFailure
+import org.graphiks.webgpu.suite.browser.demos.showReactionDiffusionPage
 
 /**
  * The page has explicit routes. Without parameters it runs the foundation validation suite and
@@ -61,7 +61,7 @@ fun main() {
             demo == "reaction-diffusion" -> if (queryParameter("verify") == "1") {
                 verifyDemo(ReactionCheckIds, ::reactionDiffusionGpuResults)
             } else {
-                showDemoFailure("The interactive reaction-diffusion page is not available yet.")
+                showReactionDiffusionPage(selectedLocale())
             }
             else -> showUnknownRoute(demo)
         }

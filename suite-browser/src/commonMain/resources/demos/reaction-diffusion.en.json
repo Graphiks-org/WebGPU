@@ -1,0 +1,13 @@
+{
+  "title": "Reaction–diffusion",
+  "description": "Paint living patterns with a Gray–Scott simulation. Compute shaders evolve two substances on a 256 × 256 grid; a separate render pass colors the result.",
+  "paint": "Paint with a mouse or touch to inject substance B. Painting also works while paused.",
+  "pause": "Pause", "resume": "Resume", "step": "One step", "reset": "Reset",
+  "preset": "Pattern", "presetLabels": ["Coral", "Labyrinth", "Spots"],
+  "speed": "Steps per frame (not physical seconds)", "feed": "Feed A", "kill": "Remove B",
+  "palette": "Palette", "paletteLabels": ["Ocean", "Ember", "Grayscale"],
+  "display": "Display", "displayLabels": ["Colors", "Concentration A", "Concentration B"],
+  "source": "Portable scene source code", "loading": "Initializing WebGPU…",
+  "unavailable": "WebGPU is unavailable in this environment.", "failed": "The demo could not continue.",
+  "lost": "The GPU device was lost. Reload the page to restart.", "reload": "Reload"
+}
