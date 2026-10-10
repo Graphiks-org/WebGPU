@@ -50,7 +50,7 @@ internal class CityView(val texts: CityTexts) {
         lesson.appendChild(counts)
         for((label,shader) in listOf(texts.buildingShader to CityBuildingShader,texts.groundShader to CityGroundShader)) {
             lesson.appendChild(createElement("h2").also { it.setText(label) })
-            lesson.appendChild(createElement("pre").also { pre -> pre.appendChild(createElement("code").also { it.setText(shader) }) })
+            lesson.appendChild(createElement("pre").also { pre -> pre.appendChild(cityShaderCode(shader)) })
         }
         container.appendChild(lesson)
         status.setAttribute("id","city-status"); status.setAttribute("role","status"); status.setClass("demo-status")

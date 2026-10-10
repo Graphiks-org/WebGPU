@@ -328,12 +328,46 @@ test('teaching panel shows actual shaders, correct draw counts and fits mobile',
       const n = Math.min(...lines.filter(l=>l.trim()).map(l=>l.match(/^ */)[0].length));
       return lines.map(l=>l.slice(n)).join('\n').trim();
     });
-    assert.deepEqual(await lesson.locator('pre code').allTextContents(), [blocks[0]+'\n'+blocks[1],blocks[0]+'\n'+blocks[2]]);
+    assert.deepEqual(await lesson.locator('pre code').allTextContents(), [blocks[0]+'\n\n'+blocks[1],blocks[0]+'\n\n'+blocks[2]]);
     for (const width of [1440,390]) {
       await page.setViewportSize({width,height:900});
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     }
     assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
+test('city WGSL lesson is spacious and syntax-colored without changing compiled source', async () => {
+  const {context,page,errors}=await cityPage();
+  try {
+    const lesson=page.locator('#city-lesson'); await lesson.locator('summary').click();
+    const code=lesson.locator('pre code').first();
+    for (const kind of ['keyword','type','attribute','number','comment']) {
+      const token=code.locator(`.wgsl-${kind}`).first();
+      assert.ok(await token.count(), `Visible ${kind} highlighting is required`);
+      const colors=await token.evaluate(e => [getComputedStyle(e).color,getComputedStyle(e.parentElement).color]);
+      assert.notEqual(colors[0],colors[1], `${kind} must be visibly colored`);
+    }
+    const metrics=await code.evaluate(e => {
+      const style=getComputedStyle(e), block=getComputedStyle(e.parentElement);
+      return {lineHeight:parseFloat(style.lineHeight),fontSize:parseFloat(style.fontSize),padding:parseFloat(block.paddingLeft)};
+    });
+    assert.ok(metrics.lineHeight/metrics.fontSize >= 1.6);
+    assert.ok(metrics.padding >= 16);
+    for (const text of await lesson.locator('pre code').allTextContents()) {
+      assert.equal(/;\s*\S/m.test(text.split('\n').find(line => /;\s*\S/.test(line)) ?? ''),false,
+        'Statements must not be packed onto a single line');
+      assert.ok(text.includes('}\n\n'), 'Functions and structs must have breathing room');
+    }
+    assert.equal(await lesson.locator('pre img, pre script').count(),0);
+    for (const width of [1440,390]) {
+      await page.setViewportSize({width,height:900});
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),true);
+      await code.evaluate(e => e.parentElement.scrollIntoView({block:'start'}));
+      await mkdir('.openchamber/screenshots', {recursive:true});
+      await page.screenshot({path:`.openchamber/screenshots/city-wgsl-${width}.png`});
+    }
+    assert.deepEqual(errors,[]);
   } finally { await context.close(); }
 });
 
