@@ -45,7 +45,11 @@ val CityBuildingShader = CityFrameBinding + "\n" + """
         let edge = smoothstep(vec2<f32>(0.12), vec2<f32>(0.12) + aa, coord)
             * (vec2<f32>(1.0) - smoothstep(vec2<f32>(0.78) - aa, vec2<f32>(0.78), coord));
         let lit = f32(windowHash(vec2<u32>(floor(cells)), u32(in.metadata.y)) % 10u < 6u);
-        let windows = edge.x * edge.y * lit * f32(abs(in.normal.y) < 0.5);
+        // Once a pixel spans a window cell, resolve its average lit area instead of
+        // widening both opposite edges until they erase all window energy.
+        let minified = smoothstep(0.35, 0.9, max(aa.x, aa.y));
+        let coverage = mix(edge.x * edge.y * lit, 0.66 * 0.66 * 0.6, minified);
+        let windows = coverage * f32(abs(in.normal.y) < 0.5);
         let diffuse = max(dot(in.normal, normalize(vec3<f32>(0.4, 1.0, 0.2))), 0.0);
         let dark = vec3<f32>(0.025, 0.018, 0.05) + diffuse * vec3<f32>(0.08, 0.06, 0.12);
         let neon = select(vec3<f32>(0.05,0.9,1.0), vec3<f32>(1.0,0.05,0.65), in.metadata.x == 1.0);

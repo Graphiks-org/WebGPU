@@ -1,6 +1,6 @@
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { browserTestServer } from './browser-test-server.mjs';
 
 let server;
@@ -283,6 +283,28 @@ test('teaching panel shows actual shaders, correct draw counts and fits mobile',
       await page.setViewportSize({width,height:900});
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     }
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
+test('city visual fixtures at all densities and height extremes', async () => {
+  const { context, page, errors } = await cityPage();
+  try {
+    await mkdir('.openchamber/screenshots/city-fixtures', { recursive:true });
+    for (const density of ['Sparse','Medium','Dense']) {
+      await page.locator('#city-density').selectOption(density);
+      await page.waitForFunction(() => !document.querySelector('#city-density').disabled);
+      for (const height of [.5,2]) {
+        await range(page,'height',height);
+        await page.locator('#city-canvas').screenshot({path:`.openchamber/screenshots/city-fixtures/${density}-${height}.png`});
+      }
+    }
+    const canvas=page.locator('#city-canvas'), box=await canvas.boundingBox();
+    await page.mouse.move(box.x+box.width/2,box.y+box.height/2); await page.mouse.down();
+    await page.mouse.move(box.x+box.width/2,box.y+1); await page.mouse.up(); await settle(page);
+    await canvas.screenshot({path:'.openchamber/screenshots/city-fixtures/overhead.png'});
+    await page.locator('#city-reset-view').click(); await range(page,'distance',100);
+    await canvas.screenshot({path:'.openchamber/screenshots/city-fixtures/oblique-close.png'});
     assert.deepEqual(errors, []);
   } finally { await context.close(); }
 });

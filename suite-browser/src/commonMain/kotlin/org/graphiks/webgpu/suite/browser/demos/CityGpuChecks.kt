@@ -36,6 +36,11 @@ private suspend fun checkInstances(device: GPUDevice) {
         // Exercise the actual Neon shader too, not only its constant-color verification branch.
         val neon = renderCityPixels(device,scene,display=CityDisplay.Neon)
         assertTrue(neon.indices.any { it % 4 != 3 && neon[it].toInt() > 100 }, "Neon render must contain visible color, not just alpha")
+        for ((x,channel) in listOf(100 to 1,156 to 0)) {
+            val i=(140*256+x)*4
+            assertTrue(neon[i+channel].toInt() >= 50,
+                "Subpixel windows must retain neon energy: x=$x channel=$channel got=${neon[i+channel]}")
+        }
     }
 }
 
