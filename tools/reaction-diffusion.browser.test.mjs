@@ -8,6 +8,31 @@ let server;
 before(async () => { server = await browserTestServer(process.env.GRAPHIKS_DISTRIBUTION ?? 'suite-browser/build/dist/js/productionExecutable'); });
 after(async () => { await server?.close(); });
 
+test('demo selector switches both ways while preserving locale and runner path', async () => {
+  const page = await server.browser.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  try {
+    for (const [locale, label] of [['fr', 'Démo'], ['en', 'Demo']]) {
+      await page.goto(`${server.origin}/?demo=reaction-diffusion&lang=${locale}`);
+      await page.locator('#reaction-canvas').waitFor();
+      const selector = page.getByRole('combobox', { name: label, exact: true });
+      assert.equal(await selector.count(), 1, 'Both demo pages must offer the shared selector');
+      assert.equal(await selector.inputValue(), 'reaction-diffusion');
+      await selector.selectOption('particles');
+      await page.waitForURL(`${server.origin}/?demo=particles&lang=${locale}`);
+      await page.locator('#demo-root canvas').waitFor();
+      assert.equal(await selector.inputValue(), 'particles');
+      await selector.selectOption('reaction-diffusion');
+      await page.waitForURL(`${server.origin}/?demo=reaction-diffusion&lang=${locale}`);
+      await page.locator('#reaction-canvas').waitFor();
+      assert.equal(await selector.inputValue(), 'reaction-diffusion');
+      assert.equal(await page.locator('#demo-root canvas').count(), 1);
+    }
+    assert.deepEqual(errors, []);
+  } finally { await page.close(); }
+});
+
 test('reaction-diffusion publishes three successful GPU checks', { timeout: 150000 }, async () => {
   const page = await server.browser.newPage();
   const errors = [];

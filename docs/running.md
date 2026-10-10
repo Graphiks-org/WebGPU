@@ -101,6 +101,10 @@ no GPU time, frame-rate measurement or ranking is claimed.
 
 ## Run the reaction-diffusion demo
 
+Both interactive demo pages have a shared Demo selector at the top. Switching between Particles
+and Reaction-diffusion preserves the locale and JS/Wasm runner path, and reloads the page so the
+outgoing demo releases its GPU resources. Simulation state is not preserved across demos.
+
 - `?demo=reaction-diffusion&lang=en|fr` — interactive Gray–Scott simulation on a fixed 256 × 256
   grid. Coral, Labyrinth and Spots select feed/kill parameters and reset the same nine seed squares.
   Mouse or touch paints a six-cell-radius disk of B, with periodic boundaries. Painting also works

@@ -26,6 +26,7 @@ import org.graphiks.webgpu.suite.browser.demos.showParticlesPage
 import org.graphiks.webgpu.suite.browser.demos.ReactionCheckIds
 import org.graphiks.webgpu.suite.browser.demos.reactionDiffusionGpuResults
 import org.graphiks.webgpu.suite.browser.demos.showReactionDiffusionPage
+import org.graphiks.webgpu.suite.browser.demos.showDemoNavigation
 
 /**
  * The page has explicit routes. Without parameters it runs the foundation validation suite and
@@ -56,11 +57,13 @@ fun main() {
             demo == "particles" -> if (queryParameter("verify") == "1") {
                 verifyDemo(listOf(ComputeRenderReadbackId, BoundsPauseResetId), ::particleGpuResults)
             } else {
+                showDemoNavigation(demo, selectedLocale())
                 showParticlesPage(selectedLocale())
             }
             demo == "reaction-diffusion" -> if (queryParameter("verify") == "1") {
                 verifyDemo(ReactionCheckIds, ::reactionDiffusionGpuResults)
             } else {
+                showDemoNavigation(demo, selectedLocale())
                 showReactionDiffusionPage(selectedLocale())
             }
             else -> showUnknownRoute(demo)
