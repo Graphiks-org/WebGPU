@@ -1,6 +1,6 @@
 {
   "title": "Reaction–diffusion",
-  "description": "Paint living patterns with a Gray–Scott simulation. Compute shaders evolve two substances on a 256 × 256 grid; a separate render pass colors the result.",
+  "description": "Paint and watch patterns evolve in a Gray–Scott simulation. Two substances react and diffuse across a 256 × 256 grid. Compute shaders update their concentrations, then a render pass colors the result.",
   "paint": "Paint with a mouse or touch to inject substance B. Painting also works while paused.",
   "pause": "Pause", "resume": "Resume", "step": "One step", "reset": "Reset",
   "preset": "Pattern", "presetLabels": ["Coral", "Labyrinth", "Spots"],
@@ -11,11 +11,11 @@
   "unavailable": "WebGPU is unavailable in this environment.", "failed": "The demo could not continue.",
   "lost": "The GPU device was lost. Reload the page to restart.", "reload": "Reload",
   "lesson": "How does it work?",
-  "substances": "Each cell stores concentrations A and B. Both diffuse to neighboring cells. Their reaction consumes A and produces B. The grid connects opposite edges.",
-  "parametersHelp": "Feed replenishes A; kill removes B. The balance creates different patterns. Choosing a preset resets the same nine seeds with new parameters.",
-  "pingPong": "Read texture A → compute → write texture B → swap. Each texture contains both substances. The next pass reads the newly written state; it never reads and writes the same texture.",
-  "brushHelp": "The brush adds a separate compute pass before simulation: it injects B into a six-cell-radius disk, including across an edge. In pause, that pass runs without advancing the reaction.",
-  "colorHelp": "Rendering maps concentration B to a palette without changing the state. Display A or B in grayscale to examine the concentrations independently of color.",
-  "speedHelp": "The simulation uses a fixed numerical step. Speed selects 1–16 steps per frame, not physical seconds; evolution per second depends on browser cadence. Pause and One step let you inspect a single iteration.",
+  "substances": "Each cell holds the concentrations of A and B. These substances diffuse to neighboring cells and react with each other, consuming A to produce B. Opposite edges of the grid are connected.",
+  "parametersHelp": "The feed and removal controls determine how much A enters the system and how much B leaves it. Adjusting this balance produces different patterns. Each preset starts from the same nine seeds with new parameters.",
+  "pingPong": "The simulation uses two textures, each holding both A and B. At each step, it reads the state from one and writes the result to the other. The textures then swap roles for the next step, so a pass never reads and writes the same texture.",
+  "brushHelp": "Before simulation, a dedicated compute pass injects B into a disk with a radius of six cells. The disk wraps across the grid edges. You can also paint while paused without advancing the reaction.",
+  "colorHelp": "The palette turns the concentration of B into color without changing the simulation. Choose the A or B grayscale view to inspect the concentrations directly.",
+  "speedHelp": "Speed controls how many steps run each frame, from 1 to 16. Each step uses the same numerical timestep, but the overall pace also depends on the browser’s frame rate. This is not a duration in physical seconds. Use Pause and One step to follow the changes one iteration at a time.",
   "simulationShader": "Simulation — WGSL", "brushShader": "Injection — WGSL", "renderShader": "Rendering — WGSL"
 }

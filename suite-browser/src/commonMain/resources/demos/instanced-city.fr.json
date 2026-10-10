@@ -1,14 +1,14 @@
 {
   "title": "Ville cyberpunk",
-  "description": "Des milliers de bâtiments partagent un cube indexé. Explorez une ville nocturne aux fenêtres cyan et magenta et aux rues lumineuses.",
-  "gesture": "Glissez à la souris ou au toucher pour tourner. Utilisez la molette ou le curseur de distance pour zoomer (pas de pinch).",
+  "description": "Explorez une ville nocturne aux fenêtres cyan et magenta, parcourue de rues lumineuses. Ses milliers de bâtiments sont dessinés à partir d’un seul cube indexé.",
+  "gesture": "Faites glisser la souris ou le doigt pour tourner autour de la ville. Zoomez avec la molette ou le curseur de distance. Le zoom à deux doigts n’est pas pris en charge.",
   "density": "Bâtiments", "height": "Hauteur", "rotation": "Rotation automatique", "distance": "Distance", "resetView": "Réinitialiser la vue",
   "loading": "Initialisation de WebGPU…", "unavailable": "WebGPU est indisponible dans cet environnement.",
   "failed": "La ville ne peut pas effectuer cette opération.", "lost": "Le périphérique GPU a été perdu. Rechargez la page pour redémarrer.",
   "reload": "Recharger", "source": "Sources de la scène portable", "lesson": "Comment fonctionne l’instancing ?",
-  "instancingHelp": "Un seul cube indexé contient 24 sommets et 36 indices. Chaque bâtiment ajoute huit valeurs : position, dimensions, couleur et motif. Le vertex shader transforme ce cube pour chaque instance ; un seul dessin indexé soumet tous les bâtiments.",
-  "depthHelp": "La caméra utilise une projection perspective. La texture de profondeur détermine quel bâtiment est devant, indépendamment de leur ordre dans le buffer. Elle est recréée seulement quand la taille de rendu change.",
-  "proceduralHelp": "Les fenêtres et les lignes des rues sont calculées dans les shaders. La lumière vive n’utilise ni texture externe ni bloom. La génération est reproductible ; changer la hauteur ne modifie que les uniformes, pas les données par instance.",
-  "drawHelp": "Deux dessins par frame : le sol et {buildings} bâtiments. Géométrie soumise : {triangles} triangles (12 par bâtiment + 2 pour le sol). Ce n’est pas une mesure de performance.",
+  "instancingHelp": "Tous les bâtiments partagent un cube de 24 sommets et 36 indices. Les données de chaque bâtiment occupent huit valeurs, qui regroupent position, dimensions, couleur, motif et une valeur de remplissage. Le vertex shader adapte le cube à chaque instance, ce qui permet de soumettre tous les bâtiments en un seul appel de dessin indexé.",
+  "depthHelp": "La projection en perspective donne sa profondeur à la vue. Une texture de profondeur détermine les bâtiments visibles devant les autres, quel que soit leur ordre dans le buffer. Cette texture n’est recréée que lorsque la taille de rendu change.",
+  "proceduralHelp": "Les shaders dessinent les fenêtres et les lignes lumineuses des rues, sans texture externe ni effet de bloom. La génération retrouve toujours la même ville pour une densité donnée. Le réglage de hauteur agit seulement sur les uniformes et laisse les données des instances intactes.",
+  "drawHelp": "Chaque frame utilise deux appels de dessin, l’un pour le sol et l’autre pour les {buildings} bâtiments. Cela représente {triangles} triangles soumis au GPU, soit 12 par bâtiment et 2 pour le sol. Ce nombre décrit la géométrie, pas les performances.",
   "buildingShader": "Bâtiments — WGSL compilé", "groundShader": "Sol — WGSL compilé"
 }

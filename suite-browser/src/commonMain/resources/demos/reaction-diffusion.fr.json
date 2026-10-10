@@ -1,6 +1,6 @@
 {
   "title": "Réaction–diffusion",
-  "description": "Peignez des motifs vivants avec une simulation Gray–Scott. Les compute shaders font évoluer deux substances sur une grille de 256 × 256 ; une passe de rendu séparée colore le résultat.",
+  "description": "Peignez et regardez les motifs se transformer dans une simulation Gray–Scott. Deux substances réagissent et se diffusent sur une grille de 256 × 256 cellules. Les shaders compute calculent leur évolution, puis une passe de rendu colore le résultat.",
   "paint": "Peignez à la souris ou au toucher pour injecter la substance B. La peinture fonctionne aussi en pause.",
   "pause": "Pause", "resume": "Reprendre", "step": "Un pas", "reset": "Réinitialiser",
   "preset": "Motif", "presetLabels": ["Corail", "Labyrinthe", "Taches"],
@@ -11,11 +11,11 @@
   "unavailable": "WebGPU est indisponible dans cet environnement.", "failed": "La démo ne peut pas continuer.",
   "lost": "Le périphérique GPU a été perdu. Rechargez la page pour redémarrer.", "reload": "Recharger",
   "lesson": "Comment ça fonctionne ?",
-  "substances": "Chaque cellule stocke les concentrations A et B. Les deux diffusent vers les cellules voisines. Leur réaction consomme A et produit B. La grille relie les bords opposés.",
-  "parametersHelp": "L’alimentation renouvelle A ; l’élimination retire B. Leur équilibre crée des motifs différents. Choisir un préréglage réinitialise les mêmes neuf germes avec de nouveaux paramètres.",
-  "pingPong": "Lecture texture A → compute → écriture texture B → échange. Chaque texture contient les deux substances. La passe suivante lit le nouvel état ; elle ne lit et n’écrit jamais dans la même texture.",
-  "brushHelp": "Le pinceau ajoute une passe compute séparée avant la simulation : il injecte B dans un disque de six cellules de rayon, y compris à travers un bord. En pause, cette passe ne fait pas avancer la réaction.",
-  "colorHelp": "Le rendu transforme la concentration B en couleur sans modifier l’état. Affichez A ou B en niveaux de gris pour examiner les concentrations indépendamment de la palette.",
-  "speedHelp": "La simulation utilise un pas numérique fixe. La vitesse choisit 1 à 16 étapes par frame, pas des secondes physiques ; l’évolution par seconde dépend de la cadence du navigateur. Pause et Un pas permettent d’observer une seule itération.",
+  "substances": "Chaque cellule contient les concentrations de A et de B. Ces substances se diffusent vers les cellules voisines et réagissent entre elles, en consommant A pour produire B. Les bords opposés de la grille sont reliés.",
+  "parametersHelp": "Les réglages d’alimentation et d’élimination contrôlent l’apport de A et le retrait de B. En ajustant cet équilibre, vous obtenez des motifs différents. Chaque préréglage repart des mêmes neuf germes avec de nouveaux paramètres.",
+  "pingPong": "La simulation utilise deux textures, chacune contenant A et B. À chaque étape, elle lit l’état dans l’une et écrit le résultat dans l’autre. Les textures échangent ensuite leurs rôles pour l’étape suivante. Une passe ne lit et n’écrit donc jamais dans la même texture.",
+  "brushHelp": "Avant la simulation, le pinceau injecte B dans un disque de six cellules de rayon grâce à une passe compute dédiée. Le disque traverse les bords de la grille. Vous pouvez aussi peindre en pause sans faire avancer la réaction.",
+  "colorHelp": "La palette traduit la concentration de B en couleur, sans modifier la simulation. Pour observer les concentrations directement, choisissez l’affichage de A ou de B en niveaux de gris.",
+  "speedHelp": "Le réglage de vitesse détermine le nombre d’étapes calculées à chaque frame, de 1 à 16. Chaque étape garde le même pas numérique, mais le rythme global dépend aussi de la cadence du navigateur. Il ne s’agit donc pas d’une durée en secondes physiques. Utilisez Pause et Un pas pour observer l’évolution itération par itération.",
   "simulationShader": "Simulation — WGSL", "brushShader": "Injection — WGSL", "renderShader": "Rendu — WGSL"
 }
