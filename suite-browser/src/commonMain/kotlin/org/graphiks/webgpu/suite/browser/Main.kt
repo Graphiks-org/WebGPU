@@ -29,7 +29,7 @@ import org.graphiks.webgpu.suite.browser.demos.showReactionDiffusionPage
 import org.graphiks.webgpu.suite.browser.demos.showDemoNavigation
 import org.graphiks.webgpu.suite.browser.demos.CityCheckIds
 import org.graphiks.webgpu.suite.browser.demos.cityGpuResults
-import org.graphiks.webgpu.suite.browser.demos.showDemoFailure
+import org.graphiks.webgpu.suite.browser.demos.showCityPage
 
 /**
  * The page has explicit routes. Without parameters it runs the foundation validation suite and
@@ -72,7 +72,8 @@ fun main() {
             demo == "instanced-city" -> if (queryParameter("verify") == "1") {
                 verifyDemo(CityCheckIds, ::cityGpuResults)
             } else {
-                showDemoFailure("The interactive city page is not available yet.")
+                showDemoNavigation(demo, selectedLocale())
+                showCityPage(selectedLocale())
             }
             else -> showUnknownRoute(demo)
         }

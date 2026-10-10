@@ -1,0 +1,14 @@
+{
+  "title": "Cyberpunk city",
+  "description": "Thousands of buildings share one indexed cube. Explore a nocturnal city with cyan and magenta windows and luminous streets.",
+  "gesture": "Drag with a mouse or touch to orbit. Use the wheel or distance slider to zoom (no pinch).",
+  "density": "Buildings", "height": "Height", "rotation": "Automatic rotation", "distance": "Distance", "resetView": "Reset view",
+  "loading": "Initializing WebGPU…", "unavailable": "WebGPU is unavailable in this environment.",
+  "failed": "The city cannot perform this operation.", "lost": "The GPU device was lost. Reload the page to restart.",
+  "reload": "Reload", "source": "Portable scene source code", "lesson": "How does instancing work?",
+  "instancingHelp": "One indexed cube contains 24 vertices and 36 indices. Each building adds eight values: position, dimensions, color and pattern. The vertex shader transforms this cube for each instance; one indexed draw submits all buildings.",
+  "depthHelp": "The camera uses perspective projection. The depth texture determines which building is in front, independent of their order in the buffer. It is recreated only when the render size changes.",
+  "proceduralHelp": "Windows and street lines are calculated in shaders. Bright color uses no external texture or bloom. Generation is reproducible; changing height updates only uniforms, not instance data.",
+  "drawHelp": "Two draws per frame: ground and {buildings} buildings. Submitted geometry: {triangles} triangles (12 per building + 2 for ground). This is not a performance measurement.",
+  "buildingShader": "Buildings — compiled WGSL", "groundShader": "Ground — compiled WGSL"
+}

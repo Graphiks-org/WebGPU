@@ -1,0 +1,14 @@
+{
+  "title": "Ville cyberpunk",
+  "description": "Des milliers de bâtiments partagent un cube indexé. Explorez une ville nocturne aux fenêtres cyan et magenta et aux rues lumineuses.",
+  "gesture": "Glissez à la souris ou au toucher pour tourner. Utilisez la molette ou le curseur de distance pour zoomer (pas de pinch).",
+  "density": "Bâtiments", "height": "Hauteur", "rotation": "Rotation automatique", "distance": "Distance", "resetView": "Réinitialiser la vue",
+  "loading": "Initialisation de WebGPU…", "unavailable": "WebGPU est indisponible dans cet environnement.",
+  "failed": "La ville ne peut pas effectuer cette opération.", "lost": "Le périphérique GPU a été perdu. Rechargez la page pour redémarrer.",
+  "reload": "Recharger", "source": "Sources de la scène portable", "lesson": "Comment fonctionne l’instancing ?",
+  "instancingHelp": "Un seul cube indexé contient 24 sommets et 36 indices. Chaque bâtiment ajoute huit valeurs : position, dimensions, couleur et motif. Le vertex shader transforme ce cube pour chaque instance ; un seul dessin indexé soumet tous les bâtiments.",
+  "depthHelp": "La caméra utilise une projection perspective. La texture de profondeur détermine quel bâtiment est devant, indépendamment de leur ordre dans le buffer. Elle est recréée seulement quand la taille de rendu change.",
+  "proceduralHelp": "Les fenêtres et les lignes des rues sont calculées dans les shaders. La lumière vive n’utilise ni texture externe ni bloom. La génération est reproductible ; changer la hauteur ne modifie que les uniformes, pas les données par instance.",
+  "drawHelp": "Deux dessins par frame : le sol et {buildings} bâtiments. Géométrie soumise : {triangles} triangles (12 par bâtiment + 2 pour le sol). Ce n’est pas une mesure de performance.",
+  "buildingShader": "Bâtiments — WGSL compilé", "groundShader": "Sol — WGSL compilé"
+}
