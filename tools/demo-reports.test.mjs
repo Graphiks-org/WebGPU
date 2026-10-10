@@ -43,6 +43,14 @@ test('rejects null, malformed structure, fatal errors, schema and revision misma
   assert.throws(() => aggregateDemoReports([good(route), { ...good(DEMO_ROUTES[1]), buildCommit: 'other' }]), /identit/);
 });
 
+test('explicit null schema and falsy non-string fatal errors are malformed, not omitted defaults', () => {
+  const route = DEMO_ROUTES[0];
+  for (const patch of [{ schemaVersion: null }, { fatalError: 0 }, { fatalError: false }, { fatalError: '' }]) {
+    assert.ok(validateDemoReport(route, { ...good(route), ...patch }, baseline).length > 0,
+      `Must reject ${JSON.stringify(patch)}`);
+  }
+});
+
 test('collector keeps failures and still visits the second route using fresh pages', { timeout: 30000 }, async () => {
   const browser = await chromium.launch({ headless: true });
   let fixture;
@@ -59,10 +67,13 @@ test('collector keeps failures and still visits the second route using fresh pag
   await new Promise(ok => server.listen(0, '127.0.0.1', ok));
   try {
     for (const value of ['{invalid', JSON.stringify({ ...good(DEMO_ROUTES[0]), cases: [] }),
-      JSON.stringify({ ...good(DEMO_ROUTES[0]), buildCommit: 'other' })]) {
+      JSON.stringify({ ...good(DEMO_ROUTES[0]), buildCommit: 'other' }),
+      JSON.stringify({ ...good(DEMO_ROUTES[0]), schemaVersion: null, fatalError: 0 }),
+      JSON.stringify({ ...good(DEMO_ROUTES[0]), fatalError: false })]) {
       fixture = value; requests.length = 0;
       const result = await collectDemoReports(browser, `http://127.0.0.1:${server.address().port}`, baseline, { timeout: 1000 });
       assert.ok(result.fatalError);
+      assert.ok(result.report.fatalError, 'Aggregated report itself must retain the failure diagnostic');
       assert.deepEqual(requests, ['particles', 'reaction-diffusion']);
       assert.ok(result.report.cases.some(c => c.id === 'reaction-diffusion.brush-boundaries'));
       assert.equal(browser.contexts().length, 0, 'all pages/implicit contexts must be closed');

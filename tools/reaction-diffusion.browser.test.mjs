@@ -215,6 +215,65 @@ test('pagehide before device acquisition releases late resources and never start
   } finally { await context.close(); }
 });
 
+test('pagehide during localization loading never creates a late device or animation', async () => {
+  const context = await server.browser.newContext();
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', e => errors.push(String(e)));
+  let release;
+  const gate = new Promise(ok => { release = ok; });
+  let requested;
+  const requestSeen = new Promise(ok => { requested = ok; });
+  let responded;
+  const responseSent = new Promise(ok => { responded = ok; });
+  try {
+    await page.addInitScript(instrumentDevice, {});
+    await page.route('**/demos/reaction-diffusion.fr.json', async route => {
+      requested(); await gate;
+      const body = await readFile('suite-browser/src/commonMain/resources/demos/reaction-diffusion.fr.json', 'utf8');
+      await route.fulfill({ status: 200, contentType: 'application/json', body }); responded();
+    });
+    await page.goto(`${server.origin}/?demo=reaction-diffusion&lang=fr`);
+    await requestSeen;
+    await page.evaluate(() => dispatchEvent(new Event('pagehide')));
+    release(); await responseSent;
+    await page.waitForLoadState('networkidle'); await settle(page);
+    assert.equal(await page.locator('#reaction-canvas').count(), 0,
+      `A closed bootstrap must not create a late page: ${await page.locator('#demo-root').textContent()}`);
+    assert.equal(await page.evaluate(() => !!__rd.device), false, 'A closed bootstrap must not request a device');
+    assert.equal(await page.locator('[data-ready="true"]').count(), 0);
+    assert.equal(await page.evaluate(() => __rd.handles.size), 0);
+    assert.deepEqual(errors, []);
+  } finally { release(); await context.close(); }
+});
+
+test('CSS-invisible and zero-rendered-geometry canvases preserve pending steps without surface acquisition', async () => {
+  const { page, context, errors } = await demoPage();
+  try {
+    await page.locator('#reaction-pause').click();
+    const canvas = page.locator('#reaction-canvas');
+    await canvas.evaluate(c => {
+      const gpu = c.getContext('webgpu');
+      const get = gpu.getCurrentTexture.bind(gpu);
+      globalThis.__rd.surfaceAcquisitions = 0;
+      gpu.getCurrentTexture = () => { globalThis.__rd.surfaceAcquisitions++; return get(); };
+    });
+    for (const [property, value] of [['visibility', 'hidden'], ['transform', 'scale(0)']]) {
+      await page.locator('#reaction-reset').click(); await settle(page);
+      const before = await canvas.screenshot();
+      const acquisitions = await page.evaluate(() => __rd.surfaceAcquisitions);
+      await canvas.evaluate((c, [property, value]) => { c.style[property] = value; }, [property, value]);
+      await page.locator('#reaction-step').click(); await settle(page);
+      assert.equal(await page.evaluate(() => __rd.surfaceAcquisitions), acquisitions,
+        'Invisible canvas must not acquire a WebGPU surface texture');
+      await canvas.evaluate((c, property) => { c.style[property] = ''; }, property);
+      await page.evaluate(() => dispatchEvent(new Event('resize'))); await settle(page);
+      assert.notDeepEqual(await canvas.screenshot(), before, 'Requested step must survive until the canvas renders');
+    }
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
 test('missing adapter or localized resource is visible and does not start animation', async () => {
   for (const failure of ['adapter', 'texts']) {
     const context = await server.browser.newContext();

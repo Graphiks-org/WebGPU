@@ -6,8 +6,10 @@ import kotlin.js.JsNumber
 import kotlin.js.unsafeCast
 import kotlin.math.min
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.graphiks.webgpu.GPUDevice
@@ -28,15 +30,26 @@ import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionPalette
 import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionParameters
 import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionPreset
 
-suspend fun showReactionDiffusionPage(locale: String) {
+suspend fun showReactionDiffusionPage(locale: String) = coroutineScope {
+    val bootstrapController = newAbortController()
+    var closed = false
+    val loading = launch(start = CoroutineStart.LAZY) {
+        try {
+            val texts = Json.decodeFromString<ReactionTexts>(fetchText("demos/reaction-diffusion.$locale.json"))
+            if (closed) return@launch
+            setDocumentLang(locale)
+            ReactionDemoPage(ReactionDiffusionView(texts)).start()
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (failure: Throwable) {
+            if (!closed) showDemoFailure("Cannot load the reaction-diffusion page for '$locale': ${failure.message}")
+        }
+    }
+    windowRef().listen("pagehide", bootstrapController) { closed = true; loading.cancel() }
     try {
-        val texts = Json.decodeFromString<ReactionTexts>(fetchText("demos/reaction-diffusion.$locale.json"))
-        setDocumentLang(locale)
-        ReactionDemoPage(ReactionDiffusionView(texts)).start()
-    } catch (cancelled: CancellationException) {
-        throw cancelled
-    } catch (failure: Throwable) {
-        showDemoFailure("Cannot load the reaction-diffusion page for '$locale': ${failure.message}")
+        loading.join()
+    } finally {
+        bootstrapController.abort()
     }
 }
 
@@ -187,7 +200,7 @@ private class ReactionDemoPage(private val view: ReactionDiffusionView) : AutoCl
         val currentScene = scene ?: return
         val currentSurface = surface ?: return
         val canvas = view.canvas.unsafeCast<DomCanvas>()
-        if (canvas.clientWidth <= 0 || canvas.clientHeight <= 0) return
+        if (canvas.clientWidth <= 0 || canvas.clientHeight <= 0 || !reactionCanvasVisible(view.canvas)) return
         val maxDimension = currentDevice.limits.maxTextureDimension2D.toInt()
         val width = min((canvas.clientWidth * pixelRatio()).toInt(), maxDimension).coerceAtLeast(1)
         val height = min((canvas.clientHeight * pixelRatio()).toInt(), maxDimension).coerceAtLeast(1)

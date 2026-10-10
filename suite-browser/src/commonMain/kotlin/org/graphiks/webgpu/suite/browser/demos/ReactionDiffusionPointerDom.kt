@@ -27,3 +27,8 @@ internal external interface ReactionPointerCanvas : JsAny {
 }
 
 internal fun reloadReactionPage(): Unit = js("globalThis.location.reload()")
+
+internal fun reactionCanvasVisible(canvas: DomElement): Boolean = js(
+    "canvas.checkVisibility({ visibilityProperty: true }) && " +
+        "canvas.getBoundingClientRect().width > 0 && canvas.getBoundingClientRect().height > 0",
+)

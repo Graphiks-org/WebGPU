@@ -9,8 +9,11 @@ export function validateDemoReport(route, report, baseline) {
   const problems = [];
   if (!report || typeof report !== 'object' || !Array.isArray(report.cases)) return ['malformed demo report'];
   // Kotlin omits schemaVersion=1 and fatalError=null by default, as in the particle report.
-  if ((report.schemaVersion ?? 1) !== 1) problems.push('unexpected schemaVersion');
-  if (report.fatalError) problems.push(`runner fatal error: ${report.fatalError}`);
+  if (report.schemaVersion !== undefined && report.schemaVersion !== 1) problems.push('unexpected schemaVersion');
+  if (report.fatalError !== undefined && report.fatalError !== null) {
+    problems.push(typeof report.fatalError === 'string' && report.fatalError.length > 0
+      ? `runner fatal error: ${report.fatalError}` : 'malformed fatalError');
+  }
   if (typeof report.buildCommit !== 'string' || !report.buildCommit || report.buildCommit !== baseline.commit) {
     problems.push('distribution commit does not match inventory');
   }
@@ -70,5 +73,6 @@ export async function collectDemoReports(browser, origin, baseline, { timeout = 
       fatalError: problems.join('\n') };
   }
   if (pageErrors.length) problems.push(`${pageErrors.length} page error(s)`);
+  if (problems.length) report.fatalError = problems.join('\n');
   return { report, pageErrors, userAgent, fatalError: problems.join('\n') || null };
 }

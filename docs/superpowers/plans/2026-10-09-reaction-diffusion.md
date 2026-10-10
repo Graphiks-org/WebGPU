@@ -22,7 +22,7 @@ et `docs/verification.fr.md`.
 - [x] Task 4 : interface EN/FR, pointeurs et cycle de vie.
 - [x] Task 5 : pédagogie, galerie et inspection visuelle.
 - [x] Task 6 : campagne complète, documentation et résultats attribués au build testé.
-- [ ] Revue indépendante de la branche et traitement de ses constats.
+- [x] Revue indépendante de la branche et traitement de ses constats : fermeture pendant le chargement des textes, canvas invisible et validation stricte des champs JSON ; tests rouges puis verts JS/Wasm.
 
 ## Global Constraints
 
