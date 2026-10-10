@@ -163,6 +163,55 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   macOS ARM64 through its normal tasks. No native GPU execution is performed in this repository; that
   belongs to the consuming binding repositories, as for the acid tests.
 
+## Reaction-diffusion evidence (2026-10-10)
+
+- Commands actually executed:
+
+  ```sh
+  ./gradlew check :suite-core:compileKotlinJvm :suite-demos:compileKotlinJvm :suite-demos:compileKotlinMacosArm64 :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
+  node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs tools/demo-reports.test.mjs tools/demos-gallery.browser.test.mjs
+  node --test tools/reaction-diffusion.browser.test.mjs
+  GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/reaction-diffusion.browser.test.mjs
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
+  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
+  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
+  node tools/build-site.mjs
+  ```
+
+- Build identity: `d30d290e3ee1b70ba1d1c658f2e14d5093c1ceed`, version `0.1.0-SNAPSHOT`.
+  Both demo and acid envelopes match the embedded inventory baseline. Later documentation commits
+  do not relabel these reports as a newer build.
+- Environment: JDK 25.0.1, Gradle 9.8.0, local Node 26.11.0 (CI remains Node 22), Playwright 1.63.0,
+  headless Chromium 153.0.8010.12 on macOS ARM64, requested `swiftshader` backend. These are
+  software-WebGPU functional results, not physical-GPU measurements.
+- `check` and the explicit compilation/distribution tasks pass (560 actionable tasks). CPU demo
+  tests: 3/3 on JVM, JS, Wasm JS and macOS ARM64; runner control/oracle tests: 6/6 on each browser
+  target. Kotlin-plugin, Gradle-deprecation and webpack bundle-size warnings remain; they are not
+  suppressed or represented as test failures.
+- Node tooling/gallery tests: **30/30**, including the 19 existing report/comparator regressions.
+  The negative CLI test verifies nonzero exit plus a retained failed envelope in a temporary fixture
+  root; no synthetic report is written into this repository's published-result directory.
+- Interactive browser tests: **11/11 on JS and 11/11 on Wasm**. They exercise pause/single-step/reset,
+  actual mouse capture and touch, periodic painting, ignored second pointers and cancellation,
+  hidden-canvas step preservation, device loss, late acquisition cleanup, missing adapter/texts,
+  accessible slider names, complete displayed WGSL and desktop/mobile lesson layout.
+- Demo reports: **5/5 passed on each target**, with no fatal or page errors. The three new ids compare
+  compute output against an independently checked CPU oracle, inspect rendered grayscale pixels,
+  exercise odd/even ping-pong steps, pause/reset, closed-scene rejection and boundary-crossing injection.
+- Acid regression: **151 passed + 1 unsupported of 152 on each target**, no failed cases.
+  The optional `compute.shader-f16` remains unsupported. Site assembly succeeds with the existing
+  contract's **922 symbols and 160 behaviours per locale**; demos do not increase acid coverage.
+- Visual evidence: each preset reset and evolved for at least 2000 instrumented GPU compute steps.
+  Local captures `reaction-coral-2000.png`, `reaction-labyrinth-2000.png` and `reaction-spots-2000.png`
+  show rings, connected winding patterns and separate spots respectively. They are non-versioned
+  exploratory captures, reproducible with `GRAPHIKS_CAPTURE_DIR`, not exact golden images. OpenChamber
+  also inspected the desktop/mobile page and opened the learning panel. This caught a CSS
+  `display:grid` override of the validation section's `hidden` attribute; a red visibility test
+  preceded the targeted `.validation[hidden]` fix.
+- No native GPU execution or Linux-host execution is claimed. Native CPU tests/compilation are
+  distinct from browser WebGPU verification. No benchmark campaign was added or rerun for this demo.
+
 ## Readable report evidence
 
 - The validation route (`run/js|wasm/`) and the demo verification route render a localized (EN/FR,

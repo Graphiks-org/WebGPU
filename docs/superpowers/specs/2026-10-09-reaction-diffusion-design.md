@@ -1,7 +1,7 @@
 # Démo réaction-diffusion — spécification
 
 Date : 2026-10-09
-Statut : spécification écrite approuvée par l'utilisateur ; plan rédigé, à relire.
+Statut : spécification et plan approuvés ; exécution native dans la session choisie le 2026-10-10.
 
 ## Intention et périmètre
 
@@ -218,4 +218,4 @@ d'un redimensionnement desktop ; vérifier les événements tactiles ou pointer 
 - [x] Auto-relecture : périmètre, cohérence, décisions numériques et rapports précisés.
 - [x] Spécification écrite relue et approuvée par l'utilisateur.
 - [x] Plan d'implémentation rédigé après cette approbation.
-- [ ] Plan relu et méthode d'exécution choisie.
+- [x] Plan relu et méthode d'exécution choisie.

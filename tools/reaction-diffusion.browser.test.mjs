@@ -101,6 +101,7 @@ test('interactive controls pause, step, reset and select parameters without repl
     await page.locator('#reaction-pause').click();
     assert.equal(await page.locator('#reaction-pause').textContent(), 'Reprendre');
     assert.equal(await page.locator('#reaction-step').isEnabled(), true);
+    await page.locator('#reaction-reset').click(); await settle(page);
     const canvas = page.locator('#reaction-canvas');
     const before = await canvas.screenshot();
     await page.locator('#reaction-step').click(); await settle(page);

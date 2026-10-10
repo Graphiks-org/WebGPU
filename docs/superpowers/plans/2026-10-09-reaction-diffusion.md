@@ -10,6 +10,20 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-09-reaction-diffusion-design.md`
 
+## Suivi d'exécution (2026-10-10)
+
+Les cases détaillées ci-dessous conservent le plan original comme procédure de reproduction.
+Le statut effectif des livrables est suivi ici ; les preuves sont dans `docs/verification.md`
+et `docs/verification.fr.md`.
+
+- [x] Task 1 : données portables, 3 tests CPU.
+- [x] Task 2 : scène GPU, WGSL et trois scénarios de vérification JS/Wasm.
+- [x] Task 3 : collecte stricte des deux démos, cinq ids conservés.
+- [x] Task 4 : interface EN/FR, pointeurs et cycle de vie.
+- [x] Task 5 : pédagogie, galerie et inspection visuelle.
+- [x] Task 6 : campagne complète, documentation et résultats attribués au build testé.
+- [ ] Revue indépendante de la branche et traitement de ses constats.
+
 ## Global Constraints
 
 - « Grille fixe de 256 × 256 cellules, deux concentrations A et B par cellule. »
@@ -616,8 +630,8 @@ Les tests existants Node `tools/arraybuffer-report.test.mjs` et `tools/compare-a
 - [x] Pédagogie, galerie et contrôle visuel : tâche 5.
 - [x] Documentation, builds et preuves sans confusion native/browser : tâche 6.
 - [x] Noms, packages et signatures cohérents entre tâches ; pas de stub de production à garder.
-- [ ] Plan relu et approuvé par l'utilisateur.
-- [ ] Méthode d'exécution choisie par l'utilisateur.
+- [x] Plan relu et approuvé par l'utilisateur.
+- [x] Méthode d'exécution choisie par l'utilisateur : native, 2026-10-10.
 
 ## Handoff
 

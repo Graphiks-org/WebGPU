@@ -1,6 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
+import { cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { spawn } from 'node:child_process';
 import { chromium } from 'playwright';
 import { DEMO_ROUTES, aggregateDemoReports, collectDemoReports, validateDemoReport } from './demo-reports.mjs';
 
@@ -85,4 +89,35 @@ test('collector records missing reports and page errors instead of claiming succ
     assert.ok(result.pageErrors.some(e => e.includes('particles') && e.includes('fixture page error')));
     assert.equal(result.report.cases.length, 3);
   } finally { await browser.close(); await new Promise(ok => server.close(ok)); }
+});
+
+test('CLI exits nonzero and writes a failed envelope without losing the other route', { timeout: 30000 }, async () => {
+  // Run in an isolated fixture root, never putting synthetic results in the repository's reports.
+  const root = await mkdtemp(join(tmpdir(), 'graphiks-demo-collector-'));
+  try {
+    await mkdir(join(root, 'tools'));
+    await mkdir(join(root, 'suite-acid-tests/build/suite-inventory'), { recursive: true });
+    await mkdir(join(root, 'distribution'));
+    for (const file of ['run-browser.mjs', 'demo-reports.mjs']) await cp(`tools/${file}`, join(root, 'tools', file));
+    await symlink(resolve('tools/node_modules'), join(root, 'tools/node_modules'), 'dir');
+    await writeFile(join(root, 'suite-acid-tests/build/suite-inventory/baseline.json'), JSON.stringify(baseline));
+    const reaction = good(DEMO_ROUTES[1]);
+    const malformed = { ...good(DEMO_ROUTES[0]), schemaVersion: 2 };
+    await writeFile(join(root, 'distribution/index.html'), `<script>
+      globalThis.graphiksDemoReport = JSON.stringify(new URL(location.href).searchParams.get('demo') === 'particles'
+        ? ${JSON.stringify(malformed)} : ${JSON.stringify(reaction)});
+    </script>`);
+    let stderr = '';
+    const code = await new Promise((ok, fail) => {
+      const child = spawn(process.execPath, ['tools/run-browser.mjs', 'js', 'distribution', '--demo-check'], { cwd: root });
+      child.stderr.on('data', chunk => { stderr += chunk; });
+      child.stdout.resume(); child.on('error', fail); child.on('close', ok);
+    });
+    assert.equal(code, 1, stderr);
+    const envelope = JSON.parse(await readFile(join(root, 'build/reports/demos-js.json'), 'utf8'));
+    assert.ok(envelope.fatalError.includes('schemaVersion'));
+    assert.equal(envelope.report.cases.length, 5);
+    assert.equal(envelope.report.cases.at(-1).id, 'reaction-diffusion.brush-boundaries');
+    assert.ok(stderr.includes('incomplete or failed run'));
+  } finally { await rm(root, { recursive: true, force: true }); }
 });
