@@ -105,8 +105,7 @@ internal class ReactionDiffusionView(val texts: ReactionTexts) {
         for ((label, shader) in listOf(texts.simulationShader to ReactionSimulationShader,
             texts.brushShader to ReactionBrushShader, texts.renderShader to ReactionRenderShader)) {
             lesson.appendChild(createElement("h2").also { it.setText(label) })
-            val code = createElement("code").also { it.setText(shader) }
-            lesson.appendChild(createElement("pre").also { it.appendChild(code) })
+            lesson.appendChild(wgslBlock(shader))
         }
         container.appendChild(lesson)
     }

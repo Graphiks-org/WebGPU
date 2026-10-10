@@ -350,7 +350,7 @@ test('learning view is optional and displays the complete shaders used by the sc
       return lines.map(l => l.slice(indent)).join('\n').trim();
     });
     const displayed = await lesson.locator('pre code').allTextContents();
-    assert.deepEqual(displayed, [strings[0] + '\n' + strings[1], strings[0] + '\n' + strings[2], strings[3]]);
+    assert.deepEqual(displayed, [strings[0] + '\n\n' + strings[1], strings[0] + '\n\n' + strings[2], strings[3]]);
     assert.ok((await lesson.textContent()).includes('échange'));
     assert.ok((await lesson.textContent()).includes('pinceau'));
     await page.locator('#reaction-pause').click();

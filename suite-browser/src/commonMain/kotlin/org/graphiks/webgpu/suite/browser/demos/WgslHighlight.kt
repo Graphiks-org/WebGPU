@@ -73,11 +73,17 @@ internal fun highlightWgsl(source: String): List<WgslToken> {
 }
 
 /** Never parse shader text as HTML; even comment markup is inserted as literal text. */
-internal fun cityShaderCode(source: String): DomElement = createElement("code").also { code ->
+private fun wgslCode(source: String): DomElement = createElement("code").also { code ->
     for (token in highlightWgsl(source)) {
         code.appendChild(createElement("span").also { span ->
             token.kind?.let { span.setClass("wgsl-$it") }
             span.setText(token.text)
         })
     }
+}
+
+/** Shared presentation for the actual compiled shader sources of every demo. */
+internal fun wgslBlock(source: String): DomElement = createElement("pre").also { block ->
+    block.setClass("demo-wgsl")
+    block.appendChild(wgslCode(source))
 }

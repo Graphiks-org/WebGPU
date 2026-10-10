@@ -190,9 +190,15 @@ indexed instanced building draw. A second draw renders ground/streets: `12 * cou
 triangles, not a performance measurement. `Depth24Plus` resolves occlusion. Windows and street
 lines are procedural, with analytical minification of windows, no compute, textures or bloom.
 The folded teaching panel shows the exact compiled WGSL and explains these two draws.
-The city shaders use spacious formatting and dependency-free syntax coloring for keywords, types,
+All three demos use spacious formatting and shared dependency-free syntax coloring for keywords, types,
 attributes, numbers and comments. Highlighting inserts literal text spans, preserving the source
-for copying without parsing it as HTML; only whitespace in the compiled shader was reformatted.
+for copying without parsing it as HTML; only whitespace in the compiled shaders was reformatted.
+Particles now also offer a folded EN/FR panel showing their compute and instanced-render shaders.
+
+```sh
+node --test tools/wgsl-lessons.browser.test.mjs
+GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/wgsl-lessons.browser.test.mjs
+```
 
 ```sh
 node --test tools/instanced-city.browser.test.mjs

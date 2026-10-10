@@ -8,5 +8,9 @@
   "source": "View the scene source code",
   "unavailable": "WebGPU is not available in this browser.",
   "failed": "The particle demo stopped after an error.",
-  "loading": "Loading the particle demo…"
+  "loading": "Loading the particle demo…",
+  "lesson": "How do these shaders work?",
+  "shaderHelp": "The compute shader moves particles and bounces them at the boundaries. The render shader reads the same buffer as instance data and draws one disk per particle, with no CPU copy between passes. The WGSL below is the actual compiled code.",
+  "computeShader": "Simulation — compiled WGSL",
+  "renderShader": "Rendering — compiled WGSL"
 }

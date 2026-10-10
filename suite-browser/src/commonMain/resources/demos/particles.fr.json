@@ -8,5 +8,9 @@
   "source": "Voir le code de la scène",
   "unavailable": "WebGPU n’est pas disponible dans ce navigateur.",
   "failed": "La démo de particules s’est arrêtée sur une erreur.",
-  "loading": "Chargement de la démo de particules…"
+  "loading": "Chargement de la démo de particules…",
+  "lesson": "Comment fonctionnent ces shaders ?",
+  "shaderHelp": "Le shader compute déplace les particules et les fait rebondir aux limites. Le shader de rendu lit le même buffer comme données par instance et dessine un disque par particule, sans copie CPU entre les passes. Le code WGSL ci-dessous est celui réellement compilé.",
+  "computeShader": "Simulation — WGSL compilé",
+  "renderShader": "Rendu — WGSL compilé"
 }
