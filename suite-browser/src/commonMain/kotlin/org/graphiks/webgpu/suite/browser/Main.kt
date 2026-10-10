@@ -27,6 +27,9 @@ import org.graphiks.webgpu.suite.browser.demos.ReactionCheckIds
 import org.graphiks.webgpu.suite.browser.demos.reactionDiffusionGpuResults
 import org.graphiks.webgpu.suite.browser.demos.showReactionDiffusionPage
 import org.graphiks.webgpu.suite.browser.demos.showDemoNavigation
+import org.graphiks.webgpu.suite.browser.demos.CityCheckIds
+import org.graphiks.webgpu.suite.browser.demos.cityGpuResults
+import org.graphiks.webgpu.suite.browser.demos.showDemoFailure
 
 /**
  * The page has explicit routes. Without parameters it runs the foundation validation suite and
@@ -65,6 +68,11 @@ fun main() {
             } else {
                 showDemoNavigation(demo, selectedLocale())
                 showReactionDiffusionPage(selectedLocale())
+            }
+            demo == "instanced-city" -> if (queryParameter("verify") == "1") {
+                verifyDemo(CityCheckIds, ::cityGpuResults)
+            } else {
+                showDemoFailure("The interactive city page is not available yet.")
             }
             else -> showUnknownRoute(demo)
         }
@@ -198,7 +206,7 @@ private fun showUnknownRoute(demo: String) {
     elementById("validation")?.hidden = true
     elementById("demo-root")?.apply {
         hidden = false
-        textContent = "Unknown demo '$demo'. Available demos: particles, reaction-diffusion."
+        textContent = "Unknown demo '$demo'. Available demos: particles, reaction-diffusion, instanced-city."
     }
 }
 
