@@ -4,6 +4,9 @@ import kotlinx.serialization.Serializable
 import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionDisplay
 import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionPalette
 import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionPreset
+import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionSimulationShader
+import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionBrushShader
+import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionRenderShader
 
 @Serializable
 internal data class ReactionTexts(
@@ -13,6 +16,9 @@ internal data class ReactionTexts(
     val feed: String, val kill: String, val palette: String, val paletteLabels: List<String>,
     val display: String, val displayLabels: List<String>, val source: String,
     val loading: String, val unavailable: String, val failed: String, val lost: String, val reload: String,
+    val lesson: String, val substances: String, val parametersHelp: String, val pingPong: String,
+    val brushHelp: String, val colorHelp: String, val speedHelp: String,
+    val simulationShader: String, val brushShader: String, val renderShader: String,
 )
 
 /** Only DOM construction and localized presentation; GPU lifecycle lives in the page. */
@@ -62,6 +68,7 @@ internal class ReactionDiffusionView(val texts: ReactionTexts) {
             controls.appendChild(element)
         }
         container.appendChild(controls)
+        appendLesson()
         status.setAttribute("id", "reaction-status")
         status.setAttribute("role", "status")
         status.setClass("demo-status")
@@ -85,6 +92,23 @@ internal class ReactionDiffusionView(val texts: ReactionTexts) {
         kill.value = controls.parameters.kill.toString()
         palette.value = controls.palette.name
         display.value = controls.display.name
+    }
+
+    private fun appendLesson() {
+        val lesson = createElement("details")
+        lesson.setAttribute("id", "reaction-lesson")
+        lesson.appendChild(createElement("summary").also { it.setText(texts.lesson) })
+        for (text in listOf(texts.substances, texts.parametersHelp, texts.pingPong, texts.brushHelp,
+            texts.colorHelp, texts.speedHelp)) {
+            lesson.appendChild(createElement("p").also { it.setText(text) })
+        }
+        for ((label, shader) in listOf(texts.simulationShader to ReactionSimulationShader,
+            texts.brushShader to ReactionBrushShader, texts.renderShader to ReactionRenderShader)) {
+            lesson.appendChild(createElement("h2").also { it.setText(label) })
+            val code = createElement("code").also { it.setText(shader) }
+            lesson.appendChild(createElement("pre").also { it.appendChild(code) })
+        }
+        container.appendChild(lesson)
     }
 
     private fun button(name: String, text: String) = createElement("button").also {

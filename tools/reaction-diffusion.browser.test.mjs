@@ -1,5 +1,7 @@
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { browserTestServer } from './browser-test-server.mjs';
 
 let server;
@@ -41,7 +43,11 @@ test('unknown and conflicting routes fail visibly instead of starting a suite', 
 
 // Hooks are confined to the test environment: production exposes no test-only device or RAF state.
 function instrumentDevice({ gate = false } = {}) {
-  const state = globalThis.__rd = { handles: new Set(), destroyed: 0, pointerId: null };
+  const state = globalThis.__rd = { handles: new Set(), destroyed: 0, pointerId: null, computePasses: 0 };
+  const dispatch = GPUComputePassEncoder.prototype.dispatchWorkgroups;
+  GPUComputePassEncoder.prototype.dispatchWorkgroups = function (...args) {
+    state.computePasses++; return dispatch.apply(this, args);
+  };
   const raf = globalThis.requestAnimationFrame.bind(globalThis);
   const cancel = globalThis.cancelAnimationFrame.bind(globalThis);
   globalThis.requestAnimationFrame = callback => {
@@ -88,6 +94,9 @@ async function settle(page) {
 test('interactive controls pause, step, reset and select parameters without replacing the device', async () => {
   const { page, context, errors } = await demoPage();
   try {
+    assert.equal(await page.locator('#validation').isVisible(), false, 'The validation route must not appear above the demo');
+    assert.equal(await page.getByRole('slider', { name: 'Alimentation A' }).count(), 1);
+    assert.equal(await page.getByRole('slider', { name: 'Élimination B' }).count(), 1);
     assert.equal(await page.locator('#reaction-step').isEnabled(), false);
     await page.locator('#reaction-pause').click();
     assert.equal(await page.locator('#reaction-pause').textContent(), 'Reprendre');
@@ -219,4 +228,65 @@ test('missing adapter or localized resource is visible and does not start animat
       assert.equal(await page.evaluate(() => __rd.handles.size), 0);
     } finally { await context.close(); }
   }
+});
+
+test('learning view is optional and displays the complete shaders used by the scene', async () => {
+  const { page, context, errors } = await demoPage();
+  try {
+    const lesson = page.locator('#reaction-lesson');
+    assert.equal(await lesson.count(), 1);
+    assert.equal(await lesson.evaluate(e => e.open), false);
+    await lesson.locator('summary').click();
+    const source = await readFile('suite-demos/src/commonMain/kotlin/org/graphiks/webgpu/suite/demos/reactiondiffusion/ReactionDiffusionShaders.kt', 'utf8');
+    const strings = [...source.matchAll(/"""([\s\S]*?)"""\.trimIndent\(\)/g)].map(m => {
+      const lines = m[1].replace(/^\n|\n$/g, '').split('\n');
+      const indent = Math.min(...lines.filter(l => l.trim()).map(l => l.match(/^ */)[0].length));
+      return lines.map(l => l.slice(indent)).join('\n').trim();
+    });
+    const displayed = await lesson.locator('pre code').allTextContents();
+    assert.deepEqual(displayed, [strings[0] + '\n' + strings[1], strings[0] + '\n' + strings[2], strings[3]]);
+    assert.ok((await lesson.textContent()).includes('échange'));
+    assert.ok((await lesson.textContent()).includes('pinceau'));
+    await page.locator('#reaction-pause').click();
+    const palette = await page.locator('#reaction-palette').inputValue();
+    const feed = await page.locator('#reaction-feed').inputValue();
+    await page.locator('#reaction-display').selectOption('A'); await settle(page);
+    const a = await page.locator('#reaction-canvas').screenshot();
+    await page.locator('#reaction-display').selectOption('B'); await settle(page);
+    assert.notDeepEqual(await page.locator('#reaction-canvas').screenshot(), a);
+    assert.equal(await page.locator('#reaction-palette').inputValue(), palette);
+    assert.equal(await page.locator('#reaction-feed').inputValue(), feed);
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true,
+        'Open lesson must not cause horizontal page overflow');
+    }
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
+test('three presets remain visibly distinct after at least 2000 GPU steps', { timeout: 120000 }, async () => {
+  const { page, context, errors } = await demoPage();
+  try {
+    await page.locator('#reaction-pause').click();
+    await page.locator('#reaction-speed').evaluate(e => { e.value = '16'; e.dispatchEvent(new Event('input')); });
+    const images = [];
+    for (const preset of ['Coral', 'Labyrinth', 'Spots']) {
+      await page.locator('#reaction-preset').selectOption(preset);
+      const start = await page.evaluate(() => __rd.computePasses);
+      await page.locator('#reaction-pause').click();
+      await page.waitForFunction(start => __rd.computePasses >= start + 2000, start, { timeout: 30000 });
+      await page.locator('#reaction-pause').click();
+      const options = {};
+      if (process.env.GRAPHIKS_CAPTURE_DIR) {
+        await mkdir(process.env.GRAPHIKS_CAPTURE_DIR, { recursive: true });
+        options.path = join(process.env.GRAPHIKS_CAPTURE_DIR, `reaction-${preset.toLowerCase()}-2000.png`);
+      }
+      images.push(await page.locator('#reaction-canvas').screenshot(options));
+    }
+    assert.notDeepEqual(images[0], images[1]);
+    assert.notDeepEqual(images[1], images[2]);
+    assert.notDeepEqual(images[0], images[2]);
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
 });

@@ -32,13 +32,12 @@ const TEXT = {
 };
 
 const REPO = 'https://github.com/Graphiks-org/WebGPU';
-const SCENE_DIR = 'suite-demos/src/commonMain/kotlin/org/graphiks/webgpu/suite/demos/particles';
-const SCENE_SOURCES = ['ParticleScene.kt', 'ParticleShaders.kt', 'ParticleData.kt'];
-
-const DEMO = {
-  dictPath: (locale) => `../run/js/demos/particles.${locale}.json`,
-  launch: (target, locale) => `../run/${target}/?demo=particles&lang=${locale}`,
-};
+const SCENE_ROOT = 'suite-demos/src/commonMain/kotlin/org/graphiks/webgpu/suite/demos';
+const DEMOS = [
+  { name: 'particles', directory: 'particles', sources: ['ParticleScene.kt', 'ParticleShaders.kt', 'ParticleData.kt'] },
+  { name: 'reaction-diffusion', directory: 'reactiondiffusion',
+    sources: ['ReactionDiffusionScene.kt', 'ReactionDiffusionShaders.kt', 'ReactionDiffusionData.kt'] },
+];
 
 const locale = (() => {
   const fromUrl = new URL(location.href).searchParams.get('lang');
@@ -96,23 +95,25 @@ async function publishedCommit() {
   return null;
 }
 
-function renderCard(dict, commit) {
+function renderCard(demo, dict, commit) {
   const card = el('article', null, 'card');
+  card.dataset.demo = demo.name;
   card.append(el('h3', dict.title));
   card.append(el('p', dict.description));
 
   const links = el('div', null, 'card-links');
   for (const [target, label] of [['js', 'JS'], ['wasm', 'Wasm']]) {
     const link = el('a', t.launch(label), 'button');
-    link.href = DEMO.launch(target, locale);
+    link.href = `../run/${target}/?demo=${demo.name}&lang=${locale}`;
     links.append(link);
   }
   card.append(links);
 
   const sources = el('div', null, 'card-sources');
   sources.append(el('span', t.sourcesTitle, 'meta'));
-  const base = commit ? `${REPO}/blob/${commit}/${SCENE_DIR}` : `${REPO}/tree/master/${SCENE_DIR}`;
-  for (const file of SCENE_SOURCES) {
+  const directory = `${SCENE_ROOT}/${demo.directory}`;
+  const base = commit ? `${REPO}/blob/${commit}/${directory}` : `${REPO}/tree/master/${directory}`;
+  for (const file of demo.sources) {
     const link = el('a', file);
     link.href = `${base}/${file}`;
     sources.append(link);
@@ -124,8 +125,21 @@ function renderCard(dict, commit) {
 
 async function main() {
   renderChrome();
-  const [commit, dict] = await Promise.all([publishedCommit(), loadJson(DEMO.dictPath(locale))]);
-  document.getElementById('gallery').append(renderCard(dict, commit));
+  const commit = await publishedCommit();
+  const cards = await Promise.all(DEMOS.map(async demo => {
+    try {
+      const dict = await loadJson(`../run/js/demos/${demo.name}.${locale}.json`);
+      return renderCard(demo, dict, commit);
+    } catch (failure) {
+      const card = el('article', null, 'card');
+      card.dataset.demo = demo.name;
+      const error = el('p', `${demo.name}: ${t.failed} ${String(failure)}`, 'fatal');
+      error.dataset.error = 'true';
+      card.append(error);
+      return card;
+    }
+  }));
+  document.getElementById('gallery').append(...cards);
 }
 
 main().catch((failure) => {
