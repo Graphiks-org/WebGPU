@@ -1,7 +1,7 @@
 # Ville instanciée cyberpunk — spécification
 
 Date : 2026-10-10
-Statut : périmètre conversationnel approuvé ; spécification écrite à relire.
+Statut : spécification écrite approuvée par l'utilisateur ; plan rédigé, à relire.
 
 ## Intention et périmètre
 
@@ -294,6 +294,6 @@ discussion en amont.
 - [x] Frontières, données, rendu et interactions précisés.
 - [x] Spécification écrite.
 - [x] Auto-relecture : pas de placeholder, invariants numériques et rapports cohérents.
-- [ ] Spécification écrite relue et approuvée par l'utilisateur.
-- [ ] Plan d'implémentation rédigé après approbation de la spécification.
+- [x] Spécification écrite relue et approuvée par l'utilisateur.
+- [x] Plan d'implémentation rédigé après approbation de la spécification.
 - [ ] Plan approuvé et méthode d'exécution choisie par l'utilisateur.
