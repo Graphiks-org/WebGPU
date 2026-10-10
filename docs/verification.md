@@ -344,3 +344,40 @@ change that attribution. No review findings remain unresolved.
   measurements are informative and reported separately, never as a pass/fail threshold; see
   [ArrayBuffer CPU performance](arraybuffer-performance.md) and
   [ArrayBuffer bounds and capacities](arraybuffer-bounds.md).
+
+## Instanced cyberpunk city — 2026-10-10
+
+Final GPU report identity: `9a9c6a831d200bd07218e872185b1fea3510ac65`, version
+`0.1.0-SNAPSHOT`, identical to the generated inventory. Production sources were committed;
+only usage/evidence documentation was pending. Earlier exploratory reports are not the final evidence.
+Local environment: macOS ARM64, JDK 25, Gradle 9.8, Node **26.11.0** (not CI's Node 22),
+Playwright 1.63.0 / Chromium 153.0.8010.12 with the runner's SwiftShader flags.
+
+- `./gradlew check :suite-demos:compileKotlinJvm :suite-demos:compileKotlinMacosArm64 :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution` passed.
+  After the independent review fixes, `check`, macOS compilation and both distributions passed again.
+  The XML reports record nine demo CPU tests on each executed target and ten browser CPU tests per
+  JS/Wasm target, with zero failures/errors. Native tests here exercise math/data, not a native GPU.
+- `node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs tools/demo-reports.test.mjs tools/demos-gallery.browser.test.mjs`: **33/33**.
+- `node --test tools/instanced-city.browser.test.mjs tools/reaction-diffusion.browser.test.mjs`
+  and the same command with `GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable`:
+  **30/30 per target** after review fixes. One concurrent JS run showed a non-reproduced screenshot
+  discrepancy in the density roundtrip; isolated and full reruns passed without a production change.
+- `node tools/run-browser.mjs <js|wasm> suite-browser/build/dist/<js|wasmJs>/productionExecutable --demo-check`:
+  **8/8 unique cases passed per target**, no fatal/page errors; identities checked against inventory.
+  The same commands without `--demo-check`: **151 passed, 1 unsupported, 0 failed of 152 per target**.
+  The unavailable optional case was `compute.shader-f16`. Demos did not increase acid coverage.
+- `node tools/build-site.mjs`, `./gradlew :docs:embedDokkaIntoMkDocs` and
+  `build/docs-venv/bin/mkdocs build --strict -f docs/mkdocs.yml` passed; the existing docs venv was reused.
+
+Real mouse and CDP touch gestures, pointer cancellation, wheel modes, reduced motion, hidden/detached
+canvas restoration **without artificial resize**, device loss and late acquisition/text loading were
+exercised. Allocation-failure fixtures check partial buffers, depth preparation and the local
+OutOfMemory scope; these are injected boundary failures, not evidence of exhausting GPU memory.
+The independent review found two Important lifecycle issues; both have RED→GREEN regressions and
+the whole suite above passed after correction. Minified-window light also has a real GPU RED→GREEN
+pixel check. Local captures cover the three densities, height 0.5/2, overhead/oblique and mobile;
+the compiled site was opened at `/run/js/?demo=instanced-city&lang=fr` in OpenChamber.
+
+This is functional software-GPU evidence, not physical-GPU performance or native GPU execution.
+No benchmarks were rerun; Android/Windows/Linux device runs are not claimed. The city branch remains
+dependent on the unmerged reaction-diffusion PR #141; no city publication or merge is implied.

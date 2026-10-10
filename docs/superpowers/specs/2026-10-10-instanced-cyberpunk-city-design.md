@@ -1,7 +1,7 @@
 # Ville instanciée cyberpunk — spécification
 
 Date : 2026-10-10
-Statut : spécification écrite approuvée par l'utilisateur ; plan rédigé, à relire.
+Statut : spécification et plan approuvés ; implémentation locale vérifiée, revue indépendante et corrections terminées. Publication non demandée.
 
 ## Intention et périmètre
 

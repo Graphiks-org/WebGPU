@@ -742,5 +742,13 @@ Conserver le serveur local de démo quand demandé et donner son URL réelle.
 - [x] Cinq Review Focus ont leurs cas CPU/GPU/browser dans les tâches propriétaires.
 - [x] Pas de nouvelle dépendance, prototype ni code de production écrit avec ce plan.
 - [x] Branche distincte et dépendance PR #141 documentées ; publication non présumée.
-- [ ] Plan relu et approuvé par l'utilisateur.
-- [ ] Méthode d'exécution confirmée par l'utilisateur.
+- [x] Plan relu et approuvé par l'utilisateur.
+- [x] Méthode d'exécution confirmée par l'utilisateur : exécution dans cette session, revue indépendante finale.
+
+## Résultat d'exécution
+
+Tâches 1–7 implémentées ; campagne GPU finale au commit `9a9c6a8`, preuves EN/FR dans
+`docs/verification.md` et `docs/verification.fr.md`. Revue indépendante : deux constats importants
+de cycle de vie corrigés avec tests RED→GREEN ; aucun mineur différé. Le filtrage des fenêtres
+minifiées a également été corrigé après inspection visuelle. PR #141 encore ouverte ; issue #142
+liée à la session, aucune PR ville ni publication effectuée.

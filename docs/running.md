@@ -90,19 +90,19 @@ node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable -
 node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
 ```
 
-`--demo-check` opens both `?demo=particles&verify=1` and
-`?demo=reaction-diffusion&verify=1` in fresh pages, requires all five ids to pass, and writes
+`--demo-check` opens `?demo=particles&verify=1`, `?demo=reaction-diffusion&verify=1` and
+`?demo=instanced-city&verify=1` in fresh pages, requires all eight ids to pass, and writes
 one aggregated `build/reports/demos-<target>.json`, separate from the acid-test reports.
 Missing routes, invalid JSON, mismatched build identities, missing/duplicate/unexpected ids,
 failed cases and page errors all make the collector exit non-zero; partial real results are
-retained as failures, never fabricated successes. The gallery at `site/demos/` presents both
+retained as failures, never fabricated successes. The gallery at `site/demos/` presents all three
 demos with local launches and scene source links. Demos are illustrations, not benchmarks:
 no GPU time, frame-rate measurement or ranking is claimed.
 
 ## Run the reaction-diffusion demo
 
-Both interactive demo pages have a shared Demo selector at the top. Switching between Particles
-and Reaction-diffusion preserves the locale and JS/Wasm runner path, and reloads the page so the
+All three interactive demo pages have a shared Demo selector at the top. Switching between Particles
+Reaction-diffusion and Cyberpunk city preserves the locale and JS/Wasm runner path, and reloads the page so the
 outgoing demo releases its GPU resources. Simulation state is not preserved across demos.
 
 - `?demo=reaction-diffusion&lang=en|fr` — interactive Gray–Scott simulation on a fixed 256 × 256
@@ -124,7 +124,7 @@ then swap. Reading uses `textureLoad` without optional float filtering features.
 maps the resulting B concentration to a palette. Device loss stops animation, disables GPU controls
 and offers reload; unavailable WebGPU is a visible error, not a CPU fallback.
 
-The combined demo report requires these five ids:
+The combined demo report requires these eight ids:
 
 ```text
 particles.compute-render-readback
@@ -132,6 +132,9 @@ particles.bounds-pause-reset
 reaction-diffusion.compute-render-readback
 reaction-diffusion.pause-step-reset
 reaction-diffusion.brush-boundaries
+instanced-city.instances-render-readback
+instanced-city.depth-occlusion
+instanced-city.camera-resize-lifecycle
 ```
 
 Run the CPU/control/oracle and browser regressions with:
@@ -167,6 +170,38 @@ Keep the scene alive across animation frames in a real application. `reset()` wr
 textures; `encodeStateCopy(encoder, buffer)` copies the current state into a borrowed CopyDst buffer
 of at least 1,048,576 bytes (4096 bytes per row). The scene closes its resources, never the supplied
 device. This repository runs browser GPU checks; native compilation is not native GPU execution.
+
+## Run the instanced cyberpunk city
+
+- `?demo=instanced-city&lang=en|fr` — deterministic nocturnal city with 256, 1024 or 4096 buildings.
+  Only densities allowed by the device limits are offered; the largest is selected initially.
+- `?demo=instanced-city&verify=1` — three GPU readback checks for instance transforms/colors,
+  order-independent depth occlusion and camera/resize/lifecycle.
+
+Drag with mouse or touch to orbit. The canvas captures one pointer; a second pointer is ignored.
+Wheel zoom normalizes pixel/line/page deltas. The labeled distance slider supports keyboard and
+touch zoom; there is no pinch. Height scales from 0.5 to 2 without replacing instance data.
+Automatic rotation starts enabled unless `prefers-reduced-motion` requests otherwise; explicitly
+enabling it remains possible. Reset view restores only the camera, not density, height or rotation.
+Failed density replacement retains the old scene. Device loss stops animation and offers reload.
+
+One shared cube (24 vertices, 36 indices) and an eight-float record per building produce one
+indexed instanced building draw. A second draw renders ground/streets: `12 * count + 2` submitted
+triangles, not a performance measurement. `Depth24Plus` resolves occlusion. Windows and street
+lines are procedural, with analytical minification of windows, no compute, textures or bloom.
+The folded teaching panel shows the exact compiled WGSL and explains these two draws.
+
+```sh
+node --test tools/instanced-city.browser.test.mjs
+GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/instanced-city.browser.test.mjs
+```
+
+Native bindings may reuse `InstancedCityScene.create(device, format)` and call
+`encodeFrame(encoder, targetView, width, height, CityCamera(), heightScale, gridStep)`.
+Keep the scene alive across frames; submit once after each encoding before updating uniforms
+for another frame. It owns its buffers, pipelines and resize-dependent depth texture, but borrows
+the device, encoder and color view. Close the scene when finished. Native compilation below
+does not establish native GPU execution; browser checks are the actual GPU evidence.
 
 ## Run the benchmarks
 

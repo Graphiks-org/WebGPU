@@ -363,3 +363,41 @@ ultérieure ne modifie pas cette attribution. Aucun constat de revue ne reste ou
   part, jamais comme un seuil de réussite ou d’échec ; voir
   [Performance CPU d’ArrayBuffer](arraybuffer-performance.fr.md) et
   [Bornes et capacités d’ArrayBuffer](arraybuffer-bounds.fr.md).
+
+## Ville instanciée cyberpunk — 2026-10-10
+
+Identité finale des rapports GPU : `9a9c6a831d200bd07218e872185b1fea3510ac65`, version
+`0.1.0-SNAPSHOT`, identique à l’inventaire généré. Les sources de production étaient commitées ;
+seule la documentation d’usage/preuves restait en cours. Les rapports exploratoires précédents
+ne sont pas les preuves finales. Environnement : macOS ARM64, JDK 25, Gradle 9.8, Node
+**26.11.0** (pas le Node 22 de CI), Playwright 1.63.0 / Chromium 153.0.8010.12, flags SwiftShader du runner.
+
+- `./gradlew check :suite-demos:compileKotlinJvm :suite-demos:compileKotlinMacosArm64 :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution` réussit.
+  Après corrections de revue, `check`, compilation macOS et les deux distributions réussissent de
+  nouveau. Les XML enregistrent neuf tests CPU démos par cible exécutée et dix tests CPU navigateur
+  par cible JS/Wasm, sans erreur ni échec. Les tests natifs concernent données/mathématiques, pas un GPU natif.
+- `node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs tools/demo-reports.test.mjs tools/demos-gallery.browser.test.mjs` : **33/33**.
+- `node --test tools/instanced-city.browser.test.mjs tools/reaction-diffusion.browser.test.mjs`, puis
+  avec `GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable` : **30/30 par cible**
+  après corrections. Une exécution JS concurrente a montré un écart de capture non reproduit sur
+  l’aller-retour de densité ; relances isolée et complète vertes, sans modification de production.
+- `node tools/run-browser.mjs <js|wasm> suite-browser/build/dist/<js|wasmJs>/productionExecutable --demo-check` :
+  **8/8 cas uniques réussis par cible**, aucune erreur fatale/de page ; identités contrôlées contre
+  l’inventaire. Sans `--demo-check` : **151 réussis, 1 indisponible, 0 échec sur 152 par cible**.
+  Cas optionnel indisponible : `compute.shader-f16`. Les démos n’augmentent pas la couverture acid.
+- `node tools/build-site.mjs`, `./gradlew :docs:embedDokkaIntoMkDocs` et
+  `build/docs-venv/bin/mkdocs build --strict -f docs/mkdocs.yml` réussissent ; venv existant réutilisé.
+
+Vrais gestes souris et tactiles CDP, annulation/capture de pointeur, modes de molette, mouvement réduit,
+reprise de canvas masqué/détaché **sans resize artificiel**, perte de device et acquisitions/textes
+tardifs exercés. Les fixtures d’échec contrôlent buffers partiels, préparation de profondeur et scope
+OutOfMemory local ; elles injectent des erreurs aux frontières, sans prétendre épuiser la mémoire GPU.
+La revue indépendante a identifié deux défauts Important de cycle de vie : régressions RED→GREEN
+et suite complète verte après correction. La lumière des fenêtres minifiées possède aussi une
+assertion GPU RED→GREEN. Captures locales : trois densités, hauteurs 0,5/2, vues de dessus/oblique et
+mobile ; site compilé ouvert dans OpenChamber à `/run/js/?demo=instanced-city&lang=fr`.
+
+Preuves fonctionnelles sur GPU logiciel, pas mesures de performance GPU physique ni exécution GPU
+native. Aucun benchmark relancé ; aucune exécution sur appareil Android/Windows/Linux revendiquée.
+La branche ville dépend encore de la PR réaction-diffusion #141 non fusionnée ; aucune publication
+ni fusion de la ville n’est impliquée.
