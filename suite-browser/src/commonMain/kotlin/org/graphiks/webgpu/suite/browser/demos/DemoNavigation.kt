@@ -16,6 +16,7 @@ internal fun showDemoNavigation(active: String, locale: String) {
     for ((name, title) in listOf(
         "particles" to if (locale == "fr") "Particules" else "Particles",
         "reaction-diffusion" to if (locale == "fr") "Réaction-diffusion" else "Reaction-diffusion",
+        "instanced-city" to if (locale == "fr") "Ville cyberpunk" else "Cyberpunk city",
     )) {
         selector.appendChild(createElement("option").also {
             it.setAttribute("value", name)

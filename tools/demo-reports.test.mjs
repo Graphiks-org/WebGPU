@@ -12,11 +12,13 @@ const baseline = { commit: 'abc', suiteVersion: '0.1.0-SNAPSHOT' };
 const good = route => ({ schemaVersion: 1, buildCommit: 'abc', buildVersion: baseline.suiteVersion,
   cases: route.ids.map(id => ({ id, status: 'passed' })), fatalError: null });
 
-test('both routes retain all five cases', () => {
+test('three routes retain all eight cases', () => {
   assert.deepEqual(aggregateDemoReports(DEMO_ROUTES.map(good)).cases.map(c => c.id), [
     'particles.compute-render-readback', 'particles.bounds-pause-reset',
     'reaction-diffusion.compute-render-readback', 'reaction-diffusion.pause-step-reset',
     'reaction-diffusion.brush-boundaries',
+    'instanced-city.instances-render-readback', 'instanced-city.depth-occlusion',
+    'instanced-city.camera-resize-lifecycle',
   ]);
 });
 test('accepts omitted default fields in the existing Kotlin JSON', () => {
@@ -40,7 +42,7 @@ test('rejects null, malformed structure, fatal errors, schema and revision misma
     assert.ok(validateDemoReport(route, report, baseline).length > 0);
   }
   assert.throws(() => aggregateDemoReports([good(route)]), /Incomplete/);
-  assert.throws(() => aggregateDemoReports([good(route), { ...good(DEMO_ROUTES[1]), buildCommit: 'other' }]), /identit/);
+  assert.throws(() => aggregateDemoReports(DEMO_ROUTES.map(r => ({ ...good(r), buildCommit: r === route ? 'other' : 'abc' }))), /identit/);
 });
 
 test('explicit null schema and falsy non-string fatal errors are malformed, not omitted defaults', () => {
@@ -74,7 +76,7 @@ test('collector keeps failures and still visits the second route using fresh pag
       const result = await collectDemoReports(browser, `http://127.0.0.1:${server.address().port}`, baseline, { timeout: 1000 });
       assert.ok(result.fatalError);
       assert.ok(result.report.fatalError, 'Aggregated report itself must retain the failure diagnostic');
-      assert.deepEqual(requests, ['particles', 'reaction-diffusion']);
+       assert.deepEqual(requests, ['particles', 'reaction-diffusion', 'instanced-city']);
       assert.ok(result.report.cases.some(c => c.id === 'reaction-diffusion.brush-boundaries'));
       assert.equal(browser.contexts().length, 0, 'all pages/implicit contexts must be closed');
     }
@@ -98,7 +100,7 @@ test('collector records missing reports and page errors instead of claiming succ
     const result = await collectDemoReports(browser, `http://127.0.0.1:${server.address().port}`, baseline, { timeout: 250 });
     assert.ok(result.fatalError);
     assert.ok(result.pageErrors.some(e => e.includes('particles') && e.includes('fixture page error')));
-    assert.equal(result.report.cases.length, 3);
+    assert.equal(result.report.cases.length, 6);
   } finally { await browser.close(); await new Promise(ok => server.close(ok)); }
 });
 
@@ -112,11 +114,10 @@ test('CLI exits nonzero and writes a failed envelope without losing the other ro
     for (const file of ['run-browser.mjs', 'demo-reports.mjs']) await cp(`tools/${file}`, join(root, 'tools', file));
     await symlink(resolve('tools/node_modules'), join(root, 'tools/node_modules'), 'dir');
     await writeFile(join(root, 'suite-acid-tests/build/suite-inventory/baseline.json'), JSON.stringify(baseline));
-    const reaction = good(DEMO_ROUTES[1]);
-    const malformed = { ...good(DEMO_ROUTES[0]), schemaVersion: 2 };
+     const reports = Object.fromEntries(DEMO_ROUTES.map(route => [route.name, good(route)]));
+     reports['instanced-city'] = { ...reports['instanced-city'], schemaVersion: 2 };
     await writeFile(join(root, 'distribution/index.html'), `<script>
-      globalThis.graphiksDemoReport = JSON.stringify(new URL(location.href).searchParams.get('demo') === 'particles'
-        ? ${JSON.stringify(malformed)} : ${JSON.stringify(reaction)});
+       globalThis.graphiksDemoReport = JSON.stringify(${JSON.stringify(reports)}[new URL(location.href).searchParams.get('demo')]);
     </script>`);
     let stderr = '';
     const code = await new Promise((ok, fail) => {
@@ -127,8 +128,38 @@ test('CLI exits nonzero and writes a failed envelope without losing the other ro
     assert.equal(code, 1, stderr);
     const envelope = JSON.parse(await readFile(join(root, 'build/reports/demos-js.json'), 'utf8'));
     assert.ok(envelope.fatalError.includes('schemaVersion'));
-    assert.equal(envelope.report.cases.length, 5);
-    assert.equal(envelope.report.cases.at(-1).id, 'reaction-diffusion.brush-boundaries');
+     assert.ok(envelope.fatalError.includes('instanced-city'));
+     assert.equal(envelope.report.cases.length, 8);
+     assert.equal(envelope.report.cases.at(-1).id, 'instanced-city.camera-resize-lifecycle');
     assert.ok(stderr.includes('incomplete or failed run'));
   } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test('failed third route preserves the first five cases and diagnostics', { timeout: 30000 }, async () => {
+  const browser = await chromium.launch({ headless: true });
+  let fixture;
+  const server = createServer((req, res) => {
+    const name = new URL(req.url, 'http://localhost').searchParams.get('demo');
+    const route = DEMO_ROUTES.find(r => r.name === name);
+    res.writeHead(200, { 'content-type': 'text/html' });
+    const value = name === 'instanced-city' ? fixture : JSON.stringify(good(route));
+    res.end(value === undefined ? '' : `<script>globalThis.graphiksDemoReport=${JSON.stringify(value)};</script>`);
+  });
+  await new Promise(ok => server.listen(0, '127.0.0.1', ok));
+  try {
+    const route = DEMO_ROUTES.find(r => r.name === 'instanced-city');
+    assert.ok(route, 'City must be a collected route');
+    for (const value of [undefined, '{invalid', ...[
+      { buildCommit: 'other' }, { cases: [good(route).cases[0],good(route).cases[0]] },
+      { cases: good(route).cases.map(c => ({...c,status:'failed'})) },
+      { schemaVersion: null }, { fatalError: false }, { fatalError: 0 },
+    ].map(patch => JSON.stringify({...good(route),...patch}))]) {
+      fixture = value;
+      const result = await collectDemoReports(browser, `http://127.0.0.1:${server.address().port}`, baseline, {timeout:250});
+      assert.ok(result.fatalError.includes('instanced-city'));
+      assert.ok(result.report.fatalError.includes('instanced-city'));
+      assert.deepEqual(result.report.cases.slice(0,5), DEMO_ROUTES.slice(0,2).flatMap(r => good(r).cases));
+      assert.equal(browser.contexts().length, 0);
+    }
+  } finally { await browser.close(); await new Promise(ok => server.close(ok)); }
 });

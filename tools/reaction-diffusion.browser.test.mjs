@@ -17,8 +17,13 @@ test('demo selector switches both ways while preserving locale and runner path',
       await page.goto(`${server.origin}/?demo=reaction-diffusion&lang=${locale}`);
       await page.locator('#reaction-canvas').waitFor();
       const selector = page.getByRole('combobox', { name: label, exact: true });
-      assert.equal(await selector.count(), 1, 'Both demo pages must offer the shared selector');
+      assert.equal(await selector.count(), 1, 'All demo pages must offer the shared selector');
       assert.equal(await selector.inputValue(), 'reaction-diffusion');
+      await selector.selectOption('instanced-city');
+      await page.waitForURL(`${server.origin}/?demo=instanced-city&lang=${locale}`);
+      await page.locator('#city-canvas').waitFor();
+      assert.equal(await selector.inputValue(), 'instanced-city');
+      assert.equal(await page.locator('#demo-root canvas').count(), 1);
       await selector.selectOption('particles');
       await page.waitForURL(`${server.origin}/?demo=particles&lang=${locale}`);
       await page.locator('#demo-root canvas').waitFor();
@@ -52,6 +57,22 @@ test('reaction-diffusion publishes three successful GPU checks', { timeout: 1500
     ]);
     assert.ok(report.cases.every(c => c.status === 'passed'), JSON.stringify(report));
     assert.deepEqual(errors, []);
+  } finally { await page.close(); }
+});
+
+test('direct demo routes have the current selector; verification and unknown routes do not', async () => {
+  const page = await server.browser.newPage({ reducedMotion:'reduce' });
+  try {
+    for (const demo of ['particles','reaction-diffusion','instanced-city']) {
+      await page.goto(`${server.origin}/?demo=${demo}&lang=en`);
+      await page.locator('#demo-root canvas').waitFor();
+      assert.equal(await page.locator('#demo-selector').inputValue(), demo);
+      assert.equal(await page.locator('#demo-root canvas').count(), 1);
+    }
+    for (const query of ['demo=instanced-city&verify=1','demo=unknown','benchmark=1']) {
+      await page.goto(`${server.origin}/?${query}`);
+      assert.equal(await page.locator('#demo-navigation').isVisible(), false);
+    }
   } finally { await page.close(); }
 });
 

@@ -7,7 +7,7 @@ let server;
 before(async () => { server = await browserTestServer('site'); });
 after(async () => { await server?.close(); });
 
-async function gallery({ missingReport = false, missingReaction = false, hostile = false, lang = 'fr' } = {}) {
+async function gallery({ missingReport = false, missingReaction = false, missingCity = false, hostile = false, lang = 'fr' } = {}) {
   const page = await server.browser.newPage();
   await page.route('**/reports/demos-*.json', route => route.fulfill(missingReport ? { status: 404, body: 'missing' }
     : { json: { schemaVersion: 1, buildCommit: 'fixture-commit', buildVersion: '0.1.0-SNAPSHOT',
@@ -17,6 +17,7 @@ async function gallery({ missingReport = false, missingReaction = false, hostile
   await page.route('**/run/js/demos/*.json', async route => {
     const name = new URL(route.request().url()).pathname.split('/').at(-1);
     if (missingReaction && name.startsWith('reaction-diffusion')) return route.fulfill({ status: 404, body: 'missing' });
+    if (missingCity && name.startsWith('instanced-city')) return route.fulfill({ status: 404, body: 'missing' });
     const dict = JSON.parse(await readFile(`suite-browser/src/commonMain/resources/demos/${name}`, 'utf8'));
     if (hostile) dict.title = '<img src=x onerror="globalThis.injected=true">';
     await route.fulfill({ json: dict });
@@ -28,11 +29,11 @@ async function gallery({ missingReport = false, missingReaction = false, hostile
 test('gallery launches both demos on both targets and links sources to the published commit', async () => {
   const page = await gallery();
   try {
-    assert.equal(await page.locator('#gallery article').count(), 2);
-    for (const demo of ['particles', 'reaction-diffusion']) for (const target of ['js', 'wasm']) {
+    assert.equal(await page.locator('#gallery article').count(), 3);
+    for (const demo of ['particles', 'reaction-diffusion', 'instanced-city']) for (const target of ['js', 'wasm']) {
       assert.equal(await page.locator(`a[href="../run/${target}/?demo=${demo}&lang=fr"]`).count(), 1);
     }
-    assert.equal(await page.locator('a[href*="/blob/fixture-commit/"]').count(), 6);
+    assert.equal(await page.locator('a[href*="/blob/fixture-commit/"]').count(), 9);
     assert.equal(await page.locator('a[href*="/reactiondiffusion/ReactionDiffusionScene.kt"]').count(), 1);
   } finally { await page.close(); }
 });
@@ -40,8 +41,8 @@ test('gallery launches both demos on both targets and links sources to the publi
 test('absent published reports produce source-directory links and a visible warning', async () => {
   const page = await gallery({ missingReport: true, lang: 'en' });
   try {
-    assert.equal(await page.locator('#gallery article').count(), 2);
-    assert.equal(await page.locator('a[href*="/tree/master/"]').count(), 6);
+    assert.equal(await page.locator('#gallery article').count(), 3);
+    assert.equal(await page.locator('a[href*="/tree/master/"]').count(), 9);
     assert.ok((await page.locator('#gallery').textContent()).includes('No published report'));
   } finally { await page.close(); }
 });
@@ -60,5 +61,14 @@ test('localized text is rendered as text, not executable HTML', async () => {
     assert.ok((await page.locator('#gallery').textContent()).includes('<img src=x'));
     assert.equal(await page.locator('#gallery img').count(), 0);
     assert.equal(await page.evaluate(() => globalThis.injected), undefined);
+  } finally { await page.close(); }
+});
+
+test('missing city translation leaves both existing cards usable', async () => {
+  const page = await gallery({ missingCity:true });
+  try {
+    for (const demo of ['particles','reaction-diffusion'])
+      assert.equal(await page.locator(`a[href="../run/js/?demo=${demo}&lang=fr"]`).count(), 1);
+    assert.equal(await page.locator('#gallery [data-demo="instanced-city"] [data-error="true"]').count(), 1);
   } finally { await page.close(); }
 });

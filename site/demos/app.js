@@ -37,6 +37,8 @@ const DEMOS = [
   { name: 'particles', directory: 'particles', sources: ['ParticleScene.kt', 'ParticleShaders.kt', 'ParticleData.kt'] },
   { name: 'reaction-diffusion', directory: 'reactiondiffusion',
     sources: ['ReactionDiffusionScene.kt', 'ReactionDiffusionShaders.kt', 'ReactionDiffusionData.kt'] },
+  { name: 'instanced-city', directory: 'instancedcity',
+    sources: ['InstancedCityScene.kt', 'CityShaders.kt', 'CityData.kt'] },
 ];
 
 const locale = (() => {

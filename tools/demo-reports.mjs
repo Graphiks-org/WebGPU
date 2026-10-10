@@ -3,6 +3,8 @@ export const DEMO_ROUTES = [
   { name: 'particles', ids: ['particles.compute-render-readback', 'particles.bounds-pause-reset'] },
   { name: 'reaction-diffusion', ids: ['reaction-diffusion.compute-render-readback',
     'reaction-diffusion.pause-step-reset', 'reaction-diffusion.brush-boundaries'] },
+  { name: 'instanced-city', ids: ['instanced-city.instances-render-readback',
+    'instanced-city.depth-occlusion', 'instanced-city.camera-resize-lifecycle'] },
 ];
 
 export function validateDemoReport(route, report, baseline) {
