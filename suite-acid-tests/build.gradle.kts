@@ -51,9 +51,6 @@ kotlin {
         // timeout instead of sleeping; the portable contract exposes suspend results only.
         implementation(libs.coroutines)
     }
-    sourceSets.commonTest.dependencies {
-        implementation(kotlin("test"))
-    }
 }
 
 val generateSuiteInventory = tasks.named(
