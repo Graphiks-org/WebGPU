@@ -55,15 +55,6 @@ remaining contract gaps.
 
 ## Run the browser suite
 
-`adapter.feature-level-core` checks omitted, default and explicit `GPUFeatureLevel.Core` requests.
-`adapter.feature-level-compatibility` requests `GPUFeatureLevel.Compatibility`, verifies that its
-device enables no features implicitly, and captures the validation error for a Core-only cube-array
-view (with a valid cube view as a control). Adapter capabilities are not required to disappear:
-only enabled device features determine these restrictions. If the implementation defaults that
-request to Core, the case reports `unsupported` with reason `compatibility-mode-core-fallback`;
-that outcome is not evidence of Compatibility validation. Missing adapters and actual failures
-remain failures.
-
 Build the distributions and run each target. The runner writes `build/reports/<target>.json` and
 exits non-zero when the run is incomplete or failed; it never turns a missing adapter or a timeout
 into a success.
