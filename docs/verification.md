@@ -163,68 +163,26 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   macOS ARM64 through its normal tasks. No native GPU execution is performed in this repository; that
   belongs to the consuming binding repositories, as for the acid tests.
 
-## Reaction-diffusion evidence (2026-10-10)
+## Reaction-diffusion verification
 
-- Commands actually executed:
+The GPU checks compare the Gray–Scott simulation with a CPU oracle and inspect the rendered
+grayscale pixels. They cover odd and even ping-pong steps, pause, single-step, reset, rejection
+of a closed scene and brush injection across the periodic grid boundaries.
 
-  ```sh
-  ./gradlew check :suite-core:compileKotlinJvm :suite-demos:compileKotlinJvm :suite-demos:compileKotlinMacosArm64 :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution
-  node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs tools/demo-reports.test.mjs tools/demos-gallery.browser.test.mjs
-  node --test tools/reaction-diffusion.browser.test.mjs
-  GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/reaction-diffusion.browser.test.mjs
-  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable --demo-check
-  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
-  node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
-  node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
-  node tools/build-site.mjs
-  ```
+Browser tests exercise mouse and touch painting, pointer capture and cancellation, hidden-canvas
+behaviour, device loss and cleanup of late acquisitions. They also check missing or malformed
+localized resources, accessible controls and the learning panel on desktop and mobile.
 
-- Build identity: `d30d290e3ee1b70ba1d1c658f2e14d5093c1ceed`, version `0.1.0-SNAPSHOT`.
-  Both demo and acid envelopes match the embedded inventory baseline. Later documentation commits
-  do not relabel these reports as a newer build.
-- Environment: JDK 25.0.1, Gradle 9.8.0, local Node 26.11.0 (CI remains Node 22), Playwright 1.63.0,
-  headless Chromium 153.0.8010.12 on macOS ARM64, requested `swiftshader` backend. These are
-  software-WebGPU functional results, not physical-GPU measurements.
-- `check` and the explicit compilation/distribution tasks pass (560 actionable tasks). CPU demo
-  tests: 3/3 on JVM, JS, Wasm JS and macOS ARM64; runner control/oracle tests: 6/6 on each browser
-  target. Kotlin-plugin, Gradle-deprecation and webpack bundle-size warnings remain; they are not
-  suppressed or represented as test failures.
-- Node tooling/gallery tests: **30/30**, including the 19 existing report/comparator regressions.
-  The negative CLI test verifies nonzero exit plus a retained failed envelope in a temporary fixture
-  root; no synthetic report is written into this repository's published-result directory.
-- Interactive browser tests: **11/11 on JS and 11/11 on Wasm**. They exercise pause/single-step/reset,
-  actual mouse capture and touch, periodic painting, ignored second pointers and cancellation,
-  hidden-canvas step preservation, device loss, late acquisition cleanup, missing adapter/texts,
-  accessible slider names, complete displayed WGSL and desktop/mobile lesson layout.
-- Demo reports: **5/5 passed on each target**, with no fatal or page errors. The three new ids compare
-  compute output against an independently checked CPU oracle, inspect rendered grayscale pixels,
-  exercise odd/even ping-pong steps, pause/reset, closed-scene rejection and boundary-crossing injection.
-- Acid regression: **151 passed + 1 unsupported of 152 on each target**, no failed cases.
-  The optional `compute.shader-f16` remains unsupported. Site assembly succeeds with the existing
-  contract's **922 symbols and 160 behaviours per locale**; demos do not increase acid coverage.
-- Visual evidence: each preset reset and evolved for at least 2000 instrumented GPU compute steps.
-  Local captures `reaction-coral-2000.png`, `reaction-labyrinth-2000.png` and `reaction-spots-2000.png`
-  show rings, connected winding patterns and separate spots respectively. They are non-versioned
-  exploratory captures, reproducible with `GRAPHIKS_CAPTURE_DIR`, not exact golden images. OpenChamber
-  also inspected the desktop/mobile page and opened the learning panel. This caught a CSS
-  `display:grid` override of the validation section's `hidden` attribute; a red visibility test
-  preceded the targeted `.validation[hidden]` fix.
-- No native GPU execution or Linux-host execution is claimed. Native CPU tests/compilation are
-  distinct from browser WebGPU verification. No benchmark campaign was added or rerun for this demo.
+```sh
+./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
+node --test tools/reaction-diffusion.browser.test.mjs
+GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/reaction-diffusion.browser.test.mjs
+```
 
-### Final independent review and rerun
-
-The independent review found no critical issues, but identified late initialization after pagehide
-during localization loading, malformed default JSON fields, and surface acquisition while a canvas
-is CSS-invisible. All three were reproduced with failing tests and corrected in `5b103e3`.
-The collector now also retains validation failures in the nested report's `fatalError`.
-
-After these fixes, the same complete Gradle check/distribution build passed again (560 actionable
-tasks). All **44 Node/tooling/gallery/JS interactive tests** and **13 Wasm interactive tests** pass.
-Both demo collectors still report **5/5**, both acid collectors **151 passed + 1 optional unsupported
-of 152**, and site assembly succeeds. Regenerated reports identify build
-`5b103e3` (`0.1.0-SNAPSHOT`) and match their inventory baseline; subsequent documentation does not
-change that attribution. No review findings remain unresolved.
+Build the browser distributions before running the Node tests, as described in
+[Running the suite](running.md). Set `GRAPHIKS_CAPTURE_DIR` to retain captures of each preset
+after at least 2000 simulation steps. These captures help inspect the patterns, but are not
+pixel-exact references across GPU backends.
 
 ## Readable report evidence
 
@@ -345,39 +303,35 @@ change that attribution. No review findings remain unresolved.
   [ArrayBuffer CPU performance](arraybuffer-performance.md) and
   [ArrayBuffer bounds and capacities](arraybuffer-bounds.md).
 
-## Instanced cyberpunk city — 2026-10-10
+## Instanced cyberpunk city verification
 
-Final GPU report identity: `9a9c6a831d200bd07218e872185b1fea3510ac65`, version
-`0.1.0-SNAPSHOT`, identical to the generated inventory. Production sources were committed;
-only usage/evidence documentation was pending. Earlier exploratory reports are not the final evidence.
-Local environment: macOS ARM64, JDK 25, Gradle 9.8, Node **26.11.0** (not CI's Node 22),
-Playwright 1.63.0 / Chromium 153.0.8010.12 with the runner's SwiftShader flags.
+The GPU checks verify instance transforms and colors, order-independent depth occlusion and
+camera/resize/resource lifecycle. A pixel assertion also checks that distant windows retain light.
 
-- `./gradlew check :suite-demos:compileKotlinJvm :suite-demos:compileKotlinMacosArm64 :suite-browser:jsBrowserDistribution :suite-browser:wasmJsBrowserDistribution` passed.
-  After the independent review fixes, `check`, macOS compilation and both distributions passed again.
-  The XML reports record nine demo CPU tests on each executed target and ten browser CPU tests per
-  JS/Wasm target, with zero failures/errors. Native tests here exercise math/data, not a native GPU.
-- `node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs tools/demo-reports.test.mjs tools/demos-gallery.browser.test.mjs`: **33/33**.
-- `node --test tools/instanced-city.browser.test.mjs tools/reaction-diffusion.browser.test.mjs`
-  and the same command with `GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable`:
-  **30/30 per target** after review fixes. One concurrent JS run showed a non-reproduced screenshot
-  discrepancy in the density roundtrip; isolated and full reruns passed without a production change.
-- `node tools/run-browser.mjs <js|wasm> suite-browser/build/dist/<js|wasmJs>/productionExecutable --demo-check`:
-  **8/8 unique cases passed per target**, no fatal/page errors; identities checked against inventory.
-  The same commands without `--demo-check`: **151 passed, 1 unsupported, 0 failed of 152 per target**.
-  The unavailable optional case was `compute.shader-f16`. Demos did not increase acid coverage.
-- `node tools/build-site.mjs`, `./gradlew :docs:embedDokkaIntoMkDocs` and
-  `build/docs-venv/bin/mkdocs build --strict -f docs/mkdocs.yml` passed; the existing docs venv was reused.
+Browser tests cover mouse and touch orbit, pointer cancellation, wheel units, reduced motion,
+restoration of hidden or detached canvases without an extra resize event, device loss and late
+initialization. Allocation-failure fixtures check partial-buffer cleanup and atomic replacement
+of the scene and depth texture. They inject errors rather than exhaust GPU memory.
 
-Real mouse and CDP touch gestures, pointer cancellation, wheel modes, reduced motion, hidden/detached
-canvas restoration **without artificial resize**, device loss and late acquisition/text loading were
-exercised. Allocation-failure fixtures check partial buffers, depth preparation and the local
-OutOfMemory scope; these are injected boundary failures, not evidence of exhausting GPU memory.
-The independent review found two Important lifecycle issues; both have RED→GREEN regressions and
-the whole suite above passed after correction. Minified-window light also has a real GPU RED→GREEN
-pixel check. Local captures cover the three densities, height 0.5/2, overhead/oblique and mobile;
-the compiled site was opened at `/run/js/?demo=instanced-city&lang=fr` in OpenChamber.
+```sh
+node --test tools/instanced-city.browser.test.mjs
+GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/instanced-city.browser.test.mjs
+node --test tools/wgsl-lessons.browser.test.mjs
+GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/wgsl-lessons.browser.test.mjs
+```
 
-This is functional software-GPU evidence, not physical-GPU performance or native GPU execution.
-No benchmarks were rerun; Android/Windows/Linux device runs are not claimed. The city branch remains
-dependent on the unmerged reaction-diffusion PR #141; no city publication or merge is implied.
+Visual fixtures cover the three densities, height extremes, overhead and oblique views, and mobile
+layout. The shared shader-panel tests check EN/FR text, syntax coloring and exact correspondence
+between displayed WGSL and compiled source in all three demos.
+
+## Collecting and interpreting demo results
+
+`--demo-check` collects eight unique GPU cases across particles, reaction-diffusion and the city.
+The collector checks report identities against the generated inventory. Missing routes, malformed
+reports, duplicate or missing cases, fatal errors and page errors remain failures. Partial results
+are retained, and demo reports stay separate from acid-test coverage and benchmarks.
+
+Software-backend checks establish functional behaviour, not physical-GPU performance. Native
+compilation and CPU tests do not establish native GPU execution. See [Running the suite](running.md)
+for commands and [the published validation page](https://graphiks-org.github.io/WebGPU/suite/)
+for execution results and their environment.

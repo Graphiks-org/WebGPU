@@ -1,5 +1,7 @@
 # Running the Graphiks WebGPU Suite
 
+[Français](running.fr.md)
+
 The suite validates the public Graphiks WebGPU contract with portable acid tests that execute
 against a real browser WebGPU implementation. `suite-core` defines the execution contract,
 `suite-acid-tests` holds the cases, and `suite-browser` is the web runner. The same content modules
@@ -101,7 +103,7 @@ no GPU time, frame-rate measurement or ranking is claimed.
 
 ## Run the reaction-diffusion demo
 
-All three interactive demo pages have a shared Demo selector at the top. Switching between Particles
+All three interactive demo pages have a shared Demo selector at the top. Switching between Particles,
 Reaction-diffusion and Cyberpunk city preserves the locale and JS/Wasm runner path, and reloads the page so the
 outgoing demo releases its GPU resources. Simulation state is not preserved across demos.
 
@@ -192,8 +194,8 @@ lines are procedural, with analytical minification of windows, no compute, textu
 The folded teaching panel shows the exact compiled WGSL and explains these two draws.
 All three demos use spacious formatting and shared dependency-free syntax coloring for keywords, types,
 attributes, numbers and comments. Highlighting inserts literal text spans, preserving the source
-for copying without parsing it as HTML; only whitespace in the compiled shaders was reformatted.
-Particles now also offer a folded EN/FR panel showing their compute and instanced-render shaders.
+for copying without parsing it as HTML. The particle panel shows its compute and instanced-render shaders
+in EN/FR, and is folded by default.
 
 ```sh
 node --test tools/wgsl-lessons.browser.test.mjs
