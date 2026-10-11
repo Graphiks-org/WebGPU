@@ -19,7 +19,6 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, extname, isAbsolute, join, normalize, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
-import { isAcceptedAcidResult } from './acid-result.mjs';
 import { collectDemoReports, DEMO_ROUTES } from './demo-reports.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -305,7 +304,17 @@ if (mode === 'benchmark') {
   if (unexpected.length > 0) problems.push(`unexpected case ids: ${unexpected.join(', ')}`);
   // Only declared optional features and the Compatibility case's spec-permitted Core fallback
   // may be unsupported. Arbitrary errors, missing adapters and timeouts remain failures.
-  const notPassed = cases.filter((entry) => !isAcceptedAcidResult(entry, declaredFeaturesById.get(entry.id) ?? []));
+  const notPassed = cases.filter((entry) => {
+    if (entry.status === 'passed') return false;
+    if (entry.status !== 'unsupported') return true;
+    if (entry.id === 'adapter.feature-level-compatibility'
+        && entry.unsupportedReason === 'compatibility-mode-core-fallback') return false;
+    const declared = declaredFeaturesById.get(entry.id) ?? [];
+    const reported = entry.missingFeatures ?? [];
+    return declared.length === 0
+      || reported.length === 0
+      || !reported.every((feature) => declared.includes(feature));
+  });
   if (notPassed.length > 0) {
     problems.push(`cases not passed: ${notPassed.map((entry) => `${entry.id}=${entry.status}`).join(', ')}`);
   }
