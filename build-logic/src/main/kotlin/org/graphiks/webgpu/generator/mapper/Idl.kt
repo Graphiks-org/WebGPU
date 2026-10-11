@@ -60,7 +60,11 @@ internal fun IdlType.toWebKotlinType(): String = when (this) {
             "ArrayBuffer" -> "js.buffer.ArrayBuffer"
             "undefined" -> "Unit"
             "DOMString", "USVString" -> "String /* $this */"
-            "sequence", "FrozenArray" -> "JsArray<JsAny> /* $this<${this.parameterTypes?.get(0)}> */"
+            "sequence", "FrozenArray" -> {
+                val elementType = this.parameterTypes?.get(0)
+                val element = if (elementType?.endsWith("?") == true) "JsAny?" else "JsAny"
+                "JsArray<$element> /* $this<$elementType> */"
+            }
             "record" -> "WebGpuRecord /* $this<${this.parameterTypes?.get(0)}, ${this.parameterTypes?.get(1)}>  */"
             "Promise" -> {
                 val nullableValue = parameterTypes?.firstOrNull()?.endsWith("?") == true
@@ -88,28 +92,33 @@ private fun String.reapplyNullability(nullable: Boolean): String {
 
 internal fun IdlType.toKotlinType(): String = (this as IdlSimpleType).let {
     when (typeName) {
-        "sequence", "FrozenArray" -> "List<${this.parameterTypes!!.first().toKotlinType().removeSuffix("?")}>"
+        "sequence", "FrozenArray" -> "List<${this.parameterTypes!!.first().toKotlinType()}>"
         "record" -> "Map<${this.parameterTypes!!.first().toKotlinType()}, ${this.parameterTypes!![1].toKotlinType()}>"
         "Promise" -> "Result<${this.parameterTypes!!.first().toKotlinType()}>"
         else -> typeName.toKotlinType()
     }
 }
 
-internal fun String.toKotlinType(): String = when (this) {
-    "unsigned long" -> "UInt"
-    "unsigned long long" -> "ULong"
-    "short" -> "Short"
-    "unsigned short" -> "UShort"
-    "long" -> "Int"
-    "long long" -> "Long"
-    "float" -> "Float"
-    "double" -> "Double"
-    "DOMString", "USVString" -> "String"
-    "boolean" -> "Boolean"
-    "undefined" -> "Unit"
-    "AllowSharedBufferSource" -> "ArrayBuffer"
-    "Uint32Array" -> "List<UInt>"
-    else -> this
+internal fun String.toKotlinType(): String {
+    val nullable = endsWith("?")
+    val baseName = removeSuffix("?")
+    val converted = when (baseName) {
+        "unsigned long" -> "UInt"
+        "unsigned long long" -> "ULong"
+        "short" -> "Short"
+        "unsigned short" -> "UShort"
+        "long" -> "Int"
+        "long long" -> "Long"
+        "float" -> "Float"
+        "double" -> "Double"
+        "DOMString", "USVString" -> "String"
+        "boolean" -> "Boolean"
+        "undefined" -> "Unit"
+        "AllowSharedBufferSource" -> "ArrayBuffer"
+        "Uint32Array" -> "List<UInt>"
+        else -> baseName
+    }
+    return if (nullable) "$converted?" else converted
 }
 
 /**

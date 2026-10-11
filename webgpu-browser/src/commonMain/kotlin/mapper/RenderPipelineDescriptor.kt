@@ -45,11 +45,11 @@ internal fun map(input: GPURenderPipelineDescriptor): WGPURenderPipelineDescript
         multisample = map(input.multisample)
     }
 
-private fun map(input: GPUVertexState): WGPUVertexState = createJsObject<WGPUVertexState>().apply {
+internal fun map(input: GPUVertexState): WGPUVertexState = createJsObject<WGPUVertexState>().apply {
     module = (input.module as ShaderModule).handler
     input.entryPoint?.let { entryPoint = it }
     constants = mapConstants(input.constants)
-    buffers = input.buffers.mapJsArray { map(it) }
+    buffers = input.buffers.mapJsArray { buffer -> buffer?.let { map(it) } }
 }
 
 private fun map(input: GPUVertexBufferLayout): WGPUVertexBufferLayout =
@@ -104,9 +104,9 @@ private fun map(input: GPUMultisampleState): WGPUMultisampleState =
         alphaToCoverageEnabled = input.alphaToCoverageEnabled
     }
 
-private fun map(input: GPUFragmentState): WGPUFragmentState =
+internal fun map(input: GPUFragmentState): WGPUFragmentState =
     createJsObject<WGPUFragmentState>().apply {
-        targets = input.targets.mapJsArray { map(it) }
+        targets = input.targets.mapJsArray { target -> target?.let { map(it) } }
         module = (input.module as ShaderModule).handler
         input.entryPoint?.let { entryPoint = it }
         constants = mapConstants(input.constants)

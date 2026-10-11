@@ -25,6 +25,8 @@ import org.graphiks.webgpu.browser.getCanvasSurface
 import org.graphiks.webgpu.browser.requestAdapter
 import org.graphiks.webgpu.descriptors.DeviceDescriptor
 import org.graphiks.webgpu.suite.demos.particles.ParticleScene
+import org.graphiks.webgpu.suite.demos.particles.ParticleComputeShader
+import org.graphiks.webgpu.suite.demos.particles.ParticleRenderShader
 import org.graphiks.webgpu.suite.demos.particles.initialParticles
 import org.graphiks.webgpu.suite.demos.particles.maxParticleCount
 
@@ -43,6 +45,10 @@ internal data class ParticleTexts(
     val unavailable: String,
     val failed: String,
     val loading: String,
+    val lesson: String,
+    val shaderHelp: String,
+    val computeShader: String,
+    val renderShader: String,
 )
 
 private val ProposedCounts = listOf(256, 1024, 4096, 16384, 65536)
@@ -179,6 +185,17 @@ private class ParticleDemoPage(private val texts: ParticleTexts) : AutoCloseable
         controls.appendChild(countSelect)
 
         section.appendChild(controls)
+
+        val lesson = createElement("details")
+        lesson.setAttribute("id", "particles-lesson")
+        lesson.appendChild(createElement("summary").also { it.setText(texts.lesson) })
+        lesson.appendChild(createElement("p").also { it.setText(texts.shaderHelp) })
+        for ((label, shader) in listOf(texts.computeShader to ParticleComputeShader,
+            texts.renderShader to ParticleRenderShader)) {
+            lesson.appendChild(createElement("h2").also { it.setText(label) })
+            lesson.appendChild(wgslBlock(shader))
+        }
+        section.appendChild(lesson)
 
         status.setClass("demo-status")
         status.setAttribute("id", "demo-status")

@@ -9,8 +9,11 @@ import org.graphiks.webgpu.browser.mapper.map
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.unsafeCast
 
-/** A configured WebGPU canvas context that owns the textures it hands out. */
-class CanvasSurface(val handler: WGPUCanvasContext) {
+/**
+ * A configured WebGPU canvas context. The textures it hands out are borrowed from the canvas:
+ * closing their wrapper never destroys them.
+ */
+class CanvasSurface(val handler: WGPUCanvasContext) : AutoCloseable {
 
     val width: UInt
         get() = handler.canvas.unsafeCast<HTMLCanvasElement>().width.toUInt()
@@ -24,7 +27,7 @@ class CanvasSurface(val handler: WGPUCanvasContext) {
             ?.let { GPUTextureFormat.of(it) }
 
     fun getCurrentTexture(): SurfaceTexture =
-        SurfaceTexture(Texture(handler.getCurrentTexture(), canBeDestroy = false))
+        SurfaceTexture(Texture.wrapBorrowed(handler.getCurrentTexture()))
 
     /** Presentation is handled by the browser once the pass is submitted. */
     fun present() {
@@ -35,7 +38,11 @@ class CanvasSurface(val handler: WGPUCanvasContext) {
         handler.configure(map(configuration))
     }
 
-    fun close() {
+    /**
+     * Unconfigures the canvas context. The device passed to [configure] is not owned by this
+     * surface and is not closed.
+     */
+    override fun close() {
         handler.unconfigure()
     }
 }

@@ -1,6 +1,6 @@
 {
   "title": "Compute particles",
-  "description": "The CPU writes the particles once. A compute pass then updates that same GPU buffer every frame, and the render pass draws it directly as an instanced vertex buffer, with no CPU readback in between.",
+  "description": "Particles move and bounce inside a square. The CPU creates their data once, then the GPU handles movement and rendering from the same buffer without a CPU readback in between.",
   "pause": "Pause",
   "resume": "Resume",
   "reset": "Reset",
@@ -8,5 +8,9 @@
   "source": "View the scene source code",
   "unavailable": "WebGPU is not available in this browser.",
   "failed": "The particle demo stopped after an error.",
-  "loading": "Loading the particle demo…"
+  "loading": "Loading the particle demo…",
+  "lesson": "How do these shaders work?",
+  "shaderHelp": "Each frame, the compute shader updates particle positions and reverses their velocity when they reach a boundary. The render pass reads this buffer directly as instance data to draw one disk per particle. The data stays on the GPU between the two passes. The WGSL shown below is the actual compiled code.",
+  "computeShader": "Simulation — compiled WGSL",
+  "renderShader": "Rendering — compiled WGSL"
 }

@@ -14,6 +14,6 @@ internal fun map(input: GPUPipelineLayoutDescriptor): WGPUPipelineLayoutDescript
     createJsObject<WGPUPipelineLayoutDescriptor>().apply {
         label = input.label
         bindGroupLayouts = input.bindGroupLayouts
-            .mapJsArray { (it as BindGroupLayout).handler }
+            .mapJsArray { layout -> (layout as BindGroupLayout?)?.handler }
         immediateSize = input.immediateSize.asJsNumber()
     }

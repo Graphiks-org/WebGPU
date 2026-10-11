@@ -5,10 +5,6 @@ package org.graphiks.webgpu.browser.mapper
 import org.graphiks.webgpu.GPUSupportedLimits
 import org.graphiks.webgpu.browser.Limits
 import org.graphiks.webgpu.bindings.WGPUSupportedLimits
-import org.graphiks.webgpu.bindings.WebGpuRecord
-import org.graphiks.webgpu.bindings.asJsNumber
-import org.graphiks.webgpu.bindings.createWebGpuRecord
-import org.graphiks.webgpu.bindings.setRecordValue
 import org.graphiks.webgpu.bindings.toULong
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.JsNumber
@@ -17,76 +13,11 @@ import kotlin.js.toInt
 import kotlin.toUInt
 
 /**
- * Maps the requested limits onto a `requiredLimits` record.
- *
- * A maximum-class limit whose value is zero is omitted. The reader maps a limit the implementation
- * does not expose to zero, and a browser rejects a `requiredLimits` key it does not recognise
- * (`maxImmediateSize`, for example, is absent on older Chromium). For a maximum, a zero requirement
- * is always satisfiable, so omitting it keeps the request valid on implementations older than the
- * contract.
- *
- * The two alignment-class limits are always sent. Zero is not a satisfiable alignment: it is an
- * invalid requirement, and omitting it would silently replace a bad request with the default
- * alignment instead of rejecting it.
- */
-internal fun map(input: GPUSupportedLimits): WebGpuRecord = createWebGpuRecord().also { record ->
-    putLimit(record, "maxTextureDimension1D", input.maxTextureDimension1D)
-    putLimit(record, "maxTextureDimension2D", input.maxTextureDimension2D)
-    putLimit(record, "maxTextureDimension3D", input.maxTextureDimension3D)
-    putLimit(record, "maxTextureArrayLayers", input.maxTextureArrayLayers)
-    putLimit(record, "maxBindGroups", input.maxBindGroups)
-    putLimit(record, "maxBindGroupsPlusVertexBuffers", input.maxBindGroupsPlusVertexBuffers)
-    putLimit(record, "maxBindingsPerBindGroup", input.maxBindingsPerBindGroup)
-    putLimit(record, "maxDynamicUniformBuffersPerPipelineLayout", input.maxDynamicUniformBuffersPerPipelineLayout)
-    putLimit(record, "maxDynamicStorageBuffersPerPipelineLayout", input.maxDynamicStorageBuffersPerPipelineLayout)
-    putLimit(record, "maxSampledTexturesPerShaderStage", input.maxSampledTexturesPerShaderStage)
-    putLimit(record, "maxSamplersPerShaderStage", input.maxSamplersPerShaderStage)
-    putLimit(record, "maxStorageBuffersPerShaderStage", input.maxStorageBuffersPerShaderStage)
-    putLimit(record, "maxStorageTexturesPerShaderStage", input.maxStorageTexturesPerShaderStage)
-    putLimit(record, "maxUniformBuffersPerShaderStage", input.maxUniformBuffersPerShaderStage)
-    putLimit(record, "maxUniformBufferBindingSize", input.maxUniformBufferBindingSize)
-    putLimit(record, "maxStorageBufferBindingSize", input.maxStorageBufferBindingSize)
-    putRequiredLimit(record, "minUniformBufferOffsetAlignment", input.minUniformBufferOffsetAlignment)
-    putRequiredLimit(record, "minStorageBufferOffsetAlignment", input.minStorageBufferOffsetAlignment)
-    putLimit(record, "maxVertexBuffers", input.maxVertexBuffers)
-    putLimit(record, "maxBufferSize", input.maxBufferSize)
-    putLimit(record, "maxVertexAttributes", input.maxVertexAttributes)
-    putLimit(record, "maxVertexBufferArrayStride", input.maxVertexBufferArrayStride)
-    putLimit(record, "maxInterStageShaderVariables", input.maxInterStageShaderVariables)
-    putLimit(record, "maxColorAttachments", input.maxColorAttachments)
-    putLimit(record, "maxColorAttachmentBytesPerSample", input.maxColorAttachmentBytesPerSample)
-    putLimit(record, "maxComputeWorkgroupStorageSize", input.maxComputeWorkgroupStorageSize)
-    putLimit(record, "maxComputeInvocationsPerWorkgroup", input.maxComputeInvocationsPerWorkgroup)
-    putLimit(record, "maxComputeWorkgroupSizeX", input.maxComputeWorkgroupSizeX)
-    putLimit(record, "maxComputeWorkgroupSizeY", input.maxComputeWorkgroupSizeY)
-    putLimit(record, "maxComputeWorkgroupSizeZ", input.maxComputeWorkgroupSizeZ)
-    putLimit(record, "maxComputeWorkgroupsPerDimension", input.maxComputeWorkgroupsPerDimension)
-    putLimit(record, "maxImmediateSize", input.maxImmediateSize)
-    putLimit(record, "maxStorageBuffersInVertexStage", input.maxStorageBuffersInVertexStage)
-    putLimit(record, "maxStorageBuffersInFragmentStage", input.maxStorageBuffersInFragmentStage)
-    putLimit(record, "maxStorageTexturesInVertexStage", input.maxStorageTexturesInVertexStage)
-    putLimit(record, "maxStorageTexturesInFragmentStage", input.maxStorageTexturesInFragmentStage)
-}
-
-private fun putLimit(record: WebGpuRecord, name: String, value: UInt) {
-    if (value != 0u) setRecordValue(record, name, value.asJsNumber())
-}
-
-private fun putLimit(record: WebGpuRecord, name: String, value: ULong) {
-    if (value != 0uL) setRecordValue(record, name, value.asJsNumber())
-}
-
-/** Sends a limit whose value is always meaningful, including an invalid zero. */
-private fun putRequiredLimit(record: WebGpuRecord, name: String, value: UInt) {
-    setRecordValue(record, name, value.asJsNumber())
-}
-
-/**
  * Reads one raw limit, treating a property the implementation does not expose as zero.
  *
  * Chromium does not define every limit yet (for example `maxImmediateSize`), and reading such a
- * property as a non-null `JsNumber` throws on Kotlin/Wasm. Falling back to zero keeps the mapper
- * usable there; a required limit is always present.
+ * property as a non-null `JsNumber` throws on Kotlin/Wasm. Falling back to zero keeps the reader
+ * usable there.
  */
 private fun limitValue(input: WGPUSupportedLimits, name: String): JsNumber =
     js("input[name] === undefined ? 0 : input[name]")

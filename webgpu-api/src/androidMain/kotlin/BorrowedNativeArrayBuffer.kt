@@ -215,26 +215,20 @@ internal class BorrowedNativeArrayBuffer(
     private fun readBytes(offset: ULong, destination: ByteArray, destinationIndex: Int, length: Int) {
         if (length == 0) return
         checkOffset(offset, length)
-        unsafe.copyMemory(
-            null,
-            address + offset.toLong(),
-            destination,
-            Unsafe.ARRAY_BYTE_BASE_OFFSET.toLong() + destinationIndex.toLong(),
-            length.toLong(),
-        )
+        // ART has neither HotSpot's array-offset constants nor its object-based
+        // copyMemory overload. Scalar absolute-address access works on both.
+        for (index in 0 until length) {
+            destination[destinationIndex + index] = unsafe.getByte(address + offset.toLong() + index)
+        }
     }
 
     /** Bulk-writes [length] bytes from [source] starting at [sourceIndex]. */
     private fun writeBytes(offset: ULong, source: ByteArray, sourceIndex: Int, length: Int) {
         if (length == 0) return
         checkOffset(offset, length)
-        unsafe.copyMemory(
-            source,
-            Unsafe.ARRAY_BYTE_BASE_OFFSET.toLong() + sourceIndex.toLong(),
-            null,
-            address + offset.toLong(),
-            length.toLong(),
-        )
+        for (index in 0 until length) {
+            unsafe.putByte(address + offset.toLong() + index, source[sourceIndex + index])
+        }
     }
 
     private companion object {
@@ -248,5 +242,6 @@ internal class BorrowedNativeArrayBuffer(
         } catch (failure: ReflectiveOperationException) {
             throw IllegalStateException("sun.misc.Unsafe is not accessible on this platform", failure)
         }
+
     }
 }

@@ -10,6 +10,10 @@ sealed interface GPUBindingResource
 /**
  * A GPUBuffer represents a block of memory that can be used in GPU operations. Data is stored in linear layout, meaning that each byte of the allocation can be addressed by its offset from the start of the GPUBuffer, subject to alignment restrictions depending on the operation. Some GPUBuffers can be mapped which makes the block of memory accessible via an ArrayBuffer called its mapping.
  *
+ * ## Lifetime
+ *
+ * A GPUBuffer created by a device is owned by the caller. `close()` destroys the buffer: it runs the WebGPU `destroy` operation, and a native backend must also release its owned reference. Closing an already closed buffer does not release the same reference a second time; general thread safety is not promised. Mapped ranges are borrowed: they are invalidated by `unmap()` and by destroying the buffer. Whether a backend detects an access to an invalidated range is not portable.
+ *
  */
 interface GPUBuffer : GPUBindingResource, GPUObjectBase, AutoCloseable {
 	/**
@@ -25,7 +29,7 @@ interface GPUBuffer : GPUBindingResource, GPUObjectBase, AutoCloseable {
 	 * See [GPUBuffer.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpubuffer-usage).
 	 *
 	 */
-	val usage: Set<GPUBufferUsage>
+	val usage: GPUBufferUsage
 	/**
 	 * The buffer is not mapped for use by this.getMappedRange(). A mapping of the buffer has been requested, but is pending. It may succeed, or fail validation in mapAsync().
 	 *
@@ -43,13 +47,15 @@ interface GPUBuffer : GPUBindingResource, GPUObjectBase, AutoCloseable {
 	/**
 	 * Returns an ArrayBuffer with the contents of the GPUBuffer in the given mapped range.
 	 *
+	 * The returned range is borrowed, not owned: it is invalidated by `unmap()` and by destroying the buffer, and it must not be retained or used after either. Prefer `GPUBuffer.withMappedRange`, which maps, runs a non-suspending block with the borrowed range and unmaps in a `finally`.
+	 *
 	 * @param offset Offset in bytes into the buffer to return buffer contents from.
 	 * @param size Size in bytes of the ArrayBuffer to return.
 	 *
 	 */
 	fun getMappedRange(offset: GPUSize64 = 0u, size: GPUSize64? = null): ArrayBuffer
 	/**
-	 * Unmaps the mapped range of the GPUBuffer and makes its contents available for use by the GPU again.
+	 * Unmaps the mapped range of the GPUBuffer and makes its contents available for use by the GPU again. Every borrowed range previously returned by `getMappedRange` is invalidated by this call.
 	 *
 	 */
 	fun unmap()
@@ -86,6 +92,10 @@ interface GPUBufferBinding : GPUBindingResource {
 interface GPUSampler : GPUBindingResource, GPUObjectBase, AutoCloseable
 /**
  * A texture is made up of 1d, 2d, or 3d arrays of data which can contain multiple values per-element to represent things like colors. Textures can be read and written in many ways, depending on the GPUTextureUsage they are created with. For example, textures can be sampled, read, and written from render and compute pipeline shaders, and they can be written by render pass outputs. Internally, textures are often stored in GPU memory with a layout optimized for multidimensional access rather than linear access.
+ *
+ * ## Lifetime
+ *
+ * A GPUTexture created by a device is owned by the caller: `close()` destroys it, and a native backend must also release its owned reference. A texture obtained from a canvas context is borrowed: closing its wrapper does not destroy the texture owned by the canvas. Closing an already closed texture does not release the same reference a second time.
  *
  */
 interface GPUTexture : GPUBindingResource, GPUObjectBase, GPUTextureOrGPUTextureView, AutoCloseable {
@@ -142,7 +152,7 @@ interface GPUTexture : GPUBindingResource, GPUObjectBase, GPUTextureOrGPUTexture
 	 * See [GPUTexture.usage in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gputexture-usage).
 	 *
 	 */
-	val usage: Set<GPUTextureUsage>
+	val usage: GPUTextureUsage
 	/**
 	 * Creates a GPUTextureView.
 	 *
@@ -536,6 +546,10 @@ interface GPUAdapter : AutoCloseable {
 /**
  * A GPUDevice encapsulates a device and exposes the functionality of that device.
  *
+ * ## Lifetime
+ *
+ * `close()` destroys the device and triggers the loss notification observed by `awaitLost`, with the destruction reason when the backend provides one. Closing an already closed device does not release the same reference a second time.
+ *
  */
 interface GPUDevice : GPUObjectBase, AutoCloseable {
 	/**
@@ -670,6 +684,18 @@ interface GPUDevice : GPUObjectBase, AutoCloseable {
 	 *
 	 */
 	suspend fun popErrorScope(): Result<GPUError?>
+/**
+ * Waits until this device is lost and resolves with the loss information.
+ *
+ * The loss is a successful result: it carries a [GPUDeviceLostReason] and an
+ * implementation-provided message, it is not a failure of the returned [Result].
+ * Several observers may wait at the same time and all of them observe the same
+ * loss; an observer that starts waiting after the loss resolves immediately.
+ * Cancelling one observer neither cancels the other observers nor destroys the
+ * device. Closing the device explicitly notifies the loss with the destruction
+ * reason when the backend provides one.
+ */
+	suspend fun awaitLost(): Result<GPUDeviceLostInfo>
 }
 
 /**
@@ -1256,7 +1282,7 @@ interface GPUDeviceDescriptor : GPUObjectDescriptorBase {
 	 * Specifies the limits that are required by the device request. The request will fail if the adapter cannot provide these limits. Each key with a non-undefined value must be the name of a member of supported limits.
 	 *
 	 */
-	val requiredLimits: GPUSupportedLimits?
+	val requiredLimits: GPURequiredLimits?
 	/**
 	 * The descriptor for the default GPUQueue.
 	 *
@@ -1633,7 +1659,7 @@ interface GPUPipelineLayoutDescriptor : GPUObjectDescriptorBase {
 	 * A list of optional GPUBindGroupLayouts the pipeline will use. Each element corresponds to a @group attribute in the GPUShaderModule, with the Nth element corresponding with @group(N).
 	 *
 	 */
-	val bindGroupLayouts: List<GPUBindGroupLayout>
+	val bindGroupLayouts: List<GPUBindGroupLayout?>
 	/**
 	 * The size, in bytes, of the immediate data range used by the pipeline.
 	 *
@@ -1820,7 +1846,7 @@ interface GPUFragmentState : GPUProgrammableStage {
 	 * A list of GPUColorTargetState defining the formats and behaviors of the color targets this pipeline writes to.
 	 *
 	 */
-	val targets: List<GPUColorTargetState>
+	val targets: List<GPUColorTargetState?>
 }
 
 /**
@@ -1977,7 +2003,7 @@ interface GPUVertexState : GPUProgrammableStage {
 	 * A list of GPUVertexBufferLayouts, each defining the layout of vertex attribute data in a vertex buffer used by this pipeline.
 	 *
 	 */
-	val buffers: List<GPUVertexBufferLayout>
+	val buffers: List<GPUVertexBufferLayout?>
 }
 
 /**
@@ -2168,7 +2194,7 @@ interface GPURenderPassDescriptor : GPUObjectDescriptorBase {
 	 * The set of GPURenderPassColorAttachment values in this sequence defines which color attachments will be output to when executing this render pass. Due to usage compatibility, no color attachment may alias another attachment or any resource used inside the render pass.
 	 *
 	 */
-	val colorAttachments: List<GPURenderPassColorAttachment>
+	val colorAttachments: List<GPURenderPassColorAttachment?>
 	/**
 	 * The GPURenderPassDepthStencilAttachment value that defines the depth/stencil attachment that will be output to and tested against when executing this render pass. Due to usage compatibility, no writable depth/stencil attachment may alias another attachment or any resource used inside the render pass.
 	 *
@@ -2294,7 +2320,7 @@ interface GPURenderPassLayout : GPUObjectDescriptorBase {
 	 * A list of the GPUTextureFormats of the color attachments for this pass or bundle.
 	 *
 	 */
-	val colorFormats: List<GPUTextureFormat>
+	val colorFormats: List<GPUTextureFormat?>
 	/**
 	 * The GPUTextureFormat of the depth/stencil attachment for this pass or bundle.
 	 *
@@ -2369,4 +2395,43 @@ fun interface GPUUncapturedErrorCallback {
 	 *
 	 */
 	fun onUncapturedError(error: GPUError)
+}
+
+interface GPURequiredLimits {
+	val maxTextureDimension1D: UInt?
+	val maxTextureDimension2D: UInt?
+	val maxTextureDimension3D: UInt?
+	val maxTextureArrayLayers: UInt?
+	val maxBindGroups: UInt?
+	val maxBindGroupsPlusVertexBuffers: UInt?
+	val maxImmediateSize: UInt?
+	val maxBindingsPerBindGroup: UInt?
+	val maxDynamicUniformBuffersPerPipelineLayout: UInt?
+	val maxDynamicStorageBuffersPerPipelineLayout: UInt?
+	val maxSampledTexturesPerShaderStage: UInt?
+	val maxSamplersPerShaderStage: UInt?
+	val maxStorageBuffersPerShaderStage: UInt?
+	val maxStorageBuffersInVertexStage: UInt?
+	val maxStorageBuffersInFragmentStage: UInt?
+	val maxStorageTexturesPerShaderStage: UInt?
+	val maxStorageTexturesInVertexStage: UInt?
+	val maxStorageTexturesInFragmentStage: UInt?
+	val maxUniformBuffersPerShaderStage: UInt?
+	val maxUniformBufferBindingSize: ULong?
+	val maxStorageBufferBindingSize: ULong?
+	val minUniformBufferOffsetAlignment: UInt?
+	val minStorageBufferOffsetAlignment: UInt?
+	val maxVertexBuffers: UInt?
+	val maxBufferSize: ULong?
+	val maxVertexAttributes: UInt?
+	val maxVertexBufferArrayStride: UInt?
+	val maxInterStageShaderVariables: UInt?
+	val maxColorAttachments: UInt?
+	val maxColorAttachmentBytesPerSample: UInt?
+	val maxComputeWorkgroupStorageSize: UInt?
+	val maxComputeInvocationsPerWorkgroup: UInt?
+	val maxComputeWorkgroupSizeX: UInt?
+	val maxComputeWorkgroupSizeY: UInt?
+	val maxComputeWorkgroupSizeZ: UInt?
+	val maxComputeWorkgroupsPerDimension: UInt?
 }

@@ -21,7 +21,12 @@ class QuerySet(val handler: WGPUQuerySet): GPUQuerySet {
         get() = handler.label
         set(value) { handler.label = value }
 
+    private var closed = false
+
     override fun close() {
+        // A repeated close must not release the same owned reference twice.
+        if (closed) return
+        closed = true
         handler.destroy()
     }
 }

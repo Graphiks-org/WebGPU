@@ -4,9 +4,18 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ## [Unreleased]
 
+### Fixed
+
+- Android `ArrayBuffer` typed factories and views now use native byte order for GPU data; borrowed native-memory bulk reads and writes no longer depend on HotSpot-only `Unsafe` fields or methods unavailable on ART.
+
 ### Added
 
 - Core and Compatibility feature-level acid cases: implicit device features and cube-array validation, with an explicit unsupported result for the spec-permitted Core fallback.
+- Portable image filter lab with an original illustration and local PNG/JPEG/WebP import, five adjustable compute filters, an original/result divider and bilingual learning panels. The gallery and selector offer four demos, and `--demo-check` validates eleven GPU cases on JS and Wasm.
+- Shared bilingual learning panels with readable, syntax-colored WGSL matching the compiled sources in all four demos.
+- Portable cyberpunk city with reproducible 256/1024/4096-building grids, depth testing, procedural illuminated windows and streets, mouse/touch orbit, height controls and reduced-motion-aware rotation.
+- Portable Gray–Scott reaction-diffusion with three presets, mouse/touch painting, pause, single-step, reset, palettes and concentration views.
+- Public API contract rework documented in `docs/docs/public-api-contract.md` (and its French twin): nullable `sequence<T?>` slots keep their element nullability end to end; `GPUDeviceDescriptor.requiredLimits` becomes `GPURequiredLimits?` with a partial `RequiredLimits` descriptor; `GPUDevice.awaitLost()` exposes a cancellable device-loss observation; `GPUBuffer.usage`/`GPUTexture.usage` return typed masks with `fromBits` and `contains`; `GPUBuffer.withMappedRange` scopes a mapping; browser texture ownership is explicit (`Texture.wrapOwned`/`Texture.wrapBorrowed`, `CanvasSurface : AutoCloseable`); cancelled GPU acquisitions are cleaned up deterministically. The signature breaks are intentional and are not binary- or source-compatible with the previous contract.
 - Android `ArrayBuffer.wrap(address, size)`: a borrowed, non-owning view over native memory (native byte order, bounds-checked) so a backend can expose a range a native library lends the caller — such as a GPU-mapped buffer between map and unmap — without copying it.
 - Publish the portable suite modules across the `webgpu-api` KMP target matrix, including Android, Windows, and ARM64 tvOS targets.
 - Bilingual documentation, contributor guidance, and repository automation.
@@ -25,6 +34,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Fixed
 
+- `webgpu-browser` forwards an explicitly specified `TextureDescriptor.textureBindingViewDimension` to WebGPU, preserving texture binding view restrictions in compatibility mode; an unspecified value remains omitted.
 - `webgpu-browser` no longer throws on Kotlin/Wasm when an implementation omits a `GPUSupportedLimits` property; an absent limit is read as zero.
 - `webgpu-browser` omits zero-valued maximum limits from a `requiredLimits` record, so a device request never sends a limit the implementation does not expose (older Chromium rejects an unknown `maxImmediateSize` key). The two alignment limits are always sent: zero is an invalid alignment, not an unexposed limit, so a bad request is rejected rather than silently replaced by the default.
 - The browser suite runner pins Playwright 1.63.0 / Chromium 153, which implements the contract's four-character `DOMString` texture-view swizzle; `texture.view-swizzle` is executed instead of reported as an environment gap.

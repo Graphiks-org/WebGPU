@@ -35,4 +35,5 @@ dependencies {
     implementation(project(":arraybuffer-benchmarks"))
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(project(":webgpu-api"))
 }

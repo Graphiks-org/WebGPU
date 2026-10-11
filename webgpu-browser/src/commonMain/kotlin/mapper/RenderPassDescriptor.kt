@@ -19,7 +19,7 @@ import kotlin.js.ExperimentalWasmJsInterop
 internal fun map(input: GPURenderPassDescriptor): WGPURenderPassDescriptor =
     createJsObject<WGPURenderPassDescriptor>().apply {
         label = input.label
-        colorAttachments = input.colorAttachments.mapJsArray { map(it) }
+        colorAttachments = input.colorAttachments.mapJsArray { attachment -> attachment?.let { map(it) } }
         input.depthStencilAttachment?.let { depthStencilAttachment = map(it) }
         input.occlusionQuerySet?.let { occlusionQuerySet = (it as QuerySet).handler }
         input.timestampWrites?.let { timestampWrites = map(it) }

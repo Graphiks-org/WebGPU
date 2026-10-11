@@ -44,7 +44,10 @@ class Adapter(val handler: WGPUAdapter) : GPUAdapter {
             when (descriptor) {
                 null -> handler.requestDevice()
                 else -> handler.requestDevice(map(descriptor))
-            }.await()
+            }.await { raw ->
+                // The device was created but never delivered to the caller: destroy it exactly once.
+                raw.unsafeCast<WGPUDevice>().destroy()
+            }
                 .unsafeCast<WGPUDevice>()
                 .let { Device(it, descriptor?.onUncapturedError)}
         }

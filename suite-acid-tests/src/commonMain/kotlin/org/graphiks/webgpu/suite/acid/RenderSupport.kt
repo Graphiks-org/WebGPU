@@ -63,7 +63,7 @@ internal fun createRenderPipeline(
     device: GPUDevice,
     code: String,
     vertexLayouts: List<GPUVertexBufferLayout> = emptyList(),
-    colorTargets: List<GPUColorTargetState> = listOf(ColorTargetState(GPUTextureFormat.RGBA8Unorm)),
+    colorTargets: List<GPUColorTargetState?> = listOf(ColorTargetState(GPUTextureFormat.RGBA8Unorm)),
     primitive: GPUPrimitiveState = PrimitiveState(),
     multisample: GPUMultisampleState = MultisampleState(),
     depthStencil: GPUDepthStencilState? = null,

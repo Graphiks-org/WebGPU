@@ -4,7 +4,6 @@ import kotlinx.coroutines.CompletableDeferred
 import org.graphiks.webgpu.GPUBufferUsage
 import org.graphiks.webgpu.GPUError
 import org.graphiks.webgpu.GPUUncapturedErrorCallback
-import org.graphiks.webgpu.GPUSupportedLimits
 import org.graphiks.webgpu.descriptors.BindGroupDescriptor
 import org.graphiks.webgpu.descriptors.BindGroupEntry
 import org.graphiks.webgpu.descriptors.BufferBinding
@@ -13,6 +12,7 @@ import org.graphiks.webgpu.descriptors.ComputePipelineDescriptor
 import org.graphiks.webgpu.descriptors.DeviceDescriptor
 import org.graphiks.webgpu.descriptors.ProgrammableStage
 import org.graphiks.webgpu.descriptors.QueueDescriptor
+import org.graphiks.webgpu.descriptors.RequiredLimits
 import org.graphiks.webgpu.descriptors.ShaderModuleDescriptor
 import org.graphiks.webgpu.suite.AcidCaseId
 import org.graphiks.webgpu.suite.AcidContext
@@ -35,10 +35,10 @@ fn main() {
 """
 
 /**
- * Requests a device whose `maxComputeWorkgroupSizeX` equals this adapter's own limit, the other
- * fields delegated to the same adapter. The request succeeds, the device reports at least the
- * requested bound, and a `workgroup_size(1)` kernel actually runs and writes 37. The sibling
- * `device.reject-excess-limit` proves the field is honoured rather than ignored.
+ * Requests a device whose `maxComputeWorkgroupSizeX` equals this adapter's own limit, with no
+ * other constraint. The request succeeds, the device reports at least the requested bound, and a
+ * `workgroup_size(1)` kernel actually runs and writes 37. The sibling `device.reject-excess-limit`
+ * proves the field is honoured rather than ignored.
  */
 @AcidTest(
     id = AcidCaseId.AdapterRequiredLimits,
@@ -47,7 +47,8 @@ fn main() {
         ApiSymbols.GPUAdapter_requestDevice,
         ApiSymbols.GPUAdapter_limits,
         ApiSymbols.GPUSupportedLimits,
-        ApiSymbols.GPUSupportedLimits_maxComputeWorkgroupSizeX,
+        ApiSymbols.GPURequiredLimits,
+        ApiSymbols.GPURequiredLimits_maxComputeWorkgroupSizeX,
         ApiSymbols.GPUDevice_limits,
         ApiSymbols.GPUDeviceDescriptor,
         ApiSymbols.GPUDeviceDescriptor_requiredLimits,
@@ -72,9 +73,9 @@ fn main() {
 suspend fun requiredLimits(context: AcidContext) {
     val adapter = context.requestAdapter(null).getOrThrow()
     try {
-        val requested = object : GPUSupportedLimits by adapter.limits {
-            override val maxComputeWorkgroupSizeX = adapter.limits.maxComputeWorkgroupSizeX
-        }
+        val requested = RequiredLimits(
+            maxComputeWorkgroupSizeX = adapter.limits.maxComputeWorkgroupSizeX,
+        )
         val unexpected = CompletableDeferred<GPUError>()
         adapter.requestDevice(
             DeviceDescriptor(
@@ -85,8 +86,8 @@ suspend fun requiredLimits(context: AcidContext) {
             ),
         ).getOrThrow().use { device ->
             assertTrue(
-                device.limits.maxComputeWorkgroupSizeX >= requested.maxComputeWorkgroupSizeX,
-                "Device maxComputeWorkgroupSizeX ${device.limits.maxComputeWorkgroupSizeX} is below the requested ${requested.maxComputeWorkgroupSizeX}",
+                device.limits.maxComputeWorkgroupSizeX >= adapter.limits.maxComputeWorkgroupSizeX,
+                "Device maxComputeWorkgroupSizeX ${device.limits.maxComputeWorkgroupSizeX} is below the requested ${adapter.limits.maxComputeWorkgroupSizeX}",
             )
 
             // The valid work runs inside a validation scope on this owned device, so a late

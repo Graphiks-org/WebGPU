@@ -15,6 +15,7 @@ enum class AcidFamily(val id: String, val packageName: String) {
     Compute("compute", "compute"),
     TexturesViewsSamplers("textures/views/samplers", "textures"),
     RenderPassesAttachments("rendu/passes/attachments", "renderpasses"),
+    RenderSparseTargets("rendu/emplacements vides", "render"),
     PipelinesRenderState("pipelines/render state", "pipelines"),
     RenderBundles("render bundles", "renderbundles"),
     QueriesTimestamps("queries/timestamps", "queries"),

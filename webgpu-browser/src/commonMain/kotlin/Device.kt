@@ -7,6 +7,7 @@ import org.graphiks.webgpu.bindings.*
 
 import org.graphiks.webgpu.browser.mapper.errorOf
 import org.graphiks.webgpu.browser.mapper.map
+import org.graphiks.webgpu.browser.mapper.mapDeviceLostInfo
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.js.toJsString
 import kotlin.js.unsafeCast
@@ -85,7 +86,7 @@ class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallb
 
     override fun createTexture(descriptor: GPUTextureDescriptor): GPUTexture = map(descriptor)
         .let { handler.createTexture(it) }
-        .let(::Texture)
+        .let { Texture.wrapOwned(it) }
 
     override fun createBindGroup(descriptor: GPUBindGroupDescriptor): GPUBindGroup = map(descriptor)
         .let { handler.createBindGroup(it) }
@@ -126,7 +127,16 @@ class Device(val handler: WGPUDevice, onUncapturedError: GPUUncapturedErrorCallb
         handler.popErrorScope().await()?.let { errorOf(it.unsafeCast<WGPUError>()) }
     }
 
+    override suspend fun awaitLost(): Result<GPUDeviceLostInfo> = browserResult {
+        mapDeviceLostInfo(handler.lost.await().unsafeCast<WGPUDeviceLostInfo>())
+    }
+
+    private var closed = false
+
     override fun close() {
+        // A repeated close must not release the same owned reference twice.
+        if (closed) return
+        closed = true
         handler.destroy()
     }
 

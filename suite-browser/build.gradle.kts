@@ -8,6 +8,7 @@ kotlin {
 
     js {
         browser {
+            testTask { useKarma { useChromeHeadless() } }
             commonWebpackConfig {
                 outputFileName = "suite.js"
             }
@@ -18,6 +19,7 @@ kotlin {
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
     wasmJs {
         browser {
+            testTask { useKarma { useChromeHeadless() } }
             commonWebpackConfig {
                 outputFileName = "suite.js"
             }

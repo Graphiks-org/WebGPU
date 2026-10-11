@@ -71,9 +71,9 @@ suspend fun creationMetadata(device: GPUDevice) = withValidationScope(device) {
         assertEquals(GPUTextureDimension.TwoD, texture.dimension, "dimension")
         assertEquals(GPUTextureFormat.RGBA8Unorm, texture.format, "format")
         assertEquals(
-            setOf(GPUTextureUsage.TextureBinding, GPUTextureUsage.CopyDst, GPUTextureUsage.CopySrc),
+            GPUTextureUsage.TextureBinding or GPUTextureUsage.CopyDst or GPUTextureUsage.CopySrc,
             texture.usage,
-            "usage must be exactly the created set",
+            "usage must be exactly the created mask",
         )
 
         // Mip 1 is 4x2; green fills all eight texels of layer 2.

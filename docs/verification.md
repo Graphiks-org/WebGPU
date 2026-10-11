@@ -163,6 +163,19 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   macOS ARM64 through its normal tasks. No native GPU execution is performed in this repository; that
   belongs to the consuming binding repositories, as for the acid tests.
 
+## Reaction-diffusion verification
+
+The GPU checks compare the Gray–Scott simulation with a CPU oracle and inspect the rendered
+grayscale pixels. They cover odd and even ping-pong steps, pause, single-step, reset, rejection
+of a closed scene and brush injection across the periodic grid boundaries.
+
+```sh
+./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
+```
+
+Use `--demo-check` after building the browser distributions, as described in
+[Running the suite](running.md), to execute the GPU checks on JS and Wasm.
+
 ## Readable report evidence
 
 - The validation route (`run/js|wasm/`) and the demo verification route render a localized (EN/FR,
@@ -281,3 +294,34 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   measurements are informative and reported separately, never as a pass/fail threshold; see
   [ArrayBuffer CPU performance](arraybuffer-performance.md) and
   [ArrayBuffer bounds and capacities](arraybuffer-bounds.md).
+
+## Instanced cyberpunk city verification
+
+The GPU checks verify instance transforms and colors, order-independent depth occlusion and
+camera/resize/resource lifecycle. A pixel assertion also checks that distant windows retain light.
+
+These checks run through `--demo-check`. They do not automate the interactive page's mouse/touch
+gestures, mobile layout or shader-panel presentation.
+
+## Collecting and interpreting demo results
+
+The filter lab adds three GPU checks. `filter-lab.compute-readback` compares all five filters with
+an independent Double-precision CPU oracle, including zero/full intensity, extreme radii/thresholds
+and exact alpha preservation. RGB tolerance is two RGBA8 levels. `filter-lab.boundaries-comparison`
+checks odd dimensions, 1 × 1, 1 × N and N × 1 images, clamped borders, divider positions and transparency.
+`filter-lab.reset-source-lifecycle` checks parameter restoration, source replacement, resizing,
+render-only reuse and closed-scene rejection. Kotlin tests also check data validation, the oracle
+and import-generation invalidation, and are invoked explicitly by the suite workflow.
+
+Local file decoding, import errors, concurrent selection, keyboard controls, localization and mobile
+layout require separate acceptance checks. The GPU cases do not automate the DOM image picker.
+
+`--demo-check` collects eleven unique GPU cases across particles, reaction-diffusion, the city and image filters.
+The collector checks report identities against the generated inventory. Missing routes, malformed
+reports, duplicate or missing cases, fatal errors and page errors remain failures. Partial results
+are retained, and demo reports stay separate from acid-test coverage and benchmarks.
+
+Software-backend checks establish functional behaviour, not physical-GPU performance. Native
+compilation and CPU tests do not establish native GPU execution. See [Running the suite](running.md)
+for commands and [the published validation page](https://graphiks-org.github.io/WebGPU/suite/)
+for execution results and their environment.

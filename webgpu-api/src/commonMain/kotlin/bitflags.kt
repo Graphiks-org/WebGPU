@@ -6,6 +6,8 @@ package org.graphiks.webgpu
 public value class GPUBufferUsage private constructor(
   public val `value`: kotlin.ULong,
 ) {
+  public operator fun contains(other: org.graphiks.webgpu.GPUBufferUsage): kotlin.Boolean = (value and other.value) == other.value
+
   public infix fun or(other: org.graphiks.webgpu.GPUBufferUsage): org.graphiks.webgpu.GPUBufferUsage = GPUBufferUsage(value or other.value)
 
   public infix fun of(values: kotlin.Array<org.graphiks.webgpu.GPUBufferUsage>): org.graphiks.webgpu.GPUBufferUsage = values.fold(GPUBufferUsage.None) { acc, enumeration -> acc or enumeration }
@@ -34,6 +36,8 @@ public value class GPUBufferUsage private constructor(
     public val QueryResolve: org.graphiks.webgpu.GPUBufferUsage = GPUBufferUsage(512uL)
 
     public val entries: kotlin.collections.Set<org.graphiks.webgpu.GPUBufferUsage> = setOf(None, MapRead, MapWrite, CopySrc, CopyDst, Index, Vertex, Uniform, Storage, Indirect, QueryResolve)
+
+    public fun fromBits(`value`: kotlin.ULong): org.graphiks.webgpu.GPUBufferUsage = GPUBufferUsage(value)
   }
 }
 
@@ -41,6 +45,8 @@ public value class GPUBufferUsage private constructor(
 public value class GPUColorWrite private constructor(
   public val `value`: kotlin.ULong,
 ) {
+  public operator fun contains(other: org.graphiks.webgpu.GPUColorWrite): kotlin.Boolean = (value and other.value) == other.value
+
   public infix fun or(other: org.graphiks.webgpu.GPUColorWrite): org.graphiks.webgpu.GPUColorWrite = GPUColorWrite(value or other.value)
 
   public infix fun of(values: kotlin.Array<org.graphiks.webgpu.GPUColorWrite>): org.graphiks.webgpu.GPUColorWrite = values.fold(GPUColorWrite.None) { acc, enumeration -> acc or enumeration }
@@ -59,6 +65,8 @@ public value class GPUColorWrite private constructor(
     public val All: org.graphiks.webgpu.GPUColorWrite = GPUColorWrite(15uL)
 
     public val entries: kotlin.collections.Set<org.graphiks.webgpu.GPUColorWrite> = setOf(None, Red, Green, Blue, Alpha, All)
+
+    public fun fromBits(`value`: kotlin.ULong): org.graphiks.webgpu.GPUColorWrite = GPUColorWrite(value)
   }
 }
 
@@ -66,6 +74,8 @@ public value class GPUColorWrite private constructor(
 public value class GPUMapMode private constructor(
   public val `value`: kotlin.ULong,
 ) {
+  public operator fun contains(other: org.graphiks.webgpu.GPUMapMode): kotlin.Boolean = (value and other.value) == other.value
+
   public infix fun or(other: org.graphiks.webgpu.GPUMapMode): org.graphiks.webgpu.GPUMapMode = GPUMapMode(value or other.value)
 
   public infix fun of(values: kotlin.Array<org.graphiks.webgpu.GPUMapMode>): org.graphiks.webgpu.GPUMapMode = values.fold(GPUMapMode.None) { acc, enumeration -> acc or enumeration }
@@ -78,6 +88,8 @@ public value class GPUMapMode private constructor(
     public val Write: org.graphiks.webgpu.GPUMapMode = GPUMapMode(2uL)
 
     public val entries: kotlin.collections.Set<org.graphiks.webgpu.GPUMapMode> = setOf(None, Read, Write)
+
+    public fun fromBits(`value`: kotlin.ULong): org.graphiks.webgpu.GPUMapMode = GPUMapMode(value)
   }
 }
 
@@ -85,6 +97,8 @@ public value class GPUMapMode private constructor(
 public value class GPUShaderStage private constructor(
   public val `value`: kotlin.ULong,
 ) {
+  public operator fun contains(other: org.graphiks.webgpu.GPUShaderStage): kotlin.Boolean = (value and other.value) == other.value
+
   public infix fun or(other: org.graphiks.webgpu.GPUShaderStage): org.graphiks.webgpu.GPUShaderStage = GPUShaderStage(value or other.value)
 
   public infix fun of(values: kotlin.Array<org.graphiks.webgpu.GPUShaderStage>): org.graphiks.webgpu.GPUShaderStage = values.fold(GPUShaderStage.None) { acc, enumeration -> acc or enumeration }
@@ -99,6 +113,8 @@ public value class GPUShaderStage private constructor(
     public val Compute: org.graphiks.webgpu.GPUShaderStage = GPUShaderStage(4uL)
 
     public val entries: kotlin.collections.Set<org.graphiks.webgpu.GPUShaderStage> = setOf(None, Vertex, Fragment, Compute)
+
+    public fun fromBits(`value`: kotlin.ULong): org.graphiks.webgpu.GPUShaderStage = GPUShaderStage(value)
   }
 }
 
@@ -106,6 +122,8 @@ public value class GPUShaderStage private constructor(
 public value class GPUTextureUsage private constructor(
   public val `value`: kotlin.ULong,
 ) {
+  public operator fun contains(other: org.graphiks.webgpu.GPUTextureUsage): kotlin.Boolean = (value and other.value) == other.value
+
   public infix fun or(other: org.graphiks.webgpu.GPUTextureUsage): org.graphiks.webgpu.GPUTextureUsage = GPUTextureUsage(value or other.value)
 
   public infix fun of(values: kotlin.Array<org.graphiks.webgpu.GPUTextureUsage>): org.graphiks.webgpu.GPUTextureUsage = values.fold(GPUTextureUsage.None) { acc, enumeration -> acc or enumeration }
@@ -126,5 +144,7 @@ public value class GPUTextureUsage private constructor(
     public val TransientAttachment: org.graphiks.webgpu.GPUTextureUsage = GPUTextureUsage(32uL)
 
     public val entries: kotlin.collections.Set<org.graphiks.webgpu.GPUTextureUsage> = setOf(None, CopySrc, CopyDst, TextureBinding, StorageBinding, RenderAttachment, TransientAttachment)
+
+    public fun fromBits(`value`: kotlin.ULong): org.graphiks.webgpu.GPUTextureUsage = GPUTextureUsage(value)
   }
 }

@@ -163,7 +163,7 @@ data class DeviceDescriptor(
 	 * Specifies the limits that are required by the device request. The request will fail if the adapter cannot provide these limits. Each key with a non-undefined value must be the name of a member of supported limits.
 	 *
 	 */
-	override val requiredLimits: GPUSupportedLimits? = null,
+	override val requiredLimits: GPURequiredLimits? = null,
 	/**
 	 * The descriptor for the default GPUQueue.
 	 *
@@ -571,7 +571,7 @@ data class PipelineLayoutDescriptor(
 	 * A list of optional GPUBindGroupLayouts the pipeline will use. Each element corresponds to a @group attribute in the GPUShaderModule, with the Nth element corresponding with @group(N).
 	 *
 	 */
-	override val bindGroupLayouts: List<GPUBindGroupLayout>,
+	override val bindGroupLayouts: List<GPUBindGroupLayout?>,
 	/**
 	 * The size, in bytes, of the immediate data range used by the pipeline.
 	 *
@@ -765,7 +765,7 @@ data class FragmentState(
 	 * A list of GPUColorTargetState defining the formats and behaviors of the color targets this pipeline writes to.
 	 *
 	 */
-	override val targets: List<GPUColorTargetState>,
+	override val targets: List<GPUColorTargetState?>,
 	override val module: GPUShaderModule,
 	override val entryPoint: String? = null,
 	override val constants: Map<String, GPUPipelineConstantValue> = emptyMap()
@@ -926,7 +926,7 @@ data class VertexState(
 	 * A list of GPUVertexBufferLayouts, each defining the layout of vertex attribute data in a vertex buffer used by this pipeline.
 	 *
 	 */
-	override val buffers: List<GPUVertexBufferLayout> = emptyList(),
+	override val buffers: List<GPUVertexBufferLayout?> = emptyList(),
 	override val entryPoint: String? = null,
 	override val constants: Map<String, GPUPipelineConstantValue> = emptyMap()
 ): GPUVertexState
@@ -1129,7 +1129,7 @@ data class RenderPassDescriptor(
 	 * The set of GPURenderPassColorAttachment values in this sequence defines which color attachments will be output to when executing this render pass. Due to usage compatibility, no color attachment may alias another attachment or any resource used inside the render pass.
 	 *
 	 */
-	override val colorAttachments: List<GPURenderPassColorAttachment>,
+	override val colorAttachments: List<GPURenderPassColorAttachment?>,
 	/**
 	 * The GPURenderPassDepthStencilAttachment value that defines the depth/stencil attachment that will be output to and tested against when executing this render pass. Due to usage compatibility, no writable depth/stencil attachment may alias another attachment or any resource used inside the render pass.
 	 *
@@ -1251,7 +1251,7 @@ data class RenderPassLayout(
 	 * A list of the GPUTextureFormats of the color attachments for this pass or bundle.
 	 *
 	 */
-	override val colorFormats: List<GPUTextureFormat>,
+	override val colorFormats: List<GPUTextureFormat?>,
 	/**
 	 * The GPUTextureFormat of the depth/stencil attachment for this pass or bundle.
 	 *
@@ -1280,7 +1280,7 @@ data class RenderBundleDescriptor(
  *
  */
 data class RenderBundleEncoderDescriptor(
-	override val colorFormats: List<GPUTextureFormat>,
+	override val colorFormats: List<GPUTextureFormat?>,
 	/**
 	 * If true, indicates that the render bundle does not modify the depth component of the GPURenderPassDepthStencilAttachment of any render pass the render bundle is executed in. See read-only depth-stencil.
 	 *
@@ -1327,3 +1327,42 @@ data class QuerySetDescriptor(
 	override val count: GPUSize32,
 	override val label: String = ""
 ): GPUQuerySetDescriptor
+
+data class RequiredLimits(
+	override val maxTextureDimension1D: UInt? = null,
+	override val maxTextureDimension2D: UInt? = null,
+	override val maxTextureDimension3D: UInt? = null,
+	override val maxTextureArrayLayers: UInt? = null,
+	override val maxBindGroups: UInt? = null,
+	override val maxBindGroupsPlusVertexBuffers: UInt? = null,
+	override val maxImmediateSize: UInt? = null,
+	override val maxBindingsPerBindGroup: UInt? = null,
+	override val maxDynamicUniformBuffersPerPipelineLayout: UInt? = null,
+	override val maxDynamicStorageBuffersPerPipelineLayout: UInt? = null,
+	override val maxSampledTexturesPerShaderStage: UInt? = null,
+	override val maxSamplersPerShaderStage: UInt? = null,
+	override val maxStorageBuffersPerShaderStage: UInt? = null,
+	override val maxStorageBuffersInVertexStage: UInt? = null,
+	override val maxStorageBuffersInFragmentStage: UInt? = null,
+	override val maxStorageTexturesPerShaderStage: UInt? = null,
+	override val maxStorageTexturesInVertexStage: UInt? = null,
+	override val maxStorageTexturesInFragmentStage: UInt? = null,
+	override val maxUniformBuffersPerShaderStage: UInt? = null,
+	override val maxUniformBufferBindingSize: ULong? = null,
+	override val maxStorageBufferBindingSize: ULong? = null,
+	override val minUniformBufferOffsetAlignment: UInt? = null,
+	override val minStorageBufferOffsetAlignment: UInt? = null,
+	override val maxVertexBuffers: UInt? = null,
+	override val maxBufferSize: ULong? = null,
+	override val maxVertexAttributes: UInt? = null,
+	override val maxVertexBufferArrayStride: UInt? = null,
+	override val maxInterStageShaderVariables: UInt? = null,
+	override val maxColorAttachments: UInt? = null,
+	override val maxColorAttachmentBytesPerSample: UInt? = null,
+	override val maxComputeWorkgroupStorageSize: UInt? = null,
+	override val maxComputeInvocationsPerWorkgroup: UInt? = null,
+	override val maxComputeWorkgroupSizeX: UInt? = null,
+	override val maxComputeWorkgroupSizeY: UInt? = null,
+	override val maxComputeWorkgroupSizeZ: UInt? = null,
+	override val maxComputeWorkgroupsPerDimension: UInt? = null
+): GPURequiredLimits

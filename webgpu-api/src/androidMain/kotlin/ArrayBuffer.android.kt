@@ -3,6 +3,7 @@
 package org.graphiks.webgpu
 
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 /**
  * Represents a platform-specific abstraction for handling raw binary data buffers.
@@ -261,7 +262,7 @@ actual sealed interface ArrayBuffer {
          * @return a new ArrayBuffer with the specified size
          */
         actual fun allocate(sizeInBytes: ULong): ArrayBuffer {
-            val buffer = ByteBuffer.allocateDirect(checkedIntSize(sizeInBytes))
+            val buffer = ByteBuffer.allocateDirect(checkedIntSize(sizeInBytes)).order(ByteOrder.nativeOrder())
             return AndroidArrayBuffer(buffer)
         }
 
@@ -296,7 +297,7 @@ actual sealed interface ArrayBuffer {
          */
         actual fun of(array: ByteArray): ArrayBuffer {
             if (array.isEmpty()) return allocate(0uL)
-            val buffer = ByteBuffer.allocateDirect(array.size)
+            val buffer = ByteBuffer.allocateDirect(array.size).order(ByteOrder.nativeOrder())
             buffer.put(array)
             buffer.rewind()
             return AndroidArrayBuffer(buffer)
@@ -310,7 +311,7 @@ actual sealed interface ArrayBuffer {
         actual fun of(array: ShortArray): ArrayBuffer {
             if (array.isEmpty()) return allocate(0uL)
             val bytes = checkedByteCount(array.size.toULong(), Short.SIZE_BYTES, Int.MAX_VALUE.toULong())
-            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes))
+            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes)).order(ByteOrder.nativeOrder())
             buffer.asShortBuffer().put(array)
             buffer.rewind()
             return AndroidArrayBuffer(buffer)
@@ -324,7 +325,7 @@ actual sealed interface ArrayBuffer {
         actual fun of(array: IntArray): ArrayBuffer {
             if (array.isEmpty()) return allocate(0uL)
             val bytes = checkedByteCount(array.size.toULong(), Int.SIZE_BYTES, Int.MAX_VALUE.toULong())
-            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes))
+            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes)).order(ByteOrder.nativeOrder())
             buffer.asIntBuffer().put(array)
             buffer.rewind()
             return AndroidArrayBuffer(buffer)
@@ -338,7 +339,7 @@ actual sealed interface ArrayBuffer {
         actual fun of(array: FloatArray): ArrayBuffer {
             if (array.isEmpty()) return allocate(0uL)
             val bytes = checkedByteCount(array.size.toULong(), Float.SIZE_BYTES, Int.MAX_VALUE.toULong())
-            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes))
+            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes)).order(ByteOrder.nativeOrder())
             buffer.asFloatBuffer().put(array)
             buffer.rewind()
             return AndroidArrayBuffer(buffer)
@@ -352,7 +353,7 @@ actual sealed interface ArrayBuffer {
         actual fun of(array: DoubleArray): ArrayBuffer {
             if (array.isEmpty()) return allocate(0uL)
             val bytes = checkedByteCount(array.size.toULong(), Double.SIZE_BYTES, Int.MAX_VALUE.toULong())
-            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes))
+            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes)).order(ByteOrder.nativeOrder())
             buffer.asDoubleBuffer().put(array)
             buffer.rewind()
             return AndroidArrayBuffer(buffer)
@@ -365,7 +366,7 @@ actual sealed interface ArrayBuffer {
          */
         actual fun of(array: UByteArray): ArrayBuffer {
             if (array.isEmpty()) return allocate(0uL)
-            val buffer = ByteBuffer.allocateDirect(array.size)
+            val buffer = ByteBuffer.allocateDirect(array.size).order(ByteOrder.nativeOrder())
             buffer.put(array.asByteArray())
             buffer.rewind()
             return AndroidArrayBuffer(buffer)
@@ -379,7 +380,7 @@ actual sealed interface ArrayBuffer {
         actual fun of(array: UShortArray): ArrayBuffer {
             if (array.isEmpty()) return allocate(0uL)
             val bytes = checkedByteCount(array.size.toULong(), Short.SIZE_BYTES, Int.MAX_VALUE.toULong())
-            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes))
+            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes)).order(ByteOrder.nativeOrder())
             buffer.asShortBuffer().put(array.asShortArray())
             buffer.rewind()
             return AndroidArrayBuffer(buffer)
@@ -393,7 +394,7 @@ actual sealed interface ArrayBuffer {
         actual fun of(array: UIntArray): ArrayBuffer {
             if (array.isEmpty()) return allocate(0uL)
             val bytes = checkedByteCount(array.size.toULong(), Int.SIZE_BYTES, Int.MAX_VALUE.toULong())
-            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes))
+            val buffer = ByteBuffer.allocateDirect(checkedIntSize(bytes)).order(ByteOrder.nativeOrder())
             buffer.asIntBuffer().put(array.asIntArray())
             buffer.rewind()
             return AndroidArrayBuffer(buffer)
@@ -401,4 +402,3 @@ actual sealed interface ArrayBuffer {
 
     }
 }
-

@@ -1,5 +1,7 @@
 # Running the Graphiks WebGPU Suite
 
+[Français](running.fr.md)
+
 The suite validates the public Graphiks WebGPU contract with portable acid tests that execute
 against a real browser WebGPU implementation. `suite-core` defines the execution contract,
 `suite-acid-tests` holds the cases, and `suite-browser` is the web runner. The same content modules
@@ -99,11 +101,161 @@ node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable -
 node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable --demo-check
 ```
 
-`--demo-check` opens `?demo=particles&verify=1`, requires both demo ids to pass and writes
-`build/reports/demos-<target>.json`, separate from the acid-test reports. The gallery page at
-`site/demos/` presents the demo with local launches and links to the scene sources. The demo is an
-illustration, not a benchmark: this increment records no frame rate presented as a measurement, no
-GPU time and no ranking.
+`--demo-check` opens `?demo=particles&verify=1`, `?demo=reaction-diffusion&verify=1` and
+`?demo=instanced-city&verify=1` and `?demo=filter-lab&verify=1` in fresh pages, requires all eleven ids to pass, and writes
+one aggregated `build/reports/demos-<target>.json`, separate from the acid-test reports.
+Missing routes, invalid JSON, mismatched build identities, missing/duplicate/unexpected ids,
+failed cases and page errors all make the collector exit non-zero; partial real results are
+retained as failures, never fabricated successes. The gallery at `site/demos/` presents all four
+demos with local launches and scene source links. Demos are illustrations, not benchmarks:
+no GPU time, frame-rate measurement or ranking is claimed.
+
+## Run the reaction-diffusion demo
+
+All four interactive demo pages have a shared Demo selector at the top. Switching between Particles,
+Reaction-diffusion, Cyberpunk city and Image filters preserves the locale and JS/Wasm runner path, and reloads the page so the
+outgoing demo releases its GPU resources. Simulation state is not preserved across demos.
+
+- `?demo=reaction-diffusion&lang=en|fr` — interactive Gray–Scott simulation on a fixed 256 × 256
+  grid. Coral, Labyrinth and Spots select feed/kill parameters and reset the same nine seed squares.
+  Mouse or touch paints a six-cell-radius disk of B, with periodic boundaries. Painting also works
+  while paused. Only one pointer and its latest position per frame are consumed; strokes are not
+  interpolated.
+- `?demo=reaction-diffusion&verify=1` — three GPU checks, published in `globalThis.graphiksDemoReport`.
+
+Speed selects 1–16 fixed simulation steps **per frame**, default 8, not physical seconds.
+Pause freezes the reaction; One step advances exactly one iteration and stays paused. Reset
+restores the state but keeps the current parameters and palette. Feed and kill range from 0 to 0.1.
+Ocean, Ember and Grayscale change only the view; Display A/B shows each concentration separately.
+The optional learning panel explains diffusion, reaction, texture ping-pong and the additional
+brush pass, and displays the commented WGSL actually compiled by the scene.
+
+Two RGBA32Float textures hold `[A, B, 0, 1]`. The compute passes read one and write the other,
+then swap. Reading uses `textureLoad` without optional float filtering features. The render pass
+maps the resulting B concentration to a palette. Device loss stops animation, disables GPU controls
+and offers reload; unavailable WebGPU is a visible error, not a CPU fallback.
+
+The combined demo report requires these eleven ids:
+
+```text
+particles.compute-render-readback
+particles.bounds-pause-reset
+reaction-diffusion.compute-render-readback
+reaction-diffusion.pause-step-reset
+reaction-diffusion.brush-boundaries
+instanced-city.instances-render-readback
+instanced-city.depth-occlusion
+instanced-city.camera-resize-lifecycle
+filter-lab.compute-readback
+filter-lab.boundaries-comparison
+filter-lab.reset-source-lifecycle
+```
+
+Run the CPU/control/oracle tests with:
+
+```sh
+./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
+```
+
+Use `--demo-check` with the distributions built above to execute the GPU checks on JS and Wasm.
+
+A native binding can use the portable scene without this DOM runner:
+
+```kotlin
+import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionDiffusionScene
+import org.graphiks.webgpu.suite.demos.reactiondiffusion.ReactionPreset
+
+// device, format and targetView are supplied and owned by the binding.
+ReactionDiffusionScene.create(device, format).use { scene ->
+    device.createCommandEncoder().use { encoder ->
+        scene.encodeFrame(encoder, targetView, width, height, 8, ReactionPreset.Coral.parameters)
+        encoder.finish().use { device.queue.submit(listOf(it)) }
+    }
+}
+```
+
+Submit once after each `encodeFrame`, before encoding another frame with different uniform values.
+Keep the scene alive across animation frames in a real application. `reset()` writes both state
+textures; `encodeStateCopy(encoder, buffer)` copies the current state into a borrowed CopyDst buffer
+of at least 1,048,576 bytes (4096 bytes per row). The scene closes its resources, never the supplied
+device. This repository runs browser GPU checks; native compilation is not native GPU execution.
+
+## Run the instanced cyberpunk city
+
+- `?demo=instanced-city&lang=en|fr` — deterministic nocturnal city with 256, 1024 or 4096 buildings.
+  Only densities allowed by the device limits are offered; the largest is selected initially.
+- `?demo=instanced-city&verify=1` — three GPU readback checks for instance transforms/colors,
+  order-independent depth occlusion and camera/resize/lifecycle.
+
+Drag with mouse or touch to orbit. The canvas captures one pointer; a second pointer is ignored.
+Wheel zoom normalizes pixel/line/page deltas. The labeled distance slider supports keyboard and
+touch zoom; there is no pinch. Height scales from 0.5 to 2 without replacing instance data.
+Automatic rotation starts enabled unless `prefers-reduced-motion` requests otherwise; explicitly
+enabling it remains possible. Reset view restores only the camera, not density, height or rotation.
+Failed density replacement retains the old scene. Device loss stops animation and offers reload.
+
+One shared cube (24 vertices, 36 indices) and an eight-float record per building produce one
+indexed instanced building draw. A second draw renders ground/streets: `12 * count + 2` submitted
+triangles, not a performance measurement. `Depth24Plus` resolves occlusion. Windows and street
+lines are procedural, with analytical minification of windows, no compute, textures or bloom.
+The folded teaching panel shows the exact compiled WGSL and explains these two draws.
+All four demos use spacious formatting and shared dependency-free syntax coloring for keywords, types,
+attributes, numbers and comments. Highlighting inserts literal text spans, preserving the source
+for copying without parsing it as HTML. The particle panel shows its compute and instanced-render shaders
+in EN/FR, and is folded by default.
+
+Native bindings may reuse `InstancedCityScene.create(device, format)` and call
+`encodeFrame(encoder, targetView, width, height, CityCamera(), heightScale, gridStep)`.
+Keep the scene alive across frames; submit once after each encoding before updating uniforms
+for another frame. It owns its buffers, pipelines and resize-dependent depth texture, but borrows
+the device, encoder and color view. Close the scene when finished. Native compilation below
+does not establish native GPU execution; browser checks are the actual GPU evidence.
+
+## Run the image filter lab
+
+`?demo=filter-lab&lang=en|fr` opens an original illustration. Import a PNG, JPEG or WebP file to
+experiment with your own image. The file stays in the browser and is never uploaded. Files must be
+nonempty, valid and no larger than 20 MiB. The page checks the declared format, file signature and
+successful decoding, not just the extension. Unsupported or invalid imports preserve the previous image.
+
+The working image keeps its proportions and is reduced, never enlarged, to a maximum side of
+`min(2048, device.limits.maxTextureDimension2D)` pixels. The page displays its dimensions and indicates
+reduction. This bounds GPU processing, not the memory needed by the browser to decode the original file.
+
+Select grayscale, sepia, inversion, Gaussian blur or Sobel edges. Intensity blends the effect with the
+source from 0 to 100 %. Blur uses a radius of 1–5 pixels, with sigma equal to half the radius. Sobel
+uses a 0–1 threshold on gradient magnitude normalized by four. Neighborhood reads repeat the nearest
+edge pixel. Each adjustment starts from the original source, so filters never accumulate.
+
+The divider displays the original on the left and the filtered result on the right. Its extremes
+show either image alone. Reset settings restores grayscale, full intensity, radius 3, threshold 0.2
+and divider 50 %, without replacing the image. Use the illustration replaces only the source.
+
+The compute shaders process encoded RGB values, not linear-light color or ICC profiles. They preserve
+the central pixel's alpha. The render shader composites transparency onto a checkerboard and preserves
+the image's aspect ratio. The folded EN/FR lesson shows both exact compiled shader sources.
+
+`?demo=filter-lab&verify=1` runs the three GPU checks included in `--demo-check`. Native consumers
+can use the scene without DOM dependencies:
+
+```kotlin
+import org.graphiks.webgpu.suite.demos.filterlab.FilterLabScene
+import org.graphiks.webgpu.suite.demos.filterlab.FilterSettings
+import org.graphiks.webgpu.suite.demos.filterlab.embeddedFilterImage
+
+FilterLabScene.create(device, format, embeddedFilterImage()).use { scene ->
+    device.createCommandEncoder().use { encoder ->
+        scene.encodeFrame(encoder, targetView, width, height, FilterSettings())
+        encoder.finish().use { commands -> device.queue.submit(listOf(commands)) }
+    }
+}
+```
+
+Keep the scene between frames in an interactive application. Submit each encoded frame before changing
+uniforms. Pass `recompute = false` only after computing the same settings, for resizing or moving the
+divider. The scene owns its textures, buffers, pipelines and bind groups, but borrows the device,
+encoder and target view. Close it when finished. `encodeResultCopy` copies RGBA8 into a borrowed CopyDst
+buffer with `resultRowBytes` aligned to 256 bytes and size at least `resultCopyBytes`.
 
 ## Run the benchmarks
 

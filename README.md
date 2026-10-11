@@ -18,7 +18,7 @@ Its Kotlin bindings are generated from versioned WebGPU specification inputs.
 | `webgpu-browser` | `org.graphiks:webgpu-browser` | Browser implementation of the Graphiks WebGPU API |
 | `suite-core` | `org.graphiks:suite-core` | Execution contract for portable validation cases |
 | `suite-acid-tests` | `org.graphiks:suite-acid-tests` | Portable acid tests for the public API |
-| `suite-demos` | `org.graphiks:suite-demos` | Portable particle demo scene and reproducible data |
+| `suite-demos` | `org.graphiks:suite-demos` | Portable particle, reaction-diffusion and instanced-city scenes with reproducible data |
 | `suite-benchmarks` | `org.graphiks:suite-benchmarks` | Portable transfer and compute workloads and measurements |
 | `suite-browser` | Not published | Browser runner that executes the suite and reports results |
 | `webgpu-specifications` | Not published | Versioned specification and documentation inputs |
@@ -65,11 +65,21 @@ for requirements and dependency notes.
 
 Graphiks WebGPU Suite exercises the public contract with portable acid tests that run against a real
 browser WebGPU implementation. `suite-core` holds the execution contract, `suite-acid-tests` the
-cases, `suite-demos` a portable compute particle scene, `suite-benchmarks` two portable measurement
+cases, `suite-demos` portable particle, reaction-diffusion, instanced-city and image-filter scenes, `suite-benchmarks` two portable measurement
 workloads, and `suite-browser` runs them on Kotlin/JS and Kotlin/Wasm JS and publishes reports. The
 site's Validation page presents the contract inventory, the behaviour coverage, and the published
-results, and links to both local launches; its Demos page presents the interactive particle demo; its
+results, and links to both local launches; its Demos page presents four interactive demos; its
 Benchmarks page presents the published measurements with their protocol and environment.
+
+The reaction-diffusion demo (`?demo=reaction-diffusion&lang=en|fr`) offers three Gray–Scott presets,
+mouse/touch painting, pause and single-step controls, palettes and a learning view with the actual
+WGSL sources. The cyberpunk city (`?demo=instanced-city&lang=en|fr`) offers deterministic instancing,
+depth-tested neon buildings, mouse/touch orbit, density/height controls and a bilingual teaching panel.
+The image filter lab (`?demo=filter-lab&lang=en|fr`) applies grayscale, sepia, inversion, Gaussian blur
+and Sobel edges to an illustration or a local PNG/JPEG/WebP image, without uploading it. It offers
+adjustable parameters, an original/result divider and the compiled WGSL in EN/FR.
+`--demo-check` collects all eleven GPU checks across the four demos, without treating them
+as benchmarks or acid-test coverage.
 
 Run the browser suite locally with JDK 25 and Node 22:
 

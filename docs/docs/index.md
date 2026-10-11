@@ -10,6 +10,7 @@ wrappers, descriptor converters, and canvas surfaces. `webgpu-web-bindings` expo
 JavaScript bindings for direct interop.
 
 - [Get started](getting-started.md) with a dependency and a small API example.
+- [Read the public API contract](public-api-contract.md) for the current signatures and backend obligations.
 - [Understand the modules](architecture.md) and their platform boundaries.
 - [Run the business tests](testing.md) before submitting a change.
 - [Maintain the specification](specification-maintenance.md) when upstream WebGPU changes.

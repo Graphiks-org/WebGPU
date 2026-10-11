@@ -38,7 +38,7 @@ suspend fun mappedAtCreation(device: GPUDevice) = withValidationScope(device) {
     )
     try {
         assertEquals(16uL, buffer.size)
-        assertEquals(setOf(GPUBufferUsage.CopySrc), buffer.usage)
+        assertEquals(GPUBufferUsage.CopySrc, buffer.usage)
         assertEquals(GPUBufferMapState.Mapped, buffer.mapState)
 
         val range = buffer.getMappedRange()
