@@ -169,20 +169,12 @@ The GPU checks compare the Gray–Scott simulation with a CPU oracle and inspect
 grayscale pixels. They cover odd and even ping-pong steps, pause, single-step, reset, rejection
 of a closed scene and brush injection across the periodic grid boundaries.
 
-Browser tests exercise mouse and touch painting, pointer capture and cancellation, hidden-canvas
-behaviour, device loss and cleanup of late acquisitions. They also check missing or malformed
-localized resources, accessible controls and the learning panel on desktop and mobile.
-
 ```sh
 ./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
-node --test tools/reaction-diffusion.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/reaction-diffusion.browser.test.mjs
 ```
 
-Build the browser distributions before running the Node tests, as described in
-[Running the suite](running.md). Set `GRAPHIKS_CAPTURE_DIR` to retain captures of each preset
-after at least 2000 simulation steps. These captures help inspect the patterns, but are not
-pixel-exact references across GPU backends.
+Use `--demo-check` after building the browser distributions, as described in
+[Running the suite](running.md), to execute the GPU checks on JS and Wasm.
 
 ## Readable report evidence
 
@@ -308,21 +300,8 @@ pixel-exact references across GPU backends.
 The GPU checks verify instance transforms and colors, order-independent depth occlusion and
 camera/resize/resource lifecycle. A pixel assertion also checks that distant windows retain light.
 
-Browser tests cover mouse and touch orbit, pointer cancellation, wheel units, reduced motion,
-restoration of hidden or detached canvases without an extra resize event, device loss and late
-initialization. Allocation-failure fixtures check partial-buffer cleanup and atomic replacement
-of the scene and depth texture. They inject errors rather than exhaust GPU memory.
-
-```sh
-node --test tools/instanced-city.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/instanced-city.browser.test.mjs
-node --test tools/wgsl-lessons.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/wgsl-lessons.browser.test.mjs
-```
-
-Visual fixtures cover the three densities, height extremes, overhead and oblique views, and mobile
-layout. The shared shader-panel tests check EN/FR text, syntax coloring and exact correspondence
-between displayed WGSL and compiled source in all three demos.
+These checks run through `--demo-check`. They do not automate the interactive page's mouse/touch
+gestures, mobile layout or shader-panel presentation.
 
 ## Collecting and interpreting demo results
 

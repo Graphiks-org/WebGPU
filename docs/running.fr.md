@@ -139,18 +139,13 @@ instanced-city.depth-occlusion
 instanced-city.camera-resize-lifecycle
 ```
 
-Pour vérifier les données, les contrôles, l’oracle et les interactions navigateur :
+Pour vérifier les données, les contrôles et l’oracle sur CPU :
 
 ```sh
 ./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
-node --test tools/demo-reports.test.mjs tools/demos-gallery.browser.test.mjs
-node --test tools/reaction-diffusion.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/reaction-diffusion.browser.test.mjs
 ```
 
-Les deux dernières commandes utilisent les distributions compilées et un backend WebGPU logiciel.
-Définissez `GRAPHIKS_CAPTURE_DIR` pour conserver les captures de chaque préréglage après au moins
-2000 étapes GPU. Ce sont des outils d’inspection, pas des références exactes entre backends.
+Utilisez `--demo-check` avec les distributions compilées pour exécuter les tests GPU sur JS et Wasm.
 
 Un binding natif peut utiliser la scène sans le runner DOM :
 
@@ -202,16 +197,6 @@ Les trois démos partagent une présentation aérée et une coloration sans dép
 types, attributs, nombres et commentaires. Les sources sont insérées comme du texte, sans
 interprétation HTML, et restent intactes lors de la copie. Le panneau des particules présente
 en EN/FR les shaders compute et de rendu instancié.
-
-```sh
-node --test tools/wgsl-lessons.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/wgsl-lessons.browser.test.mjs
-```
-
-```sh
-node --test tools/instanced-city.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/instanced-city.browser.test.mjs
-```
 
 Les bindings natifs peuvent appeler `InstancedCityScene.create(device, format)`, puis
 `encodeFrame(encoder, targetView, width, height, CityCamera(), heightScale, gridStep)`.

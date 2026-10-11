@@ -173,21 +173,12 @@ Les tests GPU comparent la simulation Gray–Scott à un oracle CPU et examinent
 en niveaux de gris. Ils couvrent les alternances paires et impaires des textures, la pause, le pas
 unique, la réinitialisation, le refus d’une scène fermée et l’injection à travers les bords périodiques.
 
-Les tests navigateur exercent la peinture à la souris et au toucher, la capture et l’annulation
-du pointeur, le comportement du canvas masqué, la perte du périphérique et la libération des
-acquisitions tardives. Ils vérifient aussi les ressources localisées absentes ou mal formées,
-l’accessibilité des contrôles et le panneau pédagogique sur ordinateur et mobile.
-
 ```sh
 ./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
-node --test tools/reaction-diffusion.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/reaction-diffusion.browser.test.mjs
 ```
 
-Compilez les distributions navigateur avant les tests Node, comme indiqué dans le
-[guide d’exécution](running.fr.md). Définissez `GRAPHIKS_CAPTURE_DIR` pour conserver les captures
-de chaque préréglage après au moins 2000 étapes de simulation. Elles permettent d’examiner les motifs,
-mais ne constituent pas des références exactes au pixel près entre backends GPU.
+Utilisez `--demo-check` après compilation des distributions navigateur, comme indiqué dans le
+[guide d’exécution](running.fr.md), pour exécuter les tests GPU sur JS et Wasm.
 
 ## Preuves du rapport lisible
 
@@ -326,24 +317,8 @@ Les tests GPU vérifient les transformations et couleurs des instances, l’occl
 indépendante de l’ordre des bâtiments et le cycle de vie caméra/redimensionnement/ressources.
 Une assertion sur les pixels vérifie aussi que les fenêtres lointaines conservent leur lumière.
 
-Les tests navigateur couvrent l’orbite à la souris et au toucher, l’annulation du pointeur, les unités
-de molette, la réduction des animations, la reprise d’un canvas masqué ou détaché sans événement
-de redimensionnement supplémentaire, la perte du périphérique et l’initialisation tardive.
-Les fixtures d’échec d’allocation vérifient la libération des buffers partiels et le remplacement
-atomique de la scène et de la texture de profondeur. Elles injectent des erreurs sans épuiser
-la mémoire GPU.
-
-```sh
-node --test tools/instanced-city.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/instanced-city.browser.test.mjs
-node --test tools/wgsl-lessons.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/wgsl-lessons.browser.test.mjs
-```
-
-Les fixtures visuelles couvrent les trois densités, les hauteurs extrêmes, les vues de dessus et
-obliques et la disposition mobile. Les tests du panneau partagé vérifient les textes EN/FR,
-la coloration syntaxique et la correspondance exacte entre le WGSL affiché et les sources compilées
-dans les trois démos.
+Ces tests s’exécutent via `--demo-check`. Ils n’automatisent pas les gestes souris/tactiles de la page
+interactive, la disposition mobile ou la présentation du panneau de shaders.
 
 ## Collecte et interprétation des résultats des démos
 

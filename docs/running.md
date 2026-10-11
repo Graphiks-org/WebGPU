@@ -139,18 +139,13 @@ instanced-city.depth-occlusion
 instanced-city.camera-resize-lifecycle
 ```
 
-Run the CPU/control/oracle and browser regressions with:
+Run the CPU/control/oracle tests with:
 
 ```sh
 ./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
-node --test tools/demo-reports.test.mjs tools/demos-gallery.browser.test.mjs
-node --test tools/reaction-diffusion.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/reaction-diffusion.browser.test.mjs
 ```
 
-The last two commands use the distributions built above and software WebGPU flags. To retain
-canvas captures after at least 2000 GPU steps of each preset, set `GRAPHIKS_CAPTURE_DIR` to a local
-output directory. Screenshots are exploratory evidence, not exact cross-backend reference images.
+Use `--demo-check` with the distributions built above to execute the GPU checks on JS and Wasm.
 
 A native binding can use the portable scene without this DOM runner:
 
@@ -196,16 +191,6 @@ All three demos use spacious formatting and shared dependency-free syntax colori
 attributes, numbers and comments. Highlighting inserts literal text spans, preserving the source
 for copying without parsing it as HTML. The particle panel shows its compute and instanced-render shaders
 in EN/FR, and is folded by default.
-
-```sh
-node --test tools/wgsl-lessons.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/wgsl-lessons.browser.test.mjs
-```
-
-```sh
-node --test tools/instanced-city.browser.test.mjs
-GRAPHIKS_DISTRIBUTION=suite-browser/build/dist/wasmJs/productionExecutable node --test tools/instanced-city.browser.test.mjs
-```
 
 Native bindings may reuse `InstancedCityScene.create(device, format)` and call
 `encodeFrame(encoder, targetView, width, height, CityCamera(), heightScale, gridStep)`.
