@@ -1,5 +1,7 @@
 // Route-local validation precedes aggregation: one successful route cannot hide a missing demo.
 export const DEMO_ROUTES = [
+  { name: 'filter-lab', ids: ['filter-lab.compute-readback',
+    'filter-lab.boundaries-comparison', 'filter-lab.reset-source-lifecycle'] },
   { name: 'particles', ids: ['particles.compute-render-readback', 'particles.bounds-pause-reset'] },
   { name: 'reaction-diffusion', ids: ['reaction-diffusion.compute-render-readback',
     'reaction-diffusion.pause-step-reset', 'reaction-diffusion.brush-boundaries'] },
