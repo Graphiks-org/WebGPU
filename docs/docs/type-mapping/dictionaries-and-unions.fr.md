@@ -1,5 +1,25 @@
 # Dictionnaires et unions
 
+## Niveau de fonctionnalités typé de l’adaptateur
+
+WebIDL déclare `GPURequestAdapterOptions.featureLevel` comme `DOMString`. L’API Kotlin portable
+utilise plutôt `GPUFeatureLevel`, avec `Core` par défaut et `Compatibility` comme autre valeur :
+
+```kotlin
+RequestAdapterOptions(featureLevel = GPUFeatureLevel.Compatibility)
+```
+
+Le mapper navigateur transmet `"core"` ou `"compatibility"` ; le binding brut
+`WGPURequestAdapterOptions.featureLevel` reste une chaîne. Les valeurs natives suivent
+`WGPUFeatureLevel` (`Compatibility = 1u`, `Core = 2u`). Ce changement casse la compatibilité source
+et ABI des appels ou implémentations utilisant `String`.
+
+Un adaptateur demandé en Compatibility peut encore annoncer des capacités Core. Les features du
+device gouvernent la validation : sans demande explicite de features, Compatibility n’en active
+aucune, tandis que Core active `CoreFeaturesAndLimits`. Une implémentation incapable d’appliquer
+les restrictions Compatibility peut se replier sur Core ; la demande seule ne prouve donc pas
+que ces restrictions sont actives.
+
 ## Gestion des types union
 
 ### Traitement des types « Dict »

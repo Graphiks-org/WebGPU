@@ -21,7 +21,7 @@ internal suspend fun requestAdapter(gpu: GPU?, options: GPURequestAdapterOptions
 
     val raw = when (options) {
         null -> gpu.requestAdapter()
-        else -> gpu.requestAdapter(map(options))
+        else -> gpu.requestAdapter(mapRequestAdapterOptions(options))
     }.await()
     Adapter(checkNotNull(raw) { "No WebGPU adapter is available." }.unsafeCast<WGPUAdapter>())
 }
@@ -59,8 +59,8 @@ class Adapter(val handler: WGPUAdapter) : GPUAdapter {
 }
 
 
-private fun map(input: GPURequestAdapterOptions) = createJsObject<WGPURequestAdapterOptions>().apply {
-    featureLevel = input.featureLevel
+internal fun mapRequestAdapterOptions(input: GPURequestAdapterOptions) = createJsObject<WGPURequestAdapterOptions>().apply {
+    featureLevel = input.featureLevel.value
     input.powerPreference?.let { powerPreference = it.value }
     forceFallbackAdapter = input.forceFallbackAdapter
     xrCompatible = input.xrCompatible

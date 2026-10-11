@@ -25,6 +25,8 @@ internal fun MapperContext.mapCommonDictionaryMember(
             if (idlType.typeName in unwantedTypesOnCommon && member.name != "layout") return null
             if (dictionaryName == "GPUTextureViewDescriptor" && member.name == "swizzle") {
                 "GPUTextureSwizzle"
+            } else if (dictionaryName == "GPURequestAdapterOptions" && member.name == "featureLevel") {
+                "GPUFeatureLevel"
             } else {
                 idlType.toKotlinType()
             }
@@ -53,6 +55,12 @@ internal fun MapperContext.mapCommonDictionaryMember(
 
     if (formatDescriptorDefault && member.defaultValue != null) {
         when {
+            dictionaryName == "GPURequestAdapterOptions" && member.name == "featureLevel" -> {
+                require(defaultValue == "\"core\"") {
+                    "Unsupported WebIDL default for GPURequestAdapterOptions.featureLevel: $defaultValue"
+                }
+                defaultValue = "GPUFeatureLevel.Core"
+            }
             dictionaryName == "GPUTextureViewDescriptor" && member.name == "swizzle" -> {
                 require(defaultValue == "\"rgba\"") {
                     "Unsupported WebIDL default for GPUTextureViewDescriptor.swizzle: $defaultValue"

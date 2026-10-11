@@ -128,6 +128,23 @@ expect enum class GPUErrorFilter {
 }
 
 /**
+ * Selects the minimum capabilities and the default feature level of devices requested from an adapter.
+ *
+ */
+expect enum class GPUFeatureLevel {
+	/**
+	 * Requests compatibility-mode limits and validation. Implementations unable to enforce these restrictions may default to Core instead.
+	 *
+	 */
+	Compatibility,
+	/**
+	 * Requests core limits and enables CoreFeaturesAndLimits by default on devices.
+	 *
+	 */
+	Core;
+}
+
+/**
  * Each GPUFeatureName identifies a set of functionality which, if available, allows additional usages of WebGPU that would have otherwise been invalid.
  *
  */

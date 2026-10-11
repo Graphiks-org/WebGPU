@@ -302,12 +302,13 @@ if (mode === 'benchmark') {
   if (duplicates.length > 0) problems.push(`duplicate case ids: ${duplicates.join(', ')}`);
   if (missing.length > 0) problems.push(`missing case ids: ${missing.join(', ')}`);
   if (unexpected.length > 0) problems.push(`unexpected case ids: ${unexpected.join(', ')}`);
-  // `unsupported` is accepted only for a declared optional feature: the case must declare
-  // features and every reported missing one must fall within that declaration. Anything else —
-  // failed, not-run, or an undeclared "unsupported" — stays a real failure, never a silent skip.
+  // Only declared optional features and the Compatibility case's spec-permitted Core fallback
+  // may be unsupported. Arbitrary errors, missing adapters and timeouts remain failures.
   const notPassed = cases.filter((entry) => {
     if (entry.status === 'passed') return false;
     if (entry.status !== 'unsupported') return true;
+    if (entry.id === 'adapter.feature-level-compatibility'
+        && entry.unsupportedReason === 'compatibility-mode-core-fallback') return false;
     const declared = declaredFeaturesById.get(entry.id) ?? [];
     const reported = entry.missingFeatures ?? [];
     return declared.length === 0

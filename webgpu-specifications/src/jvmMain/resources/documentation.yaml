@@ -590,6 +590,17 @@
   See [GPUObjectDescriptorBase.label in the WebGPU specification](https://www.w3.org/TR/webgpu/#dom-gpuobjectdescriptorbase-label).
 "GPURequestAdapterOptions": |
   Options that constrain which GPU adapter is selected.
+"GPUFeatureLevel": |
+  Selects the minimum capabilities and the default feature level of devices requested from an adapter.
+"GPUFeatureLevel#Compatibility": |
+  Requests compatibility-mode limits and validation. Implementations unable to enforce these restrictions may default to Core instead.
+"GPUFeatureLevel#Core": |
+  Requests core limits and enables CoreFeaturesAndLimits by default on devices.
+# The documentation checker also uses the legacy tab-prefixed enumeration keys.
+"GPUFeatureLevel#\tCompatibility": |
+  Requests compatibility-mode limits and validation. Implementations unable to enforce these restrictions may default to Core instead.
+"GPUFeatureLevel#\tCore": |
+  Requests core limits and enables CoreFeaturesAndLimits by default on devices.
 "GPURequestAdapterOptions#featureLevel": |
   Requests an adapter that supports at least a particular set of capabilities. This influences the [[default feature level]] of devices created from this adapter. The capabilities for each level are defined below, and the exact steps are defined in requestAdapter() and "a new device". If the implementation or system does not support all of the capabilities in the requested feature level, requestAdapter() will return null.
 "GPURequestAdapterOptions#powerPreference": |

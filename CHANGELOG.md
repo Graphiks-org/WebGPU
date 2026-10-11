@@ -10,6 +10,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- Core and Compatibility feature-level acid cases: implicit device features and cube-array validation, with an explicit unsupported result for the spec-permitted Core fallback.
 - Portable image filter lab with an original illustration and local PNG/JPEG/WebP import, five adjustable compute filters, an original/result divider and bilingual learning panels. The gallery and selector offer four demos, and `--demo-check` validates eleven GPU cases on JS and Wasm.
 - Shared bilingual learning panels with readable, syntax-colored WGSL matching the compiled sources in all four demos.
 - Portable cyberpunk city with reproducible 256/1024/4096-building grids, depth testing, procedural illuminated windows and streets, mouse/touch orbit, height controls and reduced-motion-aware rotation.
@@ -42,6 +43,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Changed
 
+- `GPURequestAdapterOptions.featureLevel` now uses `GPUFeatureLevel` (`Core` by default, or `Compatibility`) instead of `String`. Browser bindings still receive WebGPU strings; native enum values follow the C specification. Callers passing strings must migrate to the enum.
 - The suite execution contract passes an `AcidContext` (the borrowed device plus a binding-supplied adapter factory) to `AcidCase.run`, so a case can request its own adapter and device; the individual case functions still take a `GPUDevice`.
 - Require contribution pull requests from forks on `feat/`, `fix/`, or `chore/` branches based on the current `master` commit.
 - Drop the deprecated macOS x64 and watchOS x64 native targets.
