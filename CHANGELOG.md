@@ -10,6 +10,9 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- Shared bilingual learning panels with readable, syntax-colored WGSL matching the compiled sources in all three demos.
+- Portable cyberpunk city with reproducible 256/1024/4096-building grids, depth testing, procedural illuminated windows and streets, mouse/touch orbit, height controls and reduced-motion-aware rotation. The gallery and selector offer all three demos, and `--demo-check` validates their eight GPU cases.
+- Portable Gray–Scott reaction-diffusion with three presets, mouse/touch painting, pause, single-step, reset, palettes and concentration views.
 - Public API contract rework documented in `docs/docs/public-api-contract.md` (and its French twin): nullable `sequence<T?>` slots keep their element nullability end to end; `GPUDeviceDescriptor.requiredLimits` becomes `GPURequiredLimits?` with a partial `RequiredLimits` descriptor; `GPUDevice.awaitLost()` exposes a cancellable device-loss observation; `GPUBuffer.usage`/`GPUTexture.usage` return typed masks with `fromBits` and `contains`; `GPUBuffer.withMappedRange` scopes a mapping; browser texture ownership is explicit (`Texture.wrapOwned`/`Texture.wrapBorrowed`, `CanvasSurface : AutoCloseable`); cancelled GPU acquisitions are cleaned up deterministically. The signature breaks are intentional and are not binary- or source-compatible with the previous contract.
 - Android `ArrayBuffer.wrap(address, size)`: a borrowed, non-owning view over native memory (native byte order, bounds-checked) so a backend can expose a range a native library lends the caller — such as a GPU-mapped buffer between map and unmap — without copying it.
 - Publish the portable suite modules across the `webgpu-api` KMP target matrix, including Android, Windows, and ARM64 tvOS targets.

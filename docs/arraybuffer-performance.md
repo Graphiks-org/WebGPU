@@ -64,7 +64,6 @@ Validate or compare reports:
 
 ```sh
 node tools/arraybuffer-report.mjs <report.json> --profile=standard
-node --test tools/arraybuffer-report.test.mjs tools/compare-arraybuffer-benchmarks.test.mjs
 ```
 
 ## First reading

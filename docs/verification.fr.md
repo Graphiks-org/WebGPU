@@ -167,6 +167,19 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
   macOS ARM64 via ses tâches normales. Aucune exécution GPU native n’est effectuée dans ce dépôt ;
   cela appartient aux dépôts de bindings consommateurs, comme pour les acid tests.
 
+## Vérification de la réaction-diffusion
+
+Les tests GPU comparent la simulation Gray–Scott à un oracle CPU et examinent les pixels du rendu
+en niveaux de gris. Ils couvrent les alternances paires et impaires des textures, la pause, le pas
+unique, la réinitialisation, le refus d’une scène fermée et l’injection à travers les bords périodiques.
+
+```sh
+./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
+```
+
+Utilisez `--demo-check` après compilation des distributions navigateur, comme indiqué dans le
+[guide d’exécution](running.fr.md), pour exécuter les tests GPU sur JS et Wasm.
+
 ## Preuves du rapport lisible
 
 - La route de validation (`run/js|wasm/`) et la route de vérification de la démo rendent une ligne
@@ -297,3 +310,26 @@ documentée dans [acid-coverage.fr.md](acid-coverage.fr.md).
   part, jamais comme un seuil de réussite ou d’échec ; voir
   [Performance CPU d’ArrayBuffer](arraybuffer-performance.fr.md) et
   [Bornes et capacités d’ArrayBuffer](arraybuffer-bounds.fr.md).
+
+## Vérification de la ville cyberpunk instanciée
+
+Les tests GPU vérifient les transformations et couleurs des instances, l’occlusion par profondeur
+indépendante de l’ordre des bâtiments et le cycle de vie caméra/redimensionnement/ressources.
+Une assertion sur les pixels vérifie aussi que les fenêtres lointaines conservent leur lumière.
+
+Ces tests s’exécutent via `--demo-check`. Ils n’automatisent pas les gestes souris/tactiles de la page
+interactive, la disposition mobile ou la présentation du panneau de shaders.
+
+## Collecte et interprétation des résultats des démos
+
+`--demo-check` collecte huit cas GPU uniques pour les particules, la réaction-diffusion et la ville.
+Le collecteur contrôle l’identité des rapports contre l’inventaire généré. Routes absentes,
+rapports mal formés, cas manquants ou dupliqués, erreurs fatales et erreurs de page restent des échecs.
+Les résultats partiels sont conservés et les rapports démos restent distincts de la couverture acid
+et des benchmarks.
+
+Les tests sur backend logiciel établissent un fonctionnement, pas les performances d’un GPU
+physique. La compilation native et les tests CPU ne prouvent pas une exécution GPU native.
+Consultez le [guide d’exécution](running.fr.md) pour les commandes et
+la [page de validation publiée](https://graphiks-org.github.io/WebGPU/suite/)
+pour les résultats d’exécution et leur environnement.

@@ -7,10 +7,15 @@ lets you execute the suite locally.
 
 [Open the Validation page](suite/)
 
-The suite also ships a demonstration gallery. Its first scene, **compute particles**, updates a
-particle buffer with a compute pass and draws that same buffer as an instanced vertex buffer.
+The demonstration gallery contains three interactive scenes: **compute particles** updates and
+renders a shared GPU buffer, **reaction-diffusion** evolves patterns with a Gray–Scott simulation,
+and the **cyberpunk city** renders thousands of buildings with instancing and depth testing.
+Each scene offers bilingual controls and a learning panel showing the compiled WGSL.
 
 [Open the demos](suite/demos/)
+
+For requirements, commands, controls and native scene integration, see the
+[running guide](https://github.com/Graphiks-org/WebGPU/blob/master/docs/running.md).
 
 The suite also ships two portable benchmark workloads. They measure `queue.writeBuffer` and the
 encoding and submission of a compute load, and publish their raw samples with the protocol, the

@@ -163,6 +163,19 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   macOS ARM64 through its normal tasks. No native GPU execution is performed in this repository; that
   belongs to the consuming binding repositories, as for the acid tests.
 
+## Reaction-diffusion verification
+
+The GPU checks compare the Gray–Scott simulation with a CPU oracle and inspect the rendered
+grayscale pixels. They cover odd and even ping-pong steps, pause, single-step, reset, rejection
+of a closed scene and brush injection across the periodic grid boundaries.
+
+```sh
+./gradlew :suite-demos:jvmTest :suite-browser:jsBrowserTest :suite-browser:wasmJsBrowserTest
+```
+
+Use `--demo-check` after building the browser distributions, as described in
+[Running the suite](running.md), to execute the GPU checks on JS and Wasm.
+
 ## Readable report evidence
 
 - The validation route (`run/js|wasm/`) and the demo verification route render a localized (EN/FR,
@@ -281,3 +294,23 @@ from the positive timestamp cases (covered by the deterministic index cases), an
   measurements are informative and reported separately, never as a pass/fail threshold; see
   [ArrayBuffer CPU performance](arraybuffer-performance.md) and
   [ArrayBuffer bounds and capacities](arraybuffer-bounds.md).
+
+## Instanced cyberpunk city verification
+
+The GPU checks verify instance transforms and colors, order-independent depth occlusion and
+camera/resize/resource lifecycle. A pixel assertion also checks that distant windows retain light.
+
+These checks run through `--demo-check`. They do not automate the interactive page's mouse/touch
+gestures, mobile layout or shader-panel presentation.
+
+## Collecting and interpreting demo results
+
+`--demo-check` collects eight unique GPU cases across particles, reaction-diffusion and the city.
+The collector checks report identities against the generated inventory. Missing routes, malformed
+reports, duplicate or missing cases, fatal errors and page errors remain failures. Partial results
+are retained, and demo reports stay separate from acid-test coverage and benchmarks.
+
+Software-backend checks establish functional behaviour, not physical-GPU performance. Native
+compilation and CPU tests do not establish native GPU execution. See [Running the suite](running.md)
+for commands and [the published validation page](https://graphiks-org.github.io/WebGPU/suite/)
+for execution results and their environment.

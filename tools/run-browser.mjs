@@ -7,7 +7,7 @@
 // Serves only the given distribution directory on 127.0.0.1 with an automatic port, waits for the
 // published report, writes the envelope to build/reports/<target>.json — demos-<target>.json with
 // --demo-check, benchmarks-<target>.json with --benchmark — and exits non-zero when the run is
-// incomplete or failed. --demo-check opens the particle verification route; --benchmark opens
+// incomplete or failed. --demo-check opens both demo verification routes; --benchmark opens
 // ?benchmark=foundations&profile=<profile>&autorun=1 and expects `globalThis.graphiksBenchmarkReport`.
 // The three modes keep their own report and their own launch guard.
 //
@@ -19,6 +19,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, extname, isAbsolute, join, normalize, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { collectDemoReports, DEMO_ROUTES } from './demo-reports.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const target = process.argv[2];
@@ -112,7 +113,7 @@ const reportPath = join(reportsDir, reportName);
 const expectedIds = mode === 'benchmark'
   ? benchmarkExpectedIds()
   : mode === 'demo'
-    ? ['particles.compute-render-readback', 'particles.bounds-pause-reset']
+    ? DEMO_ROUTES.flatMap(route => route.ids)
     : selectedCaseIds == null
       ? allCaseIds
       : allCaseIds.filter((id) => selectedCaseIds.includes(id));
@@ -194,17 +195,24 @@ const url = `http://127.0.0.1:${port}/${urlQuery}`;
 try {
   browser = await chromium.launch({ headless: true, args: launchArgs });
   environment.browser = browser.version();
-  page = await browser.newPage();
-  page.on('pageerror', (error) => pageErrors.push(String(error)));
-
-  await page.goto(url);
-  environment.userAgent = await page.evaluate(() => navigator.userAgent);
-  await page.waitForFunction(
-    (name) => typeof globalThis[name] === 'string',
-    reportGlobal,
-    { timeout: waitTimeout },
-  );
-  report = JSON.parse(await page.evaluate((name) => globalThis[name], reportGlobal));
+  if (mode === 'demo') {
+    const campaign = await collectDemoReports(browser, `http://127.0.0.1:${port}`, baseline, { timeout: waitTimeout });
+    report = campaign.report;
+    pageErrors = campaign.pageErrors;
+    fatalError = campaign.fatalError;
+    environment.userAgent = campaign.userAgent;
+  } else {
+    page = await browser.newPage();
+    page.on('pageerror', (error) => pageErrors.push(String(error)));
+    await page.goto(url);
+    environment.userAgent = await page.evaluate(() => navigator.userAgent);
+    await page.waitForFunction(
+      (name) => typeof globalThis[name] === 'string',
+      reportGlobal,
+      { timeout: waitTimeout },
+    );
+    report = JSON.parse(await page.evaluate((name) => globalThis[name], reportGlobal));
+  }
 } catch (failure) {
   fatalError = String(failure && failure.stack ? failure.stack : failure);
 } finally {
