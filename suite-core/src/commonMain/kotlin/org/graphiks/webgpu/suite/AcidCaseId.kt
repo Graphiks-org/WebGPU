@@ -86,6 +86,8 @@ enum class AcidCaseId(val id: String) {
     QueriesTimestampResolve("queries.timestamp-resolve"),
     ComputeShaderF16("compute.shader-f16"),
     AdapterCapabilities("adapter.request-and-capabilities"),
+    AdapterCoreFeatureLevel("adapter.feature-level-core"),
+    AdapterCompatibilityFeatureLevel("adapter.feature-level-compatibility"),
     AdapterRequiredLimits("device.required-limits"),
     AdapterRejectedLimits("device.reject-excess-limit"),
     AdapterDeviceLabels("device.queue-and-object-labels"),

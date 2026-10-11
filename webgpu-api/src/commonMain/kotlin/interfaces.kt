@@ -1222,7 +1222,7 @@ interface GPURequestAdapterOptions {
 	 * Requests an adapter that supports at least a particular set of capabilities. This influences the [[default feature level]] of devices created from this adapter. The capabilities for each level are defined below, and the exact steps are defined in requestAdapter() and "a new device". If the implementation or system does not support all of the capabilities in the requested feature level, requestAdapter() will return null.
 	 *
 	 */
-	val featureLevel: String
+	val featureLevel: GPUFeatureLevel
 	/**
 	 * Optionally provides a hint indicating what class of adapter should be selected from the system’s available adapters. The value of this hint may influence which adapter is chosen, but it must not influence whether an adapter is returned or not.
 	 *

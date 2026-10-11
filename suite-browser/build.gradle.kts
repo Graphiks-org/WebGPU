@@ -38,4 +38,7 @@ kotlin {
         implementation(libs.kotlinx.serialization.json)
         implementation(kotlin("test"))
     }
+    sourceSets.commonTest.dependencies {
+        implementation(kotlin("test"))
+    }
 }

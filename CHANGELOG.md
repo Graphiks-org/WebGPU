@@ -6,6 +6,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- Core and Compatibility feature-level acid cases: implicit device features and cube-array validation, with an explicit unsupported result for the spec-permitted Core fallback.
 - Android `ArrayBuffer.wrap(address, size)`: a borrowed, non-owning view over native memory (native byte order, bounds-checked) so a backend can expose a range a native library lends the caller — such as a GPU-mapped buffer between map and unmap — without copying it.
 - Publish the portable suite modules across the `webgpu-api` KMP target matrix, including Android, Windows, and ARM64 tvOS targets.
 - Bilingual documentation, contributor guidance, and repository automation.
@@ -32,6 +33,7 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Changed
 
+- `GPURequestAdapterOptions.featureLevel` now uses `GPUFeatureLevel` (`Core` by default, or `Compatibility`) instead of `String`. Browser bindings still receive WebGPU strings; native enum values follow the C specification. Callers passing strings must migrate to the enum.
 - The suite execution contract passes an `AcidContext` (the borrowed device plus a binding-supplied adapter factory) to `AcidCase.run`, so a case can request its own adapter and device; the individual case functions still take a `GPUDevice`.
 - Require contribution pull requests from forks on `feat/`, `fix/`, or `chore/` branches based on the current `master` commit.
 - Drop the deprecated macOS x64 and watchOS x64 native targets.

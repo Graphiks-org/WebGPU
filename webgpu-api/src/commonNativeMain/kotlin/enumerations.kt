@@ -268,6 +268,37 @@ actual enum class GPUErrorFilter(val value: UInt) {
 }
 
 /**
+ * Selects the minimum capabilities and the default feature level of devices requested from an adapter.
+ *
+ */
+actual enum class GPUFeatureLevel(val value: UInt) {
+	/**
+	 * Requests compatibility-mode limits and validation. Implementations unable to enforce these restrictions may default to Core instead.
+	 *
+	 */
+	Compatibility(1u),
+	/**
+	 * Requests core limits and enables CoreFeaturesAndLimits by default on devices.
+	 *
+	 */
+	Core(2u);
+
+
+	companion object {
+		/**
+		 * Retrieves the corresponding [UInt] for the given value.
+		 *
+		 * @param value The dependent platform value representing the WebGPU value.
+		 * @return The matching [UInt] or `null` if no match is found.
+		 */
+		fun of(value: UInt): GPUFeatureLevel? {
+			return entries.find { it.value == value }
+		}
+    }
+
+}
+
+/**
  * Each GPUFeatureName identifies a set of functionality which, if available, allows additional usages of WebGPU that would have otherwise been invalid.
  *
  */

@@ -10,6 +10,7 @@ import org.graphiks.webgpu.browser.requestAdapter
 import org.graphiks.webgpu.descriptors.DeviceDescriptor
 import org.graphiks.webgpu.suite.AcidCase
 import org.graphiks.webgpu.suite.AcidContext
+import org.graphiks.webgpu.suite.CompatibilityModeUnavailable
 import org.graphiks.webgpu.suite.acid.SuiteBuildIdentity
 import org.graphiks.webgpu.suite.acid.foundationCases
 
@@ -26,7 +27,8 @@ import org.graphiks.webgpu.suite.acid.foundationCases
  *
  * Cases run sequentially: `requestDevice` consumes its adapter, so the runner never asks one
  * adapter for two devices. A case that times out or throws is reported as `failed`; a missing
- * optional feature is reported as `unsupported` without running the case.
+ * optional feature is reported as `unsupported` without running the case. The Compatibility case
+ * also reports `unsupported` if its own device demonstrates the spec-permitted fallback to Core.
  */
 suspend fun runFoundations(
     caseIds: Set<String>? = null,
@@ -52,6 +54,8 @@ suspend fun runFoundations(
             CaseResult(case.id.id, "failed", "Timed out after 30 seconds")
         } catch (cancelled: CancellationException) {
             throw cancelled
+        } catch (fallback: CompatibilityModeUnavailable) {
+            compatibilityFallbackResult(case.id, fallback)
         } catch (failure: Throwable) {
             CaseResult(case.id.id, "failed", failure.stackTraceToString())
         }

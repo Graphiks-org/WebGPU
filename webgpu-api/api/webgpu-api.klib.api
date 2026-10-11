@@ -290,6 +290,31 @@ final enum class org.graphiks.webgpu/GPUErrorFilter : kotlin/Enum<org.graphiks.w
     }
 }
 
+final enum class org.graphiks.webgpu/GPUFeatureLevel : kotlin/Enum<org.graphiks.webgpu/GPUFeatureLevel> { // org.graphiks.webgpu/GPUFeatureLevel|null[0]
+    enum entry Compatibility // org.graphiks.webgpu/GPUFeatureLevel.Compatibility|null[0]
+    enum entry Core // org.graphiks.webgpu/GPUFeatureLevel.Core|null[0]
+
+    final val entries // org.graphiks.webgpu/GPUFeatureLevel.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<org.graphiks.webgpu/GPUFeatureLevel> // org.graphiks.webgpu/GPUFeatureLevel.entries.<get-entries>|<get-entries>#static(){}[0]
+    final val value // org.graphiks.webgpu/GPUFeatureLevel.value|{}value[0]
+        // Targets: [native]
+        final fun <get-value>(): kotlin/UInt // org.graphiks.webgpu/GPUFeatureLevel.value.<get-value>|<get-value>(){}[0]
+
+        // Targets: [js, wasmJs]
+        final fun <get-value>(): kotlin/String // org.graphiks.webgpu/GPUFeatureLevel.value.<get-value>|<get-value>(){}[0]
+
+    final fun valueOf(kotlin/String): org.graphiks.webgpu/GPUFeatureLevel // org.graphiks.webgpu/GPUFeatureLevel.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<org.graphiks.webgpu/GPUFeatureLevel> // org.graphiks.webgpu/GPUFeatureLevel.values|values#static(){}[0]
+
+    final object Companion { // org.graphiks.webgpu/GPUFeatureLevel.Companion|null[0]
+        // Targets: [native]
+        final fun of(kotlin/UInt): org.graphiks.webgpu/GPUFeatureLevel? // org.graphiks.webgpu/GPUFeatureLevel.Companion.of|of(kotlin.UInt){}[0]
+
+        // Targets: [js, wasmJs]
+        final fun of(kotlin/String): org.graphiks.webgpu/GPUFeatureLevel? // org.graphiks.webgpu/GPUFeatureLevel.Companion.of|of(kotlin.String){}[0]
+    }
+}
+
 final enum class org.graphiks.webgpu/GPUFeatureName : kotlin/Enum<org.graphiks.webgpu/GPUFeatureName> { // org.graphiks.webgpu/GPUFeatureName|null[0]
     enum entry BGRA8UnormStorage // org.graphiks.webgpu/GPUFeatureName.BGRA8UnormStorage|null[0]
     enum entry ClipDistances // org.graphiks.webgpu/GPUFeatureName.ClipDistances|null[0]
@@ -1522,7 +1547,7 @@ abstract interface org.graphiks.webgpu/GPURenderPipelineDescriptor : org.graphik
 
 abstract interface org.graphiks.webgpu/GPURequestAdapterOptions { // org.graphiks.webgpu/GPURequestAdapterOptions|null[0]
     abstract val featureLevel // org.graphiks.webgpu/GPURequestAdapterOptions.featureLevel|{}featureLevel[0]
-        abstract fun <get-featureLevel>(): kotlin/String // org.graphiks.webgpu/GPURequestAdapterOptions.featureLevel.<get-featureLevel>|<get-featureLevel>(){}[0]
+        abstract fun <get-featureLevel>(): org.graphiks.webgpu/GPUFeatureLevel // org.graphiks.webgpu/GPURequestAdapterOptions.featureLevel.<get-featureLevel>|<get-featureLevel>(){}[0]
     abstract val forceFallbackAdapter // org.graphiks.webgpu/GPURequestAdapterOptions.forceFallbackAdapter|{}forceFallbackAdapter[0]
         abstract fun <get-forceFallbackAdapter>(): kotlin/Boolean // org.graphiks.webgpu/GPURequestAdapterOptions.forceFallbackAdapter.<get-forceFallbackAdapter>|<get-forceFallbackAdapter>(){}[0]
     abstract val powerPreference // org.graphiks.webgpu/GPURequestAdapterOptions.powerPreference|{}powerPreference[0]

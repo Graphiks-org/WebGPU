@@ -19,6 +19,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, extname, isAbsolute, join, normalize, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { isAcceptedAcidResult } from './acid-result.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const target = process.argv[2];
@@ -294,18 +295,9 @@ if (mode === 'benchmark') {
   if (duplicates.length > 0) problems.push(`duplicate case ids: ${duplicates.join(', ')}`);
   if (missing.length > 0) problems.push(`missing case ids: ${missing.join(', ')}`);
   if (unexpected.length > 0) problems.push(`unexpected case ids: ${unexpected.join(', ')}`);
-  // `unsupported` is accepted only for a declared optional feature: the case must declare
-  // features and every reported missing one must fall within that declaration. Anything else —
-  // failed, not-run, or an undeclared "unsupported" — stays a real failure, never a silent skip.
-  const notPassed = cases.filter((entry) => {
-    if (entry.status === 'passed') return false;
-    if (entry.status !== 'unsupported') return true;
-    const declared = declaredFeaturesById.get(entry.id) ?? [];
-    const reported = entry.missingFeatures ?? [];
-    return declared.length === 0
-      || reported.length === 0
-      || !reported.every((feature) => declared.includes(feature));
-  });
+  // Only declared optional features and the Compatibility case's spec-permitted Core fallback
+  // may be unsupported. Arbitrary errors, missing adapters and timeouts remain failures.
+  const notPassed = cases.filter((entry) => !isAcceptedAcidResult(entry, declaredFeaturesById.get(entry.id) ?? []));
   if (notPassed.length > 0) {
     problems.push(`cases not passed: ${notPassed.map((entry) => `${entry.id}=${entry.status}`).join(', ')}`);
   }

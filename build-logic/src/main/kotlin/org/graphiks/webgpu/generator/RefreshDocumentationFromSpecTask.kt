@@ -278,6 +278,7 @@ open class RefreshDocumentationFromSpecTask : DefaultTask() {
                 "GPUPrimitiveTopology" -> "Selects how vertex data is assembled into points, lines, or triangles."
                 "GPUErrorFilter" -> "Selects the error category captured by a GPUDevice error scope."
                 "GPUPowerPreference" -> "Hints whether adapter selection should favor lower power use or higher performance."
+                "GPUFeatureLevel" -> "Selects the minimum capabilities and the default feature level of devices requested from an adapter."
                 "GPUCullMode" -> "Selects whether no polygons, front-facing polygons, or back-facing polygons are culled."
                 "GPUStencilOperation" -> "Selects the operation applied to stencil values when a stencil test succeeds or fails."
                 else -> if (owner.endsWith("Descriptor")) {
@@ -286,6 +287,11 @@ open class RefreshDocumentationFromSpecTask : DefaultTask() {
             }
         }
 
+        if (owner == "GPUFeatureLevel") return when (member) {
+            "Compatibility" -> "Requests compatibility-mode limits and validation. Implementations unable to enforce these restrictions may default to Core instead."
+            "Core" -> "Requests core limits and enables CoreFeaturesAndLimits by default on devices."
+            else -> null
+        }
         if (owner == "GPURenderPassEncoder" && member == "beginOcclusionQuery(queryIndex)") {
             return "Begins an occlusion query at queryIndex; endOcclusionQuery marks the end of the query."
         }

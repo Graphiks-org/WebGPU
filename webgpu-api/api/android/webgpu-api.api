@@ -639,6 +639,20 @@ public abstract interface class org/graphiks/webgpu/GPUExtent3D {
 	public abstract fun getWidth-pVg5ArA ()I
 }
 
+public final class org/graphiks/webgpu/GPUFeatureLevel : java/lang/Enum {
+	public static final field Companion Lorg/graphiks/webgpu/GPUFeatureLevel$Companion;
+	public static final field Compatibility Lorg/graphiks/webgpu/GPUFeatureLevel;
+	public static final field Core Lorg/graphiks/webgpu/GPUFeatureLevel;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getValue-pVg5ArA ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/graphiks/webgpu/GPUFeatureLevel;
+	public static fun values ()[Lorg/graphiks/webgpu/GPUFeatureLevel;
+}
+
+public final class org/graphiks/webgpu/GPUFeatureLevel$Companion {
+	public final fun of-WZ4Q5Ns (I)Lorg/graphiks/webgpu/GPUFeatureLevel;
+}
+
 public final class org/graphiks/webgpu/GPUFeatureName : java/lang/Enum {
 	public static final field BGRA8UnormStorage Lorg/graphiks/webgpu/GPUFeatureName;
 	public static final field ClipDistances Lorg/graphiks/webgpu/GPUFeatureName;
@@ -1007,7 +1021,7 @@ public abstract interface class org/graphiks/webgpu/GPURenderPipelineDescriptor 
 }
 
 public abstract interface class org/graphiks/webgpu/GPURequestAdapterOptions {
-	public abstract fun getFeatureLevel ()Ljava/lang/String;
+	public abstract fun getFeatureLevel ()Lorg/graphiks/webgpu/GPUFeatureLevel;
 	public abstract fun getForceFallbackAdapter ()Z
 	public abstract fun getPowerPreference ()Lorg/graphiks/webgpu/GPUPowerPreference;
 	public abstract fun getXrCompatible ()Z

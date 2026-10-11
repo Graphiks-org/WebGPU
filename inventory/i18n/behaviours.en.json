@@ -16,6 +16,14 @@
     "types de données/descripteurs/flags/swizzle": "Data types, descriptors, flags and swizzle"
   },
   "cases": {
+    "adapter.feature-level-core": {
+      "title": "Enable the Core feature level",
+      "expectation": "Omitted options, default options and explicit Core enable CoreFeaturesAndLimits, but no optional features, and allow cube-array views."
+    },
+    "adapter.feature-level-compatibility": {
+      "title": "Enforce Compatibility restrictions",
+      "expectation": "Without explicitly requested features, a Compatibility device enables no features, accepts cube views and rejects cube-array views. A permitted fallback to Core is reported as unsupported, not passed."
+    },
     "buffers.mapped-at-creation": {
       "title": "Write initial buffer contents",
       "expectation": "A buffer created mapped exposes its whole mapping immediately and becomes unmapped after unmap."

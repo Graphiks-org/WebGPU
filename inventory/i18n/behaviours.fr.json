@@ -16,6 +16,14 @@
     "types de données/descripteurs/flags/swizzle": "Types de données, descripteurs, flags et swizzle"
   },
   "cases": {
+    "adapter.feature-level-core": {
+      "title": "Activer le niveau Core",
+      "expectation": "Les options omises, les options par défaut et Core explicite activent CoreFeaturesAndLimits, mais aucune feature optionnelle, et autorisent les vues cube-array."
+    },
+    "adapter.feature-level-compatibility": {
+      "title": "Appliquer les restrictions Compatibility",
+      "expectation": "Sans features explicitement demandées, un device Compatibility n’active aucune feature, accepte les vues cube et rejette les vues cube-array. Un repli autorisé vers Core est signalé comme non pris en charge, pas comme réussi."
+    },
     "buffers.mapped-at-creation": {
       "title": "Écrire le contenu initial d'un buffer",
       "expectation": "Un buffer créé mappé expose immédiatement sa plage complète et redevient non mappé après unmap."

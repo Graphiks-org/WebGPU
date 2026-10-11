@@ -82,7 +82,12 @@ private fun MapperContext.loadConventionalEnums() {
     yamlModel.enums.forEach { yamlEnum ->
         val name = "GPU${yamlEnum.name.convertToKotlinClassName()}"
         val idlEnum = idlModel.enums.find { it.name == name }
-        if (idlEnum == null) {
+        // WebIDL represents featureLevel as a DOMString; the public Kotlin API uses the
+        // native specification's enum while raw browser bindings keep their string type.
+        val webValues = idlEnum?.values ?: if (name == "GPUFeatureLevel") {
+            listOf("compatibility", "core")
+        } else null
+        if (webValues == null) {
             println("Skipping native enumeration = $name")
             return@forEach
         }
@@ -101,7 +106,7 @@ private fun MapperContext.loadConventionalEnums() {
                 parameters = listOf("val value: String"),
                 extra = generateExtra(name, "String"),
                 values = enumeration.values.map { enumerationValue ->
-                    val webValue = idlEnum.values.firstOrNull {
+                    val webValue = webValues.firstOrNull {
                         enumerationValue.name.lowercase() == it.replace("-", "").fixNameStartingWithNumeric().lowercase()
                     } ?: "unsupported"
                     Enumeration.Value("${enumerationValue.name}(\"$webValue\")")
@@ -150,6 +155,5 @@ private fun generateExtra(name: String, type: String): String = """
 
 internal fun String.convertToKotlinClassName() = split("_")
         .joinToString("") { component -> component.replaceFirstChar { it.uppercase() } }
-
 
 
