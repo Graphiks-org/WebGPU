@@ -32,6 +32,7 @@ import org.graphiks.webgpu.suite.browser.demos.cityGpuResults
 import org.graphiks.webgpu.suite.browser.demos.showCityPage
 import org.graphiks.webgpu.suite.browser.demos.FilterLabCheckIds
 import org.graphiks.webgpu.suite.browser.demos.filterLabGpuResults
+import org.graphiks.webgpu.suite.browser.demos.showFilterLabPage
 
 /**
  * The page has explicit routes. Without parameters it runs the foundation validation suite and
@@ -77,7 +78,12 @@ fun main() {
                 showDemoNavigation(demo, selectedLocale())
                 showCityPage(selectedLocale())
             }
-            demo == "filter-lab" -> verifyDemo(FilterLabCheckIds, ::filterLabGpuResults)
+            demo == "filter-lab" -> if (queryParameter("verify") == "1") {
+                verifyDemo(FilterLabCheckIds, ::filterLabGpuResults)
+            } else {
+                showDemoNavigation(demo, selectedLocale())
+                showFilterLabPage(selectedLocale())
+            }
             else -> showUnknownRoute(demo)
         }
     }

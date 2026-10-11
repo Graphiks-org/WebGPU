@@ -1,0 +1,17 @@
+{
+  "title": "Laboratoire de filtres d’image",
+  "description": "Explorez cinq filtres GPU sur une illustration originale ou votre propre image. Déplacez la séparation pour comparer la source à gauche et le résultat à droite.",
+  "privacy": "Votre image reste dans ce navigateur, sans téléversement. Les fichiers PNG, JPEG et WebP jusqu’à 20 Mio sont acceptés. Les grandes images sont réduites à un côté maximal de 2048 pixels, ou à la limite du périphérique. Le décodage de l’original peut utiliser davantage de mémoire.",
+  "importImage": "Image locale", "embedded": "Utiliser l’illustration", "reset": "Réinitialiser les réglages", "filter": "Filtre",
+  "grayscale": "Niveaux de gris", "sepia": "Sépia", "invert": "Inversion", "blur": "Flou gaussien", "sobel": "Contours Sobel",
+  "intensity": "Intensité (%)", "radius": "Rayon du flou (pixels)", "threshold": "Seuil des contours", "comparison": "Position de la séparation (%)",
+  "original": "Original", "filtered": "Filtré", "loading": "Préparation de WebGPU…", "importing": "Ouverture de votre image…",
+  "unavailable": "WebGPU est indisponible. Aucun repli CPU n’est utilisé.", "failed": "L’opération GPU a échoué.",
+  "lost": "Le périphérique GPU a été perdu. Rechargez pour continuer.", "reload": "Recharger",
+  "importFailed": "Impossible d’ouvrir cette image. Choisissez un fichier PNG, JPEG ou WebP valide, de 20 Mio maximum. L’image précédente est conservée.",
+  "dimensions": "Image de travail : {width} × {height} pixels", "reduced": "Image réduite pour respecter la limite de traitement",
+  "lesson": "Comprendre les filtres", "computeHelp": "Chaque invocation compute traite un pixel. Elle lit la texture source inchangée et écrit dans une texture RGBA8 distincte. Les niveaux de gris, le sépia et l’inversion transforment directement les couleurs. Le flou gaussien combine des voisins pondérés, tandis que Sobel détecte les variations de luminance approchée. Chaque réglage repart de la source, jamais du résultat précédent.",
+  "edgeHelp": "Aux limites de l’image, les lectures de voisinage répètent le pixel du bord le plus proche. Le rayon gaussien va de 1 à 5 pixels et sigma vaut la moitié du rayon. Sobel divise l’amplitude du gradient par quatre et élimine les valeurs sous le seuil. L’intensité mélange l’effet et la source. Réinitialiser restaure ces réglages sans remplacer votre image.",
+  "colorHelp": "Cette démo pédagogique travaille sur les valeurs RGB encodées, sans calcul en lumière linéaire ni gestion des profils ICC. Chaque filtre conserve l’alpha du pixel central. La passe de rendu compose la transparence sur un damier et compare les deux textures sans déformer l’image. Ce sont des illustrations, pas des mesures de performance.",
+  "computeShader": "Shader compute", "renderShader": "Shader de comparaison", "source": "Sources de la scène portable"
+}
