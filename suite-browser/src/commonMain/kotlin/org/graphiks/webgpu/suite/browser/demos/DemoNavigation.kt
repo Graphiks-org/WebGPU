@@ -17,6 +17,7 @@ internal fun showDemoNavigation(active: String, locale: String) {
         "particles" to if (locale == "fr") "Particules" else "Particles",
         "reaction-diffusion" to if (locale == "fr") "Réaction-diffusion" else "Reaction-diffusion",
         "instanced-city" to if (locale == "fr") "Ville cyberpunk" else "Cyberpunk city",
+        "filter-lab" to if (locale == "fr") "Filtres d’image" else "Image filters",
     )) {
         selector.appendChild(createElement("option").also {
             it.setAttribute("value", name)

@@ -7,9 +7,10 @@ publiées, et permet d'exécuter la suite localement.
 
 [Ouvrir la page Validation](../suite/)
 
-La galerie contient trois scènes interactives : **particules compute** met à jour et dessine un même
+La galerie contient quatre scènes interactives : **particules compute** met à jour et dessine un même
 buffer GPU, **réaction-diffusion** fait évoluer des motifs avec une simulation Gray–Scott et la
-**ville cyberpunk** dessine des milliers de bâtiments par instancing avec un test de profondeur.
+**ville cyberpunk** dessine des milliers de bâtiments par instancing avec un test de profondeur et le
+**laboratoire de filtres** applique cinq filtres compute à une illustration ou à une image importée localement.
 Chaque scène propose des contrôles bilingues et un panneau pédagogique montrant le WGSL compilé.
 
 [Ouvrir les démos](../suite/demos/)

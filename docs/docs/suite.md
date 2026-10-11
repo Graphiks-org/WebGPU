@@ -7,9 +7,10 @@ lets you execute the suite locally.
 
 [Open the Validation page](suite/)
 
-The demonstration gallery contains three interactive scenes: **compute particles** updates and
+The demonstration gallery contains four interactive scenes: **compute particles** updates and
 renders a shared GPU buffer, **reaction-diffusion** evolves patterns with a Gray–Scott simulation,
-and the **cyberpunk city** renders thousands of buildings with instancing and depth testing.
+the **cyberpunk city** renders thousands of buildings with instancing and depth testing, and the
+**image filter lab** applies five compute filters to an illustration or a locally imported image.
 Each scene offers bilingual controls and a learning panel showing the compiled WGSL.
 
 [Open the demos](suite/demos/)

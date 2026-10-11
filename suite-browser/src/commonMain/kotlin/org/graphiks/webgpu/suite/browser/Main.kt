@@ -30,6 +30,9 @@ import org.graphiks.webgpu.suite.browser.demos.showDemoNavigation
 import org.graphiks.webgpu.suite.browser.demos.CityCheckIds
 import org.graphiks.webgpu.suite.browser.demos.cityGpuResults
 import org.graphiks.webgpu.suite.browser.demos.showCityPage
+import org.graphiks.webgpu.suite.browser.demos.FilterLabCheckIds
+import org.graphiks.webgpu.suite.browser.demos.filterLabGpuResults
+import org.graphiks.webgpu.suite.browser.demos.showFilterLabPage
 
 /**
  * The page has explicit routes. Without parameters it runs the foundation validation suite and
@@ -74,6 +77,12 @@ fun main() {
             } else {
                 showDemoNavigation(demo, selectedLocale())
                 showCityPage(selectedLocale())
+            }
+            demo == "filter-lab" -> if (queryParameter("verify") == "1") {
+                verifyDemo(FilterLabCheckIds, ::filterLabGpuResults)
+            } else {
+                showDemoNavigation(demo, selectedLocale())
+                showFilterLabPage(selectedLocale())
             }
             else -> showUnknownRoute(demo)
         }
@@ -207,7 +216,7 @@ private fun showUnknownRoute(demo: String) {
     elementById("validation")?.hidden = true
     elementById("demo-root")?.apply {
         hidden = false
-        textContent = "Unknown demo '$demo'. Available demos: particles, reaction-diffusion, instanced-city."
+        textContent = "Unknown demo '$demo'. Available demos: particles, reaction-diffusion, instanced-city, filter-lab."
     }
 }
 

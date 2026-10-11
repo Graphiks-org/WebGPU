@@ -1,0 +1,17 @@
+{
+  "title": "Image filter lab",
+  "description": "Explore five GPU filters on an original illustration or your own image. Move the divider to compare the source on the left with the result on the right.",
+  "privacy": "Your image stays in this browser and is never uploaded. PNG, JPEG and WebP files up to 20 MiB are accepted. Large images are reduced to a maximum side of 2048 pixels, or the device limit. Decoding the original file may use more memory.",
+  "importImage": "Local image", "embedded": "Use the illustration", "reset": "Reset settings", "filter": "Filter",
+  "grayscale": "Grayscale", "sepia": "Sepia", "invert": "Invert", "blur": "Gaussian blur", "sobel": "Sobel edges",
+  "intensity": "Intensity (%)", "radius": "Blur radius (pixels)", "threshold": "Edge threshold", "comparison": "Divider position (%)",
+  "original": "Original", "filtered": "Filtered", "loading": "Preparing WebGPU…", "importing": "Opening your image…",
+  "unavailable": "WebGPU is unavailable. No CPU fallback is used.", "failed": "The GPU operation failed.",
+  "lost": "The GPU device was lost. Reload to continue.", "reload": "Reload",
+  "importFailed": "Cannot open this image. Choose a valid PNG, JPEG or WebP file, no larger than 20 MiB. The previous image is unchanged.",
+  "dimensions": "Working image: {width} × {height} pixels", "reduced": "Reduced to fit the processing limit",
+  "lesson": "How the filters work", "computeHelp": "A compute invocation processes one pixel. It reads the unchanged source texture and writes a separate RGBA8 texture. Grayscale, sepia and inversion transform color directly. Gaussian blur combines weighted neighbors, while Sobel detects changes in approximate luminance. Every adjustment starts from the source, not the previous result.",
+  "edgeHelp": "At image boundaries, neighborhood reads repeat the nearest edge pixel. The Gaussian radius is 1–5 pixels with sigma equal to half the radius. Sobel normalizes the gradient magnitude by four and suppresses values below the threshold. Intensity blends the effect with the source. Reset restores these settings without replacing your image.",
+  "colorHelp": "This learning demo works on encoded RGB values, not linear-light color or ICC profiles. Each filter preserves the central pixel’s alpha. The render pass composites transparency onto a checkerboard and compares both textures without stretching the image. These are illustrations, not performance measurements.",
+  "computeShader": "Compute shader", "renderShader": "Comparison shader", "source": "Portable scene source"
+}

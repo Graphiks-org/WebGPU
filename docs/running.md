@@ -93,18 +93,18 @@ node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecut
 ```
 
 `--demo-check` opens `?demo=particles&verify=1`, `?demo=reaction-diffusion&verify=1` and
-`?demo=instanced-city&verify=1` in fresh pages, requires all eight ids to pass, and writes
+`?demo=instanced-city&verify=1` and `?demo=filter-lab&verify=1` in fresh pages, requires all eleven ids to pass, and writes
 one aggregated `build/reports/demos-<target>.json`, separate from the acid-test reports.
 Missing routes, invalid JSON, mismatched build identities, missing/duplicate/unexpected ids,
 failed cases and page errors all make the collector exit non-zero; partial real results are
-retained as failures, never fabricated successes. The gallery at `site/demos/` presents all three
+retained as failures, never fabricated successes. The gallery at `site/demos/` presents all four
 demos with local launches and scene source links. Demos are illustrations, not benchmarks:
 no GPU time, frame-rate measurement or ranking is claimed.
 
 ## Run the reaction-diffusion demo
 
-All three interactive demo pages have a shared Demo selector at the top. Switching between Particles,
-Reaction-diffusion and Cyberpunk city preserves the locale and JS/Wasm runner path, and reloads the page so the
+All four interactive demo pages have a shared Demo selector at the top. Switching between Particles,
+Reaction-diffusion, Cyberpunk city and Image filters preserves the locale and JS/Wasm runner path, and reloads the page so the
 outgoing demo releases its GPU resources. Simulation state is not preserved across demos.
 
 - `?demo=reaction-diffusion&lang=en|fr` — interactive Gray–Scott simulation on a fixed 256 × 256
@@ -126,7 +126,7 @@ then swap. Reading uses `textureLoad` without optional float filtering features.
 maps the resulting B concentration to a palette. Device loss stops animation, disables GPU controls
 and offers reload; unavailable WebGPU is a visible error, not a CPU fallback.
 
-The combined demo report requires these eight ids:
+The combined demo report requires these eleven ids:
 
 ```text
 particles.compute-render-readback
@@ -137,6 +137,9 @@ reaction-diffusion.brush-boundaries
 instanced-city.instances-render-readback
 instanced-city.depth-occlusion
 instanced-city.camera-resize-lifecycle
+filter-lab.compute-readback
+filter-lab.boundaries-comparison
+filter-lab.reset-source-lifecycle
 ```
 
 Run the CPU/control/oracle tests with:
@@ -187,7 +190,7 @@ indexed instanced building draw. A second draw renders ground/streets: `12 * cou
 triangles, not a performance measurement. `Depth24Plus` resolves occlusion. Windows and street
 lines are procedural, with analytical minification of windows, no compute, textures or bloom.
 The folded teaching panel shows the exact compiled WGSL and explains these two draws.
-All three demos use spacious formatting and shared dependency-free syntax coloring for keywords, types,
+All four demos use spacious formatting and shared dependency-free syntax coloring for keywords, types,
 attributes, numbers and comments. Highlighting inserts literal text spans, preserving the source
 for copying without parsing it as HTML. The particle panel shows its compute and instanced-render shaders
 in EN/FR, and is folded by default.
@@ -198,6 +201,52 @@ Keep the scene alive across frames; submit once after each encoding before updat
 for another frame. It owns its buffers, pipelines and resize-dependent depth texture, but borrows
 the device, encoder and color view. Close the scene when finished. Native compilation below
 does not establish native GPU execution; browser checks are the actual GPU evidence.
+
+## Run the image filter lab
+
+`?demo=filter-lab&lang=en|fr` opens an original illustration. Import a PNG, JPEG or WebP file to
+experiment with your own image. The file stays in the browser and is never uploaded. Files must be
+nonempty, valid and no larger than 20 MiB. The page checks the declared format, file signature and
+successful decoding, not just the extension. Unsupported or invalid imports preserve the previous image.
+
+The working image keeps its proportions and is reduced, never enlarged, to a maximum side of
+`min(2048, device.limits.maxTextureDimension2D)` pixels. The page displays its dimensions and indicates
+reduction. This bounds GPU processing, not the memory needed by the browser to decode the original file.
+
+Select grayscale, sepia, inversion, Gaussian blur or Sobel edges. Intensity blends the effect with the
+source from 0 to 100 %. Blur uses a radius of 1–5 pixels, with sigma equal to half the radius. Sobel
+uses a 0–1 threshold on gradient magnitude normalized by four. Neighborhood reads repeat the nearest
+edge pixel. Each adjustment starts from the original source, so filters never accumulate.
+
+The divider displays the original on the left and the filtered result on the right. Its extremes
+show either image alone. Reset settings restores grayscale, full intensity, radius 3, threshold 0.2
+and divider 50 %, without replacing the image. Use the illustration replaces only the source.
+
+The compute shaders process encoded RGB values, not linear-light color or ICC profiles. They preserve
+the central pixel's alpha. The render shader composites transparency onto a checkerboard and preserves
+the image's aspect ratio. The folded EN/FR lesson shows both exact compiled shader sources.
+
+`?demo=filter-lab&verify=1` runs the three GPU checks included in `--demo-check`. Native consumers
+can use the scene without DOM dependencies:
+
+```kotlin
+import org.graphiks.webgpu.suite.demos.filterlab.FilterLabScene
+import org.graphiks.webgpu.suite.demos.filterlab.FilterSettings
+import org.graphiks.webgpu.suite.demos.filterlab.embeddedFilterImage
+
+FilterLabScene.create(device, format, embeddedFilterImage()).use { scene ->
+    device.createCommandEncoder().use { encoder ->
+        scene.encodeFrame(encoder, targetView, width, height, FilterSettings())
+        encoder.finish().use { commands -> device.queue.submit(listOf(commands)) }
+    }
+}
+```
+
+Keep the scene between frames in an interactive application. Submit each encoded frame before changing
+uniforms. Pass `recompute = false` only after computing the same settings, for resizing or moving the
+divider. The scene owns its textures, buffers, pipelines and bind groups, but borrows the device,
+encoder and target view. Close it when finished. `encodeResultCopy` copies RGBA8 into a borrowed CopyDst
+buffer with `resultRowBytes` aligned to 256 bytes and size at least `resultCopyBytes`.
 
 ## Run the benchmarks
 

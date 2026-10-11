@@ -89,20 +89,20 @@ node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecut
 ```
 
 Le collecteur ouvre `?demo=particles&verify=1`, `?demo=reaction-diffusion&verify=1` et
-`?demo=instanced-city&verify=1` dans des pages distinctes. Les huit cas doivent réussir. Le rapport
+`?demo=instanced-city&verify=1` et `?demo=filter-lab&verify=1` dans des pages distinctes. Les onze cas doivent réussir. Le rapport
 agrégé `build/reports/demos-<target>.json` reste séparé des rapports acid.
 
 Une route absente, un JSON invalide, des identités de build incompatibles, des identifiants manquants,
 dupliqués ou inattendus, un cas échoué ou une erreur de page entraîne une sortie non nulle.
 Les résultats partiels sont conservés comme échecs, jamais remplacés par des réussites inventées.
-La galerie `site/demos/` présente les trois démos avec leurs liens de lancement et leurs sources.
+La galerie `site/demos/` présente les quatre démos avec leurs liens de lancement et leurs sources.
 Ce sont des illustrations, pas des benchmarks : elles ne mesurent ni temps GPU ni fréquence
 d’affichage et n’établissent aucun classement.
 
 ## Exécuter la réaction-diffusion
 
-Le sélecteur Démo en haut des trois pages permet de passer entre Particules, Réaction-diffusion et
-Ville cyberpunk en conservant la langue et le chemin JS/Wasm. Le changement recharge la page pour
+Le sélecteur Démo en haut des quatre pages permet de passer entre Particules, Réaction-diffusion,
+Ville cyberpunk et Filtres d’image en conservant la langue et le chemin JS/Wasm. Le changement recharge la page pour
 libérer les ressources GPU de la scène précédente. L’état de simulation n’est pas conservé.
 
 - `?demo=reaction-diffusion&lang=en|fr` ouvre une simulation Gray–Scott sur une grille fixe de
@@ -126,7 +126,7 @@ ne nécessite pas de fonctionnalité optionnelle de filtrage flottant. Le rendu 
 La perte du périphérique arrête l’animation, désactive les contrôles GPU et propose de recharger.
 Sans WebGPU, la page affiche une erreur, sans repli sur une simulation CPU.
 
-Le rapport combiné exige ces huit identifiants :
+Le rapport combiné exige ces onze identifiants :
 
 ```text
 particles.compute-render-readback
@@ -137,6 +137,9 @@ reaction-diffusion.brush-boundaries
 instanced-city.instances-render-readback
 instanced-city.depth-occlusion
 instanced-city.camera-resize-lifecycle
+filter-lab.compute-readback
+filter-lab.boundaries-comparison
+filter-lab.reset-source-lifecycle
 ```
 
 Pour vérifier les données, les contrôles et l’oracle sur CPU :
@@ -193,7 +196,7 @@ permettent un seul dessin indexé instancié. Un second dessin produit le sol et
 textures externes ni bloom. Le filtrage analytique conserve la lumière des fenêtres lointaines.
 
 Le panneau pédagogique, replié par défaut, montre le WGSL compilé et explique les deux dessins.
-Les trois démos partagent une présentation aérée et une coloration sans dépendance des mots-clés,
+Les quatre démos partagent une présentation aérée et une coloration sans dépendance des mots-clés,
 types, attributs, nombres et commentaires. Les sources sont insérées comme du texte, sans
 interprétation HTML, et restent intactes lors de la copie. Le panneau des particules présente
 en EN/FR les shaders compute et de rendu instancié.
@@ -204,6 +207,57 @@ Conservez la scène entre les frames et soumettez les commandes après chaque en
 changer les uniformes. La scène possède buffers, pipelines et texture de profondeur dépendante
 de la taille. Elle emprunte le périphérique, l’encodeur et la vue de couleur. Fermez-la à la fin.
 La compilation native ne constitue pas une vérification GPU native.
+
+## Exécuter le laboratoire de filtres d’image
+
+`?demo=filter-lab&lang=en|fr` ouvre une illustration originale. Importez un fichier PNG, JPEG ou WebP
+pour expérimenter avec votre propre image. Le fichier reste dans le navigateur, sans téléversement.
+Il doit être non vide, valide et ne pas dépasser 20 Mio. La page vérifie le format déclaré, la signature
+du fichier et le décodage, pas seulement l’extension. Un import invalide conserve l’image précédente.
+
+L’image de travail conserve ses proportions et est réduite, jamais agrandie, à un côté maximal de
+`min(2048, device.limits.maxTextureDimension2D)` pixels. La page affiche ses dimensions et signale
+la réduction. Cette limite borne le traitement GPU, pas la mémoire nécessaire au navigateur pour
+décoder le fichier original.
+
+Choisissez niveaux de gris, sépia, inversion, flou gaussien ou contours Sobel. L’intensité mélange
+l’effet et la source de 0 à 100 %. Le flou utilise un rayon de 1 à 5 pixels, avec sigma égal à la moitié
+du rayon. Sobel applique un seuil de 0 à 1 à l’amplitude du gradient divisée par quatre. Les lectures
+de voisinage répètent le pixel du bord le plus proche. Chaque réglage repart de la source originale,
+sans accumulation des filtres.
+
+La séparation présente l’original à gauche et le résultat à droite. Ses extrêmes affichent l’une
+des images seule. Réinitialiser les réglages restaure les niveaux de gris, l’intensité maximale,
+le rayon 3, le seuil 0,2 et la séparation à 50 %, sans remplacer l’image. Utiliser l’illustration
+remplace uniquement la source.
+
+Les shaders compute traitent les valeurs RGB encodées, sans calcul en lumière linéaire ni gestion
+des profils ICC. Ils conservent l’alpha du pixel central. Le shader de rendu compose la transparence
+sur un damier et conserve le rapport d’aspect. Le panneau pédagogique EN/FR, replié par défaut,
+affiche les deux sources de shaders exactement telles qu’elles sont compilées.
+
+`?demo=filter-lab&verify=1` exécute les trois tests GPU inclus dans `--demo-check`. Les bindings natifs
+peuvent utiliser la scène sans dépendance DOM :
+
+```kotlin
+import org.graphiks.webgpu.suite.demos.filterlab.FilterLabScene
+import org.graphiks.webgpu.suite.demos.filterlab.FilterSettings
+import org.graphiks.webgpu.suite.demos.filterlab.embeddedFilterImage
+
+FilterLabScene.create(device, format, embeddedFilterImage()).use { scene ->
+    device.createCommandEncoder().use { encoder ->
+        scene.encodeFrame(encoder, targetView, width, height, FilterSettings())
+        encoder.finish().use { commands -> device.queue.submit(listOf(commands)) }
+    }
+}
+```
+
+Conservez la scène entre les frames dans une application interactive. Soumettez chaque frame encodée
+avant de modifier les uniformes. Passez `recompute = false` seulement après avoir calculé les mêmes
+réglages, pour redimensionner ou déplacer la séparation. La scène possède textures, buffers, pipelines
+et bind groups, mais emprunte le périphérique, l’encodeur et la vue cible. Fermez-la à la fin.
+`encodeResultCopy` copie le RGBA8 dans un buffer CopyDst emprunté, avec `resultRowBytes` aligné
+à 256 octets et une taille d’au moins `resultCopyBytes`.
 
 ## Exécuter les benchmarks
 
