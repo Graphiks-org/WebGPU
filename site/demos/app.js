@@ -34,6 +34,8 @@ const TEXT = {
 const REPO = 'https://github.com/Graphiks-org/WebGPU';
 const SCENE_ROOT = 'suite-demos/src/commonMain/kotlin/org/graphiks/webgpu/suite/demos';
 const DEMOS = [
+  { name: 'filter-lab', directory: 'filterlab',
+    sources: ['FilterLabScene.kt', 'FilterLabShaders.kt', 'FilterLabData.kt'] },
   { name: 'particles', directory: 'particles', sources: ['ParticleScene.kt', 'ParticleShaders.kt', 'ParticleData.kt'] },
   { name: 'reaction-diffusion', directory: 'reactiondiffusion',
     sources: ['ReactionDiffusionScene.kt', 'ReactionDiffusionShaders.kt', 'ReactionDiffusionData.kt'] },

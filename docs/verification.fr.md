@@ -322,7 +322,20 @@ interactive, la disposition mobile ou la présentation du panneau de shaders.
 
 ## Collecte et interprétation des résultats des démos
 
-`--demo-check` collecte huit cas GPU uniques pour les particules, la réaction-diffusion et la ville.
+Le laboratoire ajoute trois tests GPU. `filter-lab.compute-readback` compare les cinq filtres à un
+oracle CPU indépendant en double précision, avec intensités nulle/maximale, rayons/seuils extrêmes
+et conservation exacte de l’alpha. La tolérance RGB est de deux niveaux RGBA8.
+`filter-lab.boundaries-comparison` vérifie les dimensions impaires, les images 1 × 1, 1 × N et N × 1,
+la répétition des bords, la séparation et la transparence. `filter-lab.reset-source-lifecycle` vérifie
+la restauration des paramètres, le remplacement de source, le redimensionnement, la réutilisation du
+rendu sans compute et le refus d’une scène fermée. Les tests Kotlin vérifient aussi la validation
+des données, l’oracle et l’invalidation des générations d’import. Le workflow les appelle explicitement.
+
+Le décodage local, les erreurs d’import, les sélections concurrentes, les contrôles clavier,
+la localisation et la disposition mobile nécessitent des contrôles d’acceptation distincts.
+Les tests GPU n’automatisent pas le sélecteur de fichier DOM.
+
+`--demo-check` collecte onze cas GPU uniques pour les particules, la réaction-diffusion, la ville et les filtres d’image.
 Le collecteur contrôle l’identité des rapports contre l’inventaire généré. Routes absentes,
 rapports mal formés, cas manquants ou dupliqués, erreurs fatales et erreurs de page restent des échecs.
 Les résultats partiels sont conservés et les rapports démos restent distincts de la couverture acid

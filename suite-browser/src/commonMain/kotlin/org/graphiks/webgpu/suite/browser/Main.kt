@@ -216,7 +216,7 @@ private fun showUnknownRoute(demo: String) {
     elementById("validation")?.hidden = true
     elementById("demo-root")?.apply {
         hidden = false
-        textContent = "Unknown demo '$demo'. Available demos: particles, reaction-diffusion, instanced-city."
+        textContent = "Unknown demo '$demo'. Available demos: particles, reaction-diffusion, instanced-city, filter-lab."
     }
 }
 
