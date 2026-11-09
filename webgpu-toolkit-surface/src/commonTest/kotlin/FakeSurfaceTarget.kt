@@ -6,9 +6,9 @@ import org.graphiks.webgpu.GPUTextureView
 import org.graphiks.webgpu.toolkit.PresentationConfiguration
 import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.TargetState
-import org.graphiks.webgpu.toolkit.ToolkitConfig
+import org.graphiks.webgpu.toolkit.SessionConfig
 import org.graphiks.webgpu.toolkit.ToolkitInstance
-import org.graphiks.webgpu.toolkit.ToolkitProgression
+import org.graphiks.webgpu.toolkit.Progression
 import org.graphiks.webgpu.toolkit.ToolkitSurfaceHandle
 import org.graphiks.webgpu.toolkit.SurfaceTarget
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
@@ -119,7 +119,7 @@ class RecordingFakeExtension : WebGpuToolkitExtension {
     private val delegate = FakeExtension()
 
     /** Progression reported by instances this extension opens; forwards to the wrapped fake. */
-    var progression: ToolkitProgression
+    var progression: Progression
         get() = delegate.progression
         set(value) {
             delegate.progression = value
@@ -140,7 +140,7 @@ class RecordingFakeExtension : WebGpuToolkitExtension {
     override val id: String
         get() = delegate.id
 
-    override fun open(config: ToolkitConfig): ToolkitInstance {
+    override fun open(config: SessionConfig): ToolkitInstance {
         val wrapped = delegate.open(config)
         return object : ToolkitInstance by wrapped {
             override fun createSurface(adapter: GPUAdapter, lease: TargetLease): ToolkitSurfaceHandle {

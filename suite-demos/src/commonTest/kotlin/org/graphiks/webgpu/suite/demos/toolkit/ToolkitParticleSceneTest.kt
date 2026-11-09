@@ -45,7 +45,7 @@ import org.graphiks.webgpu.GPUColor
 import org.graphiks.webgpu.toolkit.AcquiredFrame
 import org.graphiks.webgpu.toolkit.AdapterHints
 import org.graphiks.webgpu.toolkit.TargetLease
-import org.graphiks.webgpu.toolkit.ToolkitConfig
+import org.graphiks.webgpu.toolkit.SessionConfig
 import org.graphiks.webgpu.toolkit.ToolkitInstance
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 import org.graphiks.webgpu.toolkit.tck.SimulatedGpuAdapterInfo
@@ -105,7 +105,7 @@ private class GpuScriptedToolkitExtension(
 
     private val scriptedDevice = InertResourceDevice(simulation.device)
 
-    override fun open(config: ToolkitConfig): ToolkitInstance =
+    override fun open(config: SessionConfig): ToolkitInstance =
         GpuScriptedInstance(simulation.open(config), scriptedDevice)
 }
 

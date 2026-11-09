@@ -145,7 +145,7 @@ publishes its host artifact alongside itself.
 ## Validate an extension with the TCK
 
 `webgpu-toolkit-tck` runs the protocol cases any extension must honor.
-`ToolkitProtocolTck.runAll(extension, target)` returns a `TckReport` whose `failures` list carries
+`ProtocolTck.runAll(extension, target)` returns a `TckReport` whose `failures` list carries
 one line per violated case instead of throwing on the first, so a binding repository can run it
 against its own extension in its tests and see every violation at once. The kit's
 `SimulatedToolkitExtension` is the scripted counterpart that proves the strict paths in this

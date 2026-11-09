@@ -8,7 +8,7 @@ import kotlin.time.Duration.Companion.seconds
  * Timeouts guarding the startup and shutdown of a toolkit session.
  *
  */
-data class ToolkitConfig(
+data class SessionConfig(
 	/**
 	 * How long startup may take before the session gives up.
 	 *
@@ -44,7 +44,7 @@ data class AdapterHints(
  * runs on an event loop, or leaves the pacing entirely to the caller.
  *
  */
-enum class ToolkitProgression {
+enum class Progression {
 	/**
 	 * The session pumps frame work on its own.
 	 *
@@ -66,7 +66,7 @@ enum class ToolkitProgression {
  * Alpha mode a surface composites with.
  *
  */
-enum class ToolkitAlphaMode {
+enum class AlphaMode {
 	/**
 	 * Pixels are opaque; the alpha channel is ignored.
 	 *

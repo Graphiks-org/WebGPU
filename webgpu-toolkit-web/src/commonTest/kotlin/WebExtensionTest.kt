@@ -2,7 +2,7 @@ package org.graphiks.webgpu.toolkit.web
 
 import org.graphiks.webgpu.GPUFeatureLevel
 import org.graphiks.webgpu.toolkit.AdapterHints
-import org.graphiks.webgpu.toolkit.ToolkitProgression
+import org.graphiks.webgpu.toolkit.Progression
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -17,7 +17,7 @@ class WebExtensionTest {
 
         val instance = extension.open()
         try {
-            assertEquals(ToolkitProgression.EventLoop, instance.progression)
+            assertEquals(Progression.EventLoop, instance.progression)
             instance.pumpEvents()
         } finally {
             instance.close()

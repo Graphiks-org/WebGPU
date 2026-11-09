@@ -17,10 +17,10 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import org.graphiks.webgpu.toolkit.DeviceLostException
-import org.graphiks.webgpu.toolkit.ToolkitConfig
-import org.graphiks.webgpu.toolkit.ToolkitProgression
-import org.graphiks.webgpu.toolkit.ToolkitSession
-import org.graphiks.webgpu.toolkit.ToolkitSessionState
+import org.graphiks.webgpu.toolkit.SessionConfig
+import org.graphiks.webgpu.toolkit.Progression
+import org.graphiks.webgpu.toolkit.Session
+import org.graphiks.webgpu.toolkit.SessionState
 import org.graphiks.webgpu.toolkit.withSession
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -29,9 +29,9 @@ import kotlin.time.Duration.Companion.milliseconds
  * returns the recording list plus the collector's [Job].
  */
 private fun CoroutineScope.recordStates(
-    sessionRef: CompletableDeferred<ToolkitSession>,
-): Pair<MutableList<ToolkitSessionState>, Job> {
-    val states = mutableListOf<ToolkitSessionState>()
+    sessionRef: CompletableDeferred<Session>,
+): Pair<MutableList<SessionState>, Job> {
+    val states = mutableListOf<SessionState>()
     val job = launch { sessionRef.await().state.collect { states += it } }
     return states to job
 }
@@ -40,14 +40,14 @@ class SessionTest : FreeSpec({
     "withSession walks Ready to Closed" {
         runTest {
             val fake = FakeExtension()
-            val sessionRef = CompletableDeferred<ToolkitSession>()
+            val sessionRef = CompletableDeferred<Session>()
             val (states, collector) = recordStates(sessionRef)
             val result = withSession(fake) { session ->
                 sessionRef.complete(session)
                 yield()
                 session.device shouldBe fake.device
                 session.queue shouldBe fake.device.fakeQueue
-                session.state.value shouldBe ToolkitSessionState.Ready
+                session.state.value shouldBe SessionState.Ready
                 "block-result"
             }
             result shouldBe "block-result"
@@ -55,9 +55,9 @@ class SessionTest : FreeSpec({
             advanceUntilIdle()
             collector.cancelAndJoin()
             states shouldContainExactly listOf(
-                ToolkitSessionState.Ready,
-                ToolkitSessionState.ShuttingDown,
-                ToolkitSessionState.Closed,
+                SessionState.Ready,
+                SessionState.ShuttingDown,
+                SessionState.Closed,
             )
         }
     }
@@ -68,7 +68,7 @@ class SessionTest : FreeSpec({
             withSession(fake) { session ->
                 session.shutdown()
                 session.shutdown()
-                session.state.value shouldBe ToolkitSessionState.Closed
+                session.state.value shouldBe SessionState.Closed
             }
             fake.shutdownCalls shouldBe 1
             fake.instanceClosed shouldBe true
@@ -78,14 +78,14 @@ class SessionTest : FreeSpec({
     "shutdown timeout is retryable" {
         runTest {
             val fake = FakeExtension().apply { hangShutdown = true }
-            val config = ToolkitConfig(shutdownTimeout = 10.milliseconds)
+            val config = SessionConfig(shutdownTimeout = 10.milliseconds)
             withSession(fake, config) { session ->
                 session.shutdown()
-                session.state.value shouldBe ToolkitSessionState.ShutdownTimedOut
+                session.state.value shouldBe SessionState.ShutdownTimedOut
                 fake.instanceClosed shouldBe false
                 fake.releaseShutdown()
                 session.shutdown()
-                session.state.value shouldBe ToolkitSessionState.Closed
+                session.state.value shouldBe SessionState.Closed
             }
             fake.openedConfigs shouldContainExactly listOf(config)
             fake.shutdownCalls shouldBe 1
@@ -96,15 +96,15 @@ class SessionTest : FreeSpec({
     "background shutdown retries exhaust and stay ShutdownTimedOut" {
         runTest {
             val fake = FakeExtension().apply { hangShutdown = true }
-            lateinit var session: ToolkitSession
-            withSession(fake, ToolkitConfig(shutdownTimeout = 10.milliseconds)) { admitted ->
+            lateinit var session: Session
+            withSession(fake, SessionConfig(shutdownTimeout = 10.milliseconds)) { admitted ->
                 session = admitted
                 session.shutdown()
-                session.state.value shouldBe ToolkitSessionState.ShutdownTimedOut
+                session.state.value shouldBe SessionState.ShutdownTimedOut
             }
             // The background loop burns its five bounded attempts and then gives up.
             advanceUntilIdle()
-            session.state.value shouldBe ToolkitSessionState.ShutdownTimedOut
+            session.state.value shouldBe SessionState.ShutdownTimedOut
             fake.instanceClosed shouldBe false
             fake.shutdownCalls shouldBe 0
         }
@@ -113,7 +113,7 @@ class SessionTest : FreeSpec({
     "device loss publishes Lost and cancels admitted work" {
         runTest {
             val fake = FakeExtension()
-            val sessionRef = CompletableDeferred<ToolkitSession>()
+            val sessionRef = CompletableDeferred<Session>()
             val (states, collector) = recordStates(sessionRef)
             val lost = shouldThrow<DeviceLostException> {
                 withSession(fake) { session ->
@@ -127,10 +127,10 @@ class SessionTest : FreeSpec({
             advanceUntilIdle()
             collector.cancelAndJoin()
             states shouldContainExactly listOf(
-                ToolkitSessionState.Ready,
-                ToolkitSessionState.Lost,
-                ToolkitSessionState.ShuttingDown,
-                ToolkitSessionState.Closed,
+                SessionState.Ready,
+                SessionState.Lost,
+                SessionState.ShuttingDown,
+                SessionState.Closed,
             )
         }
     }
@@ -138,7 +138,7 @@ class SessionTest : FreeSpec({
     "cancellation shuts down cleanly" {
         runTest {
             val fake = FakeExtension()
-            val sessionRef = CompletableDeferred<ToolkitSession>()
+            val sessionRef = CompletableDeferred<Session>()
             val (states, collector) = recordStates(sessionRef)
             val job = launch {
                 withSession(fake) { session ->
@@ -152,19 +152,19 @@ class SessionTest : FreeSpec({
             advanceUntilIdle()
             collector.cancelAndJoin()
             states shouldContainExactly listOf(
-                ToolkitSessionState.Ready,
-                ToolkitSessionState.ShuttingDown,
-                ToolkitSessionState.Closed,
+                SessionState.Ready,
+                SessionState.ShuttingDown,
+                SessionState.Closed,
             )
         }
     }
 
     "pump loop runs and stops for Pumped progression" {
         runTest {
-            val fake = FakeExtension().apply { progression = ToolkitProgression.Pumped }
+            val fake = FakeExtension().apply { progression = Progression.Pumped }
             var duringBlock = 0
             withSession(fake) { session ->
-                session.state.value shouldBe ToolkitSessionState.Ready
+                session.state.value shouldBe SessionState.Ready
                 repeat(10) { yield() }
                 duringBlock = fake.pumpCount
             }
@@ -178,7 +178,7 @@ class SessionTest : FreeSpec({
 
     "Manual progression is rejected fast" {
         runTest {
-            val fake = FakeExtension().apply { progression = ToolkitProgression.Manual }
+            val fake = FakeExtension().apply { progression = Progression.Manual }
             val rejected = shouldThrow<UnsupportedOperationException> {
                 withSession(fake) { error("block must not run under Manual progression") }
             }
@@ -191,7 +191,7 @@ class SessionTest : FreeSpec({
     "block failure after its own shutdown stays Closed" {
         runTest {
             val fake = FakeExtension()
-            val sessionRef = CompletableDeferred<ToolkitSession>()
+            val sessionRef = CompletableDeferred<Session>()
             val (states, collector) = recordStates(sessionRef)
             val boom = shouldThrow<IllegalStateException> {
                 withSession(fake) { session ->
@@ -206,9 +206,9 @@ class SessionTest : FreeSpec({
             advanceUntilIdle()
             collector.cancelAndJoin()
             states shouldContainExactly listOf(
-                ToolkitSessionState.Ready,
-                ToolkitSessionState.ShuttingDown,
-                ToolkitSessionState.Closed,
+                SessionState.Ready,
+                SessionState.ShuttingDown,
+                SessionState.Closed,
             )
         }
     }
@@ -216,12 +216,12 @@ class SessionTest : FreeSpec({
     "run and handle access are rejected after Closed" {
         runTest {
             val fake = FakeExtension()
-            lateinit var session: ToolkitSession
+            lateinit var session: Session
             withSession(fake) { admitted ->
                 session = admitted
-                admitted.state.value shouldBe ToolkitSessionState.Ready
+                admitted.state.value shouldBe SessionState.Ready
             }
-            session.state.value shouldBe ToolkitSessionState.Closed
+            session.state.value shouldBe SessionState.Closed
             shouldThrow<IllegalStateException> { session.run { } }
             shouldThrow<IllegalStateException> { session.device }
             shouldThrow<IllegalStateException> { session.queue }
@@ -231,7 +231,7 @@ class SessionTest : FreeSpec({
     "block failure publishes Failed while Ready" {
         runTest {
             val fake = FakeExtension()
-            val sessionRef = CompletableDeferred<ToolkitSession>()
+            val sessionRef = CompletableDeferred<Session>()
             val (states, collector) = recordStates(sessionRef)
             shouldThrow<IllegalStateException> {
                 withSession(fake) { session ->
@@ -243,10 +243,10 @@ class SessionTest : FreeSpec({
             advanceUntilIdle()
             collector.cancelAndJoin()
             states shouldContainExactly listOf(
-                ToolkitSessionState.Ready,
-                ToolkitSessionState.Failed,
-                ToolkitSessionState.ShuttingDown,
-                ToolkitSessionState.Closed,
+                SessionState.Ready,
+                SessionState.Failed,
+                SessionState.ShuttingDown,
+                SessionState.Closed,
             )
         }
     }

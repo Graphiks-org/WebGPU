@@ -25,7 +25,7 @@ data class SurfaceCapabilities(
 	 * Every alpha mode the target can composite with.
 	 *
 	 */
-	val alphaModes: List<ToolkitAlphaMode>,
+	val alphaModes: List<AlphaMode>,
 )
 
 /**
@@ -47,7 +47,7 @@ data class PresentationConfiguration(
 	 * Alpha mode the surface composites with, chosen from [SurfaceCapabilities.alphaModes].
 	 *
 	 */
-	val alphaMode: ToolkitAlphaMode = ToolkitAlphaMode.Opaque,
+	val alphaMode: AlphaMode = AlphaMode.Opaque,
 )
 
 /**
@@ -112,7 +112,7 @@ interface ToolkitInstance : AutoCloseable {
 	 * How this session drives frame work.
 	 *
 	 */
-	val progression: ToolkitProgression
+	val progression: Progression
 	/**
 	 * Selects an adapter for the session, or fails with a `Result` describing why none fits.
 	 *
@@ -136,7 +136,7 @@ interface ToolkitInstance : AutoCloseable {
 }
 
 /**
- * Entry point of the toolkit: opens a [ToolkitInstance] from a [ToolkitConfig].
+ * Entry point of the toolkit: opens a [ToolkitInstance] from a [SessionConfig].
  * Implementations live in binding repositories; this repository ships only the web one.
  *
  */
@@ -150,5 +150,5 @@ interface WebGpuToolkitExtension {
 	 * Opens a toolkit session with the given configuration.
 	 *
 	 */
-	fun open(config: ToolkitConfig = ToolkitConfig()): ToolkitInstance
+	fun open(config: SessionConfig = SessionConfig()): ToolkitInstance
 }

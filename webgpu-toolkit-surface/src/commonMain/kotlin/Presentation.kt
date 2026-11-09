@@ -21,7 +21,7 @@ import org.graphiks.webgpu.toolkit.SurfaceTarget
 import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.TargetState
 import org.graphiks.webgpu.toolkit.ToolkitInstance
-import org.graphiks.webgpu.toolkit.ToolkitSession
+import org.graphiks.webgpu.toolkit.Session
 import org.graphiks.webgpu.toolkit.ToolkitSurfaceHandle
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 import org.graphiks.webgpu.toolkit.withSession
@@ -93,7 +93,7 @@ suspend fun <R> withSurface(
     extension: WebGpuToolkitExtension,
     target: SurfaceTarget,
     hints: AdapterHints = AdapterHints(),
-    block: suspend (ToolkitSession, ToolkitSurface) -> R,
+    block: suspend (Session, ToolkitSurface) -> R,
 ): R = withSession(extension, hints) { session ->
     val surface = DefaultToolkitSurface.acquire(extension, session, target, hints, coroutineContext)
     try {
@@ -190,7 +190,7 @@ internal class DefaultToolkitSurface(
          */
         suspend fun acquire(
             extension: WebGpuToolkitExtension,
-            session: ToolkitSession,
+            session: Session,
             target: SurfaceTarget,
             hints: AdapterHints,
             callerContext: CoroutineContext,

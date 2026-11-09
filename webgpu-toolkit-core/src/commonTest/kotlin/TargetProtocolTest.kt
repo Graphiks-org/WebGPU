@@ -2,12 +2,12 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import org.graphiks.webgpu.toolkit.Extent2D
 import org.graphiks.webgpu.toolkit.TargetState
-import org.graphiks.webgpu.toolkit.ToolkitConfig
+import org.graphiks.webgpu.toolkit.SessionConfig
 import kotlin.time.Duration.Companion.seconds
 
 class TargetProtocolTest : FreeSpec({
     "toolkit config defaults to ten second timeouts" {
-        val config = ToolkitConfig()
+        val config = SessionConfig()
         config.startupTimeout shouldBe 10.seconds
         config.shutdownTimeout shouldBe 10.seconds
     }

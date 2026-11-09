@@ -54,10 +54,10 @@ import org.graphiks.webgpu.toolkit.SurfaceCapabilities
 import org.graphiks.webgpu.toolkit.SurfaceTarget
 import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.TargetState
-import org.graphiks.webgpu.toolkit.ToolkitAlphaMode
-import org.graphiks.webgpu.toolkit.ToolkitConfig
+import org.graphiks.webgpu.toolkit.AlphaMode
+import org.graphiks.webgpu.toolkit.SessionConfig
 import org.graphiks.webgpu.toolkit.ToolkitInstance
-import org.graphiks.webgpu.toolkit.ToolkitProgression
+import org.graphiks.webgpu.toolkit.Progression
 import org.graphiks.webgpu.toolkit.ToolkitSurfaceHandle
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 
@@ -145,7 +145,7 @@ class SimulatedTarget(
  * Public scriptable [WebGpuToolkitExtension] of the contract kit: it opens instances with
  * `Pumped` progression that hand out the fake [device], create surfaces fed from [frames], and
  * record every protocol call in [records]. Script device loss with [loseDevice] and a stalling
- * teardown with [hangShutdownUntil]; binding repositories run [ToolkitProtocolTck] against
+ * teardown with [hangShutdownUntil]; binding repositories run [ProtocolTck] against
  * their real extensions with these fixtures to validate the protocol paths without a GPU.
  */
 class SimulatedToolkitExtension : WebGpuToolkitExtension {
@@ -182,11 +182,11 @@ class SimulatedToolkitExtension : WebGpuToolkitExtension {
     fun newTarget(initial: TargetState = SimulatedTarget.DEFAULT_STATE): SimulatedTarget =
         SimulatedTarget(initial, records)
 
-    override fun open(config: ToolkitConfig): ToolkitInstance = SimulatedInstance()
+    override fun open(config: SessionConfig): ToolkitInstance = SimulatedInstance()
 
     /** [ToolkitInstance] the simulation opens: `Pumped` progression, every call recorded. */
     inner class SimulatedInstance : ToolkitInstance {
-        override val progression: ToolkitProgression = ToolkitProgression.Pumped
+        override val progression: Progression = Progression.Pumped
 
         override suspend fun requestAdapter(hints: AdapterHints): Result<GPUAdapter> =
             Result.success(SimulatedGpuAdapter(device))
@@ -232,7 +232,7 @@ class SimulatedToolkitExtension : WebGpuToolkitExtension {
         val DEFAULT_CAPABILITIES = SurfaceCapabilities(
             preferredFormat = GPUTextureFormat.BGRA8Unorm,
             formats = listOf(GPUTextureFormat.BGRA8Unorm, GPUTextureFormat.RGBA8Unorm),
-            alphaModes = listOf(ToolkitAlphaMode.Opaque, ToolkitAlphaMode.Premultiplied),
+            alphaModes = listOf(AlphaMode.Opaque, AlphaMode.Premultiplied),
         )
     }
 }

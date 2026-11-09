@@ -30,43 +30,43 @@ import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Lifecycle state of a [ToolkitSession], published through [ToolkitSession.state] as the session
+ * Lifecycle state of a [Session], published through [Session.state] as the session
  * progresses: `Ready` once the device is live, then `ShuttingDown` while handles are released,
  * ending in `Closed` on success. `ShutdownTimedOut` marks a bounded shutdown that did not finish
  * in time (a finite number of background retries follows, and a retried shutdown can still reach
  * `Closed`); `Lost` and `Failed` record a lost device or a failed block while work was admitted.
  */
-sealed interface ToolkitSessionState {
+sealed interface SessionState {
     /**
      * The session holds a live device and admits work.
      */
-    data object Ready : ToolkitSessionState
+    data object Ready : SessionState
 
     /**
      * Shutdown has started and its cleanup is still bounded by the configured timeout.
      */
-    data object ShuttingDown : ToolkitSessionState
+    data object ShuttingDown : SessionState
 
     /**
      * Shutdown exceeded the configured timeout; a finite number of background retries follows,
-     * and a retried [ToolkitSession.shutdown] can still finish the release.
+     * and a retried [Session.shutdown] can still finish the release.
      */
-    data object ShutdownTimedOut : ToolkitSessionState
+    data object ShutdownTimedOut : SessionState
 
     /**
      * The device was lost while work was admitted; admitted work was cancelled.
      */
-    data object Lost : ToolkitSessionState
+    data object Lost : SessionState
 
     /**
      * The admitted block failed, or startup could not complete; admitted work was cancelled.
      */
-    data object Failed : ToolkitSessionState
+    data object Failed : SessionState
 
     /**
      * Every handle is released; the session accepts no further work.
      */
-    data object Closed : ToolkitSessionState
+    data object Closed : SessionState
 }
 
 /**
@@ -74,7 +74,7 @@ sealed interface ToolkitSessionState {
  * hot [state] flow of its lifecycle, loss observation, scoped work admission through [run] and
  * an idempotent, retryable [shutdown].
  */
-interface ToolkitSession {
+interface Session {
     /**
      * The session's device; borrowed from the session, never closed by callers. Reading it after
      * the session reached `Closed` fails fast.
@@ -88,9 +88,9 @@ interface ToolkitSession {
     val queue: GPUQueue
 
     /**
-     * Hot flow of the latest [ToolkitSessionState].
+     * Hot flow of the latest [SessionState].
      */
-    val state: StateFlow<ToolkitSessionState>
+    val state: StateFlow<SessionState>
 
     /**
      * Suspends until the device is lost and returns why, or `null` when the session ended
@@ -105,7 +105,7 @@ interface ToolkitSession {
      * completion returns the block's result. An already-admitted block keeps running through its
      * own [shutdown] call.
      */
-    suspend fun <R> run(block: suspend (ToolkitSession) -> R): R
+    suspend fun <R> run(block: suspend (Session) -> R): R
 
     /**
      * Releases every session handle within the configured shutdown timeout: the device is
@@ -129,30 +129,30 @@ class DeviceLostException(
 ) : CancellationException("WebGPU device was lost: ${info.message}")
 
 /**
- * Opens a session with [extension] under the default [ToolkitConfig], runs [block] with it and
+ * Opens a session with [extension] under the default [SessionConfig], runs [block] with it and
  * shuts the session down on every exit path, including cancellation of the caller.
  */
 suspend fun <R> withSession(
     extension: WebGpuToolkitExtension,
     hints: AdapterHints = AdapterHints(),
-    block: suspend (ToolkitSession) -> R,
-): R = withSession(extension, ToolkitConfig(), hints, block)
+    block: suspend (Session) -> R,
+): R = withSession(extension, SessionConfig(), hints, block)
 
 /**
  * Opens a session with [extension] under [config], runs [block] with it and shuts the session
  * down on every exit path, including cancellation of the caller.
  *
- * Startup is bounded by [ToolkitConfig.startupTimeout] and maps every failure to
- * [ToolkitSessionState.Failed] before rethrowing; `Manual` progression is rejected fast with an
+ * Startup is bounded by [SessionConfig.startupTimeout] and maps every failure to
+ * [SessionState.Failed] before rethrowing; `Manual` progression is rejected fast with an
  * [UnsupportedOperationException] because v1 supports only `Pumped` and `EventLoop`.
  */
 suspend fun <R> withSession(
     extension: WebGpuToolkitExtension,
-    config: ToolkitConfig,
+    config: SessionConfig,
     hints: AdapterHints = AdapterHints(),
-    block: suspend (ToolkitSession) -> R,
+    block: suspend (Session) -> R,
 ): R {
-    val session = DefaultToolkitSession(extension, config, hints, coroutineContext)
+    val session = DefaultSession(extension, config, hints, coroutineContext)
     try {
         session.start()
         return session.run(block)
@@ -162,21 +162,21 @@ suspend fun <R> withSession(
 }
 
 /**
- * The only [ToolkitSession] implementation: opens the extension's instance, requests the
+ * The only [Session] implementation: opens the extension's instance, requests the
  * adapter and device, drives the pump loop for `Pumped` progression, admits blocks against the
  * device-loss race, and releases handles through a timeout-bounded, retryable teardown.
  */
-internal class DefaultToolkitSession(
+internal class DefaultSession(
     private val extension: WebGpuToolkitExtension,
-    private val config: ToolkitConfig,
+    private val config: SessionConfig,
     private val hints: AdapterHints,
     callerContext: CoroutineContext,
-) : ToolkitSession {
+) : Session {
     private val scope = CoroutineScope(
         SupervisorJob() + (callerContext[ContinuationInterceptor] ?: Dispatchers.Default),
     )
-    private val _state = MutableStateFlow<ToolkitSessionState>(ToolkitSessionState.Ready)
-    override val state: StateFlow<ToolkitSessionState> = _state
+    private val _state = MutableStateFlow<SessionState>(SessionState.Ready)
+    override val state: StateFlow<SessionState> = _state
     private val lostInfo = CompletableDeferred<GPUDeviceLostInfo?>()
     private val releaseMutex = Mutex()
     private var handlesReleased = false
@@ -196,7 +196,7 @@ internal class DefaultToolkitSession(
 
     override val device: GPUDevice
         get() {
-            check(_state.value != ToolkitSessionState.Closed) { "toolkit session is closed" }
+            check(_state.value != SessionState.Closed) { "toolkit session is closed" }
             return checkNotNull(startedDevice) { "session is not started" }
         }
 
@@ -213,18 +213,18 @@ internal class DefaultToolkitSession(
         try {
             withTimeout(config.startupTimeout) { startup() }
         } catch (e: UnsupportedOperationException) {
-            _state.value = ToolkitSessionState.Failed
+            _state.value = SessionState.Failed
             throw e
         } catch (e: TimeoutCancellationException) {
-            _state.value = ToolkitSessionState.Failed
+            _state.value = SessionState.Failed
             failFastClose()
             throw IllegalStateException("toolkit session startup timed out after ${config.startupTimeout}", e)
         } catch (e: CancellationException) {
-            _state.value = ToolkitSessionState.Failed
+            _state.value = SessionState.Failed
             failFastClose()
             throw e
         } catch (e: Throwable) {
-            _state.value = ToolkitSessionState.Failed
+            _state.value = SessionState.Failed
             failFastClose()
             throw IllegalStateException("toolkit session startup failed", e)
         }
@@ -233,8 +233,8 @@ internal class DefaultToolkitSession(
     private suspend fun startup() {
         val opened = extension.open(config)
         instance = opened
-        if (opened.progression == ToolkitProgression.Manual) {
-            _state.value = ToolkitSessionState.Failed
+        if (opened.progression == Progression.Manual) {
+            _state.value = SessionState.Failed
             failFastClose()
             throw UnsupportedOperationException(
                 "Manual progression is not supported in v1; use Pumped or EventLoop progression",
@@ -258,7 +258,7 @@ internal class DefaultToolkitSession(
             }
         }
 
-        if (opened.progression == ToolkitProgression.Pumped) {
+        if (opened.progression == Progression.Pumped) {
             pumpJob = scope.launch {
                 while (isActive) {
                     opened.pumpEvents()
@@ -268,8 +268,8 @@ internal class DefaultToolkitSession(
         }
     }
 
-    override suspend fun <R> run(block: suspend (ToolkitSession) -> R): R {
-        check(_state.value == ToolkitSessionState.Ready) {
+    override suspend fun <R> run(block: suspend (Session) -> R): R {
+        check(_state.value == SessionState.Ready) {
             "toolkit session is ${_state.value} and admits no further work"
         }
         return coroutineScope {
@@ -277,18 +277,18 @@ internal class DefaultToolkitSession(
             val lossWatch = launch {
                 device.awaitLost().onSuccess { info ->
                     if (info.reason != GPUDeviceLostReason.Destroyed &&
-                        _state.value == ToolkitSessionState.Ready
+                        _state.value == SessionState.Ready
                     ) {
-                        _state.value = ToolkitSessionState.Lost
+                        _state.value = SessionState.Lost
                         admitted.cancel(DeviceLostException(info))
                     }
                 }
             }
             try {
-                block(this@DefaultToolkitSession)
+                block(this@DefaultSession)
             } catch (e: Throwable) {
-                if (e !is CancellationException && _state.value == ToolkitSessionState.Ready) {
-                    _state.value = ToolkitSessionState.Failed
+                if (e !is CancellationException && _state.value == SessionState.Ready) {
+                    _state.value = SessionState.Failed
                 }
                 throw e
             } finally {
@@ -299,10 +299,10 @@ internal class DefaultToolkitSession(
 
     override suspend fun shutdown() {
         when (_state.value) {
-            ToolkitSessionState.Closed, ToolkitSessionState.ShuttingDown -> return
+            SessionState.Closed, SessionState.ShuttingDown -> return
             else -> {}
         }
-        _state.value = ToolkitSessionState.ShuttingDown
+        _state.value = SessionState.ShuttingDown
         // Cancel eagerly, but join INSIDE the timed release: a pump blocked in a native
         // pumpEvents() never observes the cancellation, and an unbounded join would hang the
         // shutdown forever instead of publishing ShutdownTimedOut.
@@ -313,10 +313,10 @@ internal class DefaultToolkitSession(
                 pump?.join()
                 releaseHandles()
             }
-            _state.value = ToolkitSessionState.Closed
+            _state.value = SessionState.Closed
             dispose()
         } catch (e: TimeoutCancellationException) {
-            _state.value = ToolkitSessionState.ShutdownTimedOut
+            _state.value = SessionState.ShutdownTimedOut
             retryReleaseInBackground()
         }
     }
@@ -373,7 +373,7 @@ internal class DefaultToolkitSession(
                 backoff = (backoff * 2).coerceAtMost(config.shutdownTimeout)
                 try {
                     withTimeout(config.shutdownTimeout) { releaseHandles() }
-                    if (_state.compareAndSet(ToolkitSessionState.ShutdownTimedOut, ToolkitSessionState.Closed)) {
+                    if (_state.compareAndSet(SessionState.ShutdownTimedOut, SessionState.Closed)) {
                         dispose()
                     }
                     return@launch

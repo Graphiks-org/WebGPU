@@ -11,7 +11,7 @@ import org.graphiks.webgpu.toolkit.Extent2D
 import org.graphiks.webgpu.toolkit.SurfaceTarget
 import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.TargetState
-import org.graphiks.webgpu.toolkit.ToolkitConfig
+import org.graphiks.webgpu.toolkit.SessionConfig
 import org.graphiks.webgpu.toolkit.ToolkitInstance
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 
@@ -21,7 +21,7 @@ private class ForeignExtension(
 ) : WebGpuToolkitExtension {
     override val id: String = "foreign"
 
-    override fun open(config: ToolkitConfig): ToolkitInstance = delegate.open(config)
+    override fun open(config: SessionConfig): ToolkitInstance = delegate.open(config)
 }
 
 /** A foreign surface target: delegates to the simulation, but a type the kit cannot script. */
@@ -35,12 +35,12 @@ private class ForeignTarget(
     override suspend fun retire(lease: TargetLease) = delegate.retire(lease)
 }
 
-class ToolkitProtocolTckTest : FreeSpec({
+class ProtocolTckTest : FreeSpec({
     "runAll passes against the healthy simulation" {
         runTest {
             val extension = SimulatedToolkitExtension()
             val target = extension.newTarget()
-            val report = ToolkitProtocolTck.runAll(extension, target)
+            val report = ProtocolTck.runAll(extension, target)
             report.failures.shouldBeEmpty()
             report.skipped.shouldBeEmpty()
         }
@@ -51,7 +51,7 @@ class ToolkitProtocolTckTest : FreeSpec({
             val extension = SimulatedToolkitExtension()
             val target = extension.newTarget()
             target.alwaysStale = true
-            val report = ToolkitProtocolTck.runAll(extension, target)
+            val report = ProtocolTck.runAll(extension, target)
             report.failures.any { it.startsWith("stale-lease rollback") } shouldBe true
             report.failures.none { it.startsWith("lifecycle walk") } shouldBe true
             report.failures.none { it.startsWith("loss to Lost") } shouldBe true
@@ -71,7 +71,7 @@ class ToolkitProtocolTckTest : FreeSpec({
             simulated.frames.send(
                 AcquiredFrame(view = SimulatedTextureView(), extent = Extent2D(width = 640u, height = 480u)),
             )
-            val report = ToolkitProtocolTck.runAll(extension, target)
+            val report = ProtocolTck.runAll(extension, target)
             report.failures.shouldBeEmpty()
             report.skipped shouldContainExactly listOf("zero-extent suspension", "loss to Lost")
         }

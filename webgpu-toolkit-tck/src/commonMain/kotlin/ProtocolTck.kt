@@ -15,18 +15,18 @@ import org.graphiks.webgpu.toolkit.Extent2D
 import org.graphiks.webgpu.toolkit.SurfaceTarget
 import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.TargetState
-import org.graphiks.webgpu.toolkit.ToolkitSession
-import org.graphiks.webgpu.toolkit.ToolkitSessionState
+import org.graphiks.webgpu.toolkit.Session
+import org.graphiks.webgpu.toolkit.SessionState
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 import org.graphiks.webgpu.toolkit.surface.withSurface
 import org.graphiks.webgpu.toolkit.withSession
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Report of one [ToolkitProtocolTck.runAll] run: [failures] carries one line per violated
+ * Report of one [ProtocolTck.runAll] run: [failures] carries one line per violated
  * case, each prefixed with the case name, and [skipped] names every case that could not run
  * against the given fixtures. Empty [failures] with empty [skipped] means every case ran and
- * passed; an empty [failures] alone certifies only the cases that ran — see [ToolkitProtocolTck]
+ * passed; an empty [failures] alone certifies only the cases that ran — see [ProtocolTck]
  * for the skip rule.
  */
 data class TckReport(
@@ -46,7 +46,7 @@ data class TckReport(
  *  - `lifecycle walk`: a session walks `Ready`, `ShuttingDown`, `Closed` in order, exposes the
  *    extension's device and queue while `Ready`, pumps events when progression is `Pumped`, and
  *    returns the block result.
- *  - `idempotent shutdown`: a second [ToolkitSession.shutdown] call is a no-op — the state
+ *  - `idempotent shutdown`: a second [Session.shutdown] call is a no-op — the state
  *    stays `Closed` and the instance is closed exactly once.
  *  - `present-once`: presenting a frame twice fails with an `IllegalStateException`, and the
  *    frame is presented and released exactly once.
@@ -76,7 +76,7 @@ data class TckReport(
  * GPU-real cases — presenting through a live graphics stack rather than the simulation — are
  * v2: in v1 the browser path exercises the real web extension through the toolkit demo.
  */
-object ToolkitProtocolTck {
+object ProtocolTck {
     /** Ceiling for one case; with virtual time this costs nothing, and it bounds hung real backends. */
     private val CASE_TIMEOUT = 30.seconds
 
@@ -134,14 +134,14 @@ object ToolkitProtocolTck {
      */
     private suspend fun lifecycleWalk(extension: WebGpuToolkitExtension): List<String> = withTimeout(CASE_TIMEOUT) {
         coroutineScope {
-            val sessionRef = CompletableDeferred<ToolkitSession>()
-            val states = mutableListOf<ToolkitSessionState>()
+            val sessionRef = CompletableDeferred<Session>()
+            val states = mutableListOf<SessionState>()
             val collector = launch { sessionRef.await().state.collect { states += it } }
             val failures = mutableListOf<String>()
             val result = withSession(extension) { session ->
                 sessionRef.complete(session)
                 yield()
-                if (session.state.value != ToolkitSessionState.Ready) {
+                if (session.state.value != SessionState.Ready) {
                     failures += "session state is ${session.state.value} while the block runs, expected Ready"
                 }
                 val simulated = extension as? SimulatedToolkitExtension
@@ -161,9 +161,9 @@ object ToolkitProtocolTck {
             repeat(2) { yield() }
             collector.cancelAndJoin()
             val expectedWalk = listOf(
-                ToolkitSessionState.Ready,
-                ToolkitSessionState.ShuttingDown,
-                ToolkitSessionState.Closed,
+                SessionState.Ready,
+                SessionState.ShuttingDown,
+                SessionState.Closed,
             )
             if (states != expectedWalk) {
                 failures += "state walk was $states, expected $expectedWalk"
@@ -185,7 +185,7 @@ object ToolkitProtocolTck {
         withSession(extension) { session ->
             session.shutdown()
             session.shutdown()
-            if (session.state.value != ToolkitSessionState.Closed) {
+            if (session.state.value != SessionState.Closed) {
                 failures += "session state is ${session.state.value} after two shutdown calls, expected Closed"
             }
         }
@@ -329,8 +329,8 @@ object ToolkitProtocolTck {
         val simulated = extension as? SimulatedToolkitExtension
             ?: return@withTimeout null // a foreign extension cannot script a device loss
         coroutineScope {
-            val sessionRef = CompletableDeferred<ToolkitSession>()
-            val states = mutableListOf<ToolkitSessionState>()
+            val sessionRef = CompletableDeferred<Session>()
+            val states = mutableListOf<SessionState>()
             val collector = launch { sessionRef.await().state.collect { states += it } }
             val failures = mutableListOf<String>()
             val lost: DeviceLostException? = try {
@@ -351,10 +351,10 @@ object ToolkitProtocolTck {
             repeat(2) { yield() }
             collector.cancelAndJoin()
             val expectedWalk = listOf(
-                ToolkitSessionState.Ready,
-                ToolkitSessionState.Lost,
-                ToolkitSessionState.ShuttingDown,
-                ToolkitSessionState.Closed,
+                SessionState.Ready,
+                SessionState.Lost,
+                SessionState.ShuttingDown,
+                SessionState.Closed,
             )
             if (states != expectedWalk) {
                 failures += "state walk after the loss was $states, expected $expectedWalk"

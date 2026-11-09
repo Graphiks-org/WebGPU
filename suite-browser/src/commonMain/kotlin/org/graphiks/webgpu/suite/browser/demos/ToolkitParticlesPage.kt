@@ -14,7 +14,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.graphiks.webgpu.browser.HTMLCanvasElement
 import org.graphiks.webgpu.suite.demos.toolkit.runToolkitParticles
-import org.graphiks.webgpu.toolkit.tck.ToolkitProtocolTck
+import org.graphiks.webgpu.toolkit.tck.ProtocolTck
 import org.graphiks.webgpu.toolkit.web.CanvasSurfaceTarget
 import org.graphiks.webgpu.toolkit.web.webToolkit
 
@@ -221,7 +221,7 @@ private class ToolkitParticlesPage(private val texts: ToolkitTexts) : AutoClosea
         val canvasTarget = target ?: return
         sizeCanvas()
         val report = try {
-            ToolkitProtocolTck.runAll(extension, canvasTarget)
+            ProtocolTck.runAll(extension, canvasTarget)
         } catch (cancelled: CancellationException) {
             throw cancelled
         } catch (failure: Throwable) {

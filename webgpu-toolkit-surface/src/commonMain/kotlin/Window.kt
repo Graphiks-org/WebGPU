@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import org.graphiks.webgpu.toolkit.AdapterHints
 import org.graphiks.webgpu.toolkit.Extent2D
 import org.graphiks.webgpu.toolkit.SurfaceTarget
-import org.graphiks.webgpu.toolkit.ToolkitSession
+import org.graphiks.webgpu.toolkit.Session
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 
 /**
@@ -111,7 +111,7 @@ suspend fun <R> withWindow(
     host: WindowHost,
     config: WindowConfig = WindowConfig(),
     hints: AdapterHints = AdapterHints(),
-    block: suspend (ToolkitSession, Window, ToolkitSurface) -> R,
+    block: suspend (Session, Window, ToolkitSurface) -> R,
 ): R {
     val window = host.open(config)
     try {

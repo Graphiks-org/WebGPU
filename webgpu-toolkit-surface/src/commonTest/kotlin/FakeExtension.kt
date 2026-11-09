@@ -41,10 +41,10 @@ import org.graphiks.webgpu.toolkit.AdapterHints
 import org.graphiks.webgpu.toolkit.PresentationConfiguration
 import org.graphiks.webgpu.toolkit.SurfaceCapabilities
 import org.graphiks.webgpu.toolkit.TargetLease
-import org.graphiks.webgpu.toolkit.ToolkitAlphaMode
-import org.graphiks.webgpu.toolkit.ToolkitConfig
+import org.graphiks.webgpu.toolkit.AlphaMode
+import org.graphiks.webgpu.toolkit.SessionConfig
 import org.graphiks.webgpu.toolkit.ToolkitInstance
-import org.graphiks.webgpu.toolkit.ToolkitProgression
+import org.graphiks.webgpu.toolkit.Progression
 import org.graphiks.webgpu.toolkit.ToolkitSurfaceHandle
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 import org.graphiks.webgpu.ArrayBuffer
@@ -62,7 +62,7 @@ class FakeExtension : WebGpuToolkitExtension {
     override val id: String = "fake"
 
     /** Configs sessions passed to [open], one entry per open call. */
-    val openedConfigs = mutableListOf<ToolkitConfig>()
+    val openedConfigs = mutableListOf<SessionConfig>()
 
     /** When set, adapter requests fail with this error and startup maps to `Failed`. */
     var failStartup: IllegalStateException? = null
@@ -75,7 +75,7 @@ class FakeExtension : WebGpuToolkitExtension {
         }
 
     /** Progression reported by instances this extension opens. */
-    var progression: ToolkitProgression = ToolkitProgression.Pumped
+    var progression: Progression = Progression.Pumped
 
     /** Device every adapter request hands out; lose it with [loseDevice]. */
     val device = FakeGpuDevice()
@@ -105,14 +105,14 @@ class FakeExtension : WebGpuToolkitExtension {
         device.lose(reason, message)
     }
 
-    override fun open(config: ToolkitConfig): ToolkitInstance {
+    override fun open(config: SessionConfig): ToolkitInstance {
         openedConfigs += config
         return FakeInstance()
     }
 
     /** [ToolkitInstance] fake wired to the scripting hooks of [FakeExtension]. */
     inner class FakeInstance : ToolkitInstance {
-        override val progression: ToolkitProgression
+        override val progression: Progression
             get() = this@FakeExtension.progression
 
         override suspend fun requestAdapter(hints: AdapterHints): Result<GPUAdapter> {
@@ -180,7 +180,7 @@ class FakeSurfaceHandle(
         val DEFAULT_CAPABILITIES = SurfaceCapabilities(
             preferredFormat = GPUTextureFormat.BGRA8Unorm,
             formats = listOf(GPUTextureFormat.BGRA8Unorm, GPUTextureFormat.RGBA8Unorm),
-            alphaModes = listOf(ToolkitAlphaMode.Opaque, ToolkitAlphaMode.Premultiplied),
+            alphaModes = listOf(AlphaMode.Opaque, AlphaMode.Premultiplied),
         )
     }
 }

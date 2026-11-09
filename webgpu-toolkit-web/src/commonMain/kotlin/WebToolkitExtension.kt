@@ -17,10 +17,10 @@ import org.graphiks.webgpu.toolkit.Extent2D
 import org.graphiks.webgpu.toolkit.PresentationConfiguration
 import org.graphiks.webgpu.toolkit.SurfaceCapabilities
 import org.graphiks.webgpu.toolkit.TargetLease
-import org.graphiks.webgpu.toolkit.ToolkitAlphaMode
-import org.graphiks.webgpu.toolkit.ToolkitConfig
+import org.graphiks.webgpu.toolkit.AlphaMode
+import org.graphiks.webgpu.toolkit.SessionConfig
 import org.graphiks.webgpu.toolkit.ToolkitInstance
-import org.graphiks.webgpu.toolkit.ToolkitProgression
+import org.graphiks.webgpu.toolkit.Progression
 import org.graphiks.webgpu.toolkit.ToolkitSurfaceHandle
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 
@@ -38,7 +38,7 @@ class WebToolkitExtension : WebGpuToolkitExtension {
      * Opens a toolkit session; the browser environment holds no session-wide resource, so
      * every opened instance is stateless until adapters or surfaces are requested.
      */
-    override fun open(config: ToolkitConfig): ToolkitInstance = WebToolkitInstance()
+    override fun open(config: SessionConfig): ToolkitInstance = WebToolkitInstance()
 }
 
 /**
@@ -67,7 +67,7 @@ private class WebToolkitInstance : ToolkitInstance {
     /**
      * Frame work is driven by the browser event loop for every web session.
      */
-    override val progression: ToolkitProgression = ToolkitProgression.EventLoop
+    override val progression: Progression = Progression.EventLoop
 
     override suspend fun requestAdapter(hints: AdapterHints): Result<GPUAdapter> =
         requestBrowserAdapter(toRequestAdapterOptions(hints))
@@ -130,8 +130,8 @@ internal class WebCanvasSurfaceHandle(
                 preferredFormat = preferred,
                 formats = listOf(preferred),
                 alphaModes = listOf(
-                    ToolkitAlphaMode.Opaque,
-                    ToolkitAlphaMode.Premultiplied,
+                    AlphaMode.Opaque,
+                    AlphaMode.Premultiplied,
                 ),
             )
         }
@@ -146,9 +146,9 @@ internal class WebCanvasSurfaceHandle(
                 device = configuration.device,
                 format = configuration.format,
                 alphaMode = when (configuration.alphaMode) {
-                    ToolkitAlphaMode.Opaque -> GPUCanvasAlphaMode.Opaque
-                    ToolkitAlphaMode.Premultiplied -> GPUCanvasAlphaMode.Premultiplied
-                    ToolkitAlphaMode.PostMultiplied ->
+                    AlphaMode.Opaque -> GPUCanvasAlphaMode.Opaque
+                    AlphaMode.Premultiplied -> GPUCanvasAlphaMode.Premultiplied
+                    AlphaMode.PostMultiplied ->
                         error("The browser canvas does not support post-multiplied alpha.")
                 },
             ),

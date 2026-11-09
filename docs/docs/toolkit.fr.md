@@ -152,7 +152,7 @@ fenêtres comme elle l’entend et publie son artefact d’hôte à ses côtés.
 ## Valider une extension avec la TCK
 
 `webgpu-toolkit-tck` exécute les cas de protocole que toute extension doit respecter.
-`ToolkitProtocolTck.runAll(extension, target)` renvoie un `TckReport` dont la liste `failures`
+`ProtocolTck.runAll(extension, target)` renvoie un `TckReport` dont la liste `failures`
 porte une ligne par cas violé au lieu de lever à la première erreur, afin qu’un dépôt de binding
 l’exécute contre sa propre extension dans ses tests et voie toutes les violations d’un coup.
 Le `SimulatedToolkitExtension` du kit est la contrepartie scriptable qui prouve les chemins

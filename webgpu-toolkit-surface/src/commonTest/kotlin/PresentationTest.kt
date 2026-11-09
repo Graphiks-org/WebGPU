@@ -15,7 +15,7 @@ import org.graphiks.webgpu.toolkit.AcquiredFrame
 import org.graphiks.webgpu.toolkit.Extent2D
 import org.graphiks.webgpu.toolkit.PresentationConfiguration
 import org.graphiks.webgpu.toolkit.TargetState
-import org.graphiks.webgpu.toolkit.ToolkitProgression
+import org.graphiks.webgpu.toolkit.Progression
 import org.graphiks.webgpu.toolkit.surface.withSurface
 
 /**
@@ -70,7 +70,7 @@ class PresentationTest : FreeSpec({
 
     "zero extent suspends frame acquisition" {
         runTest {
-            val fake = RecordingFakeExtension().apply { progression = ToolkitProgression.EventLoop }
+            val fake = RecordingFakeExtension().apply { progression = Progression.EventLoop }
             val target = FakeSurfaceTarget(
                 TargetState(generation = 1, extent = Extent2D(width = 0u, height = 0u), available = true),
             )
@@ -89,7 +89,7 @@ class PresentationTest : FreeSpec({
 
     "unavailable target suspends frame acquisition" {
         runTest {
-            val fake = RecordingFakeExtension().apply { progression = ToolkitProgression.EventLoop }
+            val fake = RecordingFakeExtension().apply { progression = Progression.EventLoop }
             val target = FakeSurfaceTarget(
                 TargetState(generation = 1, extent = Extent2D(width = 640u, height = 480u), available = false),
             )
