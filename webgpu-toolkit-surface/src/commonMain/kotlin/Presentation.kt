@@ -179,8 +179,8 @@ internal class DefaultToolkitSurface(
          * Runs the target-lease protocol: retain a lease, roll leases of stale generations back
          * with [SurfaceTarget.retire] and retry, then request an adapter bound to the retained
          * target, create its surface and negotiate the configuration from the capabilities and
-         * the session's device. Every failure retires the lease held at that point and releases
-         * the surface-scoped instance.
+         * the session's device. Every failure closes any handle already created, retires the
+         * lease held at that point and releases the surface-scoped instance.
          */
         suspend fun acquire(
             extension: WebGpuToolkitExtension,
@@ -191,6 +191,7 @@ internal class DefaultToolkitSurface(
         ): DefaultToolkitSurface {
             val instance = extension.open()
             var lease: TargetLease? = null
+            var handle: ToolkitSurfaceHandle? = null
             try {
                 while (true) {
                     val retained = target.retain()
@@ -204,17 +205,20 @@ internal class DefaultToolkitSurface(
                     val adapter = instance.requestAdapter(forTarget = retained, hints = hints).getOrElse { error ->
                         throw IllegalStateException("no adapter matched the retained surface target", error)
                     }
-                    val handle = instance.createSurface(adapter, retained)
+                    val created = instance.createSurface(adapter, retained)
+                    handle = created
                     val configuration = PresentationConfiguration(
                         device = session.device,
-                        format = handle.capabilities.preferredFormat,
+                        format = created.capabilities.preferredFormat,
                     )
-                    handle.configure(configuration)
+                    created.configure(configuration)
                     lease = null // ownership moves to the surface
-                    return DefaultToolkitSurface(target, retained, instance, handle, configuration, callerContext)
+                    handle = null
+                    return DefaultToolkitSurface(target, retained, instance, created, configuration, callerContext)
                 }
             } catch (error: Throwable) {
                 withContext(NonCancellable) {
+                    handle?.let { runCatching { it.close() } }
                     lease?.let { runCatching { target.retire(it) } }
                     runCatching { instance.close() }
                 }

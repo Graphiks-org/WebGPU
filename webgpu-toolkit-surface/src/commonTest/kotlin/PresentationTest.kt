@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import org.graphiks.webgpu.GPUTextureView
 import org.graphiks.webgpu.toolkit.AcquiredFrame
 import org.graphiks.webgpu.toolkit.Extent2D
+import org.graphiks.webgpu.toolkit.PresentationConfiguration
 import org.graphiks.webgpu.toolkit.TargetState
 import org.graphiks.webgpu.toolkit.ToolkitProgression
 import org.graphiks.webgpu.toolkit.surface.withSurface
@@ -163,6 +164,25 @@ class PresentationTest : FreeSpec({
                 handle.recordedPresents shouldContainExactly emptyList<AcquiredFrame>()
                 handle.recordedReleases shouldContainExactly listOf(acquired)
             }
+        }
+    }
+
+    "configure failure closes the created handle" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val failure = IllegalStateException("unsupported format and alpha mode combination")
+            fake.failFirstConfigure = failure
+            val target = FakeSurfaceTarget(drawableState())
+            val rejected = shouldThrow<IllegalStateException> {
+                withSurface(fake, target) { _, _ ->
+                    error("block must not run when configure failed")
+                }
+            }
+            rejected shouldBe failure
+            val handle = fake.createdHandles.single()
+            handle.closeCalls shouldBe 1
+            handle.recordedConfigures shouldContainExactly emptyList<PresentationConfiguration>()
+            target.recordedRetires shouldContainExactly target.recordedRetains
         }
     }
 })
