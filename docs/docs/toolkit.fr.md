@@ -95,7 +95,11 @@ canvas est redimensionné, si bien que le flux `state` émet réellement et qu�
 reprend ; quand le navigateur n’offre pas de `ResizeObserver`, chaque lecture du `state` de la cible
 rafraîchit l’étendue à la place (le repli par tirage). Un changement d’étendue incrémente néanmoins
 la génération, ce qui tue en v1 les surfaces louées contre l’ancienne : leur prochain usage échoue
-immédiatement, et une nouvelle passe `withSurface` négocie une nouvelle surface. La validation
+immédiatement, et une nouvelle passe `withSurface` négocie une nouvelle surface. L’étendue publiée
+est la taille du tampon de dessin du canvas — des pixels physiques : la cible ne redimensionne
+jamais le canvas, donc pour un rendu net sur écrans denses, l’application le dimensionne avec le
+rapport de densité de pixels (`canvas.width = largeurCss * devicePixelRatio`, et la hauteur
+correspondante). La validation
 navigateur de l’extension web arrive avec la démo toolkit dans un changement futur ;
 aujourd’hui l’extension est couverte par les tests unitaires de son module.
 

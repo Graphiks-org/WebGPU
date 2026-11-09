@@ -54,6 +54,13 @@ class WebCanvasLease(
  * read. When the browser offers no `ResizeObserver`, the target falls back to pull: every read
  * of [state] refreshes the published extent from the canvas' current size.
  *
+ * The published extent is the canvas' drawing-buffer size (`width`/`height`), which the
+ * toolkit reports as physical pixels. The target never resizes the canvas itself: for a sharp
+ * render on dense displays the application sizes the canvas with the device pixel ratio —
+ * `canvas.width = cssWidth * devicePixelRatio` (and the matching `height`) — before and after
+ * any resize; a canvas left at CSS-pixel resolution renders at 1x and looks blurry on such
+ * displays.
+ *
  * A size change always moves the target to a fresh generation, and in v1 a generation change
  * kills the surfaces leased against the old one: using such a surface fails fast on its next
  * frame, and only a fresh surface pass — releasing and re-leasing through the surface module's

@@ -92,7 +92,10 @@ resizes, so the `state` flow genuinely emits and a suspended `withFrame` resumes
 offers no `ResizeObserver`, every read of the target's `state` refreshes the extent instead (the
 pull fallback). An extent change still bumps the generation, which kills the surfaces leased
 against the old one in v1: their next use fails fast, and a fresh `withSurface` pass negotiates a
-new surface. Browser-side validation of the web extension arrives with the toolkit demo in a
+new surface. The published extent is the canvas' drawing-buffer size — physical pixels: the
+target never resizes the canvas, so for a sharp render on dense displays the application sizes
+it with the device pixel ratio (`canvas.width = cssWidth * devicePixelRatio`, and the matching
+height). Browser-side validation of the web extension arrives with the toolkit demo in a
 future change; today the extension is covered by its module unit tests.
 
 ## Open a window
