@@ -74,12 +74,14 @@ sealed interface ToolkitSessionState {
  */
 interface ToolkitSession {
     /**
-     * The session's device; borrowed from the session, never closed by callers.
+     * The session's device; borrowed from the session, never closed by callers. Reading it after
+     * the session reached `Closed` fails fast.
      */
     val device: GPUDevice
 
     /**
      * The primary queue of [device]; borrowed from the session, never closed by callers.
+     * Reading it after the session reached `Closed` fails fast.
      */
     val queue: GPUQueue
 
@@ -95,9 +97,11 @@ interface ToolkitSession {
     suspend fun awaitLost(): GPUDeviceLostInfo?
 
     /**
-     * Runs [block] admitted as this session's work: device loss racing the block cancels it and
-     * rethrows as [DeviceLostException], a failing block publishes `Failed`, and normal
-     * completion returns the block's result.
+     * Runs [block] admitted as this session's work while the session is `Ready`; admissions in
+     * any other state are rejected. Device loss racing the block cancels it and rethrows as
+     * [DeviceLostException], a failing block publishes `Failed` (only from `Ready`), and normal
+     * completion returns the block's result. An already-admitted block keeps running through its
+     * own [shutdown] call.
      */
     suspend fun <R> run(block: suspend (ToolkitSession) -> R): R
 
@@ -180,7 +184,10 @@ internal class DefaultToolkitSession(
     private var retryJob: Job? = null
 
     override val device: GPUDevice
-        get() = checkNotNull(startedDevice) { "session is not started" }
+        get() {
+            check(_state.value != ToolkitSessionState.Closed) { "toolkit session is closed" }
+            return checkNotNull(startedDevice) { "session is not started" }
+        }
 
     override val queue: GPUQueue
         get() = device.queue
@@ -250,23 +257,32 @@ internal class DefaultToolkitSession(
         }
     }
 
-    override suspend fun <R> run(block: suspend (ToolkitSession) -> R): R = coroutineScope {
-        val admitted = this
-        val lossWatch = launch {
-            device.awaitLost().onSuccess { info ->
-                if (info.reason != GPUDeviceLostReason.Destroyed) {
-                    _state.value = ToolkitSessionState.Lost
-                    admitted.cancel(DeviceLostException(info))
+    override suspend fun <R> run(block: suspend (ToolkitSession) -> R): R {
+        check(_state.value == ToolkitSessionState.Ready) {
+            "toolkit session is ${_state.value} and admits no further work"
+        }
+        return coroutineScope {
+            val admitted = this
+            val lossWatch = launch {
+                device.awaitLost().onSuccess { info ->
+                    if (info.reason != GPUDeviceLostReason.Destroyed &&
+                        _state.value == ToolkitSessionState.Ready
+                    ) {
+                        _state.value = ToolkitSessionState.Lost
+                        admitted.cancel(DeviceLostException(info))
+                    }
                 }
             }
-        }
-        try {
-            block(this@DefaultToolkitSession)
-        } catch (e: Throwable) {
-            if (e !is CancellationException) _state.value = ToolkitSessionState.Failed
-            throw e
-        } finally {
-            lossWatch.cancel()
+            try {
+                block(this@DefaultToolkitSession)
+            } catch (e: Throwable) {
+                if (e !is CancellationException && _state.value == ToolkitSessionState.Ready) {
+                    _state.value = ToolkitSessionState.Failed
+                }
+                throw e
+            } finally {
+                lossWatch.cancel()
+            }
         }
     }
 

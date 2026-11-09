@@ -170,4 +170,67 @@ class SessionTest : FreeSpec({
             fake.instanceClosed shouldBe true
         }
     }
+
+    "block failure after its own shutdown stays Closed" {
+        runTest {
+            val fake = FakeExtension()
+            val sessionRef = CompletableDeferred<ToolkitSession>()
+            val (states, collector) = recordStates(sessionRef)
+            val boom = shouldThrow<IllegalStateException> {
+                withSession(fake) { session ->
+                    sessionRef.complete(session)
+                    yield()
+                    session.shutdown()
+                    error("boom after shutdown")
+                }
+            }
+            boom.message shouldBe "boom after shutdown"
+            fake.instanceClosed shouldBe true
+            advanceUntilIdle()
+            collector.cancelAndJoin()
+            states shouldContainExactly listOf(
+                ToolkitSessionState.Ready,
+                ToolkitSessionState.ShuttingDown,
+                ToolkitSessionState.Closed,
+            )
+        }
+    }
+
+    "run and handle access are rejected after Closed" {
+        runTest {
+            val fake = FakeExtension()
+            lateinit var session: ToolkitSession
+            withSession(fake) { admitted ->
+                session = admitted
+                admitted.state.value shouldBe ToolkitSessionState.Ready
+            }
+            session.state.value shouldBe ToolkitSessionState.Closed
+            shouldThrow<IllegalStateException> { session.run { } }
+            shouldThrow<IllegalStateException> { session.device }
+            shouldThrow<IllegalStateException> { session.queue }
+        }
+    }
+
+    "block failure publishes Failed while Ready" {
+        runTest {
+            val fake = FakeExtension()
+            val sessionRef = CompletableDeferred<ToolkitSession>()
+            val (states, collector) = recordStates(sessionRef)
+            shouldThrow<IllegalStateException> {
+                withSession(fake) { session ->
+                    sessionRef.complete(session)
+                    yield()
+                    error("boom while ready")
+                }
+            }
+            advanceUntilIdle()
+            collector.cancelAndJoin()
+            states shouldContainExactly listOf(
+                ToolkitSessionState.Ready,
+                ToolkitSessionState.Failed,
+                ToolkitSessionState.ShuttingDown,
+                ToolkitSessionState.Closed,
+            )
+        }
+    }
 })
