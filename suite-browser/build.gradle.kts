@@ -35,6 +35,8 @@ kotlin {
         implementation(project(":suite-demos"))
         implementation(project(":suite-benchmarks"))
         implementation(project(":webgpu-browser"))
+        implementation(project(":webgpu-toolkit-tck"))
+        implementation(project(":webgpu-toolkit-web"))
         implementation(project(":webgpu-descriptors"))
         implementation(libs.coroutines)
         implementation(libs.kotlinx.serialization.json)

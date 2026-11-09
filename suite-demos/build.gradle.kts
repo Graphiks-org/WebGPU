@@ -44,9 +44,14 @@ kotlin {
 
     sourceSets.commonMain.dependencies {
         api(project(":suite-core"))
+        api(project(":webgpu-toolkit-surface"))
         implementation(project(":webgpu-descriptors"))
+        implementation(libs.coroutines)
     }
     sourceSets.commonTest.dependencies {
         implementation(kotlin("test"))
+        implementation(project(":webgpu-toolkit-tck"))
+        implementation(libs.coroutines)
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
     }
 }
