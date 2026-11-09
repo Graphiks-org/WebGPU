@@ -31,7 +31,8 @@ the public API. Native bindings consume the shared artifacts and run them in the
 The toolkit is opt-in: applications that drive WebGPU directly keep using `webgpu-browser` or a
 native binding alone, and no core module depends on the toolkit. The extension SPI lives in
 `webgpu-toolkit-core`; backend adapters — dawn4k and wgpu4k — are published by their own
-repositories, and GLFW window hosts are providers, not part of this repository. The web extension
+repositories, and window hosts are provider artifacts too: how a native extension opens its
+windows is its own implementation detail, not this repository's. The web extension
 ships here in `webgpu-toolkit-web`, and the [toolkit guide](toolkit.md) walks through the session
 and presentation helpers.
 

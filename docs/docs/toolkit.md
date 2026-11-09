@@ -115,8 +115,9 @@ suspend fun runInWindow(extension: WebGpuToolkitExtension, host: WindowHost) {
 }
 ```
 
-This repository defines the window contract only: GLFW hosts are providers published by binding
-repositories, not part of this repository. When the host owns its windows
+This repository defines the window contract only: how a window is concretely opened is at each
+native extension's discretion — hosts are provider artifacts published wherever their extension
+lives, never here. When the host owns its windows
 (`WindowRuntime.Owned`), `withWindow` destroys the window on exit; a borrowed window
 (`WindowRuntime.Borrowed`) stays open, its lifetime belonging to the embedder that lent it.
 
@@ -137,8 +138,9 @@ An extension is everything a backend supplies; `WebGpuToolkitExtension` is five 
 
 The toolkit ships the contract and the web extension. The dawn4k and wgpu4k repositories publish
 their toolkit extensions alongside their bindings; this repository ships only the web extension
-(`webToolkit()` in `webgpu-toolkit-web`). Window hosts follow the same split: nothing here names a
-windowing system, and a GLFW host is a provider artifact of the binding repository that ships it.
+(`webToolkit()` in `webgpu-toolkit-web`). Window hosts follow the same split: nothing here names
+or prescribes a windowing system — each native extension opens windows however it sees fit and
+publishes its host artifact alongside itself.
 
 ## Validate an extension with the TCK
 

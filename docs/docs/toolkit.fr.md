@@ -119,8 +119,9 @@ suspend fun runInWindow(extension: WebGpuToolkitExtension, host: WindowHost) {
 }
 ```
 
-Ce dépôt définit uniquement le contrat de fenêtrage : les hôtes GLFW sont des fournisseurs
-publiés par les dépôts de binding, ils ne font pas partie de ce dépôt. Quand l’hôte possède ses
+Ce dépôt définit uniquement le contrat de fenêtrage : la manière d’ouvrir concrètement une
+fenêtre relève de la discrétion de chaque extension native — les hôtes sont des artefacts
+fournisseurs publiés là où vit leur extension, jamais ici. Quand l’hôte possède ses
 fenêtres (`WindowRuntime.Owned`), `withWindow` détruit la fenêtre en sortie ; une fenêtre empruntée
 (`WindowRuntime.Borrowed`) reste ouverte, sa durée de vie appartenant à l’embedder qui l’a prêtée.
 
@@ -145,8 +146,8 @@ cinq membres :
 Le toolkit embarque le contrat et l’extension web. Les dépôts dawn4k et wgpu4k publient leurs
 extensions toolkit aux côtés de leurs bindings ; ce dépôt ne fournit que l’extension web
 (`webToolkit()` dans `webgpu-toolkit-web`). Les hôtes de fenêtrage suivent le même partage :
-rien ici ne nomme un système de fenêtrage, et un hôte GLFW est un artefact fournisseur du dépôt de
-binding qui le livre.
+rien ici ne nomme ni ne prescrit un système de fenêtrage — chaque extension native ouvre ses
+fenêtres comme elle l’entend et publie son artefact d’hôte à ses côtés.
 
 ## Valider une extension avec la TCK
 

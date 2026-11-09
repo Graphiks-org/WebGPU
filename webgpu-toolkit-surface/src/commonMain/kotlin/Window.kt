@@ -82,10 +82,10 @@ interface Window : SurfaceTarget, AutoCloseable {
 }
 
 /**
- * Opens windows for the windowing-neutral [Window] contract. Concrete windowing systems live in
- * provider repositories — GLFW and any other backend are provider artifacts; nothing in this
- * repository names one. Hosts advertise through [runtime] whether the windows they open are
- * theirs to destroy or borrowed from an embedder.
+ * Opens windows for the windowing-neutral [Window] contract. How windows are concretely opened
+ * is at each native extension's discretion: concrete windowing systems are implementation
+ * details of provider artifacts and are deliberately not named here. Hosts advertise through
+ * [runtime] whether the windows they open are theirs to destroy or borrowed from an embedder.
  */
 interface WindowHost {
     /**
