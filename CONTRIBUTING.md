@@ -52,6 +52,7 @@ Use a Conventional Commit subject for **every non-merge commit** and for the PR 
 | `api` | Portable API in `webgpu-api` |
 | `descriptors` | Descriptor implementations in `webgpu-descriptors` |
 | `web` | Browser interop in `webgpu-web-bindings` and the `webgpu-browser` implementation |
+| `toolkit` | Toolkit modules `webgpu-toolkit-*` (SPI, sessions, surfaces, web extension, TCK) |
 | `specifications` | Versioned WebGPU inputs and maintenance tasks |
 | `buildSrc` | Shared Gradle conventions |
 | `build-logic` | Included Gradle build logic |
