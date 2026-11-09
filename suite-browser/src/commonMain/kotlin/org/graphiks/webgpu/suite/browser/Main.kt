@@ -33,15 +33,12 @@ import org.graphiks.webgpu.suite.browser.demos.showCityPage
 import org.graphiks.webgpu.suite.browser.demos.FilterLabCheckIds
 import org.graphiks.webgpu.suite.browser.demos.filterLabGpuResults
 import org.graphiks.webgpu.suite.browser.demos.showFilterLabPage
-import org.graphiks.webgpu.suite.browser.demos.showToolkitParticlesPage
 
 /**
  * The page has explicit routes. Without parameters it runs the foundation validation suite and
  * publishes `graphiksSuiteReport`; `?cases=id1,id2` runs only the named cases. `?demo=particles`
  * runs the interactive particle demo, and `?demo=particles&verify=1` runs its GPU checks and
- * publishes `graphiksDemoReport`. `?demo=toolkit-particles` renders the same scene through the
- * generic toolkit, with `&tck=1` running the toolkit protocol checks instead and publishing
- * `graphiksToolkitTckReport`. `?benchmark=foundations&profile=standard|ci` runs the benchmark
+ * publishes `graphiksDemoReport`. `?benchmark=foundations&profile=standard|ci` runs the benchmark
  * campaign and publishes `graphiksBenchmarkReport`; `autorun=1` starts it without the user, for the
  * collector. Asking for a demo and a benchmark at once, or naming an unknown demo, benchmark or
  * profile, fails visibly rather than silently running nothing.
@@ -86,10 +83,6 @@ fun main() {
             } else {
                 showDemoNavigation(demo, selectedLocale())
                 showFilterLabPage(selectedLocale())
-            }
-            demo == "toolkit-particles" -> {
-                showDemoNavigation(demo, selectedLocale())
-                showToolkitParticlesPage(selectedLocale())
             }
             else -> showUnknownRoute(demo)
         }
@@ -223,8 +216,7 @@ private fun showUnknownRoute(demo: String) {
     elementById("validation")?.hidden = true
     elementById("demo-root")?.apply {
         hidden = false
-        textContent = "Unknown demo '$demo'. Available demos: particles, reaction-diffusion, " +
-            "instanced-city, filter-lab, toolkit-particles."
+        textContent = "Unknown demo '$demo'. Available demos: particles, reaction-diffusion, instanced-city, filter-lab."
     }
 }
 

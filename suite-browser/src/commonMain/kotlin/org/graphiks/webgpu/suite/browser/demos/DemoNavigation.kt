@@ -15,7 +15,6 @@ internal fun showDemoNavigation(active: String, locale: String) {
     selector.setAttribute("id", "demo-selector")
     for ((name, title) in listOf(
         "particles" to if (locale == "fr") "Particules" else "Particles",
-        "toolkit-particles" to if (locale == "fr") "Particules — toolkit" else "Particles — toolkit",
         "reaction-diffusion" to if (locale == "fr") "Réaction-diffusion" else "Reaction-diffusion",
         "instanced-city" to if (locale == "fr") "Ville cyberpunk" else "Cyberpunk city",
         "filter-lab" to if (locale == "fr") "Filtres d’image" else "Image filters",

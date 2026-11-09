@@ -70,7 +70,8 @@ data class TckReport(
  * failure.
  *
  * GPU-real cases — presenting through a live graphics stack rather than the simulation — are
- * v2: in v1 the browser path exercises the real web extension through the toolkit demo.
+ * v2: browser-side validation of the real web extension is future work, arriving with the
+ * toolkit demo.
  */
 object ProtocolTck {
     /** Ceiling for one case; with virtual time this costs nothing, and it bounds hung real backends. */

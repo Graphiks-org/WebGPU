@@ -95,9 +95,9 @@ canvas est redimensionné, si bien que le flux `state` émet réellement et qu�
 reprend ; quand le navigateur n’offre pas de `ResizeObserver`, chaque lecture du `state` de la cible
 rafraîchit l’étendue à la place (le repli par tirage). Un changement d’étendue incrémente néanmoins
 la génération, ce qui tue en v1 les surfaces louées contre l’ancienne : leur prochain usage échoue
-immédiatement, et une nouvelle passe `withSurface` négocie une nouvelle surface. La route
-`?demo=toolkit-particles` du navigateur de la suite est l’exemple d’intégration vivant de ce
-schéma ; `?demo=particles` exécute la variante animée de la même scène.
+immédiatement, et une nouvelle passe `withSurface` négocie une nouvelle surface. La validation
+navigateur de l’extension web arrive avec la démo toolkit dans un changement futur ;
+aujourd’hui l’extension est couverte par les tests unitaires de son module.
 
 ## Ouvrir une fenêtre
 

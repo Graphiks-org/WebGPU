@@ -92,8 +92,8 @@ resizes, so the `state` flow genuinely emits and a suspended `withFrame` resumes
 offers no `ResizeObserver`, every read of the target's `state` refreshes the extent instead (the
 pull fallback). An extent change still bumps the generation, which kills the surfaces leased
 against the old one in v1: their next use fails fast, and a fresh `withSurface` pass negotiates a
-new surface. The suite browser's `?demo=toolkit-particles` route is the living integration example
-of this pattern; `?demo=particles` runs the animated variant of the same scene.
+new surface. Browser-side validation of the web extension arrives with the toolkit demo in a
+future change; today the extension is covered by its module unit tests.
 
 ## Open a window
 
