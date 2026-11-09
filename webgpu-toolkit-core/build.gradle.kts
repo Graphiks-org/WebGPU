@@ -7,6 +7,8 @@ plugins {
     kmp
     id("kmp.android")
     publish
+    id("io.kotest")
+    id("com.google.devtools.ksp")
 }
 
 kotlin {
@@ -76,6 +78,9 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.bundles.kotest)
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
+            // Pin the kotest-transitive kotlinx-io to the webpack-safe 0.9.1 wasm glue
+            // (0.8.2 emits an import.meta node shim that karma cannot bundle).
+            implementation(libs.kotlinx.io.core)
         }
 
         jvmTest.dependencies {
