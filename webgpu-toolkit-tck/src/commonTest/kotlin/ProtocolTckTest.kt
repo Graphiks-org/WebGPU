@@ -73,7 +73,7 @@ class ProtocolTckTest : FreeSpec({
             )
             val report = ProtocolTck.runAll(extension, target)
             report.failures.shouldBeEmpty()
-            report.skipped shouldContainExactly listOf("zero-extent suspension", "loss to Lost")
+            report.skipped shouldContainExactly listOf("zero-extent suspension", "stale-lease rollback", "loss to Lost")
         }
     }
 })

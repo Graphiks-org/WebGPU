@@ -62,16 +62,12 @@ data class TckReport(
  * per-case timeout costs nothing. The scripted cases — `zero-extent suspension`,
  * `stale-lease rollback` and `loss to Lost` — need the kit's own scriptable fixtures to drive
  * the violated path: when the given target or extension is not a [SimulatedTarget] or
- * [SimulatedToolkitExtension], those cases verify what is observable and record what cannot be
- * scripted in [TckReport.skipped] — a skipped case never vanishes silently. What a foreign run
- * actually covers: with a foreign extension and target, `lifecycle walk` and `idempotent
- * shutdown` run fully; `present-once` and `stale-lease rollback` run as far as the extension's
- * own surface hands out frames and its target converges — a foreign extension without its own
- * frame source times out in `present-once` and reports it as a case failure; `zero-extent
- * suspension` and `loss to Lost` are skipped by name. Passing a foreign extension together
- * with [SimulatedToolkitExtension.newTarget] keeps the target-side scripts of `stale-lease
- * rollback` and `zero-extent suspension` active, but the foreign surface still has to produce
- * its own frames: the kit feeds frames only to a [SimulatedToolkitExtension].
+ * [SimulatedToolkitExtension], those cases cannot script anything and are recorded by name in
+ * [TckReport.skipped] — a skipped case never vanishes silently. What a foreign run actually
+ * covers: with a foreign extension and target, `lifecycle walk`, `idempotent shutdown` and
+ * `present-once` run fully as long as the extension's own surface hands out frames; a foreign
+ * extension without its own frame source times out in `present-once` and reports it as a case
+ * failure.
  *
  * GPU-real cases — presenting through a live graphics stack rather than the simulation — are
  * v2: in v1 the browser path exercises the real web extension through the toolkit demo.
@@ -286,33 +282,34 @@ object ProtocolTck {
     /**
      * `stale-lease rollback`: a stale lease is retired and the protocol retried on a fresh one.
      */
-    private suspend fun staleLeaseRollback(extension: WebGpuToolkitExtension, target: SurfaceTarget): List<String> =
+    private suspend fun staleLeaseRollback(extension: WebGpuToolkitExtension, target: SurfaceTarget): List<String>? =
         withTimeout(CASE_TIMEOUT) {
+            // Without a scriptable target there is no way to hand out a stale lease, so there
+            // is nothing to verify: skip by name instead of running a partial, meaningless pass
+            // (a foreign extension may also refuse further adapter requests mid-campaign).
+            val sim = target as? SimulatedTarget ?: return@withTimeout null
             val failures = mutableListOf<String>()
-            val sim = target as? SimulatedTarget
-            val retainsBefore = sim?.records?.retains?.size ?: 0
-            val retiresBefore = sim?.records?.retires?.size ?: 0
-            val stale: TargetLease? = sim?.let { scripted ->
-                val lease = SimulatedLease(scripted.mutableState.value.generation - 1)
-                scripted.retainScript.send(lease)
+            val retainsBefore = sim.records.retains.size
+            val retiresBefore = sim.records.retires.size
+            val stale: TargetLease = run {
+                val lease = SimulatedLease(sim.mutableState.value.generation - 1)
+                sim.retainScript.send(lease)
                 lease
             }
             withSurface(extension, bounded(target)) { _, surface ->
                 if (surface.configuration.value == null) {
                     failures += "the surface never negotiated a configuration"
                 }
-                if (sim != null && stale != null) {
-                    val caseRetains = sim.records.retains.drop(retainsBefore)
-                    val caseRetires = sim.records.retires.drop(retiresBefore)
-                    if (caseRetains.firstOrNull() !== stale) {
-                        failures += "the first retain did not hand out the scripted stale lease"
-                    }
-                    if (stale !in caseRetires) {
-                        failures += "the stale lease was never retired"
-                    }
-                    if (caseRetains.size < 2) {
-                        failures += "the rollback retried with only ${caseRetains.size} retain(s), expected a retry"
-                    }
+                val caseRetains = sim.records.retains.drop(retainsBefore)
+                val caseRetires = sim.records.retires.drop(retiresBefore)
+                if (caseRetains.firstOrNull() !== stale) {
+                    failures += "the first retain did not hand out the scripted stale lease"
+                }
+                if (stale !in caseRetires) {
+                    failures += "the stale lease was never retired"
+                }
+                if (caseRetains.size < 2) {
+                    failures += "the rollback retried with only ${caseRetains.size} retain(s), expected a retry"
                 }
             }
             failures
