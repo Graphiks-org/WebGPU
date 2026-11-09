@@ -126,7 +126,8 @@ object ProtocolTck {
     } catch (e: CancellationException) {
         throw e
     } catch (e: Throwable) {
-        listOf("$name: case threw ${e::class.simpleName}: ${e.message}")
+        val cause = e.cause?.let { " — caused by ${it::class.simpleName}: ${it.message}" } ?: ""
+        listOf("$name: case threw ${e::class.simpleName}: ${e.message}$cause")
     }
 
     /**
