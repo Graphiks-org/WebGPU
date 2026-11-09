@@ -82,6 +82,12 @@ interface ToolkitSurface : AutoCloseable {
  * target-bound adapter and negotiating the surface configuration — then runs [block] with the
  * session and the resulting [ToolkitSurface]. The surface is released and the session shut down
  * on every exit path, including cancellation of the caller.
+ *
+ * The surface negotiates on its own [ToolkitInstance] opened from the same extension: the core
+ * session keeps its instance private, so the surface protocol opens a dedicated second one.
+ * This is an explicit, deliberate two-instance design — the web extension's instances are
+ * stateless, so the second instance costs nothing there — and consolidating to one instance
+ * per session is deferred to the wgpu4k iteration (spec D7).
  */
 suspend fun <R> withSurface(
     extension: WebGpuToolkitExtension,

@@ -9,8 +9,8 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
@@ -27,13 +27,14 @@ import org.graphiks.webgpu.GPUQueue
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.coroutineContext
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Lifecycle state of a [ToolkitSession], published through [ToolkitSession.state] as the session
  * progresses: `Ready` once the device is live, then `ShuttingDown` while handles are released,
  * ending in `Closed` on success. `ShutdownTimedOut` marks a bounded shutdown that did not finish
- * in time (its cleanup keeps running and a retried shutdown can still reach `Closed`);
- * `Lost` and `Failed` record a lost device or a failed block while work was admitted.
+ * in time (a finite number of background retries follows, and a retried shutdown can still reach
+ * `Closed`); `Lost` and `Failed` record a lost device or a failed block while work was admitted.
  */
 sealed interface ToolkitSessionState {
     /**
@@ -47,7 +48,8 @@ sealed interface ToolkitSessionState {
     data object ShuttingDown : ToolkitSessionState
 
     /**
-     * Shutdown exceeded the configured timeout; handles may still be closing in the background.
+     * Shutdown exceeded the configured timeout; a finite number of background retries follows,
+     * and a retried [ToolkitSession.shutdown] can still finish the release.
      */
     data object ShutdownTimedOut : ToolkitSessionState
 
@@ -109,8 +111,9 @@ interface ToolkitSession {
      * Releases every session handle within the configured shutdown timeout: the device is
      * closed, its loss notification awaited, and the instance released. Idempotent: calls after
      * a finished shutdown are no-ops. A shutdown that exceeds the timeout publishes
-     * `ShutdownTimedOut` while cleanup keeps retrying in the background, and a later call
-     * retries the bounded release.
+     * `ShutdownTimedOut` while cleanup is retried a finite number of times in the background
+     * with exponential backoff; once those retries are exhausted the session stays in
+     * `ShutdownTimedOut` and a later call retries the bounded release.
      */
     suspend fun shutdown()
 }
@@ -182,6 +185,14 @@ internal class DefaultToolkitSession(
     private var startedDevice: GPUDevice? = null
     private var pumpJob: Job? = null
     private var retryJob: Job? = null
+
+    private companion object {
+        /** Background release attempts before the loop gives up and leaves the session retryable. */
+        private const val BACKGROUND_RETRY_ATTEMPTS = 5
+
+        /** Wait before the first background retry; later retries double it, capped at the shutdown timeout. */
+        private val BACKGROUND_RETRY_FIRST_DELAY = 100.milliseconds
+    }
 
     override val device: GPUDevice
         get() {
@@ -292,9 +303,16 @@ internal class DefaultToolkitSession(
             else -> {}
         }
         _state.value = ToolkitSessionState.ShuttingDown
-        pumpJob?.cancelAndJoin()
+        // Cancel eagerly, but join INSIDE the timed release: a pump blocked in a native
+        // pumpEvents() never observes the cancellation, and an unbounded join would hang the
+        // shutdown forever instead of publishing ShutdownTimedOut.
+        val pump = pumpJob
+        pump?.cancel()
         try {
-            withTimeout(config.shutdownTimeout) { releaseHandles() }
+            withTimeout(config.shutdownTimeout) {
+                pump?.join()
+                releaseHandles()
+            }
             _state.value = ToolkitSessionState.Closed
             dispose()
         } catch (e: TimeoutCancellationException) {
@@ -339,21 +357,29 @@ internal class DefaultToolkitSession(
     }
 
     /**
-     * Keeps retrying the bounded release until it lands, then finishes the shutdown.
+     * Retries the bounded release in the background a finite number of times with exponential
+     * backoff: the first retry waits [BACKGROUND_RETRY_FIRST_DELAY] (100ms), every later retry
+     * doubles that delay, capped at the configured shutdown timeout. Once the
+     * [BACKGROUND_RETRY_ATTEMPTS] attempts are exhausted, the loop gives up: the session STAYS
+     * in `ShutdownTimedOut` — a caller may still retry [shutdown] manually — and the referenced
+     * handles are never freed by the exhausted loop.
      */
     private fun retryReleaseInBackground() {
         if (retryJob?.isActive == true) return
         retryJob = scope.launch {
-            while (true) {
+            var backoff = BACKGROUND_RETRY_FIRST_DELAY.coerceAtMost(config.shutdownTimeout)
+            repeat(BACKGROUND_RETRY_ATTEMPTS) {
+                delay(backoff)
+                backoff = (backoff * 2).coerceAtMost(config.shutdownTimeout)
                 try {
                     withTimeout(config.shutdownTimeout) { releaseHandles() }
-                    break
+                    if (_state.compareAndSet(ToolkitSessionState.ShutdownTimedOut, ToolkitSessionState.Closed)) {
+                        dispose()
+                    }
+                    return@launch
                 } catch (e: TimeoutCancellationException) {
-                    // Keep retrying; the retried release is what a later shutdown() awaits.
+                    // Retry until the attempts are exhausted, then leave the session retryable.
                 }
-            }
-            if (_state.compareAndSet(ToolkitSessionState.ShutdownTimedOut, ToolkitSessionState.Closed)) {
-                dispose()
             }
         }
     }

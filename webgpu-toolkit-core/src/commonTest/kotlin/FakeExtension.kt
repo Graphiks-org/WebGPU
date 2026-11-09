@@ -77,6 +77,12 @@ class FakeExtension : WebGpuToolkitExtension {
     /** Progression reported by instances this extension opens. */
     var progression: ToolkitProgression = ToolkitProgression.Pumped
 
+    /**
+     * When set, invoked at the top of every [FakeInstance.pumpEvents] call; a JVM test blocks
+     * here to model a native pump call that never returns.
+     */
+    var onPump: (() -> Unit)? = null
+
     /** Device every adapter request hands out; lose it with [loseDevice]. */
     val device = FakeGpuDevice()
 
@@ -127,6 +133,7 @@ class FakeExtension : WebGpuToolkitExtension {
             FakeSurfaceHandle()
 
         override fun pumpEvents() {
+            onPump?.invoke()
             pumpCount++
         }
 

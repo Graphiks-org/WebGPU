@@ -93,6 +93,23 @@ class SessionTest : FreeSpec({
         }
     }
 
+    "background shutdown retries exhaust and stay ShutdownTimedOut" {
+        runTest {
+            val fake = FakeExtension().apply { hangShutdown = true }
+            lateinit var session: ToolkitSession
+            withSession(fake, ToolkitConfig(shutdownTimeout = 10.milliseconds)) { admitted ->
+                session = admitted
+                session.shutdown()
+                session.state.value shouldBe ToolkitSessionState.ShutdownTimedOut
+            }
+            // The background loop burns its five bounded attempts and then gives up.
+            advanceUntilIdle()
+            session.state.value shouldBe ToolkitSessionState.ShutdownTimedOut
+            fake.instanceClosed shouldBe false
+            fake.shutdownCalls shouldBe 0
+        }
+    }
+
     "device loss publishes Lost and cancels admitted work" {
         runTest {
             val fake = FakeExtension()
