@@ -16,6 +16,10 @@ Its Kotlin bindings are generated from versioned WebGPU specification inputs.
 | `webgpu-descriptors` | `org.graphiks:webgpu-descriptors` | Descriptor implementations on the portable API |
 | `webgpu-web-bindings` | `org.graphiks:webgpu-web-bindings` | WebGPU JavaScript bindings and Kotlin JS/Wasm interop |
 | `webgpu-browser` | `org.graphiks:webgpu-browser` | Browser implementation of the Graphiks WebGPU API |
+| `webgpu-toolkit-core` | `org.graphiks:webgpu-toolkit-core` | Toolkit sessions and the WebGPU extension SPI |
+| `webgpu-toolkit-surface` | `org.graphiks:webgpu-toolkit-surface` | Presentation surfaces and window contracts for the toolkit |
+| `webgpu-toolkit-web` | `org.graphiks:webgpu-toolkit-web` | Browser toolkit extension presenting to HTML canvases |
+| `webgpu-toolkit-tck` | `org.graphiks:webgpu-toolkit-tck` | Protocol contract kit for toolkit extensions |
 | `suite-core` | `org.graphiks:suite-core` | Execution contract for portable validation cases |
 | `suite-acid-tests` | `org.graphiks:suite-acid-tests` | Portable acid tests for the public API |
 | `suite-demos` | `org.graphiks:suite-demos` | Portable particle, reaction-diffusion and instanced-city scenes with reproducible data |
@@ -24,8 +28,11 @@ Its Kotlin bindings are generated from versioned WebGPU specification inputs.
 | `webgpu-specifications` | Not published | Versioned specification and documentation inputs |
 
 `webgpu-api` and `webgpu-descriptors` configure JVM, Android, JS, Wasm JS, and Kotlin/Native
-targets; `webgpu-web-bindings` and `webgpu-browser` configure JS and Wasm JS. See the
-[architecture guide](docs/docs/architecture.md) for boundaries and the [type mapping](docs/docs/type-mapping/index.md)
+targets; `webgpu-web-bindings` and `webgpu-browser` configure JS and Wasm JS. The toolkit follows
+the same split: `webgpu-toolkit-core`, `webgpu-toolkit-surface` and `webgpu-toolkit-tck` use the
+shared target matrix, and `webgpu-toolkit-web` configures JS and Wasm JS. See the
+[architecture guide](docs/docs/architecture.md) for boundaries, the [toolkit guide](docs/docs/toolkit.md)
+for the session and presentation helpers, and the [type mapping](docs/docs/type-mapping/index.md)
 for WebGPU-to-Kotlin decisions.
 
 ## Use the API
