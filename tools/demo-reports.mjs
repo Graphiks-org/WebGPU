@@ -46,6 +46,35 @@ export function aggregateDemoReports(reports) {
     cases: reports.flatMap(r => r.cases), fatalError: reports.map(r => r.fatalError).filter(Boolean).join('\n') || null };
 }
 
+/**
+ * The toolkit protocol-check route: `?demo=toolkit-particles&tck=1` runs the toolkit contract
+ * kit against the real browser extension and publishes `graphiksToolkitTckReport`, a JSON
+ * array of failure lines — `[]` is the pass. Anything else (a non-array, a non-empty array, a
+ * missing report or a page error) fails the campaign.
+ */
+export async function collectToolkitTckReport(browser, origin, { timeout = 120000 } = {}) {
+  const problems = [];
+  const pageErrors = [];
+  let page;
+  try {
+    page = await browser.newPage();
+    page.on('pageerror', error => pageErrors.push(`toolkit-tck: ${String(error)}`));
+    await page.goto(`${origin}/?demo=toolkit-particles&tck=1`);
+    await page.waitForFunction(() => typeof globalThis.graphiksToolkitTckReport === 'string', null, { timeout });
+    const failures = JSON.parse(await page.evaluate(() => globalThis.graphiksToolkitTckReport));
+    if (!Array.isArray(failures)) {
+      problems.push('toolkit tck report is not a JSON array');
+    } else if (failures.length > 0) {
+      problems.push(`toolkit tck failures: ${failures.join(' | ')}`);
+    }
+  } catch (error) {
+    problems.push(`toolkit-tck: ${String(error)}`);
+  } finally {
+    try { await page?.close(); } catch (error) { problems.push(`toolkit-tck: close: ${String(error)}`); }
+  }
+  return { problems, pageErrors };
+}
+
 /** Run each route in a fresh page and retain real partial results when anything fails. */
 export async function collectDemoReports(browser, origin, baseline, { timeout = 120000 } = {}) {
   const reports = [];
@@ -69,6 +98,11 @@ export async function collectDemoReports(browser, origin, baseline, { timeout = 
       try { await page?.close(); } catch (error) { problems.push(`${route.name}: close: ${String(error)}`); }
     }
   }
+  // The toolkit protocol checks join the same campaign as a dedicated step: the route publishes
+  // its own tck report instead of a demo report, so it is validated on its own contract.
+  const tck = await collectToolkitTckReport(browser, origin, { timeout });
+  problems.push(...tck.problems);
+  pageErrors.push(...tck.pageErrors);
   let report;
   try { report = aggregateDemoReports(reports); } catch (error) {
     problems.push(String(error));

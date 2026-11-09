@@ -89,10 +89,15 @@ suspend fun presentToCanvas(canvas: HTMLCanvasElement) {
 libère la frame sur chaque chemin de sortie ; un bloc qui retourne normalement voit sa frame
 présentée exactement une fois sauf présentation explicite, et un second `present()` échoue. Sur le
 web, `webToolkit()` sert la façade de l’implémentation navigateur et `CanvasSurfaceTarget(canvas)`
-enveloppe un canvas du type `org.graphiks.webgpu.browser.HTMLCanvasElement` : la cible republie son
-étendue et change de génération quand la page redimensionne le canvas. La route
+enveloppe un canvas du type `org.graphiks.webgpu.browser.HTMLCanvasElement` : la cible observe le
+canvas avec un `ResizeObserver` et republie son étendue — en changeant de génération — quand le
+canvas est redimensionné, si bien que le flux `state` émet réellement et qu’un `withFrame` suspendu
+reprend ; quand le navigateur n’offre pas de `ResizeObserver`, chaque lecture du `state` de la cible
+rafraîchit l’étendue à la place (le repli par tirage). Un changement d’étendue incrémente néanmoins
+la génération, ce qui tue en v1 les surfaces louées contre l’ancienne : leur prochain usage échoue
+immédiatement, et une nouvelle passe `withSurface` négocie une nouvelle surface. La route
 `?demo=toolkit-particles` du navigateur de la suite est l’exemple d’intégration vivant de ce
-schéma.
+schéma ; `?demo=particles` exécute la variante animée de la même scène.
 
 ## Ouvrir une fenêtre
 

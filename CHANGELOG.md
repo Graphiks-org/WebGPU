@@ -6,6 +6,8 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Fixed
 
+- The `wgpu4k-native` specifications are pinned to `v27.0.4`: the purged `v29.0.0-SNAPSHOT` left fresh clones unresolvable.
+
 - Android `ArrayBuffer` typed factories and views now use native byte order for GPU data; borrowed native-memory bulk reads and writes no longer depend on HotSpot-only `Unsafe` fields or methods unavailable on ART.
 
 ### Added

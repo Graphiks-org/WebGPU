@@ -86,9 +86,14 @@ suspend fun presentToCanvas(canvas: HTMLCanvasElement) {
 releases the frame on any exit path; a block that returns normally has its frame presented exactly
 once unless it presented explicitly, and a second `present()` fails. On web, `webToolkit()` fronts
 the browser implementation and `CanvasSurfaceTarget(canvas)` wraps a canvas of the
-`org.graphiks.webgpu.browser.HTMLCanvasElement` type: the target republishes its extent and moves
-to a fresh generation when the page resizes the canvas. The suite browser's `?demo=toolkit-particles`
-route is the living integration example of this pattern.
+`org.graphiks.webgpu.browser.HTMLCanvasElement` type: the target observes the canvas with a
+`ResizeObserver` and republishes its extent — moving to a fresh generation — when the canvas
+resizes, so the `state` flow genuinely emits and a suspended `withFrame` resumes; when the browser
+offers no `ResizeObserver`, every read of the target's `state` refreshes the extent instead (the
+pull fallback). An extent change still bumps the generation, which kills the surfaces leased
+against the old one in v1: their next use fails fast, and a fresh `withSurface` pass negotiates a
+new surface. The suite browser's `?demo=toolkit-particles` route is the living integration example
+of this pattern; `?demo=particles` runs the animated variant of the same scene.
 
 ## Open a window
 

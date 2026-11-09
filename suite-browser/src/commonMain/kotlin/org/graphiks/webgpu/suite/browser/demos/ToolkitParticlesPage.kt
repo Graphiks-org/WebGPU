@@ -44,6 +44,7 @@ private const val BadgeStyle =
 internal data class ToolkitTexts(
     val title: String,
     val description: String,
+    val animated: String,
     val badge: String,
     val running: String,
     val failed: String,
@@ -61,6 +62,8 @@ private fun toolkitTexts(locale: String): ToolkitTexts = if (locale == "fr") {
             "négocie la surface du canvas, rend une frame bornée et la présente à travers le " +
             "protocole strict. Ajoutez ?tck=1 pour exécuter les vérifications du protocole " +
             "toolkit dans ce navigateur.",
+        animated = "Pour voir les particules voyager, ouvrez la variante animée de cette scène : " +
+            "?demo=particles.",
         badge = "toolkit",
         running = "Rendu via le toolkit…",
         failed = "La démo toolkit a échoué.",
@@ -76,6 +79,8 @@ private fun toolkitTexts(locale: String): ToolkitTexts = if (locale == "fr") {
             "the generic WebGPU toolkit: every animation frame opens a session, negotiates the " +
             "canvas surface, renders one bounded frame and presents it through the strict " +
             "protocol. Add ?tck=1 to run the toolkit protocol checks in this browser.",
+        animated = "To watch the particles travel, open the animated variant of this scene: " +
+            "?demo=particles.",
         badge = "toolkit",
         running = "Rendering through the toolkit…",
         failed = "The toolkit demo failed.",
@@ -170,6 +175,10 @@ private class ToolkitParticlesPage(private val texts: ToolkitTexts) : AutoClosea
         val description = createElement("p")
         description.setText(texts.description)
         created.appendChild(description)
+
+        val animated = createElement("p")
+        animated.setText(texts.animated)
+        created.appendChild(animated)
 
         val stage = createElement("div")
         stage.setClass("demo-stage")

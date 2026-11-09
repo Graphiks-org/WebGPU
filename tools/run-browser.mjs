@@ -7,7 +7,9 @@
 // Serves only the given distribution directory on 127.0.0.1 with an automatic port, waits for the
 // published report, writes the envelope to build/reports/<target>.json — demos-<target>.json with
 // --demo-check, benchmarks-<target>.json with --benchmark — and exits non-zero when the run is
-// incomplete or failed. --demo-check opens both demo verification routes; --benchmark opens
+// incomplete or failed. --demo-check opens both demo verification routes plus the toolkit
+// protocol-check route (`?demo=toolkit-particles&tck=1`, whose graphiksToolkitTckReport must be
+// an empty array); --benchmark opens
 // ?benchmark=foundations&profile=<profile>&autorun=1 and expects `globalThis.graphiksBenchmarkReport`.
 // The three modes keep their own report and their own launch guard.
 //
