@@ -47,16 +47,29 @@ class WebToolkitExtension : WebGpuToolkitExtension {
 fun webToolkit(): WebToolkitExtension = WebToolkitExtension()
 
 /**
- * Maps [hints] onto the request options handed to the browser: the feature level keeps its
- * descriptor default — `Core`, the level the browser tests exercise — while the power
- * preference and fallback hints are forwarded, with unset hints left at their WebGPU
- * defaults.
+ * Maps [hints] onto the request options handed to the browser when at least one hint is set:
+ * the power preference and fallback hint are forwarded; unset hints keep the browser's own
+ * defaults. With no hint at all, [requestOptionsOrNull] returns `null` so the adapter request
+ * goes out without options — see its KDoc for why an explicit `featureLevel = Core` must not
+ * be sent unconditionally.
  */
 internal fun toRequestAdapterOptions(hints: AdapterHints): GPURequestAdapterOptions =
     RequestAdapterOptions(
         powerPreference = hints.powerPreference,
         forceFallbackAdapter = hints.forceFallbackAdapter ?: false,
     )
+
+/**
+ * `null` when no hint is set: the browser then applies its own default feature level, exactly
+ * like a plain `navigator.gpu.requestAdapter()` call. Passing the descriptor's explicit
+ * `featureLevel = Core` instead makes `requestAdapter` return null on implementations that do
+ * not support the full core capability set (e.g. software adapters under CI), per the WebGPU
+ * spec ("if the implementation does not support all of the capabilities in the requested
+ * feature level, requestAdapter() will return null").
+ */
+internal fun requestOptionsOrNull(hints: AdapterHints): GPURequestAdapterOptions? =
+    if (hints.powerPreference == null && hints.forceFallbackAdapter == null) null
+    else toRequestAdapterOptions(hints)
 
 /**
  * The only [ToolkitInstance] of the web extension: the browser event loop drives events,
@@ -70,7 +83,7 @@ private class WebToolkitInstance : ToolkitInstance {
     override val progression: Progression = Progression.EventLoop
 
     override suspend fun requestAdapter(hints: AdapterHints): Result<GPUAdapter> =
-        requestBrowserAdapter(toRequestAdapterOptions(hints))
+        requestBrowserAdapter(requestOptionsOrNull(hints))
 
     /**
      * The browser itself picks the adapter its canvases present with, so the lease only

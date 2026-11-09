@@ -32,4 +32,16 @@ class WebExtensionTest {
         assertNull(options.powerPreference)
         assertEquals(GPUFeatureLevel.Core, options.featureLevel)
     }
+
+    @Test
+    fun emptyHintsRequestNoOptionsSoTheBrowserKeepsItsDefaultFeatureLevel() {
+        // An explicit featureLevel=Core makes requestAdapter return null on implementations
+        // lacking the full core capability set (e.g. SwiftShader in CI); with no options the
+        // browser applies its own default, exactly like the demo pages' plain requestAdapter().
+        assertNull(requestOptionsOrNull(AdapterHints()))
+        assertEquals(
+            GPUFeatureLevel.Core,
+            requestOptionsOrNull(AdapterHints(forceFallbackAdapter = true))?.featureLevel,
+        )
+    }
 }
