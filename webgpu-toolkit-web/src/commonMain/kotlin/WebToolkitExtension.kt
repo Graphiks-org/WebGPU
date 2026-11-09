@@ -119,7 +119,9 @@ internal class WebCanvasSurfaceHandle(
 ) : ToolkitSurfaceHandle {
     /**
      * The canvas' preferred format — falling back to `RGBA8Unorm` when the browser reports
-     * none — as the only supported format, alongside both alpha compositing modes.
+     * none — as the only supported format, alongside the alpha compositing modes the browser
+     * canvas supports (opaque and premultiplied; the native-only post-multiplied mode is never
+     * offered here).
      */
     override val capabilities: SurfaceCapabilities
         get() {
@@ -127,7 +129,10 @@ internal class WebCanvasSurfaceHandle(
             return SurfaceCapabilities(
                 preferredFormat = preferred,
                 formats = listOf(preferred),
-                alphaModes = ToolkitAlphaMode.entries.toList(),
+                alphaModes = listOf(
+                    ToolkitAlphaMode.Opaque,
+                    ToolkitAlphaMode.Premultiplied,
+                ),
             )
         }
 
@@ -143,6 +148,8 @@ internal class WebCanvasSurfaceHandle(
                 alphaMode = when (configuration.alphaMode) {
                     ToolkitAlphaMode.Opaque -> GPUCanvasAlphaMode.Opaque
                     ToolkitAlphaMode.Premultiplied -> GPUCanvasAlphaMode.Premultiplied
+                    ToolkitAlphaMode.PostMultiplied ->
+                        error("The browser canvas does not support post-multiplied alpha.")
                 },
             ),
         )

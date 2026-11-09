@@ -5,6 +5,11 @@ import org.graphiks.webgpu.toolkit.SurfaceCapabilities
 import org.graphiks.webgpu.toolkit.ToolkitAlphaMode
 
 class ExtensionSpiTest : FreeSpec({
+    "alpha mode covers web and native composite modes" {
+        ToolkitAlphaMode.entries.map { it.name } shouldBe
+            listOf("Opaque", "Premultiplied", "PostMultiplied")
+    }
+
     "surface capabilities expose a preferred format and supported sets" {
         val caps = SurfaceCapabilities(
             preferredFormat = GPUTextureFormat.BGRA8Unorm,

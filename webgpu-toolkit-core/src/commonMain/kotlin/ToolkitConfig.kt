@@ -77,4 +77,10 @@ enum class ToolkitAlphaMode {
 	 *
 	 */
 	Premultiplied,
+	/**
+	 * Pixels are post-multiplied (non-premultiplied) alpha. Offered by native composite alpha
+	 * modes; the browser canvas has no equivalent, so the web extension never lists it.
+	 *
+	 */
+	PostMultiplied,
 }
