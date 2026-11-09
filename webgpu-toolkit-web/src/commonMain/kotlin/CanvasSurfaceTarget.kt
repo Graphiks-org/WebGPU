@@ -9,6 +9,28 @@ import org.graphiks.webgpu.toolkit.Extent2D
 import org.graphiks.webgpu.toolkit.SurfaceTarget
 import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.TargetState
+import kotlin.js.JsAny
+import kotlin.js.js
+
+/**
+ * The minimal `ResizeObserver` handle the target needs: created against the canvas, it can
+ * only be disconnected.
+ */
+private external interface CanvasResizeWatch : JsAny {
+    fun disconnect()
+}
+
+/**
+ * Observes [canvas] with a browser `ResizeObserver` and calls [onResize] every time its box
+ * changes, returning the watch to disconnect later — or `null` when the browser offers no
+ * `ResizeObserver`, leaving the caller on the pull path.
+ */
+private fun observeCanvasResizes(canvas: HTMLCanvasElement, onResize: () -> Unit): CanvasResizeWatch? = js("""{
+    if (typeof globalThis.ResizeObserver !== 'function') return null;
+    const observer = new globalThis.ResizeObserver(function () { onResize(); });
+    observer.observe(canvas);
+    return observer;
+}""")
 
 /**
  * A [TargetLease] on an HTML canvas: on top of the generation it was created against, it
@@ -26,9 +48,18 @@ class WebCanvasLease(
 ) : TargetLease
 
 /**
- * An HTML canvas as a [SurfaceTarget]: the page resizes the canvas under the embedder's
- * control, so every read of [state] refreshes the published extent from the canvas'
- * current size and moves to a fresh generation exactly when that size changed.
+ * An HTML canvas as a [SurfaceTarget], push-based when the browser allows it: a
+ * `ResizeObserver` on the canvas drives the state refresh, so [state] genuinely emits when the
+ * page resizes the canvas and acquirers suspended in `withFrame` resume without an unrelated
+ * read. When the browser offers no `ResizeObserver`, the target falls back to pull: every read
+ * of [state] refreshes the published extent from the canvas' current size.
+ *
+ * A size change always moves the target to a fresh generation, and in v1 a generation change
+ * kills the surfaces leased against the old one: using such a surface fails fast on its next
+ * frame, and only a fresh surface pass — releasing and re-leasing through the surface module's
+ * `withSurface` — negotiates a new surface. Renegotiating in place is v2 work. The observer
+ * lives as long as the target, which in turn lives as long as the page's canvas; the target
+ * has no close hook in v1.
  */
 class CanvasSurfaceTarget(
     /**
@@ -36,15 +67,18 @@ class CanvasSurfaceTarget(
      */
     val canvas: HTMLCanvasElement,
 ) : SurfaceTarget {
+    private val resizeWatch: CanvasResizeWatch? = observeCanvasResizes(canvas) { refresh() }
+
     private val mutableState = MutableStateFlow(currentState(generation = 0L))
 
     /**
-     * Hot flow of the latest [TargetState]; every read refreshes the extent from the
-     * canvas' current size, bumping the generation when it changed.
+     * Hot flow of the latest [TargetState]. Driven by the resize observer when the browser
+     * has one; without one, every read refreshes the extent from the canvas' current size,
+     * bumping the generation when it changed.
      */
     override val state: StateFlow<TargetState>
         get() {
-            refresh()
+            if (resizeWatch == null) refresh() // pull fallback without a ResizeObserver
             return mutableState
         }
 

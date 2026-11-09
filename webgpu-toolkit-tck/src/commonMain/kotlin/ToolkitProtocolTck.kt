@@ -24,14 +24,16 @@ import kotlin.time.Duration.Companion.seconds
 
 /**
  * Report of one [ToolkitProtocolTck.runAll] run: [failures] carries one line per violated
- * case, each prefixed with the case name; an empty list means every case that RAN passed.
- * Cases that need target-side or extension-side scripting skip for fixtures that cannot
- * script them — see [ToolkitProtocolTck] for the skip rule — so an empty report from a
- * foreign-fixture run certifies only the cases that ran, not all six.
+ * case, each prefixed with the case name, and [skipped] names every case that could not run
+ * against the given fixtures. Empty [failures] with empty [skipped] means every case ran and
+ * passed; an empty [failures] alone certifies only the cases that ran — see [ToolkitProtocolTck]
+ * for the skip rule.
  */
 data class TckReport(
     /** One line per violated protocol case, prefixed with the case name; empty when every case that ran passed. */
     val failures: List<String>,
+    /** Names of the cases that could not run against the given fixtures; empty when every case ran. */
+    val skipped: List<String> = emptyList(),
 )
 
 /**
@@ -60,20 +62,16 @@ data class TckReport(
  * per-case timeout costs nothing. The scripted cases — `zero-extent suspension`,
  * `stale-lease rollback` and `loss to Lost` — need the kit's own scriptable fixtures to drive
  * the violated path: when the given target or extension is not a [SimulatedTarget] or
- * [SimulatedToolkitExtension], those cases verify what is observable and skip what cannot be
- * scripted, silently in v1. What a foreign run actually covers: with a foreign extension and
- * target, `lifecycle walk` and `idempotent shutdown` run fully; `present-once` and
- * `stale-lease rollback` run as far as the extension's own surface hands out frames and its
- * target converges — a foreign extension without its own frame source times out in
- * `present-once` and reports it as a case failure; `zero-extent suspension` and `loss to
- * Lost` skip entirely. Passing a foreign extension together with
- * [SimulatedToolkitExtension.newTarget] keeps the target-side scripts of `stale-lease
+ * [SimulatedToolkitExtension], those cases verify what is observable and record what cannot be
+ * scripted in [TckReport.skipped] — a skipped case never vanishes silently. What a foreign run
+ * actually covers: with a foreign extension and target, `lifecycle walk` and `idempotent
+ * shutdown` run fully; `present-once` and `stale-lease rollback` run as far as the extension's
+ * own surface hands out frames and its target converges — a foreign extension without its own
+ * frame source times out in `present-once` and reports it as a case failure; `zero-extent
+ * suspension` and `loss to Lost` are skipped by name. Passing a foreign extension together
+ * with [SimulatedToolkitExtension.newTarget] keeps the target-side scripts of `stale-lease
  * rollback` and `zero-extent suspension` active, but the foreign surface still has to produce
  * its own frames: the kit feeds frames only to a [SimulatedToolkitExtension].
- *
- * Surfacing skipped cases at runtime — a `skipped` list next to [TckReport.failures] — is
- * future work for v2; until then, every case is activated only by running against the kit's
- * own [SimulatedToolkitExtension] and [SimulatedTarget].
  *
  * GPU-real cases — presenting through a live graphics stack rather than the simulation — are
  * v2: in v1 the browser path exercises the real web extension through the toolkit demo.
@@ -90,25 +88,39 @@ object ToolkitProtocolTck {
 
     /**
      * Runs every protocol case against [extension] presenting to [target] and returns the
-     * report; violations are collected, never thrown.
+     * report; violations are collected, never thrown, and cases that cannot run against the
+     * given fixtures are named in [TckReport.skipped].
      */
     suspend fun runAll(extension: WebGpuToolkitExtension, target: SurfaceTarget): TckReport {
         val failures = mutableListOf<String>()
-        failures += case("lifecycle walk") { lifecycleWalk(extension) }
-        failures += case("idempotent shutdown") { idempotentShutdown(extension) }
-        failures += case("present-once") { presentOnce(extension, target) }
-        failures += case("zero-extent suspension") { zeroExtentSuspension(extension, target) }
-        failures += case("stale-lease rollback") { staleLeaseRollback(extension, target) }
-        failures += case("loss to Lost") { lossToLost(extension) }
-        return TckReport(failures)
+        val skipped = mutableListOf<String>()
+        failures += case("lifecycle walk", skipped) { lifecycleWalk(extension) }
+        failures += case("idempotent shutdown", skipped) { idempotentShutdown(extension) }
+        failures += case("present-once", skipped) { presentOnce(extension, target) }
+        failures += case("zero-extent suspension", skipped) { zeroExtentSuspension(extension, target) }
+        failures += case("stale-lease rollback", skipped) { staleLeaseRollback(extension, target) }
+        failures += case("loss to Lost", skipped) { lossToLost(extension) }
+        return TckReport(failures, skipped)
     }
 
     /**
      * Runs one case, prefixing its violations with [name]; a case that throws or times out
-     * becomes a failure line naming the case, and cancellation of the caller still propagates.
+     * becomes a failure line naming the case, a case that returns `null` because its fixtures
+     * cannot script it is recorded by name in [skipped], and cancellation of the caller still
+     * propagates.
      */
-    private suspend fun case(name: String, body: suspend () -> List<String>): List<String> = try {
-        body().map { violation -> "$name: $violation" }
+    private suspend fun case(
+        name: String,
+        skipped: MutableList<String>,
+        body: suspend () -> List<String>?,
+    ): List<String> = try {
+        val caseFailures = body()
+        if (caseFailures == null) {
+            skipped += name
+            emptyList()
+        } else {
+            caseFailures.map { violation -> "$name: $violation" }
+        }
     } catch (e: TimeoutCancellationException) {
         listOf("$name: case timed out after $CASE_TIMEOUT (${e.message})")
     } catch (e: CancellationException) {
@@ -228,7 +240,7 @@ object ToolkitProtocolTck {
 
     /**
      * `zero-extent suspension`: acquisition suspends on a zero extent and resumes when the
-     * target is drawable again. Skips without assertion when [target] is not a
+     * target is drawable again. Recorded in [TckReport.skipped] when [target] is not a
      * [SimulatedTarget] — publishing a zero extent and restoring it is target-side scripting,
      * and v1 detects scriptability by type, so only the kit's [SimulatedTarget] (from
      * [SimulatedToolkitExtension.newTarget] or constructed directly) activates this case. To
@@ -236,10 +248,10 @@ object ToolkitProtocolTck {
      * produces frames: the kit feeds frames only to a [SimulatedToolkitExtension], so a
      * foreign extension must supply its own frame source or the case times out as a failure.
      */
-    private suspend fun zeroExtentSuspension(extension: WebGpuToolkitExtension, target: SurfaceTarget): List<String> =
+    private suspend fun zeroExtentSuspension(extension: WebGpuToolkitExtension, target: SurfaceTarget): List<String>? =
         withTimeout(CASE_TIMEOUT) {
             val sim = target as? SimulatedTarget
-                ?: return@withTimeout emptyList() // a foreign target cannot script a zero extent
+                ?: return@withTimeout null // a foreign target cannot script a zero extent
             val failures = mutableListOf<String>()
             val generation = sim.mutableState.value.generation
             sim.mutableState.value = TargetState(generation = generation, extent = Extent2D(0u, 0u), available = true)
@@ -307,15 +319,15 @@ object ToolkitProtocolTck {
 
     /**
      * `loss to Lost`: a device loss publishes Lost, cancels the admitted block and still ends
-     * Closed. Skips without assertion when [extension] is not a [SimulatedToolkitExtension] —
-     * triggering a device loss is extension-side scripting, and v1 detects scriptability by
-     * type: only the kit's [SimulatedToolkitExtension], lost through
-     * [SimulatedToolkitExtension.loseDevice], activates this case; a foreign fake with its own
-     * loss trigger is not recognized in v1.
+     * Closed. Recorded in [TckReport.skipped] when [extension] is not a
+     * [SimulatedToolkitExtension] — triggering a device loss is extension-side scripting, and
+     * v1 detects scriptability by type: only the kit's [SimulatedToolkitExtension], lost
+     * through [SimulatedToolkitExtension.loseDevice], activates this case; a foreign fake with
+     * its own loss trigger is not recognized in v1.
      */
-    private suspend fun lossToLost(extension: WebGpuToolkitExtension): List<String> = withTimeout(CASE_TIMEOUT) {
+    private suspend fun lossToLost(extension: WebGpuToolkitExtension): List<String>? = withTimeout(CASE_TIMEOUT) {
         val simulated = extension as? SimulatedToolkitExtension
-            ?: return@withTimeout emptyList() // a foreign extension cannot script a device loss
+            ?: return@withTimeout null // a foreign extension cannot script a device loss
         coroutineScope {
             val sessionRef = CompletableDeferred<ToolkitSession>()
             val states = mutableListOf<ToolkitSessionState>()
