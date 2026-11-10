@@ -77,7 +77,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.bundles.kotest)
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
+            implementation(libs.coroutines.test)
             // Pin the kotest-transitive kotlinx-io to the webpack-safe 0.9.1 wasm glue
             // (0.8.2 emits an import.meta node shim that karma cannot bundle).
             implementation(libs.kotlinx.io.core)
