@@ -37,6 +37,7 @@ ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negoti
 
 # Release
 dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version = "2.2.0" }
+dokka-mkdocs = { module = "dev.opensavvy.dokka.mkdocs:dokka-mkdocs", version = "0.6.3" }
 
 # Tests
 kotest-core = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
