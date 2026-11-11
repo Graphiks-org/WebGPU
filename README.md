@@ -12,14 +12,14 @@ Its Kotlin bindings are generated from versioned WebGPU specification inputs.
 
 | Module | Maven coordinate | Purpose |
 | --- | --- | --- |
-| `webgpu-api` | `org.graphiks:webgpu-api` | Portable interfaces, enums, aliases, and buffers |
-| `webgpu-descriptors` | `org.graphiks:webgpu-descriptors` | Descriptor implementations on the portable API |
-| `webgpu-web-bindings` | `org.graphiks:webgpu-web-bindings` | WebGPU JavaScript bindings and Kotlin JS/Wasm interop |
-| `webgpu-browser` | `org.graphiks:webgpu-browser` | Browser implementation of the Graphiks WebGPU API |
-| `suite-core` | `org.graphiks:suite-core` | Execution contract for portable validation cases |
-| `suite-acid-tests` | `org.graphiks:suite-acid-tests` | Portable acid tests for the public API |
-| `suite-demos` | `org.graphiks:suite-demos` | Portable particle, reaction-diffusion and instanced-city scenes with reproducible data |
-| `suite-benchmarks` | `org.graphiks:suite-benchmarks` | Portable transfer and compute workloads and measurements |
+| `webgpu-api` | `org.graphiks.webgpu:api` | Portable interfaces, enums, aliases, and buffers |
+| `webgpu-descriptors` | `org.graphiks.webgpu:descriptors` | Descriptor implementations on the portable API |
+| `webgpu-web-bindings` | `org.graphiks.webgpu:web-bindings` | WebGPU JavaScript bindings and Kotlin JS/Wasm interop |
+| `webgpu-browser` | `org.graphiks.webgpu:browser` | Browser implementation of the Graphiks WebGPU API |
+| `suite-core` | `org.graphiks.webgpu:suite-core` | Execution contract for portable validation cases |
+| `suite-acid-tests` | `org.graphiks.webgpu:suite-acid-tests` | Portable acid tests for the public API |
+| `suite-demos` | `org.graphiks.webgpu:suite-demos` | Portable particle, reaction-diffusion and instanced-city scenes with reproducible data |
+| `suite-benchmarks` | `org.graphiks.webgpu:suite-benchmarks` | Portable transfer and compute workloads and measurements |
 | `suite-browser` | Not published | Browser runner that executes the suite and reports results |
 | `webgpu-specifications` | Not published | Versioned specification and documentation inputs |
 
@@ -36,10 +36,10 @@ already published.
 
 ```kotlin
 dependencies {
-    implementation("org.graphiks:webgpu-api:<version>")
-    // Browser implementation: implementation("org.graphiks:webgpu-browser:<version>")
-    // Optional: implementation("org.graphiks:webgpu-descriptors:<version>")
-    // Direct interop: implementation("org.graphiks:webgpu-web-bindings:<version>")
+    implementation("org.graphiks.webgpu:api:<version>")
+    // Browser implementation: implementation("org.graphiks.webgpu:browser:<version>")
+    // Optional: implementation("org.graphiks.webgpu:descriptors:<version>")
+    // Direct interop: implementation("org.graphiks.webgpu:web-bindings:<version>")
 }
 ```
 

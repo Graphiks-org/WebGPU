@@ -19,8 +19,8 @@ L’API et la suite partagent la version du dépôt (`releaseVersion`, par défa
 Le fichier généré `baseline.json`, publié sous `suite/inventory/baseline.json`, contient la version
 de l’API, la révision de référence et les empreintes des sources pour identifier les résultats.
 
-Les artefacts `org.graphiks:suite-core`, `org.graphiks:suite-acid-tests`, `org.graphiks:suite-demos`
-et `org.graphiks:suite-benchmarks` déclarent les cibles suivantes :
+Les artefacts `org.graphiks.webgpu:suite-core`, `org.graphiks.webgpu:suite-acid-tests`, `org.graphiks.webgpu:suite-demos`
+et `org.graphiks.webgpu:suite-benchmarks` déclarent les cibles suivantes :
 
 | Cible | Compilation |
 | --- | --- |
@@ -296,7 +296,7 @@ Chaque appel de la fabrique doit fournir un adaptateur **neuf**, sans stub : les
 
 ```kotlin
 dependencies {
-    implementation("org.graphiks:suite-acid-tests:<version>")
+    implementation("org.graphiks.webgpu:suite-acid-tests:<version>")
 }
 ```
 

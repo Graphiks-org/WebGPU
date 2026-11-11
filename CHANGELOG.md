@@ -4,6 +4,10 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ## [Unreleased]
 
+### Changed
+
+- Maven coordinates follow the Graphiks naming norm (as in `Graphiks-org/kffi`): the group is now `org.graphiks.webgpu` and artifactIds drop the `webgpu-` module prefix, so the published artifacts are `org.graphiks.webgpu:api`, `org.graphiks.webgpu:descriptors`, `org.graphiks.webgpu:web-bindings`, `org.graphiks.webgpu:browser`, and `org.graphiks.webgpu:suite-*` (previously `org.graphiks:webgpu-*` / `org.graphiks:suite-*`).
+
 ### Fixed
 
 - Android `ArrayBuffer` typed factories and views now use native byte order for GPU data; borrowed native-memory bulk reads and writes no longer depend on HotSpot-only `Unsafe` fields or methods unavailable on ART.
@@ -19,11 +23,11 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 - Android `ArrayBuffer.wrap(address, size)`: a borrowed, non-owning view over native memory (native byte order, bounds-checked) so a backend can expose a range a native library lends the caller — such as a GPU-mapped buffer between map and unmap — without copying it.
 - Publish the portable suite modules across the `webgpu-api` KMP target matrix, including Android, Windows, and ARM64 tvOS targets.
 - Bilingual documentation, contributor guidance, and repository automation.
-- `org.graphiks:webgpu-browser`, a browser implementation for Kotlin/JS and Kotlin/Wasm JS with adapter acquisition, resource wrappers, descriptor conversions, and canvas surfaces.
-- `WebGpuRecord` and nullable browser binding values in `org.graphiks:webgpu-web-bindings`.
+- `org.graphiks.webgpu:browser`, a browser implementation for Kotlin/JS and Kotlin/Wasm JS with adapter acquisition, resource wrappers, descriptor conversions, and canvas surfaces.
+- `WebGpuRecord` and nullable browser binding values in `org.graphiks.webgpu:web-bindings`.
 - Graphiks WebGPU Suite foundation modules (`suite-core`, `suite-acid-tests`, `suite-browser`) with a portable `AcidCase` contract, eleven browser acid tests typed with `@AcidTest` annotations, a headless Chromium runner, a generated contract inventory, and a bilingual (English/French) Validation page published under the documentation site's `suite/` path.
-- `org.graphiks:suite-demos`, a portable compute particle scene, plus a bilingual Demos gallery and GPU readback checks (`--demo-check`) published under the suite site's `demos/` path.
-- `org.graphiks:suite-benchmarks`, two portable measurement workloads (`transfer.write-buffer`, `compute.encode-submit`) with the explicit `foundations-v1` protocol and GPU readback checks, a `--benchmark` collector mode, and a bilingual Benchmarks page published under the suite site's `benchmarks/` path.
+- `org.graphiks.webgpu:suite-demos`, a portable compute particle scene, plus a bilingual Demos gallery and GPU readback checks (`--demo-check`) published under the suite site's `demos/` path.
+- `org.graphiks.webgpu:suite-benchmarks`, two portable measurement workloads (`transfer.write-buffer`, `compute.encode-submit`) with the explicit `foundations-v1` protocol and GPU readback checks, a `--benchmark` collector mode, and a bilingual Benchmarks page published under the suite site's `benchmarks/` path.
 - Extend the browser acid tests: targeted runs (`--cases=id1,id2` / `?cases=id1,id2` into `selected-<target>.json`), declared optional-feature reporting (`CaseResult.missingFeatures`, accepted as `unsupported` only for declared features), and new buffer, binding, transfer, texture-copy, texture-view, format, storage, sampling, render-command, blending, depth/stencil, advanced-command, error and optional-feature cases (eighty-three in total).
 - Finalize the browser acid tests at 123 cases (118 mandatory, five optional) covering adapter/device requests and error delivery, shader compilation and asynchronous pipelines, texture aspects, views and comparison sampling, primitive/face/depth-stencil state, submission and mapped-range lifetime, render timestamps, draw limits and alpha-to-coverage. The coverage balance, optional-feature status and remaining contract gaps are published in `docs/acid-coverage.md`.
 - Extend the browser acid tests to 132 cases (125 mandatory, seven optional) with a follow-up increment: storage-binding range length, `minBindingSize` rejection, post-bundle pass-state reset, partial texture initialization, discard re-initialization, min/mag filter selection, timestamp write-index validation for both pass types, and the unenabled `TimestampQuery` refusal.

@@ -268,8 +268,8 @@ Use `--demo-check` after building the browser distributions, as described in
   successful compilation of every native target.
 - The artifacts use the repository's existing publication convention: `buildSrc` supplies the POM,
   licence, sources and signature, and `.github/workflows/publish.yml` publishes
-  `org.graphiks:suite-core`, `org.graphiks:suite-acid-tests`, `org.graphiks:suite-demos` and
-  `org.graphiks:suite-benchmarks` alongside the four base modules under the shared `releaseVersion`.
+  `org.graphiks.webgpu:suite-core`, `org.graphiks.webgpu:suite-acid-tests`, `org.graphiks.webgpu:suite-demos` and
+  `org.graphiks.webgpu:suite-benchmarks` alongside the four base modules under the shared `releaseVersion`.
 - There is no dedicated consumer project, isolated Maven repository or publication/consumption test:
   the amended plan and spec exclude such an architecture test. Artifact resolution by external
   bindings is exercised in their own repositories, not here.

@@ -19,8 +19,8 @@ The suite and the API share the repository version (`releaseVersion`, default `0
 Each delivery records the API version, the reference commit and the source hashes in the generated
 `baseline.json` (published at `suite/inventory/baseline.json`).
 
-The shared artifacts `org.graphiks:suite-core`, `org.graphiks:suite-acid-tests`,
-`org.graphiks:suite-demos` and `org.graphiks:suite-benchmarks` are published for:
+The shared artifacts `org.graphiks.webgpu:suite-core`, `org.graphiks.webgpu:suite-acid-tests`,
+`org.graphiks.webgpu:suite-demos` and `org.graphiks.webgpu:suite-benchmarks` are published for:
 
 | Target | Built by |
 | --- | --- |
@@ -282,7 +282,7 @@ factory must return a **fresh** adapter on every call and must not be a stub, be
 
 ```kotlin
 dependencies {
-    implementation("org.graphiks:suite-acid-tests:<version>")
+    implementation("org.graphiks.webgpu:suite-acid-tests:<version>")
 }
 ```
 

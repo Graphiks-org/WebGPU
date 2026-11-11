@@ -7,17 +7,17 @@ also require the Maven Central snapshots repository.
 
 ## Add a module
 
-The published coordinates use the `org.graphiks` group. Choose the module your application needs:
+The published coordinates use the `org.graphiks.webgpu` group. Choose the module your application needs:
 
 ```kotlin
 dependencies {
-    implementation("org.graphiks:webgpu-api:<version>")
+    implementation("org.graphiks.webgpu:api:<version>")
     // Descriptor implementations (needed by the browser implementation).
-    // implementation("org.graphiks:webgpu-descriptors:<version>")
+    // implementation("org.graphiks.webgpu:descriptors:<version>")
     // Browser implementation.
-    // implementation("org.graphiks:webgpu-browser:<version>")
+    // implementation("org.graphiks.webgpu:browser:<version>")
     // Direct JavaScript interop.
-    // implementation("org.graphiks:webgpu-web-bindings:<version>")
+    // implementation("org.graphiks.webgpu:web-bindings:<version>")
 }
 ```
 
