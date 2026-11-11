@@ -15,5 +15,5 @@ dependencies {
     implementation("io.kotest:kotest-framework-plugin-gradle:${libs.versions.kotest.get()}")
     implementation("com.google.devtools.ksp:symbol-processing-gradle-plugin:${libs.versions.ksp.get()}")
     implementation(libs.dokka)
-    implementation("dev.opensavvy.dokka.mkdocs:dokka-mkdocs:0.6.3")
+    implementation(libs.dokka.mkdocs)
 }
