@@ -6,14 +6,19 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Changed
 
-- Maven coordinates follow the Graphiks naming norm (as in `Graphiks-org/kffi`): the group is now `org.graphiks.webgpu` and artifactIds drop the `webgpu-` module prefix, so the published artifacts are `org.graphiks.webgpu:api`, `org.graphiks.webgpu:descriptors`, `org.graphiks.webgpu:web-bindings`, `org.graphiks.webgpu:browser`, and `org.graphiks.webgpu:suite-*` (previously `org.graphiks:webgpu-*` / `org.graphiks:suite-*`).
+- Maven coordinates follow the Graphiks naming norm (as in `Graphiks-org/kffi`): the group is now `org.graphiks.webgpu` and artifactIds drop the `webgpu-` module prefix, so the published artifacts are `org.graphiks.webgpu:api`, `org.graphiks.webgpu:descriptors`, `org.graphiks.webgpu:web-bindings`, `org.graphiks.webgpu:browser`, `org.graphiks.webgpu:toolkit-*` and `org.graphiks.webgpu:suite-*` (previously `org.graphiks:webgpu-*` / `org.graphiks:suite-*`).
 
 ### Fixed
+
+- The `wgpu4k-native` specifications are pinned to `v27.0.4`: the purged `v29.0.0-SNAPSHOT` left fresh clones unresolvable.
 
 - Android `ArrayBuffer` typed factories and views now use native byte order for GPU data; borrowed native-memory bulk reads and writes no longer depend on HotSpot-only `Unsafe` fields or methods unavailable on ART.
 
 ### Added
 
+- The WebGPU toolkit, four opt-in modules over the bindings. `org.graphiks.webgpu:toolkit-core` opens generic toolkit sessions with `withSession` over any `WebGpuToolkitExtension`: timeout-bounded startup, a hot `SessionState` flow (`Ready`, `ShuttingDown`, `Closed`, with `Lost`, `Failed` and retryable `ShutdownTimedOut`), device-loss cancellation of admitted work, and pump or event-loop progression. `org.graphiks.webgpu:toolkit-surface` adds presentation: `withSurface` runs the target-lease protocol against a `SurfaceTarget` with capability-driven configuration, `withFrame` scopes frames that suspend while the target is undrawable and present exactly once, and `withWindow` composes the windowing-neutral `Window`/`WindowHost` contract (close requests, resizes, owned versus borrowed windows) with session and surface. The getting-started guide (`docs/docs/toolkit.md`, French twin `toolkit.fr.md`) walks through the helpers.
+- `org.graphiks.webgpu:toolkit-web`, the browser toolkit extension: `webToolkit()` fronts the browser WebGPU implementation and `CanvasSurfaceTarget` wraps an HTML canvas with resize-aware target state; browser-side validation of the extension arrives with the toolkit demo in a future change.
+- `org.graphiks.webgpu:toolkit-tck`, the protocol contract kit: `ProtocolTck.runAll(extension, target)` reports every violated protocol case (lifecycle walk, idempotent shutdown, present-once, zero-extent suspension, stale-lease rollback, loss to `Lost`) instead of throwing on the first, and the scriptable `SimulatedToolkitExtension` proves the strict paths in this repository; binding repositories reuse the kit to validate their own extensions, whose GPU-real cases are v2.
 - Core and Compatibility feature-level acid cases: implicit device features and cube-array validation, with an explicit unsupported result for the spec-permitted Core fallback.
 - Portable image filter lab with an original illustration and local PNG/JPEG/WebP import, five adjustable compute filters, an original/result divider and bilingual learning panels. The gallery and selector offer four demos, and `--demo-check` validates eleven GPU cases on JS and Wasm.
 - Shared bilingual learning panels with readable, syntax-colored WGSL matching the compiled sources in all four demos.
