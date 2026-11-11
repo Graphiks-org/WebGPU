@@ -280,8 +280,8 @@ Utilisez `--demo-check` après compilation des distributions navigateur, comme i
   configuration seule n’établit pas une compilation fraîche et réussie de chaque cible native.
 - Les artefacts suivent la convention de publication existante du dépôt : `buildSrc` fournit le
   POM, la licence, les sources et la signature, et `.github/workflows/publish.yml` publie
-  `org.graphiks:suite-core`, `org.graphiks:suite-acid-tests`, `org.graphiks:suite-demos` et
-  `org.graphiks:suite-benchmarks` aux côtés des quatre modules de base sous le `releaseVersion`
+  `org.graphiks.webgpu:suite-core`, `org.graphiks.webgpu:suite-acid-tests`, `org.graphiks.webgpu:suite-demos` et
+  `org.graphiks.webgpu:suite-benchmarks` aux côtés des quatre modules de base sous le `releaseVersion`
   partagé.
 - Il n’y a pas de projet consommateur dédié, de dépôt Maven isolé ni de test de
   publication/consommation : le plan et la spec amendés excluent un tel test d’architecture. La

@@ -7,17 +7,17 @@ extension contract, and how an extension is validated with the contract kit.
 
 ## Add a module
 
-The published coordinates use the `org.graphiks` group. Choose the modules your application needs:
+The published coordinates use the `org.graphiks.webgpu` group. Choose the modules your application needs:
 
 ```kotlin
 dependencies {
-    implementation("org.graphiks:webgpu-toolkit-core:<version>")
+    implementation("org.graphiks.webgpu:toolkit-core:<version>")
     // Presentation and window contracts.
-    // implementation("org.graphiks:webgpu-toolkit-surface:<version>")
+    // implementation("org.graphiks.webgpu:toolkit-surface:<version>")
     // Browser extension presenting to HTML canvases.
-    // implementation("org.graphiks:webgpu-toolkit-web:<version>")
+    // implementation("org.graphiks.webgpu:toolkit-web:<version>")
     // Protocol contract kit.
-    // implementation("org.graphiks:webgpu-toolkit-tck:<version>")
+    // implementation("org.graphiks.webgpu:toolkit-tck:<version>")
 }
 ```
 

@@ -29,7 +29,7 @@ mavenPublishing {
         signAllPublications()
     }
 
-    coordinates(group.toString(), project.name, version.toString())
+    coordinates(group.toString(), project.name.removePrefix("webgpu-"), version.toString())
 
     pom {
         name.set(project.name)

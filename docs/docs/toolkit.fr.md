@@ -8,17 +8,17 @@ contrat.
 
 ## Ajouter un module
 
-Les coordonnées publiées utilisent le groupe `org.graphiks`. Choisissez les modules nécessaires :
+Les coordonnées publiées utilisent le groupe `org.graphiks.webgpu`. Choisissez les modules nécessaires :
 
 ```kotlin
 dependencies {
-    implementation("org.graphiks:webgpu-toolkit-core:<version>")
+    implementation("org.graphiks.webgpu:toolkit-core:<version>")
     // Contrats de présentation et de fenêtrage.
-    // implementation("org.graphiks:webgpu-toolkit-surface:<version>")
+    // implementation("org.graphiks.webgpu:toolkit-surface:<version>")
     // Extension navigateur présentant vers des canvas HTML.
-    // implementation("org.graphiks:webgpu-toolkit-web:<version>")
+    // implementation("org.graphiks.webgpu:toolkit-web:<version>")
     // Kit de contrat de protocole.
-    // implementation("org.graphiks:webgpu-toolkit-tck:<version>")
+    // implementation("org.graphiks.webgpu:toolkit-tck:<version>")
 }
 ```
 

@@ -2,7 +2,7 @@
 
 WebGPU provides Kotlin Multiplatform types and interfaces for the WebGPU API. The published
 modules are `webgpu-api`, `webgpu-descriptors`, `webgpu-web-bindings`, and `webgpu-browser` under
-the `org.graphiks` group. The `webgpu-specifications` module holds the versioned source material
+the `org.graphiks.webgpu` group. The `webgpu-specifications` module holds the versioned source material
 used to generate bindings.
 
 Browser applications start from `webgpu-browser`, which provides `requestAdapter`, the resource

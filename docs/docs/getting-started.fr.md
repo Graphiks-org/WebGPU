@@ -7,17 +7,17 @@ versions snapshot demandent également le dépôt des snapshots Maven Central.
 
 ## Ajouter un module
 
-Les coordonnées publiées utilisent le groupe `org.graphiks`. Choisissez le module nécessaire :
+Les coordonnées publiées utilisent le groupe `org.graphiks.webgpu`. Choisissez le module nécessaire :
 
 ```kotlin
 dependencies {
-    implementation("org.graphiks:webgpu-api:<version>")
+    implementation("org.graphiks.webgpu:api:<version>")
     // Implémentations des descripteurs (nécessaires à l’implémentation navigateur).
-    // implementation("org.graphiks:webgpu-descriptors:<version>")
+    // implementation("org.graphiks.webgpu:descriptors:<version>")
     // Implémentation navigateur.
-    // implementation("org.graphiks:webgpu-browser:<version>")
+    // implementation("org.graphiks.webgpu:browser:<version>")
     // Interop JavaScript directe.
-    // implementation("org.graphiks:webgpu-web-bindings:<version>")
+    // implementation("org.graphiks.webgpu:web-bindings:<version>")
 }
 ```
 

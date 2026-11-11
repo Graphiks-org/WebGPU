@@ -6,7 +6,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <org.graphiks:webgpu-api>
+// Library unique name: <org.graphiks.webgpu:webgpu-api>
 final enum class org.graphiks.webgpu/GPUAddressMode : kotlin/Enum<org.graphiks.webgpu/GPUAddressMode> { // org.graphiks.webgpu/GPUAddressMode|null[0]
     enum entry ClampToEdge // org.graphiks.webgpu/GPUAddressMode.ClampToEdge|null[0]
     enum entry MirrorRepeat // org.graphiks.webgpu/GPUAddressMode.MirrorRepeat|null[0]
