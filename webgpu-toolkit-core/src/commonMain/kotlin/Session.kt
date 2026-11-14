@@ -93,6 +93,17 @@ interface Session {
     val state: StateFlow<SessionState>
 
     /**
+     * The manual progression handle of a session whose extension reports
+     * [Progression.Manual], or `null` for `Pumped` and `EventLoop` sessions.
+     *
+     * Startup pumps on the session's own owner until it completes, then hands ownership over:
+     * from that point the caller drives [ManualProgression.processEvents] from exactly one
+     * driver, on the same owner, yielding between bounded iterations. A `Pumped` or `EventLoop`
+     * session never exposes it.
+     */
+    val manualProgress: ManualProgression?
+
+    /**
      * Suspends until the device is lost and returns why, or `null` when the session ended
      * without an observed loss.
      */
@@ -114,8 +125,33 @@ interface Session {
      * `ShutdownTimedOut` while cleanup is retried a finite number of times in the background
      * with exponential backoff; once those retries are exhausted the session stays in
      * `ShutdownTimedOut` and a later call retries the bounded release.
+     *
+     * A `Manual` session whose driver is still running rejects the call with
+     * [IllegalStateException]: cancel and join the driver, call [ManualProgression.stop], then
+     * shut down.
      */
     suspend fun shutdown()
+}
+
+/**
+ * The caller-owned event pump of a `Manual` progression session, handed over once startup
+ * finished pumping on the session's owner.
+ *
+ * [processEvents] must run on the session's owner and from exactly one driver at a time; the
+ * driver yields between bounded iterations so suspended GPU work can progress. [stop] releases
+ * the hand-over: after it returns the session no longer expects a driver, and a shutdown may
+ * proceed. Both are idempotent.
+ */
+interface ManualProgression {
+    /**
+     * Drives one round of host events on the session's owner.
+     */
+    fun processEvents()
+
+    /**
+     * Ends the manual hand-over; a later [processEvents] call fails fast.
+     */
+    fun stop()
 }
 
 /**
@@ -143,8 +179,9 @@ suspend fun <R> withSession(
  * down on every exit path, including cancellation of the caller.
  *
  * Startup is bounded by [SessionConfig.startupTimeout] and maps every failure to
- * [SessionState.Failed] before rethrowing; `Manual` progression is rejected fast with an
- * [UnsupportedOperationException] because v1 supports only `Pumped` and `EventLoop`.
+ * [SessionState.Failed] before rethrowing. A `Manual` progression session hands its pump over
+ * through [Session.manualProgress] once startup completed; the caller cancels and joins its
+ * driver, calls [ManualProgression.stop], then shuts down.
  */
 suspend fun <R> withSession(
     extension: WebGpuToolkitExtension,
@@ -185,6 +222,10 @@ internal class DefaultSession(
     private var startedDevice: GPUDevice? = null
     private var pumpJob: Job? = null
     private var retryJob: Job? = null
+    private var manual: DefaultManualProgression? = null
+
+    override val manualProgress: ManualProgression?
+        get() = manual
 
     private companion object {
         /** Background release attempts before the loop gives up and leaves the session retryable. */
@@ -233,13 +274,6 @@ internal class DefaultSession(
     private suspend fun startup() {
         val opened = extension.open(config)
         instance = opened
-        if (opened.progression == Progression.Manual) {
-            _state.value = SessionState.Failed
-            failFastClose()
-            throw UnsupportedOperationException(
-                "Manual progression is not supported in v1; use Pumped or EventLoop progression",
-            )
-        }
         val adapter = opened.requestAdapter(hints).getOrElse { error ->
             throw IllegalStateException("no adapter matched the toolkit session hints", error)
         }
@@ -265,6 +299,12 @@ internal class DefaultSession(
                     yield()
                 }
             }
+        }
+
+        // Manual: startup pumps on the session's own owner until ownership transfers, then the
+        // caller drives processEvents from exactly one driver. The session keeps no pump job.
+        if (opened.progression == Progression.Manual) {
+            manual = DefaultManualProgression(opened)
         }
     }
 
@@ -301,6 +341,12 @@ internal class DefaultSession(
         when (_state.value) {
             SessionState.Closed, SessionState.ShuttingDown -> return
             else -> {}
+        }
+        // A live manual driver owns the pump: releasing handles under it would race the
+        // caller's processEvents. The caller must stop the driver first.
+        check(manual?.isStopped != false) {
+            "a Manual progression session rejects shutdown while its driver is running; " +
+                "cancel and join the driver, call manualProgress.stop(), then shut down"
         }
         _state.value = SessionState.ShuttingDown
         // Cancel eagerly, but join INSIDE the timed release: a pump blocked in a native
@@ -390,5 +436,29 @@ internal class DefaultSession(
     private fun dispose() {
         lostInfo.complete(null)
         scope.cancel()
+    }
+}
+
+/**
+ * The caller-owned pump of a `Manual` session: forwards [processEvents] to the extension
+ * instance until [stop] ends the hand-over. Both calls are idempotent, and a pump after [stop]
+ * fails fast so a driver that outlived its hand-over cannot touch a releasing backend.
+ */
+internal class DefaultManualProgression(
+    private val instance: ToolkitInstance,
+) : ManualProgression {
+    private var stopped = false
+
+    /** Whether [stop] already ended the hand-over; a session may then shut down. */
+    val isStopped: Boolean
+        get() = stopped
+
+    override fun processEvents() {
+        check(!stopped) { "manual progression was stopped; the session no longer accepts a driver" }
+        instance.pumpEvents()
+    }
+
+    override fun stop() {
+        stopped = true
     }
 }

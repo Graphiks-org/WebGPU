@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.GPUTextureView
 import org.graphiks.webgpu.toolkit.AcquiredFrame
 import org.graphiks.webgpu.toolkit.AdapterHints
@@ -74,6 +75,25 @@ interface ToolkitSurface : AutoCloseable {
      * new generation, or after [close], fails fast.
      */
     suspend fun <R> withFrame(block: (Frame) -> R): R
+
+    /**
+     * Swaps the presentation target for [target] between frames.
+     *
+     * The surface retains the new target and rolls a stale generation back exactly like
+     * [withSurface] does. The device and its configuration are kept when [target] supports the
+     * surface's current format; otherwise the surface renegotiates and [configuration] emits the
+     * new value. A failed replacement leaves the previous target in place and rethrows, so the
+     * surface stays usable. Must not run concurrently with [withFrame].
+     */
+    suspend fun replaceTarget(target: SurfaceTarget)
+
+    /**
+     * Detaches the target whose lease carries [generation], releasing it and leaving the surface
+     * without a target: [withFrame] then suspends until a [replaceTarget] call installs one.
+     * A generation that is no longer the surface's is ignored. Must not run concurrently with
+     * [withFrame].
+     */
+    suspend fun detachTarget(generation: Long)
 }
 
 /**
@@ -112,10 +132,11 @@ suspend fun <R> withSurface(
  * one from the same extension and releases it with the surface.
  */
 internal class DefaultToolkitSurface(
-    private val target: SurfaceTarget,
-    private val lease: TargetLease,
     private val instance: ToolkitInstance,
-    private val handle: ToolkitSurfaceHandle,
+    private val device: GPUDevice,
+    private var target: SurfaceTarget?,
+    private var lease: TargetLease?,
+    private var handle: ToolkitSurfaceHandle?,
     configuration: PresentationConfiguration,
     callerContext: CoroutineContext,
 ) : ToolkitSurface {
@@ -125,33 +146,121 @@ internal class DefaultToolkitSurface(
     private val _configuration = MutableStateFlow<PresentationConfiguration?>(configuration)
     override val configuration: StateFlow<PresentationConfiguration?> = _configuration
     private val releaseMutex = Mutex()
+    private val swapMutex = Mutex()
     private var released = false
 
     override suspend fun <R> withFrame(block: (Frame) -> R): R {
         check(!released) { "toolkit surface is closed" }
-        checkGeneration(target.state.value)
+        // A detached surface has no target: wait for a replacement to install one.
+        val current = swapMutex.withLock {
+            check(!released) { "toolkit surface is closed" }
+            val installed = target
+            checkNotNull(installed) { "toolkit surface has no target; call replaceTarget first" }
+            installed to checkNotNull(handle) { "toolkit surface has no handle" }
+        }
+        val (boundTarget, boundHandle) = current
+        checkGeneration(boundTarget)
         // Wait until the target can be drawn to: available with a non-zero extent.
-        val drawable = target.state.first { it.available && it.extent.width != 0u && it.extent.height != 0u }
-        checkGeneration(drawable)
-        val acquired = handle.acquireFrame()
-        val frame = DefaultFrame(acquired, handle)
+        val drawable = boundTarget.state.first { it.available && it.extent.width != 0u && it.extent.height != 0u }
+        checkGeneration(boundTarget, drawable)
+        val acquired = boundHandle.acquireFrame()
+        val frame = DefaultFrame(acquired, boundHandle)
         try {
             val result = block(frame)
             if (!frame.consumed) frame.present()
             return result
         } finally {
-            handle.releaseFrame(acquired)
+            boundHandle.releaseFrame(acquired)
+        }
+    }
+
+    override suspend fun replaceTarget(target: SurfaceTarget) {
+        swapMutex.withLock {
+            check(!released) { "toolkit surface is closed" }
+            val previousTarget = this@DefaultToolkitSurface.target
+            val previousLease = lease
+            val previousHandle = handle
+
+            // Retain the replacement, rolling stale generations back like withSurface does.
+            var retained: TargetLease? = null
+            var created: ToolkitSurfaceHandle? = null
+            try {
+                while (true) {
+                    val candidate = target.retain()
+                    retained = candidate
+                    if (candidate.generation != target.state.value.generation) {
+                        target.retire(candidate)
+                        retained = null
+                        continue
+                    }
+                    val adapter = instance.requestAdapter(forTarget = candidate).getOrElse { error ->
+                        throw IllegalStateException("no adapter matched the replacement surface target", error)
+                    }
+                    created = instance.createSurface(adapter, candidate)
+                    break
+                }
+                val replacement = checkNotNull(created)
+                val currentFormat = _configuration.value?.format
+                val compatible = replacement.capabilities.formats.contains(currentFormat)
+                val next = if (compatible && currentFormat != null) {
+                    _configuration.value!!
+                } else {
+                    PresentationConfiguration(
+                        device = device,
+                        format = replacement.capabilities.preferredFormat,
+                    )
+                }
+                replacement.configure(next)
+
+                // Commit: the replacement is live, release what it replaced.
+                this@DefaultToolkitSurface.target = target
+                lease = retained
+                handle = replacement
+                retained = null
+                created = null
+                _configuration.value = next
+            } catch (error: Throwable) {
+                // A failed replacement preserves the previous target and policy.
+                withContext(NonCancellable) {
+                    created?.let { runCatching { it.close() } }
+                    retained?.let { runCatching { target.retire(it) } }
+                }
+                throw error
+            }
+
+            withContext(NonCancellable) {
+                previousHandle?.let { runCatching { it.close() } }
+                previousLease?.let { leaseTarget -> runCatching { previousTarget?.retire(leaseTarget) } }
+            }
+        }
+    }
+
+    override suspend fun detachTarget(generation: Long) {
+        swapMutex.withLock {
+            if (released) return
+            val current = lease ?: return
+            if (current.generation != generation) return // stale detach requests are ignored
+            val detachedTarget = target
+            val detachedHandle = handle
+            target = null
+            lease = null
+            handle = null
+            withContext(NonCancellable) {
+                detachedHandle?.let { runCatching { it.close() } }
+                detachedTarget?.let { runCatching { it.retire(current) } }
+            }
+            _configuration.value = null
         }
     }
 
     /**
-     * Fails fast once the target moved past the generation this surface is leased against; the
-     * surface is dead from then on, as target replacement only arrives in v2.
+     * Fails fast once the target moved past the generation this surface is leased against.
      */
-    private fun checkGeneration(state: TargetState) {
-        check(state.generation == lease.generation) {
+    private fun checkGeneration(boundTarget: SurfaceTarget, state: TargetState = boundTarget.state.value) {
+        val bound = lease?.generation ?: return
+        check(state.generation == bound) {
             "surface target moved to generation ${state.generation} while the surface holds " +
-                "generation ${lease.generation}; the surface is lost"
+                "generation $bound; replace the target with replaceTarget"
         }
     }
 
@@ -165,8 +274,8 @@ internal class DefaultToolkitSurface(
             released = true
         }
         withContext(NonCancellable) {
-            runCatching { handle.close() }
-            runCatching { target.retire(lease) }
+            runCatching { handle?.close() }
+            runCatching { lease?.let { held -> target?.retire(held) } }
             runCatching { instance.close() }
         }
         scope.cancel()
@@ -220,7 +329,15 @@ internal class DefaultToolkitSurface(
                     created.configure(configuration)
                     lease = null // ownership moves to the surface
                     handle = null
-                    return DefaultToolkitSurface(target, retained, instance, created, configuration, callerContext)
+                    return DefaultToolkitSurface(
+                        instance = instance,
+                        device = session.device,
+                        target = target,
+                        lease = retained,
+                        handle = created,
+                        configuration = configuration,
+                        callerContext = callerContext,
+                    )
                 }
             } catch (error: Throwable) {
                 withContext(NonCancellable) {

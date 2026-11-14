@@ -11,6 +11,10 @@ import org.graphiks.webgpu.toolkit.AcquiredFrame
 import org.graphiks.webgpu.toolkit.Extent2D
 import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.TargetState
+import org.graphiks.webgpu.toolkit.surface.KeyState
+import org.graphiks.webgpu.toolkit.surface.Point2D
+import org.graphiks.webgpu.toolkit.surface.PointerButton
+import org.graphiks.webgpu.toolkit.surface.PointerState
 import org.graphiks.webgpu.toolkit.surface.Window
 import org.graphiks.webgpu.toolkit.surface.WindowConfig
 import org.graphiks.webgpu.toolkit.surface.WindowEvent
@@ -189,5 +193,22 @@ class WindowTest : FreeSpec({
             rejected.message shouldBe "render failed"
             host.openedWindows.single().closed shouldBe true
         }
+    }
+
+    "input events carry logical coordinates and named keys" {
+        val pointer = WindowEvent.Pointer(
+            position = Point2D(x = 12.5, y = 40.0),
+            state = PointerState.Pressed,
+            button = PointerButton.Primary,
+        )
+        pointer.position.x shouldBe 12.5
+        pointer.button shouldBe PointerButton.Primary
+
+        val key = WindowEvent.Key(key = "KeyA", state = KeyState.Pressed, text = "a")
+        key.text shouldBe "a"
+
+        WindowEvent.Scroll(Point2D(x = 0.0, y = 120.0)).delta.y shouldBe 120.0
+        WindowEvent.FocusChanged(focused = false).focused shouldBe false
+        WindowEvent.PointerExited shouldBe WindowEvent.PointerExited
     }
 })

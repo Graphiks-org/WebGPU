@@ -94,8 +94,9 @@ canvas avec un `ResizeObserver` et republie son étendue — en changeant de gé
 canvas est redimensionné, si bien que le flux `state` émet réellement et qu’un `withFrame` suspendu
 reprend ; quand le navigateur n’offre pas de `ResizeObserver`, chaque lecture du `state` de la cible
 rafraîchit l’étendue à la place (le repli par tirage). Un changement d’étendue incrémente néanmoins
-la génération, ce qui tue en v1 les surfaces louées contre l’ancienne : leur prochain usage échoue
-immédiatement, et une nouvelle passe `withSurface` négocie une nouvelle surface. L’étendue publiée
+la génération, ce qui retire la surface louée contre l’ancienne : `withFrame` y échoue
+immédiatement, et soit une nouvelle passe `withSurface`, soit un appel `replaceTarget` sur la
+surface vivante installe une cible à la nouvelle génération. L’étendue publiée
 est la taille du tampon de dessin du canvas — des pixels physiques : la cible ne redimensionne
 jamais le canvas, donc pour un rendu net sur écrans denses, l’application le dimensionne avec le
 rapport de densité de pixels (`canvas.width = largeurCss * devicePixelRatio`, et la hauteur
@@ -129,6 +130,26 @@ fournisseurs publiés là où vit leur extension, jamais ici. Quand l’hôte po
 fenêtres (`WindowRuntime.Owned`), `withWindow` détruit la fenêtre en sortie ; une fenêtre empruntée
 (`WindowRuntime.Borrowed`) reste ouverte, sa durée de vie appartenant à l’embedder qui l’a prêtée.
 
+`window.events` publie `CloseRequested`, `Resized(logical)` et les événements d’entrée :
+`Pointer(position, state, button)` et `PointerExited` en pixels logiques relatifs à l’origine du
+contenu, `Scroll(delta)`, `Key(key, state, text)` avec des noms de touches indépendants du clavier
+(`"KeyA"`, `"Escape"`, `"ArrowLeft"`), et `FocusChanged(focused)`.
+
+## Échanger ou détacher une cible
+
+Une `ToolkitSurface` vivante suit sa cible à travers les générations sans rouvrir la session :
+
+```kotlin
+surface.replaceTarget(newTarget)   // garde le device et le format quand ils sont compatibles
+surface.detachTarget(generation)   // libère une cible ; withFrame suspend jusqu’au remplacement
+```
+
+`replaceTarget` retient la nouvelle cible, annule une génération obsolète comme `withSurface`,
+garde le device et sa configuration quand le remplacement supporte le format courant, et relance
+l’erreur en cas d’échec en laissant la cible précédente utilisable. `detachTarget` ignore une
+génération que la surface ne détient plus. Aucun des deux ne doit s’exécuter en concurrence avec
+`withFrame`.
+
 ## Le contrat d’extension
 
 Une extension est tout ce que fournit un backend ; le contrat `WebGpuToolkitExtension` tient en
@@ -142,8 +163,10 @@ cinq membres :
 4. `createSurface(adapter, lease)` crée le handle de surface d’une cible retenue : il publie ses
    capacités et configure, acquiert, présente et libère les frames.
 5. `progression` et `pumpEvents` disent comment les événements de l’hôte avancent : les backends
-   `Pumped` sont pompés par la session, les backends `EventLoop` suivent la boucle de l’hôte (la
-   progression `Manual` est refusée en v1).
+   `Pumped` sont pompés par la session, les backends `EventLoop` suivent la boucle de l’hôte, et
+   les backends `Manual` remettent le pompage à l’appelant via `Session.manualProgress` : le
+   pilote appelle `processEvents()` depuis un seul driver sur le propriétaire de la session,
+   puis `stop()`, puis arrête la session.
 
 ## Où vivent les adaptateurs
 

@@ -9,7 +9,7 @@ import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 
 /**
  * Something that happened to a [Window] outside the render loop: the user or platform asked to
- * close it, or it was resized. Input events are out of scope for v1.
+ * close it, it was resized, or the user interacted with it.
  */
 sealed interface WindowEvent {
     /**
@@ -23,6 +23,91 @@ sealed interface WindowEvent {
      * state with the matching physical extent.
      */
     data class Resized(val logical: Extent2D) : WindowEvent
+
+    /**
+     * A pointer moved or a button changed inside the window. [position] is in logical pixels
+     * relative to the window's content origin; [button] names the button whose state changed,
+     * or `null` for a pure move.
+     */
+    data class Pointer(
+        val position: Point2D,
+        val state: PointerState,
+        val button: PointerButton? = null,
+    ) : WindowEvent
+
+    /**
+     * The pointer left the window, or its position became unknown.
+     */
+    data object PointerExited : WindowEvent
+
+    /**
+     * A mouse wheel or trackpad scroll: [delta] in logical pixels, positive [Point2D.y]
+     * pointing down.
+     */
+    data class Scroll(val delta: Point2D) : WindowEvent
+
+    /**
+     * A key changed state. [key] is a layout-independent name where the platform provides one
+     * (`"KeyA"`, `"Escape"`, `"ArrowLeft"`, `"Space"`); [text] carries the produced character
+     * for text input, or `null` for a non-text key.
+     */
+    data class Key(
+        val key: String,
+        val state: KeyState,
+        val text: String? = null,
+    ) : WindowEvent
+
+    /**
+     * The window gained or lost input focus.
+     */
+    data class FocusChanged(val focused: Boolean) : WindowEvent
+}
+
+/**
+ * A position or offset in logical pixels.
+ */
+data class Point2D(
+    val x: Double,
+    val y: Double,
+)
+
+/**
+ * The state of a pointer event.
+ */
+enum class PointerState {
+    /**
+     * The pointer moved.
+     */
+    Moved,
+
+    /**
+     * A pointer button was pressed.
+     */
+    Pressed,
+
+    /**
+     * A pointer button was released.
+     */
+    Released,
+}
+
+/**
+ * A pointer button, named the way the WebGPU-side platforms name them.
+ */
+enum class PointerButton {
+    Primary,
+    Secondary,
+    Middle,
+    Back,
+    Forward,
+}
+
+/**
+ * The state of a key event.
+ */
+enum class KeyState {
+    Pressed,
+    Released,
 }
 
 /**

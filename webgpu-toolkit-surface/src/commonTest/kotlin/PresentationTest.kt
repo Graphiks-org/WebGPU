@@ -185,4 +185,66 @@ class PresentationTest : FreeSpec({
             target.recordedRetires shouldContainExactly target.recordedRetains
         }
     }
+
+    "replaceTarget keeps the device and swaps the presented target" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val first = FakeSurfaceTarget(drawableState(generation = 1L))
+            val second = FakeSurfaceTarget(drawableState(generation = 7L))
+            withSurface(fake, first) { _, surface ->
+                val keptDevice = surface.configuration.value!!.device
+                surface.replaceTarget(second)
+
+                // The configuration is preserved when the replacement supports its format.
+                surface.configuration.value!!.device shouldBe keptDevice
+                surface.configuration.value!!.format shouldBe
+                    FakeSurfaceHandle.DEFAULT_CAPABILITIES.preferredFormat
+
+                // The old target was retired and its handle closed; the new lease is live.
+                first.recordedRetires shouldContainExactly first.recordedRetains
+                fake.createdHandles.first().closeCalls shouldBe 1
+                second.recordedRetains.single().generation shouldBe 7L
+
+                val frame = acquiredFrame()
+                fake.createdHandles.last().frames.send(frame)
+                surface.withFrame { it.present() }
+                fake.createdHandles.last().recordedPresents shouldContainExactly listOf(frame)
+            }
+        }
+    }
+
+    "a failed replaceTarget keeps the previous target usable" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val first = FakeSurfaceTarget(drawableState(generation = 1L))
+            val replacement = FakeSurfaceTarget(drawableState(generation = 9L))
+            withSurface(fake, first) { _, surface ->
+                fake.failFirstConfigure = IllegalStateException("replacement rejected")
+                shouldThrow<IllegalStateException> { surface.replaceTarget(replacement) }
+
+                // The replacement was rolled back; the previous target still presents.
+                replacement.recordedRetires shouldContainExactly replacement.recordedRetains
+                val frame = acquiredFrame()
+                fake.createdHandles.first().frames.send(frame)
+                surface.withFrame { it.present() }
+                fake.createdHandles.first().recordedPresents shouldContainExactly listOf(frame)
+            }
+        }
+    }
+
+    "detachTarget releases the target and ignores stale generations" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val target = FakeSurfaceTarget(drawableState(generation = 3L))
+            withSurface(fake, target) { _, surface ->
+                surface.detachTarget(2L) // stale: ignored, the surface keeps its target
+                fake.createdHandles.single().closeCalls shouldBe 0
+
+                surface.detachTarget(3L)
+                target.recordedRetires shouldContainExactly target.recordedRetains
+                fake.createdHandles.single().closeCalls shouldBe 1
+                surface.configuration.value shouldBe null
+            }
+        }
+    }
 })
