@@ -135,7 +135,9 @@ An extension is everything a backend supplies; `WebGpuToolkitExtension` is five 
 4. `createSurface(adapter, lease)` creates the surface handle for a retained target: it publishes
    its capabilities and configures, acquires, presents and releases frames.
 5. `progression` and `pumpEvents` say how host events advance: `Pumped` backends are pumped by the
-   session, `EventLoop` backends ride the host loop (`Manual` progression is rejected in v1).
+   session, `EventLoop` backends ride the host loop, and `Manual` backends hand the pump over
+   through `Session.manualProgress`: the caller drives `processEvents()` from one driver on the
+   session's owner, calls `stop()`, then shuts down.
 
 ## Where adapters live
 

@@ -176,15 +176,39 @@ class SessionTest : FreeSpec({
         }
     }
 
-    "Manual progression is rejected fast" {
+    "Manual progression hands the pump over and shuts down after stop" {
         runTest {
             val fake = FakeExtension().apply { progression = Progression.Manual }
-            val rejected = shouldThrow<UnsupportedOperationException> {
-                withSession(fake) { error("block must not run under Manual progression") }
+            val sessionRef = CompletableDeferred<Session>()
+            withSession(fake) { session ->
+                sessionRef.complete(session)
+                val manual = checkNotNull(session.manualProgress) {
+                    "a Manual session exposes its hand-over"
+                }
+                val before = fake.pumpCount
+                manual.processEvents()
+                fake.pumpCount shouldBe before + 1
+
+                // A live driver owns the pump: shutdown is rejected until the hand-over ends.
+                shouldThrow<IllegalStateException> { session.shutdown() }
+                manual.stop()
+                manual.stop() // idempotent
+                shouldThrow<IllegalStateException> { manual.processEvents() }
+                session.shutdown()
             }
-            rejected.message shouldContain "Pumped"
-            rejected.message shouldContain "EventLoop"
             fake.instanceClosed shouldBe true
+            sessionRef.await().state.value shouldBe SessionState.Closed
+        }
+    }
+
+    "Pumped and EventLoop sessions expose no manual hand-over" {
+        runTest {
+            for (progression in listOf(Progression.Pumped, Progression.EventLoop)) {
+                val fake = FakeExtension().apply { this.progression = progression }
+                withSession(fake) { session ->
+                    session.manualProgress shouldBe null
+                }
+            }
         }
     }
 

@@ -142,8 +142,10 @@ cinq membres :
 4. `createSurface(adapter, lease)` crée le handle de surface d’une cible retenue : il publie ses
    capacités et configure, acquiert, présente et libère les frames.
 5. `progression` et `pumpEvents` disent comment les événements de l’hôte avancent : les backends
-   `Pumped` sont pompés par la session, les backends `EventLoop` suivent la boucle de l’hôte (la
-   progression `Manual` est refusée en v1).
+   `Pumped` sont pompés par la session, les backends `EventLoop` suivent la boucle de l’hôte, et
+   les backends `Manual` remettent le pompage à l’appelant via `Session.manualProgress` : le
+   pilote appelle `processEvents()` depuis un seul driver sur le propriétaire de la session,
+   puis `stop()`, puis arrête la session.
 
 ## Où vivent les adaptateurs
 
