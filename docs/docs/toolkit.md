@@ -90,9 +90,10 @@ the browser implementation and `CanvasSurfaceTarget(canvas)` wraps a canvas of t
 `ResizeObserver` and republishes its extent — moving to a fresh generation — when the canvas
 resizes, so the `state` flow genuinely emits and a suspended `withFrame` resumes; when the browser
 offers no `ResizeObserver`, every read of the target's `state` refreshes the extent instead (the
-pull fallback). An extent change still bumps the generation, which kills the surfaces leased
-against the old one in v1: their next use fails fast, and a fresh `withSurface` pass negotiates a
-new surface. The published extent is the canvas' drawing-buffer size — physical pixels: the
+pull fallback). An extent change still bumps the generation, which retires the surface leased
+against the old one: `withFrame` fails fast on it, and either a fresh `withSurface` pass or a
+`replaceTarget` call on the live surface installs a target at the new generation. The published
+extent is the canvas' drawing-buffer size — physical pixels: the
 target never resizes the canvas, so for a sharp render on dense displays the application sizes
 it with the device pixel ratio (`canvas.width = cssWidth * devicePixelRatio`, and the matching
 height). Browser-side validation of the web extension arrives with the toolkit demo in a
@@ -123,6 +124,25 @@ native extension's discretion — hosts are provider artifacts published whereve
 lives, never here. When the host owns its windows
 (`WindowRuntime.Owned`), `withWindow` destroys the window on exit; a borrowed window
 (`WindowRuntime.Borrowed`) stays open, its lifetime belonging to the embedder that lent it.
+
+`window.events` publishes `CloseRequested`, `Resized(logical)`, and the input events:
+`Pointer(position, state, button)` and `PointerExited` in logical pixels relative to the content
+origin, `Scroll(delta)`, `Key(key, state, text)` with layout-independent key names (`"KeyA"`,
+`"Escape"`, `"ArrowLeft"`), and `FocusChanged(focused)`.
+
+## Swap or detach a target
+
+A live `ToolkitSurface` follows its target across generations without reopening the session:
+
+```kotlin
+surface.replaceTarget(newTarget)   // keeps the device and format when compatible
+surface.detachTarget(generation)   // releases a target; withFrame suspends until a replacement
+```
+
+`replaceTarget` retains the new target, rolls a stale generation back like `withSurface`, keeps
+the device and its configuration when the replacement supports the current format, and rethrows
+on failure while leaving the previous target usable. `detachTarget` ignores a generation the
+surface no longer holds. Neither may run concurrently with `withFrame`.
 
 ## The extension contract
 
