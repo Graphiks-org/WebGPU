@@ -165,14 +165,88 @@ class DeviceLostException(
 ) : CancellationException("WebGPU device was lost: ${info.message}")
 
 /**
+ * Startup hooks an extension runs before its session is handed to the caller.
+ *
+ * The session calls [prepare] before it asks for an adapter, so an extension can pick the
+ * surface it must be compatible with; [initialize] then runs once the device exists and before
+ * the caller's block, on the session's own progression owner, for device-dependent setup.
+ * [retire] runs on every exit path, including a failed startup, and must be safe to retry.
+ *
+ */
+fun interface SessionInitialization {
+    /**
+     * Prepares device-independent state; returning a [PreparedInitialization] exposes the
+     * surface the adapter must be compatible with, if any.
+     */
+    suspend fun prepare(): PreparedInitialization
+
+    companion object {
+        /**
+         * An initialization that adds nothing to startup.
+         */
+        val None: SessionInitialization = SessionInitialization { PreparedInitialization.None }
+    }
+}
+
+/**
+ * The state [SessionInitialization.prepare] produced, with the phases that need the device.
+ *
+ */
+interface PreparedInitialization {
+    /**
+     * Surface the session's adapter must be able to present to, or `null` when the session is
+     * headless. The session requests its adapter against it.
+     */
+    val compatibleSurface: SurfaceReference?
+
+    /**
+     * Runs after the device exists and before the caller's block; device-dependent setup that
+     * must finish before the session is handed over belongs here.
+     */
+    suspend fun initialize(device: GPUDevice) {}
+
+    /**
+     * Releases what [prepare] and [initialize] acquired. Called on every exit path, including a
+     * failed startup, and may be retried after a failure.
+     */
+    suspend fun retire()
+
+    companion object {
+        /**
+         * A prepared initialization that holds nothing and exposes no surface.
+         */
+        val None: PreparedInitialization = object : PreparedInitialization {
+            override val compatibleSurface: SurfaceReference? = null
+            override suspend fun retire() {}
+        }
+    }
+}
+
+/**
+ * A retained native surface an adapter must be compatible with.
+ *
+ * An extension that presents to a native target returns one from
+ * [PreparedInitialization.compatibleSurface]; the session retires it through
+ * [PreparedInitialization.retire] when it ends.
+ *
+ */
+interface SurfaceReference : AutoCloseable {
+    /**
+     * Releases the reference; a session may call it more than once.
+     */
+    override fun close()
+}
+
+/**
  * Opens a session with [extension] under the default [SessionConfig], runs [block] with it and
  * shuts the session down on every exit path, including cancellation of the caller.
  */
 suspend fun <R> withSession(
     extension: WebGpuToolkitExtension,
     hints: AdapterHints = AdapterHints(),
+    initialization: SessionInitialization = SessionInitialization.None,
     block: suspend (Session) -> R,
-): R = withSession(extension, SessionConfig(), hints, block)
+): R = withSession(extension, SessionConfig(), hints, initialization, block)
 
 /**
  * Opens a session with [extension] under [config], runs [block] with it and shuts the session
@@ -187,9 +261,10 @@ suspend fun <R> withSession(
     extension: WebGpuToolkitExtension,
     config: SessionConfig,
     hints: AdapterHints = AdapterHints(),
+    initialization: SessionInitialization = SessionInitialization.None,
     block: suspend (Session) -> R,
 ): R {
-    val session = DefaultSession(extension, config, hints, coroutineContext)
+    val session = DefaultSession(extension, config, hints, initialization, coroutineContext)
     try {
         session.start()
         return session.run(block)
@@ -207,6 +282,7 @@ internal class DefaultSession(
     private val extension: WebGpuToolkitExtension,
     private val config: SessionConfig,
     private val hints: AdapterHints,
+    private val initialization: SessionInitialization,
     callerContext: CoroutineContext,
 ) : Session {
     private val scope = CoroutineScope(
@@ -223,6 +299,7 @@ internal class DefaultSession(
     private var pumpJob: Job? = null
     private var retryJob: Job? = null
     private var manual: DefaultManualProgression? = null
+    private var prepared: PreparedInitialization? = null
 
     override val manualProgress: ManualProgression?
         get() = manual
@@ -274,13 +351,24 @@ internal class DefaultSession(
     private suspend fun startup() {
         val opened = extension.open(config)
         instance = opened
+        // The extension's own progression is the default; a requested one must be honoured.
+        val requested = config.progression
+        check(requested == null || requested == opened.progression) {
+            "extension '${extension.id}' drives ${opened.progression} progression and cannot honour " +
+                "the requested $requested"
+        }
+        val preparedState = initialization.prepare()
+        prepared = preparedState
+        // The extension decides how a prepared surface constrains adapter selection: an
+        // extension that presents to native targets requests its adapter against it.
         val adapter = opened.requestAdapter(hints).getOrElse { error ->
             throw IllegalStateException("no adapter matched the toolkit session hints", error)
         }
-        val started = adapter.requestDevice().getOrElse { error ->
+        val started = adapter.requestDevice(config.deviceDescriptor).getOrElse { error ->
             throw IllegalStateException("requesting a device for the toolkit session failed", error)
         }
         startedDevice = started
+        preparedState.initialize(started)
 
         // Losses caused by our own close carry reason Destroyed and are not observed as losses.
         scope.launch {
@@ -384,6 +472,9 @@ internal class DefaultSession(
                 deviceToClose.awaitLost()
             }
             runCatching { opened?.close() }
+            // Retire what startup acquired last: the device is gone, so platform resources
+            // that outlived it can be released.
+            runCatching { prepared?.retire() }
             handlesReleased = true
         }
     }

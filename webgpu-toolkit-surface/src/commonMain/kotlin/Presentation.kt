@@ -18,6 +18,8 @@ import org.graphiks.webgpu.toolkit.AcquiredFrame
 import org.graphiks.webgpu.toolkit.AdapterHints
 import org.graphiks.webgpu.toolkit.Extent2D
 import org.graphiks.webgpu.toolkit.PresentationConfiguration
+import org.graphiks.webgpu.toolkit.PresentationPolicy
+import org.graphiks.webgpu.toolkit.SurfaceCapabilities
 import org.graphiks.webgpu.toolkit.SurfaceTarget
 import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.TargetState
@@ -113,9 +115,10 @@ suspend fun <R> withSurface(
     extension: WebGpuToolkitExtension,
     target: SurfaceTarget,
     hints: AdapterHints = AdapterHints(),
+    policy: PresentationPolicy = PresentationPolicy(),
     block: suspend (Session, ToolkitSurface) -> R,
 ): R = withSession(extension, hints) { session ->
-    val surface = DefaultToolkitSurface.acquire(extension, session, target, hints, coroutineContext)
+    val surface = DefaultToolkitSurface.acquire(extension, session, target, hints, policy, coroutineContext)
     try {
         block(session, surface)
     } finally {
@@ -138,6 +141,7 @@ internal class DefaultToolkitSurface(
     private var lease: TargetLease?,
     private var handle: ToolkitSurfaceHandle?,
     configuration: PresentationConfiguration,
+    private val policy: PresentationPolicy,
     callerContext: CoroutineContext,
 ) : ToolkitSurface {
     private val scope = CoroutineScope(
@@ -200,15 +204,18 @@ internal class DefaultToolkitSurface(
                     break
                 }
                 val replacement = checkNotNull(created)
-                val currentFormat = _configuration.value?.format
-                val compatible = replacement.capabilities.formats.contains(currentFormat)
-                val next = if (compatible && currentFormat != null) {
-                    _configuration.value!!
+                // Keep the bound configuration when the replacement supports exactly it, so a
+                // swap does not force the caller to rebuild pipelines; otherwise renegotiate
+                // under the same policy.
+                val current = _configuration.value
+                val next = if (current != null &&
+                    current.format in replacement.capabilities.formats &&
+                    current.alphaMode in replacement.capabilities.alphaModes &&
+                    current.presentMode in replacement.capabilities.presentModes
+                ) {
+                    current
                 } else {
-                    PresentationConfiguration(
-                        device = device,
-                        format = replacement.capabilities.preferredFormat,
-                    )
+                    negotiate(replacement.capabilities, device, policy)
                 }
                 replacement.configure(next)
 
@@ -302,6 +309,7 @@ internal class DefaultToolkitSurface(
             session: Session,
             target: SurfaceTarget,
             hints: AdapterHints,
+            policy: PresentationPolicy = PresentationPolicy(),
             callerContext: CoroutineContext,
         ): DefaultToolkitSurface {
             val instance = extension.open()
@@ -322,10 +330,7 @@ internal class DefaultToolkitSurface(
                     }
                     val created = instance.createSurface(adapter, retained)
                     handle = created
-                    val configuration = PresentationConfiguration(
-                        device = session.device,
-                        format = created.capabilities.preferredFormat,
-                    )
+                    val configuration = negotiate(created.capabilities, session.device, policy)
                     created.configure(configuration)
                     lease = null // ownership moves to the surface
                     handle = null
@@ -336,6 +341,7 @@ internal class DefaultToolkitSurface(
                         lease = retained,
                         handle = created,
                         configuration = configuration,
+                        policy = policy,
                         callerContext = callerContext,
                     )
                 }
@@ -377,4 +383,42 @@ internal class DefaultFrame(
         consumed = true
         handle.present(acquired)
     }
+}
+
+/**
+ * Picks the configuration a surface is bound with from what [capabilities] advertise.
+ *
+ * A `required` value that the target does not advertise fails configuration; otherwise the
+ * first entry of each `preferred` list the target supports wins, and an empty or unmatched list
+ * falls back to the target's own preferred value.
+ */
+internal fun negotiate(
+    capabilities: SurfaceCapabilities,
+    device: GPUDevice,
+    policy: PresentationPolicy,
+): PresentationConfiguration {
+    val requiredFormat = policy.requiredFormat
+    require(requiredFormat == null || requiredFormat in capabilities.formats) {
+        "the surface target does not support the required format $requiredFormat"
+    }
+    val requiredAlpha = policy.requiredAlphaMode
+    require(requiredAlpha == null || requiredAlpha in capabilities.alphaModes) {
+        "the surface target does not support the required alpha mode $requiredAlpha"
+    }
+    val requiredPresent = policy.requiredPresentMode
+    require(requiredPresent == null || requiredPresent in capabilities.presentModes) {
+        "the surface target does not support the required present mode $requiredPresent"
+    }
+    return PresentationConfiguration(
+        device = device,
+        format = requiredFormat
+            ?: policy.preferredFormats.firstOrNull { it in capabilities.formats }
+            ?: capabilities.preferredFormat,
+        alphaMode = requiredAlpha
+            ?: policy.preferredAlphaModes.firstOrNull { it in capabilities.alphaModes }
+            ?: capabilities.alphaModes.first(),
+        presentMode = requiredPresent
+            ?: policy.preferredPresentModes.firstOrNull { it in capabilities.presentModes }
+            ?: capabilities.presentModes.first(),
+    )
 }

@@ -60,6 +60,47 @@ handles are released, ending in `Closed`; a device loss publishes `Lost` and can
 with `DeviceLostException`. A session whose shutdown exceeds its timeout publishes
 `ShutdownTimedOut` while cleanup keeps running; calling `shutdown()` again retries the release.
 
+## Configure the session and the presentation
+
+`SessionConfig` carries more than the timeouts. `deviceDescriptor` is handed to `requestDevice`,
+so the session's device is created with the required features and limits; `progression` asks for
+`Pumped`, `EventLoop` or `Manual`, and an extension that cannot honour it fails startup rather
+than silently using another one:
+
+```kotlin
+import org.graphiks.webgpu.toolkit.PresentationPolicy
+import org.graphiks.webgpu.toolkit.PresentMode
+import org.graphiks.webgpu.toolkit.SessionConfig
+
+withSession(extension, SessionConfig(deviceDescriptor = descriptor, progression = Progression.Manual)) {
+    // ...
+}
+```
+
+`SessionInitialization` adds startup hooks for extensions that need them: `prepare()` runs before
+the adapter request and may expose a `SurfaceReference` the adapter must be compatible with,
+`initialize(device)` runs once the device exists and before your block, and `retire()` runs on
+every exit path, including a failed startup.
+
+`withSurface` negotiates the surface configuration from the target's capabilities. Pass a
+`PresentationPolicy` to choose it: a `required*` value must be advertised or configuration fails,
+otherwise the first `preferred*` entry the target supports wins, and an empty list falls back to
+the target's own preferred value. Present modes are `Fifo`, `FifoRelaxed`, `Immediate` and
+`Mailbox`; a target that cannot choose one advertises only `Fifo`.
+
+```kotlin
+withSurface(
+    extension,
+    target,
+    policy = PresentationPolicy(
+        preferredFormats = listOf(GPUTextureFormat.RGBA8Unorm),
+        preferredPresentModes = listOf(PresentMode.Mailbox, PresentMode.Fifo),
+    ),
+) { session, surface ->
+    surface.configuration.value!!.presentMode // Mailbox when the target supports it
+}
+```
+
 ## Present to a target
 
 `withSurface` runs the target-lease protocol — retaining a lease, requesting a target-bound

@@ -7,6 +7,7 @@ import org.graphiks.webgpu.toolkit.PresentationConfiguration
 import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.TargetState
 import org.graphiks.webgpu.toolkit.SessionConfig
+import org.graphiks.webgpu.toolkit.SurfaceCapabilities
 import org.graphiks.webgpu.toolkit.ToolkitInstance
 import org.graphiks.webgpu.toolkit.Progression
 import org.graphiks.webgpu.toolkit.ToolkitSurfaceHandle
@@ -134,6 +135,9 @@ class RecordingFakeExtension : WebGpuToolkitExtension {
     /** Handles created by [ToolkitInstance.createSurface], in order. */
     val createdHandles = mutableListOf<RecordingSurfaceHandle>()
 
+    /** Capabilities the next created handle reports; `null` keeps the fake's defaults. */
+    var handleCapabilities: SurfaceCapabilities? = null
+
     /** Leases passed to [ToolkitInstance.createSurface], in order. */
     val createSurfaceLeases = mutableListOf<TargetLease>()
 
@@ -145,8 +149,10 @@ class RecordingFakeExtension : WebGpuToolkitExtension {
         return object : ToolkitInstance by wrapped {
             override fun createSurface(adapter: GPUAdapter, lease: TargetLease): ToolkitSurfaceHandle {
                 createSurfaceLeases += lease
+                val underlying = wrapped.createSurface(adapter, lease) as FakeSurfaceHandle
+                handleCapabilities?.let { underlying.capabilities = it }
                 val handle = RecordingSurfaceHandle(
-                    fake = wrapped.createSurface(adapter, lease) as FakeSurfaceHandle,
+                    fake = underlying,
                     failFirstConfigure = failFirstConfigure,
                 )
                 failFirstConfigure = null

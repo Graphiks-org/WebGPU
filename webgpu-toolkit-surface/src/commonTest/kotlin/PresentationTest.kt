@@ -10,10 +10,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.graphiks.webgpu.GPUTextureFormat
 import org.graphiks.webgpu.GPUTextureView
 import org.graphiks.webgpu.toolkit.AcquiredFrame
 import org.graphiks.webgpu.toolkit.Extent2D
+import org.graphiks.webgpu.toolkit.AlphaMode
 import org.graphiks.webgpu.toolkit.PresentationConfiguration
+import org.graphiks.webgpu.toolkit.PresentationPolicy
+import org.graphiks.webgpu.toolkit.PresentMode
+import org.graphiks.webgpu.toolkit.SurfaceCapabilities
 import org.graphiks.webgpu.toolkit.TargetState
 import org.graphiks.webgpu.toolkit.Progression
 import org.graphiks.webgpu.toolkit.surface.withSurface
@@ -244,6 +249,67 @@ class PresentationTest : FreeSpec({
                 target.recordedRetires shouldContainExactly target.recordedRetains
                 fake.createdHandles.single().closeCalls shouldBe 1
                 surface.configuration.value shouldBe null
+            }
+        }
+    }
+
+    "withSurface applies the presentation policy" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            fake.handleCapabilities = SurfaceCapabilities(
+                preferredFormat = GPUTextureFormat.BGRA8Unorm,
+                formats = listOf(GPUTextureFormat.BGRA8Unorm, GPUTextureFormat.RGBA8Unorm),
+                alphaModes = listOf(AlphaMode.Opaque, AlphaMode.Premultiplied),
+                presentModes = listOf(PresentMode.Fifo, PresentMode.Mailbox),
+            )
+            val target = FakeSurfaceTarget(drawableState())
+            val policy = PresentationPolicy(
+                preferredFormats = listOf(GPUTextureFormat.RGBA8Unorm),
+                preferredAlphaModes = listOf(AlphaMode.Premultiplied),
+                preferredPresentModes = listOf(PresentMode.Mailbox),
+            )
+            withSurface(fake, target, policy = policy) { _, surface ->
+                val configuration = surface.configuration.value!!
+                configuration.format shouldBe GPUTextureFormat.RGBA8Unorm
+                configuration.alphaMode shouldBe AlphaMode.Premultiplied
+                configuration.presentMode shouldBe PresentMode.Mailbox
+            }
+        }
+    }
+
+    "a preferred value the target lacks falls through to the next entry" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val target = FakeSurfaceTarget(drawableState())
+            val policy = PresentationPolicy(
+                preferredPresentModes = listOf(PresentMode.Mailbox, PresentMode.Fifo),
+            )
+            withSurface(fake, target, policy = policy) { _, surface ->
+                surface.configuration.value!!.presentMode shouldBe PresentMode.Fifo
+            }
+        }
+    }
+
+    "a required value the target does not advertise fails configuration" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val target = FakeSurfaceTarget(drawableState())
+            val policy = PresentationPolicy(requiredPresentMode = PresentMode.Immediate)
+            shouldThrow<IllegalArgumentException> {
+                withSurface(fake, target, policy = policy) { _, _ -> }
+            }
+        }
+    }
+
+    "an empty policy falls back to the target's preferred values" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val target = FakeSurfaceTarget(drawableState())
+            withSurface(fake, target) { _, surface ->
+                val configuration = surface.configuration.value!!
+                configuration.format shouldBe FakeSurfaceHandle.DEFAULT_CAPABILITIES.preferredFormat
+                configuration.alphaMode shouldBe FakeSurfaceHandle.DEFAULT_CAPABILITIES.alphaModes.first()
+                configuration.presentMode shouldBe FakeSurfaceHandle.DEFAULT_CAPABILITIES.presentModes.first()
             }
         }
     }
