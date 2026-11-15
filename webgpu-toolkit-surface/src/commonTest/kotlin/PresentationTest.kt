@@ -313,4 +313,66 @@ class PresentationTest : FreeSpec({
             }
         }
     }
+
+    "acquireFrame keeps the frame open until releaseFrame" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val target = FakeSurfaceTarget(drawableState())
+            val acquired = acquiredFrame()
+            withSurface(fake, target) { _, surface ->
+                val handle = fake.createdHandles.single()
+                handle.frames.send(acquired)
+
+                val frame = surface.acquireFrame()
+                frame.extent shouldBe acquired.extent
+                // Nothing is presented or released while the caller still holds the frame.
+                handle.recordedPresents shouldContainExactly emptyList()
+                handle.recordedReleases shouldContainExactly emptyList()
+
+                frame.present()
+                handle.recordedPresents shouldContainExactly listOf(acquired)
+
+                surface.releaseFrame(frame)
+                handle.recordedReleases shouldContainExactly listOf(acquired)
+            }
+        }
+    }
+
+    "releaseFrame is idempotent and a released frame cannot be presented" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val target = FakeSurfaceTarget(drawableState())
+            val acquired = acquiredFrame()
+            withSurface(fake, target) { _, surface ->
+                val handle = fake.createdHandles.single()
+                handle.frames.send(acquired)
+
+                val frame = surface.acquireFrame()
+                surface.releaseFrame(frame)
+                surface.releaseFrame(frame)
+                handle.recordedReleases shouldContainExactly listOf(acquired)
+
+                val rejected = shouldThrow<IllegalStateException> { frame.present() }
+                rejected.message shouldContain "already released"
+                handle.recordedPresents shouldContainExactly emptyList()
+            }
+        }
+    }
+
+    "a frame released without presenting is not shown" {
+        runTest {
+            val fake = RecordingFakeExtension()
+            val target = FakeSurfaceTarget(drawableState())
+            val acquired = acquiredFrame()
+            withSurface(fake, target) { _, surface ->
+                val handle = fake.createdHandles.single()
+                handle.frames.send(acquired)
+
+                surface.releaseFrame(surface.acquireFrame())
+
+                handle.recordedPresents shouldContainExactly emptyList()
+                handle.recordedReleases shouldContainExactly listOf(acquired)
+            }
+        }
+    }
 })

@@ -78,6 +78,23 @@ interface ToolkitSurface : AutoCloseable {
     suspend fun <R> withFrame(block: (Frame) -> R): R
 
     /**
+     * Acquires the next frame and hands it to the caller, who presents and releases it with
+     * [Frame.present] and [releaseFrame]. Unlike [withFrame], the frame stays open until
+     * [releaseFrame], so a caller can encode across several passes before presenting.
+     *
+     * Acquisition suspends while the target is unavailable or its extent is zero. A frame that
+     * is never released holds the surface, so a failure path must release it too.
+     */
+    suspend fun acquireFrame(): Frame
+
+    /**
+     * Releases a frame obtained from [acquireFrame]. Idempotent: releasing a frame twice, or a
+     * frame that is no longer current, is a no-op. A frame released without being presented is
+     * not shown.
+     */
+    fun releaseFrame(frame: Frame)
+
+    /**
      * Swaps the presentation target for [target] between frames.
      *
      * The surface retains the new target and rolls a stale generation back exactly like
@@ -153,6 +170,17 @@ internal class DefaultToolkitSurface(
     private var released = false
 
     override suspend fun <R> withFrame(block: (Frame) -> R): R {
+        val frame = acquireFrame() as DefaultFrame
+        try {
+            val result = block(frame)
+            if (!frame.consumed) frame.present()
+            return result
+        } finally {
+            frame.release()
+        }
+    }
+
+    override suspend fun acquireFrame(): Frame {
         check(!released) { "toolkit surface is closed" }
         // A detached surface has no target: wait for a replacement to install one.
         val current = swapMutex.withLock {
@@ -166,15 +194,11 @@ internal class DefaultToolkitSurface(
         // Wait until the target can be drawn to: available with a non-zero extent.
         val drawable = boundTarget.state.first { it.available && it.extent.width != 0u && it.extent.height != 0u }
         checkGeneration(boundTarget, drawable)
-        val acquired = boundHandle.acquireFrame()
-        val frame = DefaultFrame(acquired, boundHandle)
-        try {
-            val result = block(frame)
-            if (!frame.consumed) frame.present()
-            return result
-        } finally {
-            boundHandle.releaseFrame(acquired)
-        }
+        return DefaultFrame(boundHandle.acquireFrame(), boundHandle)
+    }
+
+    override fun releaseFrame(frame: Frame) {
+        (frame as? DefaultFrame)?.release()
     }
 
     override suspend fun replaceTarget(target: SurfaceTarget) {
@@ -371,6 +395,9 @@ internal class DefaultFrame(
     var consumed = false
         private set
 
+    /** Whether [release] already handed the frame back; releasing twice is a no-op. */
+    private var released = false
+
     override val view: GPUTextureView
         get() = acquired.view
 
@@ -379,8 +406,16 @@ internal class DefaultFrame(
 
     override fun present() {
         check(!consumed) { "frame was already presented" }
+        check(!released) { "frame was already released" }
         consumed = true
         handle.present(acquired)
+    }
+
+    /** Hands the frame back to the surface; idempotent. */
+    fun release() {
+        if (released) return
+        released = true
+        handle.releaseFrame(acquired)
     }
 }
 
