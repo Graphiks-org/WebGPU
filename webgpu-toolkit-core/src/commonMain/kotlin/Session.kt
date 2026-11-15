@@ -26,7 +26,6 @@ import org.graphiks.webgpu.GPUDeviceLostReason
 import org.graphiks.webgpu.GPUQueue
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.ContinuationInterceptor
-import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -264,7 +263,7 @@ suspend fun <R> withSession(
     initialization: SessionInitialization = SessionInitialization.None,
     block: suspend (Session) -> R,
 ): R {
-    val session = DefaultSession(extension, config, hints, initialization, coroutineContext)
+    val session = DefaultSession(extension, config, hints, initialization, kotlin.coroutines.coroutineContext)
     try {
         session.start()
         return session.run(block)

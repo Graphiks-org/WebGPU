@@ -49,7 +49,6 @@ import org.graphiks.webgpu.toolkit.ToolkitSurfaceHandle
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 import org.graphiks.webgpu.ArrayBuffer
 import org.graphiks.webgpu.GPUExtent3D
-import org.graphiks.webgpu.GPUTexelCopyBufferInfo
 import org.graphiks.webgpu.GPUTexelCopyBufferLayout
 import org.graphiks.webgpu.GPUTexelCopyTextureInfo
 import org.graphiks.webgpu.GPUTextureFormat

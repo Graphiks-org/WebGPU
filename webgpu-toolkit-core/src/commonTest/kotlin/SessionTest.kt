@@ -5,7 +5,6 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -28,6 +27,7 @@ import org.graphiks.webgpu.toolkit.Session
 import org.graphiks.webgpu.toolkit.SessionState
 import org.graphiks.webgpu.toolkit.withSession
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Starts a collector on the caller's scope that records every state of the awaited session and
@@ -125,7 +125,7 @@ class SessionTest : FreeSpec({
                     sessionRef.complete(session)
                     yield()
                     fake.loseDevice()
-                    delay(10_000)
+                    delay(10.seconds)
                 }
             }
             lost.info.message shouldBe "fake device lost"
@@ -176,7 +176,7 @@ class SessionTest : FreeSpec({
             duringBlock shouldBeGreaterThan 0
             val afterClose = fake.pumpCount
             advanceUntilIdle()
-            delay(100)
+            delay(100.milliseconds)
             fake.pumpCount shouldBe afterClose
         }
     }

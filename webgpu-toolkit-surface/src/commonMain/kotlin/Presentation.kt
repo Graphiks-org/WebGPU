@@ -30,7 +30,6 @@ import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 import org.graphiks.webgpu.toolkit.withSession
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 /**
  * One frame acquired from a [ToolkitSurface]: the [view] to render the frame into, its physical
@@ -118,7 +117,7 @@ suspend fun <R> withSurface(
     policy: PresentationPolicy = PresentationPolicy(),
     block: suspend (Session, ToolkitSurface) -> R,
 ): R = withSession(extension, hints) { session ->
-    val surface = DefaultToolkitSurface.acquire(extension, session, target, hints, policy, coroutineContext)
+    val surface = DefaultToolkitSurface.acquire(extension, session, target, hints, policy, kotlin.coroutines.coroutineContext)
     try {
         block(session, surface)
     } finally {
