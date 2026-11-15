@@ -16,6 +16,8 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- Manual frame acquisition: `ToolkitSurface.acquireFrame()` hands out a `Frame` that stays open until `ToolkitSurface.releaseFrame(frame)`, so a caller can encode across several passes before presenting. `withFrame` is now expressed on top of it and keeps its present-on-return behaviour; releasing a frame twice is a no-op, and a frame released without presenting is not shown.
+
 - Presentation policy: `PresentationPolicy` picks the surface configuration from what a target advertises — required or preferred formats, alpha modes and the new `PresentMode` (`Fifo`, `FifoRelaxed`, `Immediate`, `Mailbox`) — and `withSurface` takes it as a parameter. `SurfaceCapabilities.presentModes` and `PresentationConfiguration.presentMode` carry the choice; a target that cannot choose advertises only `Fifo`.
 
 - Session configuration beyond timeouts: `SessionConfig.deviceDescriptor` is handed to `requestDevice`, so a session can require features and limits, and `SessionConfig.progression` lets the caller ask for `Pumped`, `EventLoop` or `Manual`. An extension that cannot honour the requested progression fails startup instead of silently using another one.
