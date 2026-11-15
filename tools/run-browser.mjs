@@ -74,6 +74,15 @@ function benchmarkExpectedIds() {
 }
 
 const distRoot = resolve(distribution);
+// A missing distribution is what a failed build leaves behind. Serving 404s to Chromium would
+// spend the whole report budget before failing, so refuse it up front, before anything else is read.
+const distributionIndex = join(distRoot, 'index.html');
+try {
+  await readFile(distributionIndex);
+} catch {
+  console.error(`distribution directory ${distRoot} does not exist or has no index.html; build it first.`);
+  process.exit(1);
+}
 const reportsDir = join(root, 'build', 'reports');
 const generatedInventory = join(root, 'suite-acid-tests', 'build', 'suite-inventory');
 const allCaseIds = mode === 'suite'
