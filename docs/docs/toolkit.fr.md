@@ -208,7 +208,11 @@ cinq membres :
    `Pumped` sont pompés par la session, les backends `EventLoop` suivent la boucle de l’hôte, et
    les backends `Manual` remettent le pompage à l’appelant via `Session.manualProgress` : le
    pilote appelle `processEvents()` depuis un seul driver sur le propriétaire de la session,
-   puis `stop()`, puis arrête la session.
+   puis `stop()`, puis arrête la session. `Session.executionOwner` publie ce propriétaire sous
+   forme de dispatcher quand le backend en épingle un — un contexte natif lié à son thread
+   créateur — si bien qu’un travail venu d’un autre thread y revient avec
+   `withContext(session.executionOwner)` ; la valeur est `null` quand la session accepte du
+   travail de n’importe où.
 
 ## Où vivent les adaptateurs
 

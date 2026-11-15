@@ -198,7 +198,10 @@ An extension is everything a backend supplies; `WebGpuToolkitExtension` is five 
 5. `progression` and `pumpEvents` say how host events advance: `Pumped` backends are pumped by the
    session, `EventLoop` backends ride the host loop, and `Manual` backends hand the pump over
    through `Session.manualProgress`: the caller drives `processEvents()` from one driver on the
-   session's owner, calls `stop()`, then shuts down.
+   session's owner, calls `stop()`, then shuts down. `Session.executionOwner` publishes that
+   owner as a dispatcher when the backend pins one — a native context bound to its creating
+   thread — so work coming from another thread gets back with
+   `withContext(session.executionOwner)`; it is `null` when the session accepts work anywhere.
 
 ## Where adapters live
 

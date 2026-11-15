@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+@file:OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class, kotlinx.coroutines.DelicateCoroutinesApi::class)
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
@@ -13,7 +13,11 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.GPUDeviceDescriptor
@@ -355,6 +359,39 @@ class SessionTest : FreeSpec({
                 withSession(fake, SessionConfig(), initialization = initialization) { }
             }
             retired shouldBe true
+        }
+    }
+
+    "the session reports the dispatcher it started on as its execution owner" {
+        val dispatcher = newSingleThreadContext("toolkit-owner-test")
+        try {
+            runBlocking(dispatcher) {
+                val fake = FakeExtension()
+                withSession(fake, SessionConfig()) { session ->
+                    session.executionOwner shouldBe dispatcher
+                }
+            }
+        } finally {
+            dispatcher.close()
+        }
+    }
+
+    "work sent to the execution owner runs on the owning thread" {
+        val dispatcher = newSingleThreadContext("toolkit-owner-run-test")
+        try {
+            runBlocking(dispatcher) {
+                val fake = FakeExtension()
+                withSession(fake, SessionConfig()) { session ->
+                    val owner = Thread.currentThread()
+                    // A different dispatcher first, so coming back to the owner is observable.
+                    val elsewhere = withContext(Dispatchers.Default) { Thread.currentThread() }
+                    (elsewhere === owner) shouldBe false
+                    val back = withContext(checkNotNull(session.executionOwner)) { Thread.currentThread() }
+                    back shouldBe owner
+                }
+            }
+        } finally {
+            dispatcher.close()
         }
     }
 })
