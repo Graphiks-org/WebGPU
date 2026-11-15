@@ -27,6 +27,8 @@ jobs:
         run: |
           npm ci --prefix tools
           npm exec --prefix tools -- playwright install --with-deps chromium
+      - name: Test the browser runner
+        run: node --test tools/*.test.mjs
       - name: Build libraries and browser distributions
         run: |
           ./gradlew --no-daemon \

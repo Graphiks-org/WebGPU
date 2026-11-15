@@ -57,7 +57,8 @@ remaining contract gaps.
 
 Build the distributions and run each target. The runner writes `build/reports/<target>.json` and
 exits non-zero when the run is incomplete or failed; it never turns a missing adapter or a timeout
-into a success.
+into a success. Pointed at a distribution directory that does not exist, it fails at once instead of
+waiting out its report budget, so a failed build never costs an hour of CI.
 
 ```sh
 npm install --prefix tools
@@ -68,6 +69,9 @@ node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
 node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
 node tools/build-site.mjs
 ```
+
+`node --test tools/*.test.mjs` runs the runner's own tests; the suite workflow runs them before the
+distributions, so a runner regression fails in seconds rather than in a browser run.
 
 `tools/build-site.mjs` assembles `build/site/`, including the two reports and the two runnable
 distributions. It fails when a report or the inventory is missing, so an absent report is never
