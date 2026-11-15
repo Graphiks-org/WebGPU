@@ -20,6 +20,7 @@ import org.graphiks.webgpu.toolkit.TargetLease
 import org.graphiks.webgpu.toolkit.AlphaMode
 import org.graphiks.webgpu.toolkit.SessionConfig
 import org.graphiks.webgpu.toolkit.ToolkitInstance
+import org.graphiks.webgpu.toolkit.PresentMode
 import org.graphiks.webgpu.toolkit.Progression
 import org.graphiks.webgpu.toolkit.ToolkitSurfaceHandle
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
@@ -146,6 +147,8 @@ internal class WebCanvasSurfaceHandle(
                     AlphaMode.Opaque,
                     AlphaMode.Premultiplied,
                 ),
+                // The browser paces presentation itself; it exposes no present mode to choose.
+                presentModes = listOf(PresentMode.Fifo),
             )
         }
 

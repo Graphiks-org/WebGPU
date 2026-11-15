@@ -5,7 +5,6 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -16,13 +15,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
+import org.graphiks.webgpu.GPUDevice
+import org.graphiks.webgpu.GPUDeviceDescriptor
 import org.graphiks.webgpu.toolkit.DeviceLostException
+import org.graphiks.webgpu.toolkit.PreparedInitialization
+import org.graphiks.webgpu.toolkit.SessionInitialization
+import org.graphiks.webgpu.toolkit.SurfaceReference
 import org.graphiks.webgpu.toolkit.SessionConfig
 import org.graphiks.webgpu.toolkit.Progression
 import org.graphiks.webgpu.toolkit.Session
 import org.graphiks.webgpu.toolkit.SessionState
 import org.graphiks.webgpu.toolkit.withSession
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Starts a collector on the caller's scope that records every state of the awaited session and
@@ -120,7 +125,7 @@ class SessionTest : FreeSpec({
                     sessionRef.complete(session)
                     yield()
                     fake.loseDevice()
-                    delay(10_000)
+                    delay(10.seconds)
                 }
             }
             lost.info.message shouldBe "fake device lost"
@@ -171,7 +176,7 @@ class SessionTest : FreeSpec({
             duringBlock shouldBeGreaterThan 0
             val afterClose = fake.pumpCount
             advanceUntilIdle()
-            delay(100)
+            delay(100.milliseconds)
             fake.pumpCount shouldBe afterClose
         }
     }
@@ -272,6 +277,84 @@ class SessionTest : FreeSpec({
                 SessionState.ShuttingDown,
                 SessionState.Closed,
             )
+        }
+    }
+
+    "the session requests its device with the configured descriptor" {
+        runTest {
+            val fake = FakeExtension()
+            val descriptor = object : GPUDeviceDescriptor {
+                override val requiredFeatures: List<org.graphiks.webgpu.GPUFeatureName> = emptyList()
+                override val requiredLimits: org.graphiks.webgpu.GPURequiredLimits? = null
+                override val defaultQueue: org.graphiks.webgpu.GPUQueueDescriptor = object : org.graphiks.webgpu.GPUQueueDescriptor {
+                    override val label: String = ""
+                }
+                override val onUncapturedError: org.graphiks.webgpu.GPUUncapturedErrorCallback? = null
+                override val label: String = "toolkit-device"
+            }
+            withSession(fake, SessionConfig(deviceDescriptor = descriptor)) { }
+            fake.requestedDeviceDescriptors shouldContainExactly listOf<GPUDeviceDescriptor?>(descriptor)
+        }
+    }
+
+    "a requested progression the extension cannot honour fails startup" {
+        runTest {
+            val fake = FakeExtension().apply { progression = Progression.Pumped }
+            shouldThrow<IllegalStateException> {
+                withSession(fake, SessionConfig(progression = Progression.Manual)) { }
+            }
+        }
+    }
+
+    "a requested progression the extension reports is accepted" {
+        runTest {
+            val fake = FakeExtension().apply { progression = Progression.Manual }
+            withSession(fake, SessionConfig(progression = Progression.Manual)) { session ->
+                checkNotNull(session.manualProgress)
+                session.manualProgress!!.stop()
+            }
+        }
+    }
+
+    "the initialization runs before the block and retires on exit" {
+        runTest {
+            val fake = FakeExtension()
+            val events = mutableListOf<String>()
+            val initialization = SessionInitialization {
+                events += "prepare"
+                object : PreparedInitialization {
+                    override val compatibleSurface: SurfaceReference? = null
+                    override suspend fun initialize(device: GPUDevice) {
+                        events += "initialize"
+                    }
+                    override suspend fun retire() {
+                        events += "retire"
+                    }
+                }
+            }
+            withSession(fake, SessionConfig(), initialization = initialization) {
+                events += "block"
+            }
+            events shouldContainExactly listOf("prepare", "initialize", "block", "retire")
+        }
+    }
+
+    "the initialization retires when startup fails" {
+        runTest {
+            val fake = FakeExtension().apply { failStartup = IllegalStateException("no adapter") }
+            var retired = false
+            val initialization = SessionInitialization {
+                object : PreparedInitialization {
+                    override val compatibleSurface: SurfaceReference? = null
+                    override suspend fun retire() {
+                        retired = true
+                    }
+                }
+            }
+            shouldThrow<IllegalStateException> {
+                withSession(fake, SessionConfig(), initialization = initialization) { }
+            }
+            retired shouldBe true
         }
     }
 })

@@ -16,6 +16,12 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- Presentation policy: `PresentationPolicy` picks the surface configuration from what a target advertises — required or preferred formats, alpha modes and the new `PresentMode` (`Fifo`, `FifoRelaxed`, `Immediate`, `Mailbox`) — and `withSurface` takes it as a parameter. `SurfaceCapabilities.presentModes` and `PresentationConfiguration.presentMode` carry the choice; a target that cannot choose advertises only `Fifo`.
+
+- Session configuration beyond timeouts: `SessionConfig.deviceDescriptor` is handed to `requestDevice`, so a session can require features and limits, and `SessionConfig.progression` lets the caller ask for `Pumped`, `EventLoop` or `Manual`. An extension that cannot honour the requested progression fails startup instead of silently using another one.
+
+- Startup hooks: `SessionInitialization` runs `prepare()` before the adapter request — exposing a `SurfaceReference` the adapter must be compatible with — then `initialize(device)` once the device exists and before the caller's block, and `retire()` on every exit path, including a failed startup. `withSession` takes it as a parameter.
+
 - `ToolkitSurface.replaceTarget` and `ToolkitSurface.detachTarget`: a live surface now follows its target across generations instead of dying with it. `replaceTarget` retains the new target, rolls a stale generation back, keeps the device and configuration when the replacement supports the current format, and leaves the previous target usable when it fails; `detachTarget` releases a target by generation and ignores stale requests.
 
 - Window input events on the windowing-neutral contract: `WindowEvent.Pointer`/`PointerExited` in logical pixels, `Scroll`, `Key` with layout-independent key names, and `FocusChanged`.

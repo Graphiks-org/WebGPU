@@ -49,7 +49,6 @@ import org.graphiks.webgpu.toolkit.ToolkitSurfaceHandle
 import org.graphiks.webgpu.toolkit.WebGpuToolkitExtension
 import org.graphiks.webgpu.ArrayBuffer
 import org.graphiks.webgpu.GPUExtent3D
-import org.graphiks.webgpu.GPUTexelCopyBufferInfo
 import org.graphiks.webgpu.GPUTexelCopyBufferLayout
 import org.graphiks.webgpu.GPUTexelCopyTextureInfo
 import org.graphiks.webgpu.GPUTextureFormat
@@ -94,6 +93,9 @@ class FakeExtension : WebGpuToolkitExtension {
     var pumpCount: Int = 0
         private set
 
+    /** Device descriptors the session requested a device with, in order. */
+    val requestedDeviceDescriptors = mutableListOf<GPUDeviceDescriptor?>()
+
     /** Whether the opened instance finished closing. */
     var instanceClosed: Boolean = false
         private set
@@ -123,7 +125,9 @@ class FakeExtension : WebGpuToolkitExtension {
 
         override suspend fun requestAdapter(hints: AdapterHints): Result<GPUAdapter> {
             val failure = failStartup
-            return if (failure != null) Result.failure(failure) else Result.success(FakeGpuAdapter(device))
+            return if (failure != null) Result.failure(failure) else Result.success(
+                FakeGpuAdapter(device) { descriptor -> requestedDeviceDescriptors += descriptor },
+            )
         }
 
         override suspend fun requestAdapter(forTarget: TargetLease, hints: AdapterHints): Result<GPUAdapter> =
@@ -316,6 +320,8 @@ class FakeGpuQueue : GPUQueue {
 /** [GPUAdapter] fake handing out the session's [FakeGpuDevice]. */
 class FakeGpuAdapter(
     private val device: GPUDevice,
+    /** Records the descriptor each device request carries. */
+    private val onRequestDevice: (GPUDeviceDescriptor?) -> Unit = {},
 ) : GPUAdapter {
     override val features: GPUSupportedFeatures = emptySet()
 
@@ -323,8 +329,10 @@ class FakeGpuAdapter(
 
     override val info: GPUAdapterInfo = FakeGpuAdapterInfo
 
-    override suspend fun requestDevice(descriptor: GPUDeviceDescriptor?): Result<GPUDevice> =
-        Result.success(device)
+    override suspend fun requestDevice(descriptor: GPUDeviceDescriptor?): Result<GPUDevice> {
+        onRequestDevice(descriptor)
+        return Result.success(device)
+    }
 
     override fun close() = Unit
 }

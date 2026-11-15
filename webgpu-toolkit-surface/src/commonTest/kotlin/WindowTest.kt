@@ -96,9 +96,8 @@ class FakeWindow(
  */
 class FakeWindowHost(
     /** Runtime exclusivity reported by this host and every window it opens. */
-    runtime: WindowRuntime = WindowRuntime.Owned,
+    override val runtime: WindowRuntime = WindowRuntime.Owned,
 ) : WindowHost {
-    override val runtime: WindowRuntime = runtime
 
     /** Configs passed to [open], one entry per open call. */
     val recordedConfigs = mutableListOf<WindowConfig>()

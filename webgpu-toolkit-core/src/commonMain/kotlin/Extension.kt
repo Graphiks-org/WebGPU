@@ -6,8 +6,8 @@ import org.graphiks.webgpu.GPUTextureFormat
 import org.graphiks.webgpu.GPUTextureView
 
 /**
- * Formats and alpha modes a surface target can present with, led by the format the
- * implementation prefers for the target.
+ * Formats, alpha modes and present modes a surface target can present with, led by the values
+ * the implementation prefers for the target.
  *
  */
 data class SurfaceCapabilities(
@@ -26,6 +26,12 @@ data class SurfaceCapabilities(
 	 *
 	 */
 	val alphaModes: List<AlphaMode>,
+	/**
+	 * Every present mode the target supports, led by the one the implementation recommends.
+	 * A target that cannot choose a present mode advertises only [PresentMode.Fifo].
+	 *
+	 */
+	val presentModes: List<PresentMode> = listOf(PresentMode.Fifo),
 )
 
 /**
@@ -48,6 +54,11 @@ data class PresentationConfiguration(
 	 *
 	 */
 	val alphaMode: AlphaMode = AlphaMode.Opaque,
+	/**
+	 * When presented frames become visible, chosen from [SurfaceCapabilities.presentModes].
+	 *
+	 */
+	val presentMode: PresentMode = PresentMode.Fifo,
 )
 
 /**

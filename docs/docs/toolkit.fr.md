@@ -63,6 +63,48 @@ publie `Lost` et annule le travail admis avec `DeviceLostException`. Une session
 dépasse son délai publie `ShutdownTimedOut` pendant que le nettoyage continue ; un nouvel appel
 à `shutdown()` retente la libération.
 
+## Configurer la session et la présentation
+
+`SessionConfig` porte plus que les délais. `deviceDescriptor` est transmis à `requestDevice` : le
+périphérique de la session est créé avec les fonctionnalités et limites exigées. `progression`
+demande `Pumped`, `EventLoop` ou `Manual`, et une extension qui ne peut pas l'honorer fait échouer
+le démarrage au lieu d'en utiliser une autre en silence :
+
+```kotlin
+import org.graphiks.webgpu.toolkit.PresentationPolicy
+import org.graphiks.webgpu.toolkit.PresentMode
+import org.graphiks.webgpu.toolkit.SessionConfig
+
+withSession(extension, SessionConfig(deviceDescriptor = descriptor, progression = Progression.Manual)) {
+    // ...
+}
+```
+
+`SessionInitialization` ajoute des points d'accroche de démarrage : `prepare()` s'exécute avant la
+requête d'adaptateur et peut exposer une `SurfaceReference` avec laquelle l'adaptateur doit être
+compatible, `initialize(device)` s'exécute une fois le périphérique créé et avant votre bloc, et
+`retire()` s'exécute sur tous les chemins de sortie, y compris un démarrage raté.
+
+`withSurface` négocie la configuration de la surface à partir des capacités de la cible. Passez
+une `PresentationPolicy` pour la choisir : une valeur `required*` doit être annoncée sinon la
+configuration échoue, sinon la première entrée `preferred*` supportée par la cible l'emporte, et
+une liste vide retombe sur la valeur préférée de la cible. Les modes de présentation sont `Fifo`,
+`FifoRelaxed`, `Immediate` et `Mailbox` ; une cible qui ne peut pas en choisir n'annonce que
+`Fifo`.
+
+```kotlin
+withSurface(
+    extension,
+    target,
+    policy = PresentationPolicy(
+        preferredFormats = listOf(GPUTextureFormat.RGBA8Unorm),
+        preferredPresentModes = listOf(PresentMode.Mailbox, PresentMode.Fifo),
+    ),
+) { session, surface ->
+    surface.configuration.value!!.presentMode // Mailbox quand la cible le supporte
+}
+```
+
 ## Présenter vers une cible
 
 `withSurface` exécute le protocole de lease de cible — retenir une lease, demander un adaptateur
