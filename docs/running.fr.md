@@ -54,7 +54,9 @@ Consultez [Ajouter un cas](adding-a-case.md) pour la structure et les clés de l
 
 Compilez les distributions, puis lancez chaque cible. Le runner écrit `build/reports/<target>.json`
 et retourne un code non nul en cas d’exécution incomplète ou d’échec. L’absence d’adaptateur et les
-dépassements de délai ne deviennent jamais des réussites.
+dépassements de délai ne deviennent jamais des réussites. Pointé vers un dossier de distribution
+inexistant, il échoue immédiatement au lieu d’attendre tout son budget de rapport : une compilation
+ratée ne coûte donc jamais une heure de CI.
 
 ```sh
 npm install --prefix tools
@@ -65,6 +67,10 @@ node tools/run-browser.mjs js suite-browser/build/dist/js/productionExecutable
 node tools/run-browser.mjs wasm suite-browser/build/dist/wasmJs/productionExecutable
 node tools/build-site.mjs
 ```
+
+`node --test tools/*.test.mjs` exécute les tests du runner ; le workflow de la suite les lance avant
+les distributions, si bien qu’une régression du runner échoue en quelques secondes plutôt qu’en une
+exécution navigateur.
 
 `tools/build-site.mjs` assemble `build/site/` avec les deux rapports et les deux distributions
 exécutables. L’assemblage échoue si un rapport ou l’inventaire manque. La page Validation présente
