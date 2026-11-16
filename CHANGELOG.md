@@ -16,6 +16,8 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- `openSession`: the non-scoped counterpart of `withSession`. It starts a session exactly like `withSession` and returns it, leaving its lifetime to the caller — for a caller that must hold a live session across calls, such as a presentation that outlives the call that opened it. The caller owns `shutdown` from then on.
+
 - `Session.executionOwner`: the dispatcher a session's work must run on, or `null` when the session accepts work from any dispatcher. A backend whose context is bound to the thread that created it — a native context, for instance — reports that thread, so a caller driving frames from elsewhere can come back with `withContext(session.executionOwner)`. It defaults to `null`, so an existing implementation is unchanged.
 
 - Manual frame acquisition: `ToolkitSurface.acquireFrame()` hands out a `Frame` that stays open until `ToolkitSurface.releaseFrame(frame)`, so a caller can encode across several passes before presenting. `withFrame` is now expressed on top of it and keeps its present-on-return behaviour; releasing a frame twice is a no-op, and a frame released without presenting is not shown.

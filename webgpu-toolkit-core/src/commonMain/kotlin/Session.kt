@@ -286,6 +286,33 @@ suspend fun <R> withSession(
 }
 
 /**
+ * Opens a session with [extension] under [config] and returns it, leaving its lifetime to the
+ * caller. This is the non-scoped counterpart of [withSession], for a caller that must hold a
+ * live session across calls — a presentation that outlives the call that opened it, for
+ * instance.
+ *
+ * Startup is bounded by [SessionConfig.startupTimeout] and maps every failure to
+ * [SessionState.Failed] before rethrowing, exactly like [withSession]. The caller owns the
+ * session from then on and must reach [Session.shutdown] on every exit path; a `Manual` session
+ * also requires stopping its driver first.
+ */
+suspend fun openSession(
+    extension: WebGpuToolkitExtension,
+    config: SessionConfig,
+    hints: AdapterHints = AdapterHints(),
+    initialization: SessionInitialization = SessionInitialization.None,
+): Session {
+    val session = DefaultSession(extension, config, hints, initialization, kotlin.coroutines.coroutineContext)
+    try {
+        session.start()
+    } catch (failure: Throwable) {
+        // Startup already published Failed and released what it acquired; nothing outlives it.
+        throw failure
+    }
+    return session
+}
+
+/**
  * The only [Session] implementation: opens the extension's instance, requests the
  * adapter and device, drives the pump loop for `Pumped` progression, admits blocks against the
  * device-loss race, and releases handles through a timeout-bounded, retryable teardown.
