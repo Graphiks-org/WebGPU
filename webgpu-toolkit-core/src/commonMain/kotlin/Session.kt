@@ -2,6 +2,7 @@ package org.graphiks.webgpu.toolkit
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -101,6 +102,18 @@ interface Session {
      * session never exposes it.
      */
     val manualProgress: ManualProgression?
+
+    /**
+     * The dispatcher every session operation must run on, or `null` when the session does not
+     * pin one.
+     *
+     * An implementation whose backend processes events on a specific thread — a native context
+     * bound to its creating thread, for instance — reports that thread here. Work that touches
+     * the device, the queue or a surface must then run through it: `withContext(session.executionOwner)`
+     * moves a coroutine onto the owning thread, and a caller that drives frames from another
+     * thread uses it to get back. `null` means the session accepts work from any dispatcher.
+     */
+    val executionOwner: CoroutineDispatcher? get() = null
 
     /**
      * Suspends until the device is lost and returns why, or `null` when the session ended
@@ -289,6 +302,13 @@ internal class DefaultSession(
     )
     private val _state = MutableStateFlow<SessionState>(SessionState.Ready)
     override val state: StateFlow<SessionState> = _state
+
+    /**
+     * The dispatcher the session started on: an extension that binds its context to the creating
+     * thread requires every later operation to come back to it.
+     */
+    override val executionOwner: CoroutineDispatcher =
+        callerContext[ContinuationInterceptor] as? CoroutineDispatcher ?: Dispatchers.Default
     private val lostInfo = CompletableDeferred<GPUDeviceLostInfo?>()
     private val releaseMutex = Mutex()
     private var handlesReleased = false

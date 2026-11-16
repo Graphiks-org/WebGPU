@@ -16,6 +16,8 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ### Added
 
+- `Session.executionOwner`: the dispatcher a session's work must run on, or `null` when the session accepts work from any dispatcher. A backend whose context is bound to the thread that created it — a native context, for instance — reports that thread, so a caller driving frames from elsewhere can come back with `withContext(session.executionOwner)`. It defaults to `null`, so an existing implementation is unchanged.
+
 - Manual frame acquisition: `ToolkitSurface.acquireFrame()` hands out a `Frame` that stays open until `ToolkitSurface.releaseFrame(frame)`, so a caller can encode across several passes before presenting. `withFrame` is now expressed on top of it and keeps its present-on-return behaviour; releasing a frame twice is a no-op, and a frame released without presenting is not shown.
 
 - Presentation policy: `PresentationPolicy` picks the surface configuration from what a target advertises — required or preferred formats, alpha modes and the new `PresentMode` (`Fifo`, `FifoRelaxed`, `Immediate`, `Mailbox`) — and `withSurface` takes it as a parameter. `SurfaceCapabilities.presentModes` and `PresentationConfiguration.presentMode` carry the choice; a target that cannot choose advertises only `Fifo`.
