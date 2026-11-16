@@ -151,6 +151,9 @@ object ProtocolTck {
                         failures += "session queue is not the queue of the device"
                     }
                 }
+                // A `Manual` session hands its pump to this block and refuses to shut down while
+                // the hand-over is live, so the block ends it before returning.
+                session.manualProgress?.stop()
                 "block-result"
             }
             if (result != "block-result") {
@@ -181,6 +184,9 @@ object ProtocolTck {
         val failures = mutableListOf<String>()
         val closesBefore = (extension as? SimulatedToolkitExtension)?.records?.instanceCloses ?: 0
         withSession(extension) { session ->
+            // A `Manual` session rejects shutdown while its driver is live; the block owns the
+            // hand-over, so it ends it first.
+            session.manualProgress?.stop()
             session.shutdown()
             session.shutdown()
             if (session.state.value != SessionState.Closed) {
@@ -207,7 +213,7 @@ object ProtocolTck {
                 extensionFrames.frames.send(frame)
                 frame
             }
-            withSurface(extension, bounded(target)) { _, surface ->
+            withSurface(extension, bounded(target)) { session, surface ->
                 surface.withFrame { frame ->
                     if (acquired != null && frame.view !== acquired.view) {
                         failures += "the acquired frame does not carry the scripted view"
@@ -222,6 +228,8 @@ object ProtocolTck {
                         }
                     }
                 }
+                // The block owns a `Manual` session's hand-over; end it before it returns.
+                session.manualProgress?.stop()
             }
             if (simulated != null && acquired != null) {
                 if (simulated.records.presents.count { it === acquired } != 1) {
