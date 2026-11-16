@@ -8,6 +8,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.yield
 import org.graphiks.webgpu.toolkit.AcquiredFrame
 import org.graphiks.webgpu.toolkit.DeviceLostException
@@ -76,6 +77,9 @@ data class TckReport(
 object ProtocolTck {
     /** Ceiling for one case; with virtual time this costs nothing, and it bounds hung real backends. */
     private val CASE_TIMEOUT = 30.seconds
+
+    /** How long the lifecycle walk waits for its collector to observe the final state. */
+    private val STATE_DRAIN_TIMEOUT = 2.seconds
 
     /** Retains a surface acquisition may burn before the case reports non-convergence. */
     private const val RETAIN_BUDGET = 8
@@ -159,7 +163,12 @@ object ProtocolTck {
             if (result != "block-result") {
                 failures += "withSession returned \"$result\" instead of the block result"
             }
-            repeat(2) { yield() }
+            // The collector runs on its own dispatcher and can miss a transition that the
+            // shutdown publishes and supersedes within the same turn; wait for it to drain
+            // before comparing, so a fast teardown is not read as a skipped state.
+            withTimeoutOrNull(STATE_DRAIN_TIMEOUT) {
+                while (states.lastOrNull() != SessionState.Closed) yield()
+            }
             collector.cancelAndJoin()
             val expectedWalk = listOf(
                 SessionState.Ready,

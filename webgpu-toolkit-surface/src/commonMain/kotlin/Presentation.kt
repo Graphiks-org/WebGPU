@@ -138,7 +138,13 @@ suspend fun <R> withSurface(
     try {
         block(session, surface)
     } finally {
-        withContext(NonCancellable) { surface.release() }
+        withContext(NonCancellable) {
+            surface.release()
+            // A `Manual` session refuses to shut down while its hand-over is live, and the
+            // scoped session closes right after this block returns: end it here, once the
+            // surface no longer needs a driver.
+            session.manualProgress?.stop()
+        }
     }
 }
 
