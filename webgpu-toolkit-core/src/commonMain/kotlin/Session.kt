@@ -334,7 +334,9 @@ internal class DefaultSession(
      * The dispatcher the session started on: an extension that binds its context to the creating
      * thread requires every later operation to come back to it.
      */
-    override val executionOwner: CoroutineDispatcher =
+    override val executionOwner: CoroutineDispatcher
+        get() = instance?.executionOwner ?: callerDispatcher
+    private val callerDispatcher: CoroutineDispatcher =
         callerContext[ContinuationInterceptor] as? CoroutineDispatcher ?: Dispatchers.Default
     private val lostInfo = CompletableDeferred<GPUDeviceLostInfo?>()
     private val releaseMutex = Mutex()
@@ -406,12 +408,16 @@ internal class DefaultSession(
         val preparedState = initialization.prepare()
         prepared = preparedState
         // The extension decides how a prepared surface constrains adapter selection: an
-        // extension that presents to native targets requests its adapter against it.
-        val adapter = opened.requestAdapter(hints).getOrElse { error ->
-            throw IllegalStateException("no adapter matched the toolkit session hints", error)
-        }
-        val started = adapter.requestDevice(config.deviceDescriptor).getOrElse { error ->
-            throw IllegalStateException("requesting a device for the toolkit session failed", error)
+        // extension that presents to native targets requests its adapter against it. A backend
+        // bound to one thread does the same from that thread.
+        val (adapter, started) = withContext(executionOwner) {
+            val adapter = opened.requestAdapter(hints).getOrElse { error ->
+                throw IllegalStateException("no adapter matched the toolkit session hints", error)
+            }
+            val started = adapter.requestDevice(config.deviceDescriptor).getOrElse { error ->
+                throw IllegalStateException("requesting a device for the toolkit session failed", error)
+            }
+            adapter to started
         }
         startedDevice = started
         preparedState.initialize(started)
@@ -509,15 +515,20 @@ internal class DefaultSession(
     private suspend fun releaseHandles() {
         releaseMutex.withLock {
             if (handlesReleased) return
-            val deviceToClose = startedDevice
-            val opened = instance
-            if (deviceToClose != null) {
-                runCatching { deviceToClose.close() }
-                // Suspend until teardown is notified; must NOT be wrapped in runCatching,
-                // so shutdown-timeout cancellation interrupts the release here.
-                deviceToClose.awaitLost()
+            // A backend bound to one thread closes its device and awaits the loss there: the
+            // notification is delivered by that thread's own pump, which runs while this
+            // coroutine is suspended.
+            withContext(executionOwner) {
+                val deviceToClose = startedDevice
+                val opened = instance
+                if (deviceToClose != null) {
+                    runCatching { deviceToClose.close() }
+                    // Suspend until teardown is notified; must NOT be wrapped in runCatching,
+                    // so shutdown-timeout cancellation interrupts the release here.
+                    deviceToClose.awaitLost()
+                }
+                runCatching { opened?.close() }
             }
-            runCatching { opened?.close() }
             // Retire what startup acquired last: the device is gone, so platform resources
             // that outlived it can be released.
             runCatching { prepared?.retire() }

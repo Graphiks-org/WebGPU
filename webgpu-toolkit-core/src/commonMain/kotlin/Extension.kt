@@ -1,5 +1,6 @@
 package org.graphiks.webgpu.toolkit
 
+import kotlinx.coroutines.CoroutineDispatcher
 import org.graphiks.webgpu.GPUAdapter
 import org.graphiks.webgpu.GPUDevice
 import org.graphiks.webgpu.GPUTextureFormat
@@ -124,6 +125,16 @@ interface ToolkitInstance : AutoCloseable {
 	 *
 	 */
 	val progression: Progression
+	/**
+	 * The dispatcher of the single thread this instance's backend is bound to, or `null` when
+	 * the backend accepts calls from any thread.
+	 *
+	 * A session runs every device-touching operation on it — the startup requests, the device
+	 * close, the loss await and [close] — so a backend whose native context must be driven from
+	 * its creating thread can rely on that thread throughout the session's life.
+	 *
+	 */
+	val executionOwner: CoroutineDispatcher? get() = null
 	/**
 	 * Selects an adapter for the session, or fails with a `Result` describing why none fits.
 	 *
