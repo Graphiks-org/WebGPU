@@ -4,84 +4,32 @@ Notable changes to WebGPU are recorded here. Entries follow [Keep a Changelog](h
 
 ## [Unreleased]
 
-### Changed
-
-- Maven coordinates follow the Graphiks naming norm (as in `Graphiks-org/kffi`): the group is now `org.graphiks.webgpu` and artifactIds drop the `webgpu-` module prefix, so the published artifacts are `org.graphiks.webgpu:api`, `org.graphiks.webgpu:descriptors`, `org.graphiks.webgpu:web-bindings`, `org.graphiks.webgpu:browser`, `org.graphiks.webgpu:toolkit-*` and `org.graphiks.webgpu:suite-*` (previously `org.graphiks:webgpu-*` / `org.graphiks:suite-*`).
-
-### Fixed
-
-- The `wgpu4k-native` specifications are pinned to `v27.0.4`: the purged `v29.0.0-SNAPSHOT` left fresh clones unresolvable.
-
-- Android `ArrayBuffer` typed factories and views now use native byte order for GPU data; borrowed native-memory bulk reads and writes no longer depend on HotSpot-only `Unsafe` fields or methods unavailable on ART.
-
 ### Added
 
-- `openSession`: the non-scoped counterpart of `withSession`. It starts a session exactly like `withSession` and returns it, leaving its lifetime to the caller — for a caller that must hold a live session across calls, such as a presentation that outlives the call that opened it. The caller owns `shutdown` from then on.
-
-- `Session.executionOwner`: the dispatcher a session's work must run on, or `null` when the session accepts work from any dispatcher. A backend whose context is bound to the thread that created it — a native context, for instance — reports that thread, so a caller driving frames from elsewhere can come back with `withContext(session.executionOwner)`. It defaults to `null`, so an existing implementation is unchanged.
-
-- Manual frame acquisition: `ToolkitSurface.acquireFrame()` hands out a `Frame` that stays open until `ToolkitSurface.releaseFrame(frame)`, so a caller can encode across several passes before presenting. `withFrame` is now expressed on top of it and keeps its present-on-return behaviour; releasing a frame twice is a no-op, and a frame released without presenting is not shown.
-
-- Presentation policy: `PresentationPolicy` picks the surface configuration from what a target advertises — required or preferred formats, alpha modes and the new `PresentMode` (`Fifo`, `FifoRelaxed`, `Immediate`, `Mailbox`) — and `withSurface` takes it as a parameter. `SurfaceCapabilities.presentModes` and `PresentationConfiguration.presentMode` carry the choice; a target that cannot choose advertises only `Fifo`.
-
-- Session configuration beyond timeouts: `SessionConfig.deviceDescriptor` is handed to `requestDevice`, so a session can require features and limits, and `SessionConfig.progression` lets the caller ask for `Pumped`, `EventLoop` or `Manual`. An extension that cannot honour the requested progression fails startup instead of silently using another one.
-
-- Startup hooks: `SessionInitialization` runs `prepare()` before the adapter request — exposing a `SurfaceReference` the adapter must be compatible with — then `initialize(device)` once the device exists and before the caller's block, and `retire()` on every exit path, including a failed startup. `withSession` takes it as a parameter.
-
-- `ToolkitSurface.replaceTarget` and `ToolkitSurface.detachTarget`: a live surface now follows its target across generations instead of dying with it. `replaceTarget` retains the new target, rolls a stale generation back, keeps the device and configuration when the replacement supports the current format, and leaves the previous target usable when it fails; `detachTarget` releases a target by generation and ignores stale requests.
-
-- Window input events on the windowing-neutral contract: `WindowEvent.Pointer`/`PointerExited` in logical pixels, `Scroll`, `Key` with layout-independent key names, and `FocusChanged`.
-
-- Manual progression for toolkit sessions: an extension reporting `Progression.Manual` now hands its pump over through `Session.manualProgress` after startup, so a caller drives `processEvents()` from one driver on the session's owner, calls `stop()`, then shuts down — the mode dawn4k exposes as `DawnExecutionMode.Manual`. A session still rejects `shutdown()` while its driver runs.
-
-- The WebGPU toolkit, four opt-in modules over the bindings. `org.graphiks.webgpu:toolkit-core` opens generic toolkit sessions with `withSession` over any `WebGpuToolkitExtension`: timeout-bounded startup, a hot `SessionState` flow (`Ready`, `ShuttingDown`, `Closed`, with `Lost`, `Failed` and retryable `ShutdownTimedOut`), device-loss cancellation of admitted work, and pump or event-loop progression. `org.graphiks.webgpu:toolkit-surface` adds presentation: `withSurface` runs the target-lease protocol against a `SurfaceTarget` with capability-driven configuration, `withFrame` scopes frames that suspend while the target is undrawable and present exactly once, and `withWindow` composes the windowing-neutral `Window`/`WindowHost` contract (close requests, resizes, owned versus borrowed windows) with session and surface. The getting-started guide (`docs/docs/toolkit.md`, French twin `toolkit.fr.md`) walks through the helpers.
-- `org.graphiks.webgpu:toolkit-web`, the browser toolkit extension: `webToolkit()` fronts the browser WebGPU implementation and `CanvasSurfaceTarget` wraps an HTML canvas with resize-aware target state; browser-side validation of the extension arrives with the toolkit demo in a future change.
-- `org.graphiks.webgpu:toolkit-tck`, the protocol contract kit: `ProtocolTck.runAll(extension, target)` reports every violated protocol case (lifecycle walk, idempotent shutdown, present-once, zero-extent suspension, stale-lease rollback, loss to `Lost`) instead of throwing on the first, and the scriptable `SimulatedToolkitExtension` proves the strict paths in this repository; binding repositories reuse the kit to validate their own extensions, whose GPU-real cases are v2.
-- Core and Compatibility feature-level acid cases: implicit device features and cube-array validation, with an explicit unsupported result for the spec-permitted Core fallback.
-- Portable image filter lab with an original illustration and local PNG/JPEG/WebP import, five adjustable compute filters, an original/result divider and bilingual learning panels. The gallery and selector offer four demos, and `--demo-check` validates eleven GPU cases on JS and Wasm.
-- Shared bilingual learning panels with readable, syntax-colored WGSL matching the compiled sources in all four demos.
-- Portable cyberpunk city with reproducible 256/1024/4096-building grids, depth testing, procedural illuminated windows and streets, mouse/touch orbit, height controls and reduced-motion-aware rotation.
-- Portable Gray–Scott reaction-diffusion with three presets, mouse/touch painting, pause, single-step, reset, palettes and concentration views.
-- Public API contract rework documented in `docs/docs/public-api-contract.md` (and its French twin): nullable `sequence<T?>` slots keep their element nullability end to end; `GPUDeviceDescriptor.requiredLimits` becomes `GPURequiredLimits?` with a partial `RequiredLimits` descriptor; `GPUDevice.awaitLost()` exposes a cancellable device-loss observation; `GPUBuffer.usage`/`GPUTexture.usage` return typed masks with `fromBits` and `contains`; `GPUBuffer.withMappedRange` scopes a mapping; browser texture ownership is explicit (`Texture.wrapOwned`/`Texture.wrapBorrowed`, `CanvasSurface : AutoCloseable`); cancelled GPU acquisitions are cleaned up deterministically. The signature breaks are intentional and are not binary- or source-compatible with the previous contract.
-- Android `ArrayBuffer.wrap(address, size)`: a borrowed, non-owning view over native memory (native byte order, bounds-checked) so a backend can expose a range a native library lends the caller — such as a GPU-mapped buffer between map and unmap — without copying it.
-- Publish the portable suite modules across the `webgpu-api` KMP target matrix, including Android, Windows, and ARM64 tvOS targets.
-- Bilingual documentation, contributor guidance, and repository automation.
-- `org.graphiks.webgpu:browser`, a browser implementation for Kotlin/JS and Kotlin/Wasm JS with adapter acquisition, resource wrappers, descriptor conversions, and canvas surfaces.
-- `WebGpuRecord` and nullable browser binding values in `org.graphiks.webgpu:web-bindings`.
-- Graphiks WebGPU Suite foundation modules (`suite-core`, `suite-acid-tests`, `suite-browser`) with a portable `AcidCase` contract, eleven browser acid tests typed with `@AcidTest` annotations, a headless Chromium runner, a generated contract inventory, and a bilingual (English/French) Validation page published under the documentation site's `suite/` path.
-- `org.graphiks.webgpu:suite-demos`, a portable compute particle scene, plus a bilingual Demos gallery and GPU readback checks (`--demo-check`) published under the suite site's `demos/` path.
-- `org.graphiks.webgpu:suite-benchmarks`, two portable measurement workloads (`transfer.write-buffer`, `compute.encode-submit`) with the explicit `foundations-v1` protocol and GPU readback checks, a `--benchmark` collector mode, and a bilingual Benchmarks page published under the suite site's `benchmarks/` path.
-- Extend the browser acid tests: targeted runs (`--cases=id1,id2` / `?cases=id1,id2` into `selected-<target>.json`), declared optional-feature reporting (`CaseResult.missingFeatures`, accepted as `unsupported` only for declared features), and new buffer, binding, transfer, texture-copy, texture-view, format, storage, sampling, render-command, blending, depth/stencil, advanced-command, error and optional-feature cases (eighty-three in total).
-- Finalize the browser acid tests at 123 cases (118 mandatory, five optional) covering adapter/device requests and error delivery, shader compilation and asynchronous pipelines, texture aspects, views and comparison sampling, primitive/face/depth-stencil state, submission and mapped-range lifetime, render timestamps, draw limits and alpha-to-coverage. The coverage balance, optional-feature status and remaining contract gaps are published in `docs/acid-coverage.md`.
-- Extend the browser acid tests to 132 cases (125 mandatory, seven optional) with a follow-up increment: storage-binding range length, `minBindingSize` rejection, post-bundle pass-state reset, partial texture initialization, discard re-initialization, min/mag filter selection, timestamp write-index validation for both pass types, and the unenabled `TimestampQuery` refusal.
-- French twins of the repo-level acid records: `docs/acid-coverage.fr.md` and `docs/verification.fr.md`, with the French site pages linking to them.
-- Readable bilingual (EN/FR) runner pages: the validation and demo-verification routes of `run/js|wasm/` show a localized progress line, a summary line, a case table with colored statuses and diagnostics, and the pretty-printed report folded below. The published `graphiksSuiteReport`/`graphiksDemoReport` strings are compact JSON for the collector, the Validation page's local-run links pass the site's locale, and a raw-JSON display with an explicit diagnostic covers a text-resource failure.
-- Extend the browser acid tests to 147 cases (138 mandatory, nine optional) with residual-behaviour coverage: a `StencilOnly` view and its copy aspect, `Depth16Unorm` and packed `RGB10A2Uint` targets read back exactly, anisotropic sampler filter validation, percentage-closer comparison filtering, point and line topologies with the diamond-exit endpoint, a partial 4x multisample mask, view-dimension creation constraints, storage-usage and transient-attachment refusals, negative render-bundle validation, full-range 32-bit draw indices (the data family's first cases), the adapter's full limit space requested and observed field by field, and two present optional features exercised end to end (`TextureCompressionBC` block decode, `Subgroups` sum within the reported bounds). The seven fully covered residuals move from the residual inventory into the catalogue; the partially covered behaviours keep distinct case ids with re-scoped residual texts, and the balance goes from fifteen residuals to eight.
-- `arraybuffer-benchmarks`, an unpublished CPU measurement harness for `webgpu-api` memory operations: the `arraybuffer-cpu` and `arraybuffer-cpu-writers` protocols with JVM, JS, Wasm, Native and Android runners, report validators, a before/after comparator, an Android instrumentation host, and the `docs/arraybuffer-bounds.md` / `docs/arraybuffer-performance.md` guides with their French twins (the verification records are updated in both languages).
-
-### Fixed
-
-- `webgpu-browser` forwards an explicitly specified `TextureDescriptor.textureBindingViewDimension` to WebGPU, preserving texture binding view restrictions in compatibility mode; an unspecified value remains omitted.
-- `webgpu-browser` no longer throws on Kotlin/Wasm when an implementation omits a `GPUSupportedLimits` property; an absent limit is read as zero.
-- `webgpu-browser` omits zero-valued maximum limits from a `requiredLimits` record, so a device request never sends a limit the implementation does not expose (older Chromium rejects an unknown `maxImmediateSize` key). The two alignment limits are always sent: zero is an invalid alignment, not an unexposed limit, so a bad request is rejected rather than silently replaced by the default.
-- The browser suite runner pins Playwright 1.63.0 / Chromium 153, which implements the contract's four-character `DOMString` texture-view swizzle; `texture.view-swizzle` is executed instead of reported as an environment gap.
-- `webgpu-browser` omits an identity `GPUTextureViewDescriptor.swizzle` when creating a view, so a view built from a descriptor no longer sends a swizzle value in the form rejected by Chromium 140's pre-release dictionary encoding.
-- `webgpu-api` validates `ArrayBuffer` operations before touching memory: an out-of-range access throws `IndexOutOfBoundsException`, an unaligned offset, a non-divisible typed conversion or an unrepresentable allocation/wrapping size throws `IllegalArgumentException`, sizes are computed in a wide type before multiplication so nothing is silently truncated, a zero-length operation at `offset == size` is valid and never dereferences memory or builds a typed view, and a write rejected by these preconditions leaves the buffer unchanged. Capacities stay `Int.MAX_VALUE` bytes on Web, Android and Native and `Long.MAX_VALUE` bytes on the JVM.
+- The WebGPU toolkit (`toolkit-core`, `toolkit-surface`, `toolkit-web`, `toolkit-tck`): opt-in, extension-driven sessions (`withSession`/`openSession`, `executionOwner`, startup hooks, `Pumped`/`EventLoop`/`Manual` progression), presentation (`withSurface`/`withFrame`, manual frame acquisition, present modes), windowing-neutral windows with input events and target swap, and a protocol TCK to validate extensions. Getting-started guide: `docs/docs/toolkit.md` (French twin included).
+- `browser`, a browser implementation for Kotlin/JS and Kotlin/Wasm JS; `web-bindings` gains `WebGpuRecord` and nullable binding values.
+- The Graphiks WebGPU Suite (`suite-core`, `suite-acid-tests`, `suite-browser`, `suite-demos`, `suite-benchmarks`): a portable acid suite at 147 cases (138 mandatory) run headless on Chromium with bilingual validation pages, four demos — particle scene, image filter lab, cyberpunk city, Gray–Scott reaction-diffusion — with GPU readback checks, and two benchmark workloads with a collector mode.
+- Public API contract rework (breaking; details in `docs/docs/public-api-contract.md`): typed usage masks, `GPURequiredLimits?` descriptors, `GPUDevice.awaitLost()`, `GPUBuffer.withMappedRange`, explicit browser texture ownership.
+- Android `ArrayBuffer.wrap(address, size)`, a bounds-checked borrowed view over native memory.
+- `arraybuffer-benchmarks`, a CPU measurement harness for `ArrayBuffer` operations, with bilingual guides.
+- Publish the portable modules across the full KMP target matrix, including Android, Windows and ARM64 tvOS.
 
 ### Changed
 
-- `GPURequestAdapterOptions.featureLevel` now uses `GPUFeatureLevel` (`Core` by default, or `Compatibility`) instead of `String`. Browser bindings still receive WebGPU strings; native enum values follow the C specification. Callers passing strings must migrate to the enum.
-- The suite execution contract passes an `AcidContext` (the borrowed device plus a binding-supplied adapter factory) to `AcidCase.run`, so a case can request its own adapter and device; the individual case functions still take a `GPUDevice`.
-- Require contribution pull requests from forks on `feat/`, `fix/`, or `chore/` branches based on the current `master` commit.
+- Maven coordinates follow the Graphiks naming norm: group `org.graphiks.webgpu`, artifactIds drop the `webgpu-` prefix — `org.graphiks.webgpu:api`, `:descriptors`, `:web-bindings`, `:browser`, `:toolkit-*`, `:suite-*` (previously `org.graphiks:webgpu-*` / `org.graphiks:suite-*`).
+- `GPURequestAdapterOptions.featureLevel` now takes the `GPUFeatureLevel` enum (`Core` by default, or `Compatibility`) instead of `String`.
+- The suite execution contract passes an `AcidContext` to `AcidCase.run`, so a case can request its own adapter and device.
+- Suite reports carry the exact commit and version they were built from; the runner fails closed on a mismatch.
+- Rename `webgpu-web` to `webgpu-web-bindings`, with generated descriptors and bindings in `org.graphiks.webgpu.descriptors` / `org.graphiks.webgpu.bindings`.
 - Drop the deprecated macOS x64 and watchOS x64 native targets.
-- Rename `webgpu-web` to `webgpu-web-bindings` and move generated descriptors and bindings to the `org.graphiks.webgpu.descriptors` and `org.graphiks.webgpu.bindings` packages.
-- Move the type mapping into the documentation site as a dedicated bilingual section (`docs/docs/type-mapping/`) and remove the root `TYPE_MAPPING.md`.
-- Benchmark campaigns no longer run on CI runners, which are not a reliable performance reference: the GPU benchmark steps are gone from the suite workflow, the validation site is assembled without benchmark reports when absent (the Benchmarks page shows "No published measurements"), and campaigns are run by hand on chosen machines.
-- Suite reports (acid, demo, benchmark) carry the exact commit and version they were built from, and the runner fails closed on a missing or mismatched identity instead of attributing a report to the current checkout; inventory generation links every case entry to its source file on the Validation page.
-- Accept automated dependency updates in the PR policy: a pull request authored by `dependabot[bot]` on a `dependabot/` branch passes a reduced bot lane — Conventional Commit subjects with the reserved `deps` scope and the current `master` commit — instead of failing the fork, branch-prefix, template, documentation, and changelog rules.
 
 ### Removed
 
 - Remove the deprecated descriptor type aliases (`Size3D`, `ImageCopyTexture`, `ImageCopyBuffer`, `ColorAttachment`, `DepthStencilAttachment`).
-- Remove the four never-testable acid residuals (`errors.device-lost`, `immediates.set-immediates`, `features.not-exposed-by-reference-browser`, `async.oom-and-internal-results`) from the residual inventory: they have no portable case in this contract and stay documented as known limits in `docs/acid-coverage.md`.
-- Remove the redundant browser-target and public-ABI CI steps; `./gradlew check` already runs those tasks on every platform.
+
+### Fixed
+
+- `webgpu-api` validates `ArrayBuffer` operations before touching memory: bounds, alignment and size preconditions, wide-type size computation, failed writes leave the buffer unchanged.
+- Android `ArrayBuffer` typed factories and views use native byte order, without HotSpot-only `Unsafe` access (ART-safe).
+- `webgpu-browser` Chromium compatibility: forwards `textureBindingViewDimension`, omits zero-valued limits and identity swizzles, reads absent limits as zero on Wasm.
+- Pin `wgpu4k-native` to `v27.0.4` and the suite runner to Playwright 1.63.0 / Chromium 153, so `texture.view-swizzle` executes instead of reporting an environment gap.
